@@ -528,9 +528,11 @@ describe('updateAddon', () => {
     // real flip of an MCP-relevant addon → invalidate
     expect((updateAddon('packing', { enabled: false }) as any).mcpAffected).toBe(true);
     expect((updateAddon('packing', { enabled: true }) as any).mcpAffected).toBe(true);
-    // real flip of an addon with no MCP surface → sessions survive
-    const docsFlip = updateAddon('documents', { enabled: false }) as any;
-    if (!docsFlip.error) expect(docsFlip.mcpAffected).toBe(false);
+    // real flip of an addon with no MCP surface → sessions survive.
+    // Not `documents` any more: the 4.3 addon port gave it one (doc-sync exposes
+    // MCP tools under the Documents addon gate), so it belongs on the list.
+    const llmFlip = updateAddon('llm_parsing', { enabled: false }) as any;
+    if (!llmFlip.error) expect(llmFlip.mcpAffected).toBe(false);
   });
 
   it('ADMIN-SVC-087 — refuses to enable a photo provider while journey is off', () => {

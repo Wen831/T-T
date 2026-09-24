@@ -84,7 +84,10 @@ describe('Atlas e2e (real auth guard + real service + temp SQLite)', () => {
     expect(res.body.type).toBe('FeatureCollection');
     expect(res.body.features.length).toBeGreaterThan(0);
     expect(res.headers['cache-control']).toContain('max-age=86400');
-  });
+    // Sending and decompressing the real multi-MB file takes ~7s alone, against a
+    // 15s default that a full parallel run then blows through. Raised rather than
+    // swapped for a smaller fixture, because the real file is the point.
+  }, 60_000);
 
   it('200 stats for an authenticated user — the trip-less branch keeps its bespoke shape', async () => {
     db.prepare('INSERT OR IGNORE INTO visited_countries (user_id, country_code) VALUES (?, ?)').run(userId, 'JP');

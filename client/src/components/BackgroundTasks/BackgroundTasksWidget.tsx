@@ -28,10 +28,17 @@ export default function BackgroundTasksWidget() {
 
   const [aiParsing, setAiParsing] = useState(false);
   useEffect(() => {
+    // The answer only decides whether the AI retry is offered, so a widget that is
+    // gone by the time it lands has nothing to do with it. Guarding matters in the
+    // test run, where the environment is torn down while this request is in flight
+    // and the late setState throws "window is not defined" (react-dom needs it to
+    // pick a lane) as an unhandled rejection.
+    let cancelled = false;
     healthApi
       .features()
-      .then((f) => setAiParsing(!!f.aiParsing))
-      .catch(() => setAiParsing(false));
+      .then((f) => { if (!cancelled) setAiParsing(!!f.aiParsing) })
+      .catch(() => { if (!cancelled) setAiParsing(false) });
+    return () => { cancelled = true };
   }, []);
 
   // Re-runs the same files with force-ai: the LLM sees every file, kitinerary is skipped.

@@ -56,6 +56,21 @@ vi.mock('../../../src/config', () => ({
   updateJwtSecret: () => {},
 }));
 vi.mock('../../../src/websocket', () => ({ broadcastToUser: vi.fn() }));
+vi.mock('../../../src/app-config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../src/app-config')>();
+  return {
+    ...actual,
+    // Pin the running version to package.json's, which is what these cases compare
+    // the mocked GitHub tag against. The service reads APP_VERSION from the
+    // environment and falls back to a hard-coded default when it is unset, so
+    // without this the suite passes or fails on whatever the shell happens to
+    // export rather than on the comparison it claims to test.
+    readEnv: () => ({
+      ...actual.readEnv(),
+      app: { ...actual.readEnv().app, appVersion: require('../../../package.json').version },
+    }),
+  };
+});
 // Mock MCP to avoid session side-effects
 vi.mock('../../../src/mcp', () => ({ revokeUserSessions: vi.fn(), invalidateMcpSessions: vi.fn() }));
 vi.mock('../../../src/mcp/sessionManager', () => ({

@@ -154,5 +154,9 @@ describe('BOOTSTRAP (F6) — unified NestJS app serves the whole surface', () =>
       .set('Cookie', authCookie(user.id));
     expect(res.status).toBe(200);
     expect(res.headers['content-encoding']).toBe('gzip');
-  });
+    // Gzipping several MB takes ~7s here on its own, and the default budget is
+    // 15s: under a full parallel run the same work competes for CPU and goes
+    // over. The budget is raised rather than the payload shrunk because the
+    // whole point is to send the real bundled file.
+  }, 60_000);
 });
