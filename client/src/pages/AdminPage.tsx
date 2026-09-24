@@ -26,6 +26,7 @@ import AdminPluginsPanel from '../components/Admin/AdminPluginsPanel';
 import AuditLogPanel from '../components/Admin/AuditLogPanel';
 import BackupPanel from '../components/Admin/BackupPanel';
 import CategoryManager from '../components/Admin/CategoryManager';
+import SchoolHolidayCatalog from '../components/Admin/SchoolHolidayCatalog';
 import DefaultUserSettingsTab from '../components/Admin/DefaultUserSettingsTab';
 import DevNotificationsPanel from '../components/Admin/DevNotificationsPanel';
 import GitHubPanel from '../components/Admin/GitHubPanel';
@@ -195,6 +196,7 @@ function AdminPageDesktop(): React.ReactElement {
             <div className="space-y-6">
               <PackingTemplateManager />
               <CategoryManager />
+              <SchoolHolidayCatalog />
             </div>
           )}
 

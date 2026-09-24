@@ -33,6 +33,7 @@ import MAdminAddonManager from './MAdminAddonManager';
 import MAdminAuditLogPanel from './MAdminAuditLogPanel';
 import MAdminBackupPanel from './MAdminBackupPanel';
 import MAdminCategoryManager from './MAdminCategoryManager';
+import SchoolHolidayCatalog from '../../../components/Admin/SchoolHolidayCatalog';
 import MAdminDefaultUserSettings from './MAdminDefaultUserSettings';
 import MAdminDevNotificationsPanel from './MAdminDevNotificationsPanel';
 import MAdminGitHubPanel from './MAdminGitHubPanel';
@@ -229,6 +230,7 @@ export default function MAdmin() {
         <div className="space-y-4">
           <MAdminPackingTemplateManager />
           <MAdminCategoryManager />
+          <SchoolHolidayCatalog />
         </div>
       )}
       {activeTab === 'addons' && (

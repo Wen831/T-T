@@ -2,7 +2,8 @@ import { discardBody, readCappedJson } from '../../utils/cappedFetch';
 import { DatabaseService } from '../database/database.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { RealtimeService } from '../realtime/realtime.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { manualSchoolRegionId } from '@trek/shared';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -731,6 +732,7 @@ export class VacayService {
     socketId: string | undefined,
     type: 'public_holiday' | 'school_holiday' = 'public_holiday',
   ) {
+    this.validateManualRegion(region, type);
     const result = this.db.run(
       'INSERT INTO vacay_holiday_calendars (plan_id, type, region, label, color, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
       planId,
@@ -766,6 +768,7 @@ export class VacayService {
       planId,
     );
     if (!cal) return null;
+    this.validateManualRegion(body.region ?? cal.region, body.type ?? cal.type);
     const { region, label, color, sort_order, type } = body;
     const updates: string[] = [];
     const params: (string | number | null)[] = [];
@@ -804,6 +807,24 @@ export class VacayService {
     this.db.run('DELETE FROM vacay_holiday_calendars WHERE id = ?', calId);
     this.notifyPlanUsers(planId, socketId, 'vacay:settings');
     return true;
+  }
+
+  /**
+   * A `*-MANUAL-*` region names a row of the admin-maintained school-holiday
+   * catalog (TT port of upstream 4.3.0): it must exist, belong to the country
+   * the code claims, and only a school-holiday calendar may point at one.
+   * Anything else is a hand-typed code the external feed will never resolve.
+   */
+  private validateManualRegion(code: string, type: string) {
+    if (!code.includes('-MANUAL-')) return;
+    const id = manualSchoolRegionId(code);
+    if (
+      type !== 'school_holiday' ||
+      !id ||
+      !this.db.get('SELECT id FROM school_holiday_regions WHERE id = ? AND country = ?', id, code.slice(0, 2))
+    ) {
+      throw new BadRequestException('Unknown manual school holiday region');
+    }
   }
 
   // -------------------------------------------------------------------------

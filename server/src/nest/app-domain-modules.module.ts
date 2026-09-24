@@ -53,6 +53,7 @@ import { TripsModule } from './trips/trips.module';
 import { TunnelModule } from './tunnel/tunnel.module';
 import { VacayModule } from './vacay/vacay.module';
 import { WeatherModule } from './weather/weather.module';
+import { SchoolHolidaysModule } from './school-holidays/school-holidays.module';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -71,6 +72,7 @@ import { Module } from '@nestjs/common';
     NotificationsModule,
     AtlasModule,
     VacayModule,
+    SchoolHolidaysModule,
     PackingModule,
     TodoModule,
     BudgetModule,

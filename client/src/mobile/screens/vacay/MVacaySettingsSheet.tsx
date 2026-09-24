@@ -17,10 +17,10 @@ import { useEffect, useMemo, useState } from 'react';
 import apiClient from '../../../api/client';
 import { useToast } from '../../../components/shared/Toast';
 import { fetchRegionOptions, fetchSchoolHolidayRegionOptions } from '../../../components/Vacay/holidayRegions';
+import { useSchoolHolidayCountries } from '../../../components/Vacay/useSchoolHolidayCountries';
 import { getIntlLanguage, useTranslation } from '../../../i18n';
 import { useVacayStore } from '../../../store/vacayStore';
 import type { VacayHolidayCalendar, VacayYearSettings } from '../../../types';
-import { SCHOOL_HOLIDAY_COUNTRY_CONFIG } from '../../../vacay/schoolHolidayCountries';
 import { windowMonths } from '../../../vacay/yearWindow';
 import MIconBtn from '../../components/MIconBtn';
 import MSheet from '../../components/MSheet';
@@ -60,6 +60,9 @@ export default function MVacaySettingsSheet({ open, onClose }: MVacaySettingsShe
   const [countries, setCountries] = useState<Option[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAddSchoolForm, setShowAddSchoolForm] = useState(false);
+  // The school-holiday country list merges the admin-maintained manual catalog in
+  // beside the countries the external OpenHolidays feed covers.
+  const { countries: schoolCountryOptions, error: schoolCountryError } = useSchoolHolidayCountries(open);
 
   useEffect(() => {
     if (!open) return;
@@ -90,7 +93,7 @@ export default function MVacaySettingsSheet({ open, onClose }: MVacaySettingsShe
     (cal) => (cal.type ?? 'public_holiday') === 'public_holiday'
   );
   const schoolHolidayCalendars = (plan.holiday_calendars ?? []).filter((cal) => cal.type === 'school_holiday');
-  const schoolHolidayCountries = countries.filter((country) => country.value in SCHOOL_HOLIDAY_COUNTRY_CONFIG);
+  const schoolHolidayCountries = schoolCountryOptions;
 
   const weekendDays: number[] = plan.weekend_days ? String(plan.weekend_days).split(',').map(Number) : [0, 6];
   const weekdayChips = [
@@ -296,6 +299,7 @@ export default function MVacaySettingsSheet({ open, onClose }: MVacaySettingsShe
         </div>
         {plan.school_holidays_enabled && (
           <>
+            {schoolCountryError && <p role="alert" className="text-caption text-danger">{schoolCountryError}</p>}
             {schoolHolidayCalendars.map((cal) => (
               <CalendarEditor
                 key={cal.id}
