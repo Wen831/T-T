@@ -81,6 +81,19 @@ export const placeRatingVoteSchema = z.object({
 });
 export type PlaceRatingVote = z.infer<typeof placeRatingVoteSchema>;
 
+export const roadtripStopTypeSchema = z.enum([
+  'fuel',
+  'charging',
+  'rest_area',
+  'campsite',
+  'restaurant',
+  'sights',
+  'hotel',
+]);
+export type RoadtripStopType = z.infer<typeof roadtripStopTypeSchema>;
+
+const fillPercentSchema = z.number().int().min(1).max(100).nullable().optional();
+
 export const placeSchema = z.object({
   id: z.number(),
   trip_id: z.number(),
@@ -106,6 +119,9 @@ export const placeSchema = z.object({
   // AMap (高德) POI id, e.g. 'B000A83M61'. Kept apart from osm_id: the OSM
   // details path parses its id as '<type>/<id>' and an AMap id has no slash.
   amap_id: z.string().nullable().optional(),
+  source: z.string().nullable().optional(),
+  stop_type: roadtripStopTypeSchema.nullable().optional(),
+  fill_percent: fillPercentSchema,
   route_geometry: z.string().nullable().optional(),
   // Manual track colour (#776). null = inherit the category colour like before.
   route_color: hexColorSchema.nullable().optional(),
@@ -153,6 +169,8 @@ export const assignmentPlaceSchema = z.object({
   osm_id: z.string().nullable().optional(),
   /** Same purpose as osm_id, for a place that came from AMap search. */
   amap_id: z.string().nullable().optional(),
+  stop_type: roadtripStopTypeSchema.nullable().optional(),
+  fill_percent: fillPercentSchema,
   website: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   category: placeCategorySchema.optional(),
@@ -160,10 +178,15 @@ export const assignmentPlaceSchema = z.object({
 });
 export type AssignmentPlace = z.infer<typeof assignmentPlaceSchema>;
 
-export const placeCreateRequestSchema = open.and(z.object({ name: z.string().min(1) }));
+const stopTypeField = z.object({
+  stop_type: roadtripStopTypeSchema.nullable().optional(),
+  fill_percent: fillPercentSchema,
+});
+
+export const placeCreateRequestSchema = open.and(z.object({ name: z.string().min(1) })).and(stopTypeField);
 export type PlaceCreateRequest = z.infer<typeof placeCreateRequestSchema>;
 
-export const placeUpdateRequestSchema = open;
+export const placeUpdateRequestSchema = open.and(stopTypeField);
 export type PlaceUpdateRequest = z.infer<typeof placeUpdateRequestSchema>;
 
 // Collaborative ratings (#1435): one 1-5 star vote per user and place.

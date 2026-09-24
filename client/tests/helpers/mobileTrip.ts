@@ -238,6 +238,10 @@ export function buildPlanner(overrides: Partial<TripPlanner> = {}): TripPlanner 
 export function buildShell(overrides: Partial<MTripShellApi> = {}): MTripShellApi {
   const base: MTripShellApi = {
     view: 'plan',
+    rtView: 'list',
+    toggleRtView: vi.fn(),
+    rtReach: 'ahead',
+    setRtReach: vi.fn(),
     mode: 'go',
     trTab: 'plan',
     setTrTab: vi.fn(),

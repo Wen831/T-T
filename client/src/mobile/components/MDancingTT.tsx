@@ -25,7 +25,7 @@ export type TTScene =
   | 'search'
   | 'tasks';
 
-export type TTMood = 'default' | 'happy' | 'sleepy' | 'confused' | 'error';
+export type TTMood = 'default' | 'happy' | 'sad' | 'sleepy' | 'confused' | 'error';
 
 // TT 简化 logo - 两个字母 T 的几何形状
 const TT_SHAPE =
@@ -114,6 +114,17 @@ function Eyes({ mood }: { mood: TTMood }) {
       <g className="tt-eyes tt-eyes--happy">
         <path d="M30,40 Q33,38 36,40" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
         <path d="M52,40 Q55,38 58,40" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+      </g>
+    );
+  }
+
+  if (mood === 'sad') {
+    // happy 的镜像：同样两条弧线反向弯曲。sleepy 是更浅的下垂，读起来是眼睛闭上，
+    // 与「失望」是两回事。
+    return (
+      <g className="tt-eyes tt-eyes--sad">
+        <path d="M30,42 Q33,44 36,42" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <path d="M52,42 Q55,44 58,42" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
       </g>
     );
   }

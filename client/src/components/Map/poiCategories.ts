@@ -34,10 +34,27 @@ export interface Poi {
   lng: number
   category: string
   poi_type: string
+  /** Brand name and its Wikidata id, when OSM carries them (road categories mostly do). */
+  brand?: string | null
+  brand_wikidata?: string | null
   address: string | null
   website: string | null
   phone: string | null
   opening_hours: string | null
   cuisine: string | null
-  source: 'openstreetmap'
+  /**
+   * What a charging station offers, when it is one and OSM says so.
+   *
+   * Optional twice over: only charging hits carry it at all, and OSM knows a socket type
+   * for roughly a third of them, a capacity for about seven in ten. "Not stated" is its
+   * own answer here and must not be read as a no.
+   */
+  charging?: {
+    sockets: { type: string; count: number | null; kw: number | null }[]
+    capacity: number | null
+    fee: boolean | null
+  } | null
+  source: string
+  pluginId?: string
+  rating?: number | null
 }

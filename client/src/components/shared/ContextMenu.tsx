@@ -14,15 +14,17 @@ interface MenuState {
   x: number;
   y: number;
   items: MenuItem[];
+  alignEnd?: boolean;
 }
 
 export function useContextMenu() {
   const [menu, setMenu] = useState<MenuState | null>(null);
 
-  const open = (e: React.MouseEvent, items: MenuItem[]) => {
+  const open = (e: React.MouseEvent, items: MenuItem[], alignEnd = false) => {
     e.preventDefault();
     e.stopPropagation();
-    setMenu({ x: e.clientX, y: e.clientY, items });
+    const anchor = alignEnd ? e.currentTarget.getBoundingClientRect() : { right: e.clientX, bottom: e.clientY };
+    setMenu({ x: alignEnd ? anchor.right : e.clientX, y: alignEnd ? anchor.bottom + 6 : e.clientY, items, alignEnd });
   };
 
   const close = () => setMenu(null);
@@ -54,6 +56,7 @@ export function ContextMenu({ menu, onClose }: ContextMenuProps) {
     const el = ref.current;
     const rect = el.getBoundingClientRect();
     let { x, y } = menu;
+    if (menu.alignEnd) x = Math.max(8, x - rect.width);
     if (x + rect.width > window.innerWidth - 8) x = window.innerWidth - rect.width - 8;
     if (y + rect.height > window.innerHeight - 8) y = window.innerHeight - rect.height - 8;
     if (x !== menu.x || y !== menu.y) {
@@ -81,8 +84,10 @@ export function ContextMenu({ menu, onClose }: ContextMenuProps) {
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         minWidth: 160,
+        width: menu.alignEnd ? 'max-content' : undefined,
+        whiteSpace: menu.alignEnd ? 'nowrap' : undefined,
         fontFamily: 'var(--font-system)',
-        transformOrigin: 'top left',
+        transformOrigin: menu.alignEnd ? 'top right' : 'top left',
       }}
     >
       {menu.items.filter(Boolean).map((item, i) => {

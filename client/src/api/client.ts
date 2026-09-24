@@ -1247,7 +1247,7 @@ export const accommodationsApi = {
   list: (tripId: number | string) => apiClient.get(`/trips/${tripId}/accommodations`).then(r => r.data),
   create: (tripId: number | string, data: AccommodationCreateRequest) => apiClient.post(`/trips/${tripId}/accommodations`, data).then(r => r.data),
   update: (tripId: number | string, id: number, data: AccommodationUpdateRequest) => apiClient.put(`/trips/${tripId}/accommodations/${id}`, data).then(r => r.data),
-  delete: (tripId: number | string, id: number) => apiClient.delete(`/trips/${tripId}/accommodations/${id}`).then(r => r.data),
+  delete: (tripId: number | string, id: number, opts?: { keepStop?: boolean }) => apiClient.delete(`/trips/${tripId}/accommodations/${id}`, opts?.keepStop ? { params: { keepStop: 'true' } } : undefined).then(r => r.data),
 }
 
 export const dayNotesApi = {

@@ -47,8 +47,14 @@ export const assignmentSchema = z.object({
   // not a place (booking arrival / morning hotel). null = inherit the day default.
   // Inert when the previous timeline element is a place.
   incoming_leg_transport_mode: z.string().nullable().optional(),
+  end_day: z.boolean().optional(),
   participants: z.array(assignmentParticipantSchema).optional(),
   created_at: z.string().optional(),
+  // The lodging booking that put this stop on the day, when one did. The day
+  // planner already shows that booking as its own overnight block, so it hides
+  // this row and leaves it to road trip mode, which is the view that needs the
+  // hotel in the driving chain. Null for every stop a traveller placed.
+  accommodation_id: z.number().nullable().optional(),
   place: assignmentPlaceSchema,
 });
 export type Assignment = z.infer<typeof assignmentSchema>;
@@ -77,6 +83,11 @@ export const assignmentTimeRequestSchema = z.object({
   end_time: z.string().nullable().optional(),
 });
 export type AssignmentTimeRequest = z.infer<typeof assignmentTimeRequestSchema>;
+
+export const assignmentEndDayRequestSchema = z.object({
+  end_day: z.boolean(),
+});
+export type AssignmentEndDayRequest = z.infer<typeof assignmentEndDayRequestSchema>;
 
 /**
  * PUT /:id/notes (#2163) — edit the per-assignment note after creation.

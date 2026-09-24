@@ -3,6 +3,7 @@ import { pluginsApi, mapsApi } from '../../api/client'
 import type { DistanceUnit, RouteResult, RouteSegment, RouteWithLegs, Waypoint, RouteAnchors } from '../../types'
 import { formatDistance } from '../../utils/units'
 import { wgs84ToGcj02 } from './engines/amap'
+import type { AvoidClass } from './valhallaRoute'
 
 const OSRM_BASE = 'https://router.project-osrm.org/route/v1'
 
@@ -343,7 +344,14 @@ export async function calculateSegments(
  */
 export async function calculateRouteWithLegs(
   waypoints: Waypoint[],
-  { signal, profile = 'driving', tripId, dayId }: { signal?: AbortSignal; profile?: RouteProfileKey; tripId?: number | string | null; dayId?: number | null } = {}
+  { signal, profile = 'driving', tripId, dayId, avoid = [] }: {
+    signal?: AbortSignal
+    profile?: RouteProfileKey
+    tripId?: number | string | null
+    dayId?: number | null
+    /** Road classes to weight away. Only the driving profile has any, and only Valhalla can. */
+    avoid?: readonly AvoidClass[]
+  } = {}
 ): Promise<RouteWithLegs> {
   if (!waypoints || waypoints.length < 2) {
     return { coordinates: [], distance: 0, duration: 0, legs: [] }
@@ -499,7 +507,23 @@ export interface RouteAlternative {
   coordinates: [number, number][]
   distance: number
   duration: number
+  /** Where this route differs most from the first one — the point that would pin it. */
   divergence: { lat: number; lng: number } | null
+  /** Set when this way exists because a road class was left out of it. */
+  avoids?: AvoidClass
+  /**
+   * Which engine priced this route, when it was not the one that priced the rest.
+   *
+   * Absent for everything OSRM answered, which is every route in a list except the
+   * avoidance offer on a default install. It exists because the two engines do not
+   * agree on speed: measured over twelve European legs the per-leg drive times run
+   * from 14.7 % under OSRM's to 13.2 % over, and the sign depends on the region:
+   * Valhalla is faster on Spanish autovía and slower through a city. So a figure from
+   * one of them subtracted from a figure from the other is not a difference in
+   * driving time, it is the gap between two speed models, and the reader has no way
+   * of telling the two apart.
+   */
+  engine?: 'valhalla'
 }
 
 export async function calculateAlternatives(

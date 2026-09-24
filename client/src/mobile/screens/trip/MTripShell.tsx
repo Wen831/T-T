@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { findEntryDayId, findFocusDayId } from '../../../components/Planner/today';
+import type { CorridorReach } from '../../../components/Roadtrip/corridorSearchModel';
 import { dayTintBackground, usePluginDayTints } from '../../../components/Plugins/PluginDaySchedule';
 import { useTripPlanner } from '../../../pages/tripPlanner/useTripPlanner';
 import { useTripStore } from '../../../store/tripStore';
@@ -52,6 +53,8 @@ export type MTripView = 'plan' | 'map';
 export type MTripMode = 'go' | 'edit' | 'browse';
 export type MTripListsTab = 'packing' | 'todo';
 export type MTripCollabTab = 'chat' | 'notes' | 'polls';
+/** The road trip tab's own list ⇄ map switch, independent of `view`. */
+export type MRtView = 'list' | 'map';
 
 /**
  * Currently open bottom/floating sheet. Well-known ids (owned by the sheets
@@ -76,6 +79,19 @@ export interface MTripSheetState {
 export interface MTripShellApi {
   /** 'plan' = list chrome, 'map' = fullscreen map. Plan tab only. */
   view: MTripView;
+  /** The road trip tab's own list ⇄ map switch, independent of `view`. */
+  rtView: MRtView;
+  /** Road trip tab: chain ⇄ map, on the same instance, without moving the camera. */
+  toggleRtView: () => void;
+  /**
+   * How much of the stage the corridor search asks about.
+   *
+   * Shell state rather than sheet state, because two surfaces ask the same question:
+   * the bar over the stage says what the next search will cover, and the sheet is where
+   * it is chosen. Kept here they cannot disagree, and it survives the sheet closing.
+   */
+  rtReach: CorridorReach;
+  setRtReach: (value: CorridorReach) => void;
   /** Travel/Plan/Places segment: go | edit | browse. */
   mode: MTripMode;
   /** Legacy tab ids: plan · transports · buchungen · listen · finanzplan · dateien · collab · plugin:* */
@@ -200,6 +216,8 @@ export default function MTripShell({
   const dayTints = usePluginDayTints(tripId);
 
   const [view, setView] = useState<MTripView>('plan');
+  const [rtView, setRtView] = useState<MRtView>('list');
+  const [rtReach, setRtReach] = useState<CorridorReach>('ahead');
   const [mode, setMode] = useState<MTripMode>('go');
   const [browseFromEdit, setBrowseFromEdit] = useState(false);
   const [sheet, setSheet] = useState<MTripSheetState | null>(null);
@@ -346,6 +364,21 @@ export default function MTripShell({
     }
   };
 
+  /**
+   * Road trip tab: chain ⇄ map, on the same instance and without moving the camera.
+   *
+   * Unlike `toggleView` this deliberately does not reframe: the stage is one day, the
+   * chain and the map show the same one, and the camera belongs to whoever looked at it
+   * last. Only entering the map asks for the route to be drawn if nothing has been.
+   */
+  const toggleRtView = () => {
+    setRtView(prev => {
+      const next = prev === 'list' ? 'map' : 'list';
+      if (next === 'map') planner.autoShowRoute();
+      return next;
+    });
+  };
+
   const setListsTab = (tab: MTripListsTab) => {
     setListsTabState(tab);
     sessionStorage.setItem(`trip-lists-subtab-${tripId}`, tab);
@@ -356,6 +389,10 @@ export default function MTripShell({
 
   const shell: MTripShellApi = {
     view,
+    rtView,
+    toggleRtView,
+    rtReach,
+    setRtReach,
     mode,
     trTab,
     setTrTab,

@@ -178,6 +178,24 @@ export interface Settings {
   llm_api_key?: string;
   /** Per-user appearance/customization config (theming, transparency, typography, dashboard widgets). */
   appearance?: AppearanceConfig;
+  roadtrip_leg_minutes?: number;
+  roadtrip_day_minutes?: number;
+  roadtrip_day_start?: string;
+  roadtrip_day_end?: string;
+  roadtrip_day_end_mode?: 'route' | 'stop';
+  roadtrip_range_km?: number;
+  roadtrip_avoid?: string;
+  roadtrip_vehicle?: string;
+  roadtrip_connect_days?: boolean;
+  roadtrip_day_colors?: boolean;
+  roadtrip_fill_percent?: number;
+  roadtrip_tank_litres?: number;
+  roadtrip_litres_per_100?: number;
+  roadtrip_battery_kwh?: number;
+  roadtrip_kwh_per_100?: number;
+  roadtrip_battery_degradation?: number;
+  valhalla_base_url?: string;
+  routing_base_url?: string;
 }
 
 export interface AssignmentsMap {
@@ -211,7 +229,17 @@ export interface RouteVia {
   label?: string;
   tone: 'default' | 'success' | 'warn' | 'danger';
   dwellSeconds?: number;
+  hoverCard?: boolean;
+  nightPause?: { day: number; atPlace: boolean; position?: number; manual?: boolean; minPosition?: number; maxPosition?: number };
 }
+
+export interface SnappedWaypoint {
+  asked: [number, number];
+  at: [number, number];
+  meters: number;
+}
+
+export type RouteAvoidClass = 'motorway' | 'toll' | 'ferry';
 
 export interface RouteWithLegs {
   coordinates: [number, number][];
@@ -220,6 +248,8 @@ export interface RouteWithLegs {
   legs: RouteSegment[];
   /** Present on plugin-provided routes only. */
   vias?: RouteVia[];
+  snapped?: SnappedWaypoint[];
+  avoidance?: { asked: RouteAvoidClass[]; achieved: RouteAvoidClass[] };
 }
 
 export interface RouteResult {
