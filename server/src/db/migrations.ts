@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readEnv } from '../app-config';
 import { encrypt_api_key } from '../nest/common/crypto/apiKeyCrypto';
+import { ROADTRIP_PREFERENCE_KEYS } from '@trek/shared';
+import { seedDocumentProviders } from './document-provider-seed';
 
 import Database from 'better-sqlite3';
 import fs from 'fs';
@@ -4407,6 +4409,288 @@ function runMigrations(db: Database.Database): void {
       if (cleared.changes > 0) {
         console.log(`[DB] Cleared ${cleared.changes} hotlinked AMap CDN image_url(s)`);
       }
+    },
+
+    /* ========================================================================
+     * TT port of upstream TREK 4.3.0 migrations, appended below in upstream
+     * order. The array is index-addressed against schema_version, so nothing
+     * above this line may move, change, or be deleted — existing databases
+     * have already run those steps at their historical positions.
+     * ====================================================================== */
+
+    /* ===== TT port: upstream v4.3.0 migration #208 (appended) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS roadtrip_vias (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          day_id INTEGER NOT NULL REFERENCES days(id) ON DELETE CASCADE,
+          after_order_index INTEGER NOT NULL,
+          sequence INTEGER NOT NULL DEFAULT 0,
+          lat REAL NOT NULL,
+          lng REAL NOT NULL,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_roadtrip_vias_day ON roadtrip_vias(day_id, after_order_index, sequence)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #209 (appended) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS roadtrip_day_tracks (
+          day_id INTEGER PRIMARY KEY REFERENCES days(id) ON DELETE CASCADE,
+          place_id INTEGER NOT NULL REFERENCES places(id) ON DELETE CASCADE,
+          stray_km REAL,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_roadtrip_day_tracks_place ON roadtrip_day_tracks(place_id)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #215 (appended) ===== */
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('places')").all() as Array<{ name: string }>;
+      if (!cols.some(c => c.name === 'fill_percent')) {
+        db.exec('ALTER TABLE places ADD COLUMN fill_percent INTEGER');
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #217 (appended) ===== */
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('day_assignments')").all() as Array<{ name: string }>;
+      if (!cols.some(c => c.name === 'end_day')) {
+        db.exec('ALTER TABLE day_assignments ADD COLUMN end_day INTEGER NOT NULL DEFAULT 0');
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #218 (appended) ===== */
+    () => {
+      db.exec(`CREATE TABLE IF NOT EXISTS roadtrip_day_boundaries (
+        trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+        day_number INTEGER NOT NULL CHECK (day_number BETWEEN 1 AND 366),
+        from_assignment_id INTEGER NOT NULL REFERENCES day_assignments(id) ON DELETE CASCADE,
+        to_assignment_id INTEGER REFERENCES day_assignments(id) ON DELETE CASCADE,
+        fraction REAL NOT NULL CHECK (fraction BETWEEN 0 AND 1),
+        PRIMARY KEY (trip_id, day_number)
+      )`);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #219 (appended) ===== */
+    () => {
+      db.exec('CREATE TABLE IF NOT EXISTS roadtrip_preferences (trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE, key TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY (trip_id, key))');
+      const inherit = db.prepare('INSERT OR IGNORE INTO roadtrip_preferences (trip_id, key, value) SELECT t.id, s.key, s.value FROM trips t JOIN settings s ON s.user_id = t.user_id WHERE s.key = ? AND s.value IS NOT NULL');
+      for (const key of ROADTRIP_PREFERENCE_KEYS) inherit.run(key);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #241 (appended) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE roadtrip_day_boundaries_new (
+          trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+          day_number INTEGER NOT NULL CHECK (day_number >= 1),
+          from_assignment_id INTEGER NOT NULL REFERENCES day_assignments(id) ON DELETE CASCADE,
+          to_assignment_id INTEGER REFERENCES day_assignments(id) ON DELETE CASCADE,
+          fraction REAL NOT NULL CHECK (fraction BETWEEN 0 AND 1),
+          PRIMARY KEY (trip_id, day_number)
+        );
+        INSERT INTO roadtrip_day_boundaries_new
+          SELECT trip_id, day_number, from_assignment_id, to_assignment_id, fraction FROM roadtrip_day_boundaries;
+        DROP TABLE roadtrip_day_boundaries;
+        ALTER TABLE roadtrip_day_boundaries_new RENAME TO roadtrip_day_boundaries;
+      `);
+    },
+
+    /* ===== TT port: upstream v4.3.0 migration #222 (appended; dawarich) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS dawarich_connections (
+          user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          url TEXT,
+          api_key TEXT,
+          allow_insecure_tls INTEGER NOT NULL DEFAULT 0,
+          sync_enabled INTEGER NOT NULL DEFAULT 1,
+          last_sync_at TEXT,
+          last_sync_state TEXT NOT NULL DEFAULT 'never',
+          last_sync_error TEXT,
+          capabilities TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #223 (appended; dawarich) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS dawarich_visit_suggestions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          source_visit_id TEXT NOT NULL,
+          trip_id INTEGER REFERENCES trips(id) ON DELETE SET NULL,
+          name TEXT NOT NULL,
+          lat REAL,
+          lng REAL,
+          started_at TEXT NOT NULL,
+          ended_at TEXT NOT NULL,
+          duration_minutes INTEGER NOT NULL DEFAULT 0,
+          local_date TEXT NOT NULL,
+          source_status TEXT NOT NULL DEFAULT 'suggested',
+          confidence REAL,
+          confidence_band TEXT,
+          country_code TEXT,
+          state TEXT NOT NULL DEFAULT 'new',
+          target TEXT,
+          accepted_place_id INTEGER REFERENCES places(id) ON DELETE SET NULL,
+          accepted_journal_entry_id INTEGER,
+          accepted_bucket_list_item_id INTEGER REFERENCES bucket_list(id) ON DELETE SET NULL,
+          matched_bucket_list_item_id INTEGER REFERENCES bucket_list(id) ON DELETE SET NULL,
+          source_hash TEXT NOT NULL,
+          accepted_hash TEXT,
+          source_missing_at TEXT,
+          first_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(user_id, source_visit_id)
+        )
+      `);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_dawarich_suggestions_user_state ON dawarich_visit_suggestions(user_id, state)');
+      db.exec('CREATE INDEX IF NOT EXISTS idx_dawarich_suggestions_trip ON dawarich_visit_suggestions(trip_id)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #224 (appended; dawarich) ===== */
+    () => {
+      const hasVisitedAt = db.prepare("SELECT 1 FROM pragma_table_info('bucket_list') WHERE name = 'visited_at'").get();
+      if (!hasVisitedAt) db.exec('ALTER TABLE bucket_list ADD COLUMN visited_at TEXT');
+      const hasVisitedSource = db.prepare("SELECT 1 FROM pragma_table_info('bucket_list') WHERE name = 'visited_source'").get();
+      if (!hasVisitedSource) db.exec('ALTER TABLE bucket_list ADD COLUMN visited_source TEXT');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #225 (appended; dawarich) ===== */
+    () => {
+      const hasSource = db.prepare("SELECT 1 FROM pragma_table_info('visited_countries') WHERE name = 'source'").get();
+      if (!hasSource) db.exec("ALTER TABLE visited_countries ADD COLUMN source TEXT NOT NULL DEFAULT 'manual'");
+    },
+    /* ===== TT port: upstream v4.3.0 migration #227 (appended; dawarich) ===== */
+    () => {
+      const hasSource = db.prepare("SELECT 1 FROM pragma_table_info('places') WHERE name = 'source'").get();
+      if (!hasSource) db.exec('ALTER TABLE places ADD COLUMN source TEXT');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #236 (appended; doc-sync) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS document_providers (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT,
+          icon TEXT DEFAULT 'FileText',
+          enabled INTEGER DEFAULT 0,
+          sort_order INTEGER DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS document_provider_fields (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          provider_id TEXT NOT NULL REFERENCES document_providers(id) ON DELETE CASCADE,
+          field_key TEXT NOT NULL,
+          label TEXT NOT NULL,
+          input_type TEXT NOT NULL DEFAULT 'text',
+          placeholder TEXT,
+          hint TEXT,
+          required INTEGER DEFAULT 0,
+          secret INTEGER DEFAULT 0,
+          sort_order INTEGER DEFAULT 0,
+          UNIQUE(provider_id, field_key)
+        );
+      `);
+      seedDocumentProviders(db);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #237 (appended; doc-sync) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS document_connections (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+          provider_id TEXT NOT NULL REFERENCES document_providers(id) ON DELETE CASCADE,
+          owner_user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          base_url TEXT NOT NULL,
+          secrets TEXT,
+          settings TEXT NOT NULL DEFAULT '{}',
+          allow_insecure_tls INTEGER NOT NULL DEFAULT 0,
+          capabilities TEXT,
+          last_probe_at TEXT,
+          last_probe_state TEXT NOT NULL DEFAULT 'never',
+          last_probe_error TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(trip_id, provider_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_document_connections_trip ON document_connections(trip_id);
+        CREATE INDEX IF NOT EXISTS idx_document_connections_owner ON document_connections(owner_user_id);
+
+        CREATE TABLE IF NOT EXISTS trip_document_links (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+          connection_id INTEGER NOT NULL REFERENCES document_connections(id) ON DELETE CASCADE,
+          provider_id TEXT NOT NULL,
+          remote_scope_key TEXT NOT NULL,
+          remote_root_id TEXT,
+          remote_root_path TEXT,
+          remote_label TEXT NOT NULL DEFAULT '',
+          direction TEXT NOT NULL DEFAULT 'both',
+          delete_policy TEXT NOT NULL DEFAULT 'unlink',
+          conflict_policy TEXT NOT NULL DEFAULT 'manual',
+          sync_enabled INTEGER NOT NULL DEFAULT 1,
+          webhook_token TEXT,
+          webhook_secret TEXT,
+          webhook_subscription_id TEXT,
+          remote_cursor TEXT,
+          last_sync_at TEXT,
+          last_sync_state TEXT NOT NULL DEFAULT 'never',
+          last_sync_error TEXT,
+          failure_count INTEGER NOT NULL DEFAULT 0,
+          next_attempt_at TEXT,
+          created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(trip_id, connection_id, remote_scope_key)
+        );
+        CREATE INDEX IF NOT EXISTS idx_trip_document_links_trip ON trip_document_links(trip_id);
+        CREATE INDEX IF NOT EXISTS idx_trip_document_links_due ON trip_document_links(sync_enabled, next_attempt_at);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_trip_document_links_token
+          ON trip_document_links(webhook_token) WHERE webhook_token IS NOT NULL;
+      `);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #238 (appended; doc-sync) ===== */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS document_sync_items (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          link_id INTEGER NOT NULL REFERENCES trip_document_links(id) ON DELETE CASCADE,
+          trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+          file_id INTEGER REFERENCES trip_files(id) ON DELETE SET NULL,
+          trek_doc_uid TEXT NOT NULL,
+          remote_id TEXT,
+          remote_name TEXT,
+          remote_version TEXT,
+          remote_size INTEGER,
+          remote_modified_at TEXT,
+          content_sha256 TEXT,
+          pushed_sha256 TEXT,
+          state TEXT NOT NULL DEFAULT 'pending',
+          error_code TEXT,
+          attempts INTEGER NOT NULL DEFAULT 0,
+          next_attempt_at TEXT,
+          remote_missing_at TEXT,
+          first_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          synced_at TEXT
+        );
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_document_sync_items_remote
+          ON document_sync_items(link_id, remote_id) WHERE remote_id IS NOT NULL;
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_document_sync_items_file
+          ON document_sync_items(link_id, file_id) WHERE file_id IS NOT NULL;
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_document_sync_items_uid
+          ON document_sync_items(link_id, trek_doc_uid);
+        CREATE INDEX IF NOT EXISTS idx_document_sync_items_trip_state ON document_sync_items(trip_id, state);
+        CREATE INDEX IF NOT EXISTS idx_document_sync_items_hash ON document_sync_items(link_id, content_sha256);
+        CREATE INDEX IF NOT EXISTS idx_document_sync_items_due ON document_sync_items(link_id, next_attempt_at);
+      `);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #239 (appended; doc-sync) ===== */
+    () => {
+      const hasColumn = db
+        .prepare("SELECT 1 FROM pragma_table_info('document_sync_items') WHERE name = 'remote_trashed_at'")
+        .get();
+      if (!hasColumn) db.exec('ALTER TABLE document_sync_items ADD COLUMN remote_trashed_at TEXT');
     },
   ];
 

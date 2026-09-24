@@ -1,3 +1,6 @@
+import { roadtripDayBoundaryListSchema } from '../roadtrip/day-boundary.schema';
+import { roadtripPreferencesSchema } from '../roadtrip/preferences.schema';
+
 import { z } from 'zod';
 
 /**
@@ -91,6 +94,26 @@ export const TREK_WS_EVENTS = {
     scope: 'trip',
     payload: z.union([z.object({ orderedIds: idList }), z.object({ day: entity })]),
   },
+
+  // ── Road trip ────────────────────────────────────────────────────────────
+  // The points a drive is routed through, and the tracks a day follows. Broadcast in one
+  // event carrying the day's whole list rather than one event per point: a via has no
+  // identity anyone reads, the client keeps them per day anyway, and a drag is a rapid
+  // burst of writes whose only interesting state is the one that lands last.
+  //
+  // These used to be silent, on the reasoning that a via is how one person draws a route
+  // rather than a change to the itinerary everybody reads. That does not hold: two people
+  // planning a road trip see the same line on the same map, and a reshaped drive changes
+  // every arrival time after it. (TT port of upstream 4.3.0)
+  'roadtripVia:changed': {
+    scope: 'trip',
+    payload: z.object({ dayId: id, vias: z.array(entity) }),
+  },
+  'roadtripTrack:changed': {
+    scope: 'trip',
+    payload: z.object({ dayId: id, track: entity.nullable() }),
+  },
+  'roadtripBoundary:changed': { scope: 'trip', payload: roadtripDayBoundaryListSchema },
 
   // ── Day notes ────────────────────────────────────────────────────────────
   'dayNote:created': { scope: 'trip', payload: z.object({ dayId: id, note: entity }) },
@@ -210,6 +233,15 @@ export const TREK_WS_EVENTS = {
   'file:created': { scope: 'trip', payload: z.object({ file: entity }) },
   'file:updated': { scope: 'trip', payload: z.object({ file: entity }) },
   'file:deleted': { scope: 'trip', payload: z.object({ fileId: id }) },
+  // A sync run moved documents. Also sent, with both counts at zero, when a
+  // binding is created or removed or its connection is deleted. Carries counts
+  // rather than the documents themselves: the client already learns about each
+  // one through file:created, and this is what tells the sync panel to refresh
+  // its status line. (TT port of upstream 4.3.0)
+  'docsync:changed': {
+    scope: 'trip',
+    payload: z.object({ linkId: id, pulled: z.number(), pushed: z.number() }),
+  },
 
   // ── Collab ───────────────────────────────────────────────────────────────
   'collab:note:created': { scope: 'trip', payload: z.object({ note: entity }) },
@@ -231,6 +263,8 @@ export const TREK_WS_EVENTS = {
 
   // ── Memories ─────────────────────────────────────────────────────────────
   'memories:updated': { scope: 'trip', payload: z.object({ userId: id }) },
+
+  'roadtripPreferences:changed': { scope: 'trip', payload: z.object({ preferences: roadtripPreferencesSchema }) },
 
   // ── Notifications (user-scoped) ──────────────────────────────────────────
   'notification:new': { scope: 'user', payload: z.object({ notification: entity }) },

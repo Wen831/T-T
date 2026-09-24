@@ -31,11 +31,14 @@ export * from './reservation/reservation.schema';
 export * from './reservation/ki-reservation.schema';
 export * from './datetime/datetime-normalize';
 export * from './airtrail/airtrail.schema';
+export * from './dawarich/dawarich.schema';
+export * from './docsync/docsync.schema';
 export * from './day/day.schema';
 export * from './day/note-colors';
 export * from './assignment/assignment.schema';
 export * from './place/place.schema';
 export * from './place/place-match';
+export * from './roadtrip/roadtrip.schema';
 export * from './place/track-colors';
 export * from './collection/collection.schema';
 export * from './trip/trip.schema';
@@ -59,6 +62,7 @@ export * from './tunnel/tunnel.schema';
 
 // Realtime WS event contract registry (event names + payload schemas)
 export * from './realtime/events.schema';
+export * from './roadtrip/day-boundary.schema';
 
 // Sanitisation helpers — used by the client today, scoped here so the server
 // has them ready if rich-text input ever ships.
@@ -73,3 +77,12 @@ export * from './i18n/languages';
 export * from './plugin-permissions';
 // Plugin settings contracts: the settings-field descriptor + admin instance-config wire shapes.
 export * from './plugins/plugins.schema';
+
+// Road trip mode contracts (TT port of upstream 4.3.0): per-trip preference,
+// hazard, planning, search, Google-route import and charging schemas.
+export * from './roadtrip/preferences.schema';
+export * from './roadtrip/hazards.schema';
+export * from './roadtrip/planning.schema';
+export * from './roadtrip/search.schema';
+export * from './roadtrip/google-import.schema';
+export * from './roadtrip/charging.schema';

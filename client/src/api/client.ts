@@ -63,6 +63,9 @@ import {
   type PluginActionDescriptor,
   type PluginActionResult,
   type PluginInstallRequest,
+  type RoadtripVia, type RoadtripDayTrack,
+  type RoadtripViaCreateRequest, type RoadtripViaBatchRequest,
+  type RoadtripViaReanchorRequest, type RoadtripViaUpdateRequest,
 } from '@trek/shared'
 
 /** One trip inside a TREK backup, as listed by the import preview. */
@@ -1388,6 +1391,63 @@ export const activitiesApi = {
     apiClient.post(`/activities/day/${dayId}/reorder`, { activity_ids: activityIds }).then(r => r.data),
   move: (id: number, data: { day_id: number; order_index?: number }) =>
     apiClient.post(`/activities/${id}/move`, data).then(r => r.data),
+}
+
+// ── Road trip mode (TT port of upstream 4.3.0) ──────────────────────────────
+export const roadtripApi = {
+  /** Every via of the trip, so all days can be routed without a request per day. */
+  listVias: (tripId: number | string) =>
+    apiClient.get(`/trips/${tripId}/roadtrip/vias`).then(r => r.data as { vias: RoadtripVia[]; tracks: RoadtripDayTrack[] }),
+  addVia: (tripId: number | string, dayId: number | string, body: RoadtripViaCreateRequest) =>
+    apiClient.post(`/trips/${tripId}/roadtrip/days/${dayId}/vias`, body).then(r => r.data as { via: RoadtripVia }),
+  /**
+   * Lay a chain of vias on one day in one write. Anything that derives its anchors from a
+   * line produces dozens of them, and one request each would re-route the whole trip once
+   * per point at better than a second apart.
+   */
+  addVias: (tripId: number | string, dayId: number | string, body: RoadtripViaBatchRequest) =>
+    apiClient.post(`/trips/${tripId}/roadtrip/days/${dayId}/vias/batch`, body).then(r => r.data as { vias: RoadtripVia[] }),
+  /**
+   * Re-pin a day's vias in one write, after its stops changed shape. One request, not one
+   * per via: the anchors are only correct as a set.
+   */
+  reanchorVias: (tripId: number | string, dayId: number | string, body: RoadtripViaReanchorRequest) =>
+    apiClient.put(`/trips/${tripId}/roadtrip/days/${dayId}/vias`, body).then(r => r.data as { vias: RoadtripVia[] }),
+  moveVia: (tripId: number | string, dayId: number | string, id: number, body: RoadtripViaUpdateRequest) =>
+    apiClient.put(`/trips/${tripId}/roadtrip/days/${dayId}/vias/${id}`, body).then(r => r.data as { via: RoadtripVia }),
+  removeVia: (tripId: number | string, dayId: number | string, id: number) =>
+    apiClient.delete(`/trips/${tripId}/roadtrip/days/${dayId}/vias/${id}`).then(r => r.data),
+}
+
+// ── Document sync (TT port of upstream 4.3.0) ───────────────────────────────
+// A longer timeout than the shared 8 s for the routes that wait on somebody
+// else's service: listing scopes walks a provider's tree, and a sync run moves
+// every file it touches.
+export const DOCSYNC_UPSTREAM_TIMEOUT_MS = 60_000
+export const DOCSYNC_RUN_TIMEOUT_MS = 600_000
+const docsyncUpstream = { timeout: DOCSYNC_UPSTREAM_TIMEOUT_MS }
+const docsyncRun = { timeout: DOCSYNC_RUN_TIMEOUT_MS }
+export const docsyncApi = {
+  providers: (tripId: number | string) => apiClient.get(`/trips/${tripId}/docsync/providers`).then(r => r.data),
+  status: (tripId: number | string) => apiClient.get(`/trips/${tripId}/docsync/status`).then(r => r.data),
+  listConnections: (tripId: number | string) => apiClient.get(`/trips/${tripId}/docsync/connections`).then(r => r.data),
+  saveConnection: (tripId: number | string, data: unknown) => apiClient.put(`/trips/${tripId}/docsync/connections`, data).then(r => r.data),
+  testConnection: (tripId: number | string, data: unknown) => apiClient.post(`/trips/${tripId}/docsync/connections/test`, data, docsyncUpstream).then(r => r.data),
+  deleteConnection: (tripId: number | string, connectionId: number) => apiClient.delete(`/trips/${tripId}/docsync/connections/${connectionId}`).then(r => r.data),
+  listScopes: (tripId: number | string, connectionId: number, q?: string) =>
+    apiClient.get(`/trips/${tripId}/docsync/connections/${connectionId}/scopes`, { params: q ? { q } : {}, ...docsyncUpstream }).then(r => r.data),
+  createScope: (tripId: number | string, connectionId: number, name: string) =>
+    apiClient.post(`/trips/${tripId}/docsync/connections/${connectionId}/scopes`, { name }, docsyncUpstream).then(r => r.data),
+  listLinks: (tripId: number | string) => apiClient.get(`/trips/${tripId}/docsync/links`).then(r => r.data),
+  createLink: (tripId: number | string, data: unknown) => apiClient.post(`/trips/${tripId}/docsync/links`, data, docsyncUpstream).then(r => r.data),
+  updateLink: (tripId: number | string, linkId: number, data: unknown) => apiClient.patch(`/trips/${tripId}/docsync/links/${linkId}`, data).then(r => r.data),
+  deleteLink: (tripId: number | string, linkId: number) => apiClient.delete(`/trips/${tripId}/docsync/links/${linkId}`, docsyncUpstream).then(r => r.data),
+  syncNow: (tripId: number | string, linkId: number, full = false) =>
+    apiClient.post(`/trips/${tripId}/docsync/links/${linkId}/sync`, { full }, docsyncRun).then(r => r.data),
+  items: (tripId: number | string, state?: string) =>
+    apiClient.get(`/trips/${tripId}/docsync/items`, { params: state ? { state } : {} }).then(r => r.data),
+  resolve: (tripId: number | string, itemId: number, keep: 'trek' | 'provider' | 'both') =>
+    apiClient.post(`/trips/${tripId}/docsync/items/${itemId}/resolve`, { keep }, docsyncRun).then(r => r.data),
 }
 
 export default apiClient

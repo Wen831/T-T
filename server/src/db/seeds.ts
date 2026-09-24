@@ -1,5 +1,6 @@
 import { readEnv } from '../app-config';
 import { encrypt_api_key } from '../nest/common/crypto/apiKeyCrypto';
+import { seedDocumentProviders } from './document-provider-seed';
 
 import Database from 'better-sqlite3';
 import crypto from 'crypto';
@@ -245,6 +246,25 @@ function seedAddons(db: Database.Database): void {
         enabled: 0,
         sort_order: 16,
       },
+      {
+        id: 'roadtrip',
+        name: 'Road trip',
+        description: 'Drives with stops along the route, driving times, and arrival times that update themselves',
+        type: 'trip',
+        icon: 'Route',
+        enabled: 0,
+        sort_order: 7,
+      },
+      {
+        id: 'dawarich',
+        name: 'Dawarich',
+        description:
+          'Read visits and recorded routes from your Dawarich instance — suggested journal entries, places and countries you confirm yourself',
+        type: 'integration',
+        icon: 'Dawarich',
+        enabled: 0,
+        sort_order: 17,
+      },
     ];
     const insertAddon = db.prepare(
       'INSERT OR IGNORE INTO addons (id, name, description, type, icon, enabled, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -386,6 +406,13 @@ function seedAddons(db: Database.Database): void {
         f.sort_order,
       );
     }
+
+    // Document providers live in their own pair of tables (see the migration
+    // for why they are not a `kind` column on photo_providers). Seeded from the
+    // same helper the migration uses, so a fresh install and an upgraded one
+    // agree.
+    seedDocumentProviders(db);
+
     console.log('Default addons seeded');
   } catch (err: unknown) {
     console.error('Error seeding addons:', err instanceof Error ? err.message : err);

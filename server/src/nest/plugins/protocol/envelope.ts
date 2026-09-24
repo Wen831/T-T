@@ -358,6 +358,9 @@ export const KNOWN_PERMISSIONS = [
   'hook:photo-provider',
   'hook:calendar-source',
   'hook:place-detail-provider',
+  // Search-provider hook (TT port of upstream 4.3.0): a plugin may answer the
+  // road-trip corridor search alongside the core (AMap) search.
+  'hook:search-provider',
   'hook:trip-warning-provider',
   'hook:table-contributor',
   'hook:map-marker-provider',
@@ -430,6 +433,7 @@ export const HOOK_PERMISSION = {
   photoProvider: 'hook:photo-provider',
   calendarSource: 'hook:calendar-source',
   placeDetailProvider: 'hook:place-detail-provider',
+  searchProvider: 'hook:search-provider',
   warningProvider: 'hook:trip-warning-provider',
   tableContributor: 'hook:table-contributor',
   mapMarkerProvider: 'hook:map-marker-provider',

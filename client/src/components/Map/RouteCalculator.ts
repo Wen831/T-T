@@ -6,6 +6,17 @@ import { wgs84ToGcj02 } from './engines/amap'
 
 const OSRM_BASE = 'https://router.project-osrm.org/route/v1'
 
+export class RoutingRefusedError extends Error {
+  constructor(readonly status: number, readonly retryAfterMs: number | null) {
+    super(status === 429 ? 'Routing rate limit reached' : 'Route could not be calculated')
+    this.name = 'RoutingRefusedError'
+  }
+
+  get isRateLimit(): boolean {
+    return this.status === 429 || this.status === 503
+  }
+}
+
 // FOSSGIS hosts OSRM with real per-profile routing (car/foot/bike) — the
 // project-osrm.org demo is car-only (it ignores the profile in the URL). Use
 // the matching profile so walking routes follow footpaths, not the road network.
@@ -482,4 +493,30 @@ function formatDuration(seconds: number): string {
     return `${h} h ${m} min`
   }
   return `${m} min`
+}
+
+export interface RouteAlternative {
+  coordinates: [number, number][]
+  distance: number
+  duration: number
+  divergence: { lat: number; lng: number } | null
+}
+
+export async function calculateAlternatives(
+  from: Waypoint,
+  to: Waypoint,
+  profile: 'driving' | 'walking' | 'cycling' = 'driving',
+  { signal, limit = 3 }: { signal?: AbortSignal; limit?: number } = {},
+): Promise<RouteAlternative[]> {
+  const coords = `${from.lng},${from.lat};${to.lng},${to.lat}`
+  const response = await fetch(`${OSRM_BASE}/${profile}/${coords}?alternatives=${limit}&overview=full&geometries=geojson`, { signal })
+  if (!response.ok) throw new RoutingRefusedError(response.status, null)
+  const data = await response.json()
+  if (data.code !== 'Ok' || !Array.isArray(data.routes)) return []
+  return data.routes.map((route: { geometry?: { coordinates?: [number, number][] }; distance: number; duration: number }) => ({
+    coordinates: (route.geometry?.coordinates ?? []).map(([lng, lat]) => [lat, lng] as [number, number]),
+    distance: route.distance,
+    duration: route.duration,
+    divergence: null,
+  }))
 }

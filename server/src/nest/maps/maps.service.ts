@@ -360,7 +360,9 @@ interface GooglePlaceDetails extends GooglePlaceResult {
 // unbounded body out of memory.
 const MAX_MAPS_PAGE_BYTES = 2_000_000;
 
-const GOOGLE_SHORT_HOSTS = ['goo.gl', 'maps.app.goo.gl'];
+// Exported for the road-trip Google-route import (4.3.0): it applies the same
+// host rules to the link somebody pastes into the planner.
+export const GOOGLE_SHORT_HOSTS = ['goo.gl', 'maps.app.goo.gl'];
 
 /**
  * Google Maps lives on every country domain — google.de, maps.google.co.uk,
@@ -369,7 +371,7 @@ const GOOGLE_SHORT_HOSTS = ['goo.gl', 'maps.app.goo.gl'];
  * labels stay short (2-3 letters, optionally two of them) so that
  * `google.evil.com` is not a Google host.
  */
-function isGoogleMapsHost(hostname: string): boolean {
+export function isGoogleMapsHost(hostname: string): boolean {
   return GOOGLE_SHORT_HOSTS.includes(hostname) || /^(www\.|maps\.)?google\.[a-z]{2,3}(\.[a-z]{2})?$/.test(hostname);
 }
 
@@ -805,6 +807,20 @@ export class MapsService {
 
   getMapsKey(userId: number): string | null {
     return this.resolveMapsKey(userId).key;
+  }
+
+  /**
+   * A coordinate for a name that came out of an import, from whichever source
+   * has it. (TT port of upstream 4.3.0; the upstream TREK-Places branch is not
+   * part of the port, so this resolves through Nominatim only.)
+   *
+   * The Google-route import geocodes every uncoordinated stop of a shared
+   * directions link in one request loop. Never throws: a stop it cannot place
+   * still imports, as a stop without a pin.
+   */
+  async geocodeQuery(query: string): Promise<{ lat: number; lng: number } | null> {
+    const hit = (await this.searchNominatim(query, undefined, 'background'))[0];
+    return hit?.lat != null && hit?.lng != null ? { lat: hit.lat, lng: hit.lng } : null;
   }
 
   // ── Nominatim search ───────────────────────────────────────────────────────
@@ -2346,21 +2362,23 @@ export class MapsService {
     lat: string,
     lng: string,
     lang?: string,
-    opts?: { lane?: GeoLane; timeoutMs?: number },
+    opts?: { lane?: GeoLane; timeoutMs?: number; locality?: boolean },
   ): Promise<{ name: string | null; address: string | null }> {
     const params = new URLSearchParams({
       lat,
       lon: lng,
       format: 'json',
       addressdetails: '1',
-      zoom: '18',
+      zoom: opts?.locality ? '10' : '18',
       'accept-language': toApiLang(lang),
     });
     const response = await nominatimFetch('reverse', params, opts);
     if (!response.ok) return { name: null, address: null };
     const data = (await response.json()) as { name?: string; display_name?: string; address?: Record<string, string> };
     const addr = data.address || {};
-    const name = data.name || addr.tourism || addr.amenity || addr.shop || addr.building || addr.road || null;
+    const name = opts?.locality
+      ? addr.city || addr.town || addr.village || addr.municipality || data.name || null
+      : data.name || addr.tourism || addr.amenity || addr.shop || addr.building || addr.road || null;
     return { name, address: data.display_name || null };
   }
 

@@ -548,13 +548,15 @@ export class AtlasService {
     return new Set(rows.map((r) => r.country_code));
   }
 
-  markCountry(userId: number, code: string): void {
-    this.db.transaction(() => {
-      this.db
-        .prepare('INSERT OR IGNORE INTO visited_countries (user_id, country_code) VALUES (?, ?)')
-        .run(userId, code);
+  markCountry(userId: number, code: string, source: 'manual' | 'dawarich' = 'manual'): boolean {
+    return this.db.transaction(() => {
+      const inserted =
+        this.db
+          .prepare('INSERT OR IGNORE INTO visited_countries (user_id, country_code, source) VALUES (?, ?, ?)')
+          .run(userId, code, source).changes > 0;
       // Marking it visited again lifts a previous removal.
       this.db.prepare('DELETE FROM hidden_countries WHERE user_id = ? AND country_code = ?').run(userId, code);
+      return inserted;
     });
   }
 

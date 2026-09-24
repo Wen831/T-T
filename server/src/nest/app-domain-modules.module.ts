@@ -21,6 +21,8 @@ import { FilesModule } from './files/files.module';
 import { GeoModule } from './geo/geo.module';
 import { HelpModule } from './help/help.module';
 import { AirtrailModule } from './integrations/airtrail.module';
+import { DawarichModule } from './integrations/dawarich.module';
+import { DocSyncModule } from './doc-sync/doc-sync.module';
 import { JourneyModule } from './journey/journey.module';
 import { LlmParseModule } from './llm-parse/llm-parse.module';
 import { ManagedExtModule } from './managed/managed-ext.module';
@@ -38,6 +40,7 @@ import { PluginsModule } from './plugins/plugins.module';
 import { PublicApiModule } from './public-api/public-api.module';
 import { ReservationImportModule } from './reservation-import/reservation-import.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { RoadtripModule } from './roadtrip/roadtrip.module';
 import { SettingsModule } from './settings/settings.module';
 import { ShareModule } from './share/share.module';
 import { StorageModule } from './storage/storage.module';
@@ -77,12 +80,15 @@ import { Module } from '@nestjs/common';
     AccommodationsModule,
     AssignmentsModule,
     PlacesModule,
+    RoadtripModule,
     TripsModule,
     CollabModule,
     FilesModule,
+    DocSyncModule,
     PhotosModule,
     MemoriesModule,
     AirtrailModule,
+    DawarichModule,
     JourneyModule,
     CollectionsModule,
     ShareModule,

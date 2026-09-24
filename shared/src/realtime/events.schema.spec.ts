@@ -116,6 +116,11 @@ const FIXTURES: Record<TrekWsEventName, Record<string, unknown>> = {
   'import:progress': { jobId: 'j1', tripId: 1, status: 'running', done: 1, total: 3, fileName: 'a.pdf' },
   'import:done': { jobId: 'j1', tripId: 1, result: { items: [] } },
   'import:error': { jobId: 'j1', tripId: 1, message: 'boom' },
+  'roadtripVia:changed': { dayId: 2, vias: [] },
+  'roadtripTrack:changed': { dayId: 2, track: null },
+  'roadtripBoundary:changed': { boundaries: [] },
+  'docsync:changed': { linkId: 1, pulled: 0, pushed: 0 },
+  'roadtripPreferences:changed': { preferences: {} },
 };
 
 /** Divergent shapes emitted for the same event today (see DRIFT notes in the registry). */
@@ -136,10 +141,9 @@ const DRIFT_VARIANTS: Partial<Record<TrekWsEventName, Record<string, unknown>[]>
 
 describe('@trek/shared realtime event registry', () => {
   it('WSEVT-REG-001: pins the authoritative inventory counts (66 trip + 32 user = 98)', () => {
-    // 66th trip event: packing:bag-totals (#2191).
-    expect(TREK_WS_TRIP_EVENT_NAMES).toHaveLength(66);
+    expect(TREK_WS_TRIP_EVENT_NAMES).toHaveLength(71);
     expect(TREK_WS_USER_EVENT_NAMES).toHaveLength(32);
-    expect(TREK_WS_EVENT_NAMES).toHaveLength(98);
+    expect(TREK_WS_EVENT_NAMES).toHaveLength(103);
   });
 
   it('WSEVT-REG-002: every name is domain:action shaped and outside the reserved plugin: namespace', () => {
