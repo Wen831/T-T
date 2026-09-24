@@ -677,6 +677,8 @@ export const adminApi = {
   updatePlacesAutocomplete: (enabled: boolean) => apiClient.put('/admin/places-autocomplete', { enabled }).then(r => r.data),
   getPlacesDetails: () => apiClient.get('/admin/places-details').then(r => r.data),
   updatePlacesDetails: (enabled: boolean) => apiClient.put('/admin/places-details', { enabled }).then(r => r.data),
+  getPlaceShadow: () => apiClient.get('/admin/place-shadow').then(r => r.data),
+  updatePlaceShadow: (enabled: boolean) => apiClient.put('/admin/place-shadow', { enabled }).then(r => r.data),
   getPlacesEnrich: () => apiClient.get('/admin/places-enrich').then(r => r.data),
   updatePlacesEnrich: (enabled: boolean) => apiClient.put('/admin/places-enrich', { enabled }).then(r => r.data),
   getAmapSearch: () => apiClient.get('/admin/amap-search').then(r => r.data),

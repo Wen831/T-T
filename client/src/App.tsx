@@ -314,6 +314,7 @@ export default function App() {
     setPlacesAutocompleteEnabled,
     setPlacesDetailsEnabled,
     setPlacesEnrichEnabled,
+    setPlaceShadowEnabled,
   } = useAuthStore();
   const { loadSettings } = useSettingsStore();
   const { loadAddons } = useAddonStore();
@@ -355,6 +356,7 @@ export default function App() {
           places_autocomplete_enabled?: boolean;
           places_details_enabled?: boolean;
           places_enrich_enabled?: boolean;
+          place_shadow_enabled?: boolean;
           permissions?: Record<string, PermissionLevel>;
         }) => {
           setManaged(!!config?.managed);
@@ -375,6 +377,7 @@ export default function App() {
             setPlacesAutocompleteEnabled(config.places_autocomplete_enabled);
           if (config?.places_details_enabled !== undefined) setPlacesDetailsEnabled(config.places_details_enabled);
           if (config?.places_enrich_enabled !== undefined) setPlacesEnrichEnabled(config.places_enrich_enabled);
+          if (config?.place_shadow_enabled !== undefined) setPlaceShadowEnabled(config.place_shadow_enabled);
           if (config?.permissions) usePermissionsStore.getState().setPermissions(config.permissions);
 
           // A version is a short release tag and nothing else. It arrives over the

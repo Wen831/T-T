@@ -99,8 +99,10 @@ export function useAdmin() {
   // Places details
   const [placesDetailsEnabled, setPlacesDetailsEnabledState] = useState<boolean>(true)
   const [placesEnrichEnabled, setPlacesEnrichEnabledState] = useState<boolean>(true)
+  const [placeShadowEnabled, setPlaceShadowEnabledState] = useState<boolean>(false)
   useEffect(() => { adminApi.getPlacesDetails().then(d => setPlacesDetailsEnabledState(d.enabled)).catch(() => {}) }, [])
   useEffect(() => { adminApi.getPlacesEnrich().then(d => setPlacesEnrichEnabledState(d.enabled)).catch(() => {}) }, [])
+  useEffect(() => { adminApi.getPlaceShadow().then(d => setPlaceShadowEnabledState(d.enabled)).catch(() => {}) }, [])
 
   // Collab features
   const [collabFeatures, setCollabFeatures] = useState<{ chat: boolean; notes: boolean; polls: boolean; whatsnext: boolean }>({ chat: true, notes: true, polls: true, whatsnext: true })
@@ -165,7 +167,7 @@ export function useAdmin() {
   const [checkingVersion, setCheckingVersion] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false)
 
-  const { user: currentUser, updateApiKeys, setAppRequireMfa, setTripRemindersEnabled, setPlacesPhotosEnabled, setPlacesAutocompleteEnabled, setPlacesDetailsEnabled, setPlacesEnrichEnabled, logout } = useAuthStore()
+  const { user: currentUser, updateApiKeys, setAppRequireMfa, setTripRemindersEnabled, setPlacesPhotosEnabled, setPlacesAutocompleteEnabled, setPlacesDetailsEnabled, setPlacesEnrichEnabled, setPlaceShadowEnabled, logout } = useAuthStore()
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -478,6 +480,7 @@ export function useAdmin() {
     placesAutocompleteEnabled, setPlacesAutocompleteEnabledState,
     placesDetailsEnabled, setPlacesDetailsEnabledState,
     placesEnrichEnabled, setPlacesEnrichEnabledState,
+    placeShadowEnabled, setPlaceShadowEnabledState, setPlaceShadowEnabled,
     collabFeatures, setCollabFeatures,
     oidcConfig, setOidcConfig, savingOidc, setSavingOidc,
     passwordLogin, setPasswordLogin, passwordRegistration, setPasswordRegistration,

@@ -4,6 +4,8 @@ import type { DistanceUnit, RouteResult, RouteSegment, RouteWithLegs, Waypoint, 
 import { formatDistance } from '../../utils/units'
 import { wgs84ToGcj02 } from './engines/amap'
 import type { AvoidClass } from './valhallaRoute'
+import { countRoute } from './routeUsageCounter'
+import type { RouteUsageSurface } from '@trek/shared'
 
 const OSRM_BASE = 'https://router.project-osrm.org/route/v1'
 
@@ -39,6 +41,37 @@ const ROUTE_CACHE_MAX = 200
  */
 export type RouteProfileKey = 'driving' | 'walking' | 'cycling' | (string & {})
 
+// The distance a requested route would have covered as the crow flies — the counter's
+// km column, good enough for "how much routing does this instance do" volume math.
+function haversineKm(a: Waypoint, b: Waypoint): number {
+  const R = 6371
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180
+  const dLng = ((b.lng - a.lng) * Math.PI) / 180
+  const s =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((a.lat * Math.PI) / 180) * Math.cos((b.lat * Math.PI) / 180) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(s))
+}
+
+/** Count one OSRM request for the usage counter (TT port of upstream 4.3.0 route-usage). */
+function countOsrm(
+  surface: RouteUsageSurface,
+  profile: 'driving' | 'walking' | 'cycling',
+  waypoints: readonly Waypoint[],
+  response: Response,
+): void {
+  let km = 0
+  for (let i = 1; i < waypoints.length; i++) km += haversineKm(waypoints[i - 1], waypoints[i])
+  countRoute({
+    profile,
+    surface,
+    selfHosted: !!useSettingsStore.getState().settings.routing_base_url?.trim(),
+    waypoints: waypoints.length,
+    km,
+    failed: !response.ok,
+  })
+}
+
 export function parsePluginProfile(profile: string): { pluginId: string; profileId: string } | null {
   if (!profile.startsWith('plugin:')) return null
   const rest = profile.slice('plugin:'.length)
@@ -61,6 +94,7 @@ export async function calculateRoute(
   const url = `${OSRM_BASE}/${profile}/${coords}?overview=full&geometries=geojson&steps=false`
 
   const response = await fetch(url, { signal })
+  countOsrm('route', profile, waypoints, response)
   if (!response.ok) {
     throw new Error('Route could not be calculated')
   }
@@ -314,6 +348,7 @@ export async function calculateSegments(
   const url = `${OSRM_BASE}/driving/${coords}?overview=false&geometries=geojson&steps=false&annotations=distance,duration`
 
   const response = await fetch(url, { signal })
+  countOsrm('segments', 'driving', waypoints, response)
   if (!response.ok) throw new Error('Route could not be calculated')
 
   const data = await response.json()
@@ -446,6 +481,7 @@ export async function calculateRouteWithLegs(
   const osrmProfile = (profile === 'walking' || profile === 'cycling') ? profile : 'driving'
   const url = `${OSRM_PROFILE_BASE[osrmProfile]}/${coords}?overview=full&geometries=geojson&annotations=distance,duration`
   const response = await fetch(url, { signal })
+  countOsrm('legs', osrmProfile as 'driving' | 'walking' | 'cycling', waypoints, response)
   if (!response.ok) throw new Error('Route could not be calculated')
 
   const data = await response.json()

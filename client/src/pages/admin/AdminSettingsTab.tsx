@@ -20,6 +20,7 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
     setPlacesAutocompleteEnabled,
     setPlacesDetailsEnabled,
     setPlacesEnrichEnabled,
+    setPlaceShadowEnabled,
     placesPhotosEnabled,
     setPlacesPhotosEnabledState,
     placesAutocompleteEnabled,
@@ -28,6 +29,8 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
     setPlacesDetailsEnabledState,
     placesEnrichEnabled,
     setPlacesEnrichEnabledState,
+    placeShadowEnabled,
+    setPlaceShadowEnabledState,
     oidcConfig,
     setOidcConfig,
     savingOidc,
@@ -545,6 +548,29 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
                     } catch {
                       setPlacesEnrichEnabledState(!next);
                       setPlacesEnrichEnabled(!next);
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Place Search Log (shadow corpus) Toggle — TT port of upstream 4.3.0 */}
+              <div className="flex items-center justify-between gap-4 border-t border-slate-100 py-3">
+                <div>
+                  <p className="text-sm font-medium text-slate-700">{t('admin.placeShadow.title')}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placeShadow.subtitle')}</p>
+                </div>
+                <ToggleSwitch
+                  on={placeShadowEnabled}
+                  label={t('admin.placeShadow.title')}
+                  onToggle={async () => {
+                    const next = !placeShadowEnabled;
+                    setPlaceShadowEnabledState(next);
+                    setPlaceShadowEnabled(next);
+                    try {
+                      await adminApi.updatePlaceShadow(next);
+                    } catch {
+                      setPlaceShadowEnabledState(!next);
+                      setPlaceShadowEnabled(!next);
                     }
                   }}
                 />

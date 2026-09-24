@@ -1,6 +1,7 @@
 import { ImageOff, Loader2, Search, Star } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { mapsApi } from '../../../../api/client';
+import { recordPlacePick } from '../../../../api/placeShadow';
 import {
   extractAmapPasscode,
   extractAmapPoiId,
@@ -109,6 +110,10 @@ export default function PlPlaceSearch({
   const [results, setResults] = useState<MapsPlace[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [searching, setSearching] = useState(false);
+  // Where the visible hits came from and how they were ranked (TT port of the
+  // upstream 4.3.0 place-shadow producers).
+  const searchMetaRef = useRef<{ query: string; source: string } | null>(null);
+  const acMetaRef = useRef<{ query: string; source: string } | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   // One Google billing session per search (see utils/placesSession).
@@ -136,6 +141,7 @@ export default function PlPlaceSearch({
           placesSessionRef.current.current(),
           provider
         );
+        acMetaRef.current = { query: input.trim(), source: 'autocomplete' };
         setSuggestions(result.suggestions || []);
       } catch (err: unknown) {
         // Superseded request — axios rejects an aborted call with CanceledError.
@@ -160,8 +166,28 @@ export default function PlPlaceSearch({
     };
   }, [query, fetchSuggestions]);
 
-  const applyPlace = (place: MapsPlace) => {
+  const applyPlace = (place: MapsPlace, pick?: { mode: 'search' | 'autocomplete'; rank: number; count: number }) => {
     onPick(placeToPick(place));
+    if (pick) {
+      const meta = pick.mode === 'search' ? searchMetaRef.current : acMetaRef.current;
+      const lat = Number(place.lat);
+      const lng = Number(place.lng);
+      if (meta && Number.isFinite(lat) && Number.isFinite(lng)) {
+        recordPlacePick({
+          query: meta.query,
+          lang: language,
+          biasLat: locationBias ? (locationBias.low.lat + locationBias.high.lat) / 2 : undefined,
+          biasLng: locationBias ? (locationBias.low.lng + locationBias.high.lng) / 2 : undefined,
+          source: `${pick.mode}:${meta.source}`,
+          liveRank: pick.rank,
+          liveCount: pick.count,
+          pickedName: String(place.name ?? ''),
+          pickedLat: lat,
+          pickedLng: lng,
+          pickedPlaceId: (place.google_place_id as string | undefined) || (place.osm_id as string | undefined) || (place.amap_id ? `amap:${place.amap_id}` : undefined),
+        });
+      }
+    }
     setResults([]);
     setSuggestions([]);
     setQuery('');
@@ -228,6 +254,7 @@ export default function PlPlaceSearch({
         return;
       }
       const result = await mapsApi.search(trimmed, language, provider);
+      searchMetaRef.current = { query: trimmed, source: result.places?.[0]?.source || 'unknown' };
       setResults(result.places || []);
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, t('places.mapsSearchError')));
@@ -237,7 +264,7 @@ export default function PlPlaceSearch({
     }
   };
 
-  const handleSelectSuggestion = async (suggestion: Suggestion) => {
+  const handleSelectSuggestion = async (suggestion: Suggestion, pick?: { mode: 'search' | 'autocomplete'; rank: number; count: number }) => {
     setSuggestions([]);
     const previousQuery = query;
     setQuery('');
@@ -260,7 +287,7 @@ export default function PlPlaceSearch({
         place = (search.places?.[0] as MapsPlace | undefined) ?? null;
       }
       if (place) {
-        applyPlace(place);
+        applyPlace(place, pick);
       } else {
         setQuery(previousQuery);
         toast.error(t('places.mapsSearchError'));
@@ -332,12 +359,12 @@ export default function PlPlaceSearch({
 
       {suggestions.length > 0 && (
         <div className="absolute left-0 right-12 top-[calc(100%+6px)] z-10 max-h-[210px] overflow-y-auto rounded-[14px] border border-[color:var(--m-rowbr)] bg-[color:var(--m-sheetop)] shadow-[0_20px_44px_-18px_rgba(0,0,0,.45)]">
-          {suggestions.map((s) => (
+          {suggestions.map((s, idx) => (
             <button
               key={s.placeId}
               type="button"
               onPointerDown={(e) => e.preventDefault()}
-              onClick={() => handleSelectSuggestion(s)}
+              onClick={() => handleSelectSuggestion(s, { mode: 'autocomplete', rank: idx, count: suggestions.length })}
               className="block w-full border-t border-[color:var(--m-rowbr)] px-[13px] py-[10px] text-left first:border-t-0"
             >
               <div className="truncate text-[0.8125rem] font-semibold text-m-ink">{s.mainText}</div>
@@ -355,7 +382,7 @@ export default function PlPlaceSearch({
             <button
               key={idx}
               type="button"
-              onClick={() => applyPlace(result)}
+              onClick={() => applyPlace(result, { mode: 'search', rank: idx, count: results.length })}
               className="flex w-full gap-2.5 border-t border-[color:var(--m-rowbr)] px-[13px] py-[10px] text-left first:border-t-0"
             >
               <AmapResultThumb photo={(result.photos as string[] | undefined)?.[0]} name={String(result.name ?? '')} />

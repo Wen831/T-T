@@ -1,6 +1,7 @@
 import { AlertTriangle, ImageOff, Loader2, Paperclip, Plus, Search, Star, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { mapsApi } from '../../api/client';
+import { recordPlacePick } from '../../api/placeShadow';
 import { useTranslation } from '../../i18n';
 import { useAddonStore } from '../../store/addonStore';
 import { useAuthStore } from '../../store/authStore';
@@ -150,6 +151,11 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     useAuthStore.getState().amapSearchEnabled && useAuthStore.getState().hasAmapKey ? 'amap' : 'native'
   );
   const [mapsResults, setMapsResults] = useState([]);
+  // Where the visible hits came from and how they were ranked (TT port of the
+  // upstream 4.3.0 place-shadow producers): set when a query answers, read when
+  // the traveller picks one of them.
+  const searchMetaRef = useRef<{ query: string; source: string } | null>(null);
+  const acMetaRef = useRef<{ query: string; source: string } | null>(null);
   const [isSearchingMaps, setIsSearchingMaps] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [showNewCategory, setShowNewCategory] = useState(false);
@@ -331,6 +337,7 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
           placesSessionRef.current.current(),
           mapSearchProvider
         );
+        acMetaRef.current = { query: mapsSearch.trim(), source: 'autocomplete' };
         setAcSuggestions(result.suggestions || []);
         setAcHighlight(-1);
       } catch (err: unknown) {
@@ -430,6 +437,7 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
         return;
       }
       const result = await mapsApi.search(mapsSearch, language, mapSearchProvider);
+      searchMetaRef.current = { query: mapsSearch.trim(), source: result.places?.[0]?.source || 'unknown' };
       setMapsResults(result.places || []);
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, t('places.mapsSearchError')));
@@ -438,7 +446,7 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     }
   };
 
-  const handleSelectMapsResult = (result) => {
+  const handleSelectMapsResult = (result, pick?: { mode: 'search' | 'autocomplete'; rank: number; count: number }) => {
     setForm((prev) => mergeResult(prev, result, autoFilledRef.current));
     // The one point every pick flows through, so the detail column hangs here.
     // A new pick drops whatever hero image belonged to the previous place.
@@ -455,12 +463,32 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
         details: result,
       });
       setForm((prev) => ({ ...prev, image_url: undefined }));
+      if (pick) {
+        const meta = pick.mode === 'search' ? searchMetaRef.current : acMetaRef.current;
+        if (meta) {
+          recordPlacePick({
+            query: meta.query,
+            lang: language,
+            // The bias the search actually ran under is a box around the trip's
+            // existing places; the corpus stores its centre.
+            biasLat: locationBias ? (locationBias.low.lat + locationBias.high.lat) / 2 : undefined,
+            biasLng: locationBias ? (locationBias.low.lng + locationBias.high.lng) / 2 : undefined,
+            source: `${pick.mode}:${meta.source}`,
+            liveRank: pick.rank,
+            liveCount: pick.count,
+            pickedName: result.name || '',
+            pickedLat: lat,
+            pickedLng: lng,
+            pickedPlaceId: result.google_place_id || result.osm_id || (result.amap_id ? `amap:${result.amap_id}` : undefined),
+          });
+        }
+      }
     }
     setMapsResults([]);
     setMapsSearch('');
   };
 
-  const handleSelectSuggestion = async (suggestion: { placeId: string; mainText: string; secondaryText: string }) => {
+  const handleSelectSuggestion = async (suggestion: { placeId: string; mainText: string; secondaryText: string }, pick?: { mode: 'search' | 'autocomplete'; rank: number; count: number }) => {
     setAcSuggestions([]);
     setAcHighlight(-1);
     const previousSearch = mapsSearch;
@@ -491,7 +519,7 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
         place = search.places?.[0] ?? null;
       }
       if (place) {
-        handleSelectMapsResult(place);
+        handleSelectMapsResult(place, pick);
       } else {
         setMapsSearch(previousSearch);
         toast.error(t('places.mapsSearchError'));
@@ -517,7 +545,8 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
       } else if (e.key === 'Enter') {
         e.preventDefault();
         if (acHighlight >= 0) {
-          handleSelectSuggestion(acSuggestions[acHighlight]);
+          // Read before the list is cleared: this is the rank the user saw.
+          handleSelectSuggestion(acSuggestions[acHighlight], { mode: 'autocomplete', rank: acHighlight, count: acSuggestions.length });
         } else {
           setAcSuggestions([]);
           handleMapsSearch();
@@ -921,7 +950,7 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
                     <button
                       key={s.placeId}
                       type="button"
-                      onMouseDown={() => handleSelectSuggestion(s)}
+                      onMouseDown={() => handleSelectSuggestion(s, { mode: 'autocomplete', rank: idx, count: acSuggestions.length })}
                       onMouseEnter={() => setAcHighlight(idx)}
                       className={`w-full border-b border-edge-faint px-3 py-2 text-left last:border-0 ${
                         idx === acHighlight ? 'bg-surface-tertiary' : 'hover:bg-surface-hover'
@@ -944,7 +973,7 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => handleSelectMapsResult(result)}
+                    onClick={() => handleSelectMapsResult(result, { mode: 'search', rank: idx, count: mapsResults.length })}
                     className="flex w-full gap-2.5 border-b border-edge-faint px-3 py-2 text-left last:border-0 hover:bg-surface-hover"
                   >
                     <AmapResultThumb photo={result.photos?.[0]} name={result.name} />
