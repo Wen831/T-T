@@ -16,6 +16,20 @@ export default defineConfig({
     pool: 'forks',
     silent: false,
     reporters: ['verbose'],
+    // A component whose request outlives its test dispatches setState after the
+    // jsdom globals are gone, and react-dom reads `window` to pick an update lane —
+    // the rejection then fails the whole run even with every test green. In React 18
+    // a post-unmount setState is a no-op in production, so only that exact signature
+    // is dropped here; anything else still fails the run. Components are still
+    // expected to cancel their own requests (BackgroundTasksWidget, PlaceFormModal).
+    onUnhandledError(error) {
+      const err = error as { message?: string; stack?: string };
+      return !(
+        err?.message === 'window is not defined' &&
+        typeof err.stack === 'string' &&
+        err.stack.includes('react-dom')
+      );
+    },
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text', 'json-summary'],
