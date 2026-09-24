@@ -6,6 +6,7 @@
  *   online trigger → flush() → replay REST with X-Idempotency-Key header → update Dexie
  */
 import { offlineDb } from '../db/offlineDb'
+import { cacheAssignment } from '../db/cacheAssignment'
 import { apiClient } from '../api/client'
 import { isAuthed } from './authGate'
 import { isEffectivelyOffline } from './networkMode'
@@ -97,10 +98,26 @@ async function applyPreferenceEntity(mutation: QueuedMutation, data: unknown): P
   return true
 }
 
+/** Assignments have no Dexie table of their own — they live nested inside a day row
+ *  (offlineDb.days[].assignments), so neither getTable nor the preference path can
+ *  persist them. The time and end-day writes answer `{ assignment: {...} }` (a 409
+ *  hands back the bare entity), and adopting that answer is what keeps a queued
+ *  offline edit from vanishing from the cache the moment the drain deletes it. */
+async function applyAssignmentEntity(mutation: QueuedMutation, data: unknown): Promise<boolean> {
+  if (mutation.resource !== 'assignments' || !data || typeof data !== 'object') return false
+  const wrapped = data as { assignment?: unknown }
+  const entity =
+    wrapped.assignment && typeof wrapped.assignment === 'object' ? wrapped.assignment : data
+  if (!('id' in entity) || !('day_id' in entity)) return false
+  await cacheAssignment(entity as Parameters<typeof cacheAssignment>[0])
+  return true
+}
+
 /** Write a server entity into its Dexie table (used when "theirs" wins a conflict). */
 async function applyServerEntity(mutation: QueuedMutation, server: unknown): Promise<void> {
   if (!mutation.resource || !server || typeof server !== 'object') return
   if (await applyPreferenceEntity(mutation, server)) return
+  if (await applyAssignmentEntity(mutation, server)) return
   if (!('id' in server)) return
   const table = getTable(mutation.resource)
   if (table) await table.put(server)
@@ -215,10 +232,12 @@ export const mutationQueue = {
           // Apply canonical server response to Dexie
           if (mutation.method !== 'DELETE' && mutation.resource) {
             const table = getTable(mutation.resource)
-            // Preferences are keyed by tripId and answer { tripId, preferences }, so they
-            // take the dedicated path; the generic one below looks for an `id`.
-            const appliedPreference = await applyPreferenceEntity(mutation, response.data)
-            if (!appliedPreference && table && response.data && typeof response.data === 'object') {
+            // Preferences (keyed by tripId) and assignments (nested in day rows)
+            // take dedicated paths; the generic one below wants an `id`-keyed table.
+            const appliedEntity =
+              (await applyPreferenceEntity(mutation, response.data)) ||
+              (await applyAssignmentEntity(mutation, response.data))
+            if (!appliedEntity && table && response.data && typeof response.data === 'object') {
               // Server returns { place: {...} } or { item: {...} } — grab first value
               const values = Object.values(response.data as Record<string, unknown>)
               const entity = values[0]
