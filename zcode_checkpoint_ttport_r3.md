@@ -103,18 +103,69 @@ npx tsc --noEmit -p client/tsconfig.json   →  0 条，EXIT=0
 - 工作分支：`upgrade/4.3-addons-r3`（在 wsl 侧 `/home/administrator/T-T-test` 检出，基于交接仓 `dev` = `20fc06a`）
 - `handoff-dev`：保留交接仓 `dev` 原样的只读引用（`20fc06a`）
 - `dbf2a401 fix(client): forward the field's naming attributes from CustomTimePicker` — **本地提交，未 push**
+- `c80078fd docs(4.3-addons): record the r4 handoff and the completed typecheck pass`
+- r5 三个提交见下节 — **全部本地，未 push**
+
+---
+
+## r5 —— 清零全部已知失败（2026-09-24，接手后第二轮）
+
+上一轮把「剩余 23 条」记为「既有遗留、与本轮无关」。**这个判断只对了一半**：其中两条是
+**真实的移植未完成项**，不只是测试断言过期。本轮全部修完，客户端全量单测归零。
+
+### 逐条根因与修法（实测）
+
+| # | 原问题 | 真实性质 | 修法 |
+|---|---|---|---|
+| 1 | `roadtripPreferencesRepo` 离线回放（1 条） | **真实缺陷**：`mutationQueue.flush` 的写回只认带 `id` 的实体（`'id' in entity`），而偏好响应是 `{ tripId, preferences }` → 服务器已保存，**本地缓存永远停在旧值**；后续读取又把队列叠加到过期基线上 | `sync/mutationQueue.ts` 加 `applyPreferenceEntity()` 专路（成功分支与 409 分支都走），按 `tripId` 落库；`repo/roadtripPreferencesRepo.ts` 加 `adopt()` |
+| 2 | WS 事件无决策（1 条） | **真实缺口**：`roadtripPreferences:changed` 无人监听 → 别的成员改了续航/时段，**本端仍按旧值算路线**。另 4 个事件经查**已有**专门监听器（`useRoadtripVias` / `useDayBoundaries` / `useDocSync`），只是没登记 | 4 个登记进 `HANDLED_OUTSIDE_TRIP_STORE`；为 preferences 在 `useLoadRoadtripSettings` 内新建监听（`addListener` + schema 校验 + `adopt()`，由既有 liveQuery 自动重新发布） |
+| 3 | i18n 键集（17 条） | 只有 **1 个键** `admin.plugins.perm.hook:search-provider` 在 18 个语种全缺，只在 en 有 | 18 个语种各补一条，术语随各文件相邻键；TREK 品牌名不译。**注意 `br` 文件实为葡萄牙语**（非布列塔尼语），已按该文件语言改写 |
+| 4 | `ContextMenu.extra`（1 条） | r3 的 `alignEnd` 让 `menu` 状态多一键，旧断言 `toEqual` 严比形状 | 断言补 `alignEnd: false`，并**新增一例**验证 `alignEnd` 用 trigger 矩形锚定（`currentTarget.getBoundingClientRect`） |
+| 5 | `useTripPlanner` POI 预填（1 条） | 移植新增 `stop_type` / `duration_minutes`（原文注释说明：否则加油站会静默变成计入总数的编号目的地） | 断言对齐，并**新增一例**验证 `stop` 参数透传 |
+
+修 i18n 时踩到一个坑：**改了 `shared/src/i18n/**` 必须重建 shared**，否则客户端 parity 测试
+读的是 `shared/dist` 的旧产物、继续报键缺失。另 `tr` / `br` 两条译文含撇号，用双引号包裹才对
+（与 en 原行同款处理）。
+
+### 最终验证（全部实测）
+
+| 命令 | 结果 |
+|---|---|
+| `tsc --noEmit -p client / shared / server` | **三者均 EXIT=0** |
+| `npm run build` | **三端全绿**（BUILD_EXIT=0） |
+| 客户端全量单测 | **740 文件 / 14780 通过，0 失败**（接手时 23 失败） |
+| shared 全量单测 | **59 文件 / 669 通过** |
+| 服务端 integration / e2e | ⚠️ **本机跑不了**（见下），非代码问题 |
+
+**服务端 integration / e2e 无法在本机运行**：`better-sqlite3` 编译于 Node ABI **127**，本机 Node 为
+**137**（v24.21.0），加载即 `ERR_DLOPEN_FAILED`；环境**无 gcc/g++/node-gyp** 无法就地重编译，
+`prebuild-install` 因网络不可用（`ECONNREFUSED`）取不到预编译包。**与代码无关**：服务端 tsc 与
+build 均通过。且服务端只把 `hook:search-provider` 当**权限标识符字符串**用、不消费其翻译文案，
+故本轮 i18n 改动对服务端零影响。
+
+### 红线遵守（r5 继续）
+
+- **0 处** `as any` / `@ts-ignore` / `@ts-expect-error`，未放宽 tsconfig。
+- 未回退 r1–r4；未改 `migrations.ts`；未碰密钥；**未 push**；未部署/重启服务。
+- 动运行时的两处（偏好写回、WS 监听）均为**补齐移植缺口**，改动最小且有新增测试固定行为。
 
 ---
 
 ## 交付摘要
 
-- **各根因分类改了什么文件**：r3 的 7 类（及重构后的 A–G）改动全部保留在 `20fc06a`（19 文件，+389/−16），
-  接手后确认其已把 client tsc 归零；**本轮仅新增 1 处改动**：`client/src/components/shared/CustomTimePicker.tsx`
-  （props 扩展 + `{...aria}` 透传，纯类型面）。
-- **错误数对比：143 → 0**（目标达成；其中 143→3 为上一轮，3→0 由 `20fc06a` 完成，接手时复核确认）。
+- **各根因分类改了什么文件**：r3 的 7 类改动保留在 `20fc06a`（19 文件）；r4 修 `CustomTimePicker`
+  （1 文件）；**r5 修 26 文件**——`sync/mutationQueue.ts` + `repo/roadtripPreferencesRepo.ts` +
+  `hooks/useRoadtripSettings.ts` + `api/wsEventPolicy.ts`（离线回放与 WS 事件）、18 个语种的
+  `shared/src/i18n/*/admin.ts`、3 个测试文件。
+- **错误数对比：143 → 0**（r3 达成；接手时复核确认）。
+- **单测：23 失败 → 0 失败**（客户端 14780/14780 通过）。
 - **三端 build + 三个 tsc**：`npm run build` 三端全绿；client / shared / server tsc 均 EXIT=0。
-- **有没有用断言**：没有。全程 0 处 `as any` / `@ts-ignore` / `@ts-expect-error`，未放宽 tsconfig。
-- **剩余未修项**：client 全量单测仍有 23 条失败（8 个语种 i18n 键 + 4 类移植收尾），
-  均为既有遗留、与本轮无关，已在上表列明文件与建议。**其中 WS 事件登记（`wsEventPolicy.ts`）与 i18n 键补齐最值得优先收尾。**
+- **有没有用断言**：没有。全程 0 处掩盖手段，未放宽 tsconfig。
+- **剩余未修项**：仅两项**功能性待办**（不表现为测试失败，需产品决策）——① `MTripShell` 未渲染
+  `MRoadtripTab`（手机端 roadtrip tab 未接线）；② 除 `CustomTimePicker` 外，其它移植控件是否也有
+  「调用点传了、props 没声明」的 ARIA 静默丢弃，值得排查。另服务端集成测试需先修原生模块才能跑。
+
+FINAL_DONE
+
 
 FINAL_DONE
