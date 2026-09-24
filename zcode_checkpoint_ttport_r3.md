@@ -227,5 +227,40 @@ r5 的交付摘要里写着「服务端集成测试需先修原生模块才能�
   ① `MTripShell` 未渲染 `MRoadtripTab`（手机端 roadtrip tab 未接线）；
   ② 除 `CustomTimePicker` 外，其它移植控件是否也有「调用点传了、props 没声明」的 ARIA 静默丢弃，值得排查。
 
+---
+
+## r7 —— 完整移植计划启动：R7 止血轮（2026-09-25）
+
+**背景**：盘点确认 TT 相对 TREK 4.3.0 的真实缺口（19 条迁移、三块客户端视图未接线、places 体系四件套、2 处会炸的列）。用户定案：places 体系要移植，前提是保住 TT 自己的高德支持；上游的 Leaflet 高德瓦片（AMAP_ROAD/SATELLITE + gcj02Crs）**整条忽略**。完整计划（r7–r14）已获批准，上游 v4.3.0 全量源码在 `/tmp/trek430/TREK-4.3.0` 可对照。
+
+### R7 交付（止血：先修会运行时炸的）
+
+| # | 修复 | 关键证据/上游对照 |
+|---|---|---|
+| 1 | `places.stop_type` 建列（上游 #207 恰好落在移植窗口 #208 的前一条被漏掉）+ `places.service` create/update 带 `stop_type`/`fill_percent` 写路径 + `duration_minutes` 契约修正（显式 null 清空停留时长） | 上游 places.service.ts:246-272/:363-398 |
+| 2 | `file_links.budget_item_id` 建列 + 两个索引（上游 #211）——doc-sync 替换路径的 INSERT 引用它 | doc-sync.service.ts:582-583 |
+| 3 | 服务端补 `@Put(':id/end-day')` 路由（离线队列回放的目标，此前 404/terminal） | 上游 assignments.controller.ts:186 |
+| 4 | assignments 两条读路径（get/list）SELECT 与返回形状补 `end_day`/`stop_type`/`fill_percent`——正是上游注释里写过的「手写副本静默丢 stop_type，加油站被当成普通地点」那类 bug | 上游把 shaper 收敛进 rowShape 的注释 |
+| 5 | client `mutationQueue` 给 `assignments` 加回写专路（成功走 `{assignment}` 包裹、409 server-wins 走裸实体，经 `cacheAssignment` 写回 day 内嵌数组）——此前队列条目被删而缓存永远停在乐观值 | 与 r5 preferences 专路同构 |
+| 6 | flake：`PlaceFormModal` 的 50ms 焦点恢复定时器在环境拆除后触发 → 清理定时器 + 空值守卫 | 与 r6 BackgroundTasksWidget 同类 |
+
+**新增测试 15 条**：服务端 charging 门禁（`charging.service.test.ts` 6 条，避免触碰真实充电源网络）、places stop 字段持久化 5 条、end-day service/controller 各 1 条、client 回写 2 条。e2e 手写迷你 schema 补新列。
+
+### R7 验收（全部实测）
+
+| 门禁 | 结果 |
+|---|---|
+| 三端 tsc | 均 EXIT=0 |
+| `npm run build` | 三端全绿 |
+| `npm test` | **EXIT=0**（shared 669 / server 10226 / client 14782） |
+
+提交：`a0f0c740`（服务端）、`50a7a439`（client 回写）、`0be89dd0`（flake）。未 push。
+
+### 已知偶发（并行负载下）
+
+- `collab.e2e`（限流时钟）与 `storage-admin.e2e`（后台迁移轮询）单跑全绿、并行偶发超时，与移植改动无关。
+
+### 下一步：R8 迁移补齐（住宿桥 #228/#229/#230/#234、Journey ×4、Collab ×2、其余杂项；#221 按决策跳过）
+
 FINAL_DONE
 
