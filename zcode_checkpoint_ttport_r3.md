@@ -262,5 +262,27 @@ r5 的交付摘要里写着「服务端集成测试需先修原生模块才能�
 
 ### 下一步：R8 迁移补齐（住宿桥 #228/#229/#230/#234、Journey ×4、Collab ×2、其余杂项；#221 按决策跳过）
 
+---
+
+## r8 —— R8 迁移补齐完成（2026-09-25）
+
+**追加 17 条迁移**（标签序：206/210/212/213/214/216/220/226/228/229/230/231/232/233/234/235/240，上游原文逐字移植并保留注释）：
+- place_shadow_picks（#206）、广东区域名数据修复（#210，2 条有界 DELETE 入 `ALLOWED_DESTRUCTIVE`）、
+  `trip_files.message_id`（#212）、`collab_links`（#213）、`route_usage_daily`（#214）、
+  学校假期三表（#216）、`budget_settlements.settled_at`（#220）、MCP 令牌作用域（#226）、
+  住宿桥四条（#228 加列/#229 回填打卡/#230 升级窗口补偿/#234 清理+触发器，回填会把 `stop_type='hotel'` 盖到无类型的地点上）、
+  Journey 四条（#231 dismissed/#232 country_code/#233 show_*/#235 source_assignment_id 回填）、
+  长行程天数补齐（#240，两阶段重编号绕 UNIQUE）。
+- **#221（users.amap_api_key + places.amap_poi_id）按决策跳过**：TT 保留实例级 key 与 `places.amap_id`。
+- 迁移总数 226 → 243；hygiene 全链 smoke 从零跑通；`npm test` EXIT=0 全绿。
+
+**顺带**：collab e2e 限流用例（61 连发）与 Atlas 同类获得显式 60s 预算；client vitest 增加
+`onUnhandledError` 精准过滤——只丢弃「react-dom 在 jsdom 拆除后 setState → window is not defined」
+这一种签名（React 18 卸载后 setState 本就是无害 no-op；组件仍应自行取消请求，配置注释写明）。
+
+提交：`441fb37c`（迁移）、`930d2f75`（vitest 过滤）。
+
+### 下一步：R9 shared/geo 单源化 + school-holidays 模块
+
 FINAL_DONE
 
