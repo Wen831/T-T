@@ -107,6 +107,10 @@ export const PUBLIC_ROUTE_ALLOW_LIST: string[] = [
   'DiscoveryController.protectedResource',
   'DiscoveryController.wellKnownFallback',
   'DiscoveryController.wellKnownRoot',
+  // A provider's webhook has no session to send. The per-binding token in the
+  // path is the credential; a leaked URL can only ask for a sync run on the one
+  // trip it belongs to, and the body is never read as truth.
+  'DocSyncWebhookController.nudge',
   'FeaturesController.features',
   // The container/uptime probe.
   'FeaturesController.health',

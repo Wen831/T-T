@@ -94,6 +94,8 @@ const ALLOWED_DESTRUCTIVE: Record<string, string> = {
   'DROP TABLE idempotency_keys': 'Widen PK to (key,user_id,method,path). Rebuild, rows copied (old PK is a subset).',
   'DROP TABLE day_accommodations': 'Make place_id nullable + ON DELETE SET NULL. Rebuild, rows copied.',
   'DROP TABLE schema_version': 'Add surrogate id PK to schema_version. Rebuild, version row copied.',
+  'DROP TABLE roadtrip_day_boundaries':
+    'Migration 241 (4.3 port): relax the day_number CHECK from BETWEEN 1 AND 366 to >= 1. Rebuild, rows copied first.',
 
   // ── photo/journey table rebuilds (data preserved) ────────────────────────
   'DROP TABLE trip_photos': 'trip_photos normalisation + later photo_id FK refactor. Rebuilds, rows copied.',

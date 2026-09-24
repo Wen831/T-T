@@ -33,6 +33,9 @@ const CONTRACTS: Array<[hook: string, fn: string, timeoutMs: number]> = [
   ['calendarSource', 'getName', 3000],
   ['calendarSource', 'getEvents', 5000],
   ['placeDetailProvider', 'getDetails', 5000],
+  // Two seconds is the whole budget on purpose: the corridor search stops waiting
+  // at 2.5s, so a longer one would only hold the IPC call open for nothing.
+  ['searchProvider', 'search', 2000],
   ['warningProvider', 'getWarnings', 5000],
   ['tableContributor', 'getContributions', 5000],
   ['mapMarkerProvider', 'getMarkers', 5000],
