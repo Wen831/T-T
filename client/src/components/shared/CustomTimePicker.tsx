@@ -5,7 +5,14 @@ import { useAnchoredPosition } from '../../hooks/useAnchoredPosition';
 import { useSettingsStore } from '../../store/settingsStore';
 import { formatClockTime, parseMeridiemTime } from '../../utils/formatters';
 
-interface CustomTimePickerProps {
+/** The naming and state attributes a caller may put on the field itself. They land on
+ *  the text input, because that is the element a label or a screen reader resolves. */
+type CustomTimePickerAriaProps = Pick<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'aria-invalid' | 'aria-required' | 'id'
+>;
+
+interface CustomTimePickerProps extends CustomTimePickerAriaProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -21,6 +28,7 @@ export default function CustomTimePicker({
   placeholder = '00:00',
   style = {},
   disabled = false,
+  ...aria
 }: CustomTimePickerProps) {
   const is12h = useSettingsStore((s) => s.settings.time_format) === '12h';
   const [open, setOpen] = useState(false);
@@ -148,6 +156,7 @@ export default function CustomTimePicker({
       >
         <input
           type="text"
+          {...aria}
           value={inputFocused ? value : formatClockTime(value, is12h)}
           onChange={handleInput}
           onFocus={() => setInputFocused(true)}
