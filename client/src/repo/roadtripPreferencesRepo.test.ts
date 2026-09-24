@@ -41,4 +41,13 @@ describe('trip driving preferences offline cache', () => {
     await expect(roadtripPreferencesRepo.update(9, { roadtrip_range_km: 999 })).rejects.toThrow('Denied')
     expect((await offlineDb.roadtripPreferences.get(9))?.preferences.roadtrip_range_km).toBe(120)
   })
+  it('adopts the preferences another member saved over the cached ones', async () => {
+    // The socket carries the server's own answer, so it replaces the cache outright
+    // rather than merging — that is what republishes it to the settings readers.
+    await roadtripPreferencesRepo.adopt(9, { roadtrip_day_start: '06:00', roadtrip_day_end: '20:00', roadtrip_range_km: 320 })
+    expect((await offlineDb.roadtripPreferences.get(9))?.preferences).toEqual({
+      roadtrip_day_start: '06:00', roadtrip_day_end: '20:00', roadtrip_range_km: 320,
+    })
+    expect((await roadtripPreferencesRepo.read(9)).roadtrip_range_km).toBe(320)
+  })
 })

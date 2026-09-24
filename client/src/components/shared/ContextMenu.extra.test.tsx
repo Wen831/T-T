@@ -23,9 +23,31 @@ describe('useContextMenu', () => {
       );
     });
 
-    expect(result.current.menu).toEqual({ x: 120, y: 40, items });
+    expect(result.current.menu).toEqual({ x: 120, y: 40, items, alignEnd: false });
     expect(preventDefault).toHaveBeenCalled();
     expect(stopPropagation).toHaveBeenCalled();
+  });
+
+  it('FE-W4CTX-001b: alignEnd anchors the menu to the trigger, not the pointer', () => {
+    const { result } = renderHook(() => useContextMenu());
+    const rect = { right: 300, bottom: 90 };
+    const items = [{ label: 'Delete' }];
+
+    act(() => {
+      result.current.open(
+        {
+          clientX: 120,
+          clientY: 40,
+          currentTarget: { getBoundingClientRect: () => rect },
+          preventDefault() {},
+          stopPropagation() {},
+        } as unknown as React.MouseEvent,
+        items,
+        true
+      );
+    });
+
+    expect(result.current.menu).toEqual({ x: 300, y: 96, items, alignEnd: true });
   });
 
   it('FE-W4CTX-002: closing clears the menu', () => {

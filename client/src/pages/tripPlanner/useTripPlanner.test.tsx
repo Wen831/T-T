@@ -1152,9 +1152,41 @@ describe('useTripPlanner — add place entry points', () => {
       website: undefined,
       phone: undefined,
       osm_id: 'node/1',
+      stop_type: null,
+      duration_minutes: undefined,
     });
     expect(result.current.showPlaceForm).toBe(true);
     expect(mapsApi.reverse).not.toHaveBeenCalled();
+  });
+
+  it('FE-TP-HOOK-049b: a corridor stop carries its kind and dwell into the form', async () => {
+    seedTrip();
+
+    const { result } = await renderPlanner();
+
+    act(() => {
+      result.current.openAddPlaceFromPoi(
+        { lat: 1, lng: 2, name: 'Cafe', address: null, website: null, phone: null, osm_id: 'node/1' },
+        7,
+        null,
+        { stopType: 'fuel', dwellMinutes: 20 }
+      );
+    });
+
+    // Without this the fuel stop would reach the form as an ordinary numbered
+    // destination and start counting in every total.
+    expect(result.current.prefillCoords).toEqual({
+      lat: 1,
+      lng: 2,
+      name: 'Cafe',
+      address: '',
+      website: undefined,
+      phone: undefined,
+      osm_id: 'node/1',
+      stop_type: 'fuel',
+      duration_minutes: 20,
+    });
+    expect(result.current.showPlaceForm).toBe(true);
   });
 
   it("FE-TP-HOOK-050: the pool editor resolves a place's lone assignment for its times", async () => {
