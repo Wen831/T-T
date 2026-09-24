@@ -267,12 +267,16 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => {
-        const modal = searchInputRef.current?.closest('[role="dialog"]') ?? document.body;
+      const timer = setTimeout(() => {
+        // The modal can be gone (and, in the test run, the whole environment with it)
+        // by the time this fires — bail out instead of throwing from a dead timer.
+        if (!searchInputRef.current) return;
+        const modal = searchInputRef.current.closest('[role="dialog"]') ?? document.body;
         if (!modal.contains(document.activeElement) || document.activeElement === document.body) {
-          searchInputRef.current?.focus();
+          searchInputRef.current.focus();
         }
       }, 50);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
