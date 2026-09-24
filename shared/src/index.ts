@@ -86,3 +86,12 @@ export * from './roadtrip/planning.schema';
 export * from './roadtrip/search.schema';
 export * from './roadtrip/google-import.schema';
 export * from './roadtrip/charging.schema';
+
+// WGS-84 ⇄ GCJ-02 conversion (TT port of upstream 4.3.0 shared/geo): the single
+// datum boundary for everything AMap-shaped. New code converts through these
+// helpers; TT's own server/client copies keep their (lng, lat) signatures and
+// are cross-checked against this file by a spec.
+export * from './geo/gcj02';
+
+// The manual school-holiday catalog the Vacay addon merges with the external feed.
+export * from './vacay/school-holiday-catalog.schema';
