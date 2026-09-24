@@ -1063,6 +1063,54 @@ export class MapsService {
   // Powers the "explore places on the map" pill. OSM-ONLY by design — this never
   // calls Google, even when a Google key is configured.
 
+  /**
+   * The POIs of an area in one answer, for the offline place cache (TT port of
+   * upstream 4.3.0's area endpoint, re-sourced per TT: upstream reads its own
+   * hosted POI index, which does not exist here, so the same Overpass channel
+   * the corridor and the explore pill use answers the bbox instead). A named
+   * POI of any common kind counts; unnamed rows are worthless to search.
+   */
+  async placesInArea(
+    bbox: { minLat: number; minLng: number; maxLat: number; maxLng: number },
+    limit = 3000,
+  ): Promise<{ results: Array<{ osm_id: string; name: string; address: string | null; lat: number; lng: number; category: string | null; website: string | null; phone: string | null }>; truncated: boolean }> {
+    const { minLat, minLng, maxLat, maxLng } = bbox;
+    const box = `(${minLat},${minLng},${maxLat},${maxLng})`;
+    const selectors = ['tourism', 'amenity', 'shop', 'leisure', 'historic']
+      .map((k) => `  nwr["name"]["${k}"]${box};`)
+      .join('\n');
+    const query = `[out:json][timeout:60];\n(\n${selectors}\n);\nout center tags ${limit + 50};`;
+
+    const elements = await overpassFetch(query);
+    const results: Array<{ osm_id: string; name: string; address: string | null; lat: number; lng: number; category: string | null; website: string | null; phone: string | null }> = [];
+    for (const el of elements) {
+      const tags = el.tags || {};
+      const name = tags.name || tags.brand || null;
+      if (!name) continue;
+      if (tags.disused === 'yes' || tags.abandoned === 'yes') continue;
+      if (tags.opening_hours === 'closed' || tags.opening_hours === 'off') continue;
+      const lat = el.lat ?? el.center?.lat;
+      const lng = el.lon ?? el.center?.lon;
+      if (lat == null || lng == null) continue;
+      const category = ['tourism', 'amenity', 'shop', 'leisure', 'historic'].find((k) => tags[k]) ?? null;
+      const address =
+        [tags['addr:street'], tags['addr:housenumber'], tags['addr:postcode'], tags['addr:city']]
+          .filter(Boolean)
+          .join(' ') || null;
+      results.push({
+        osm_id: `${el.type}:${el.id}`,
+        name,
+        address,
+        lat,
+        lng,
+        category,
+        website: tags.website || tags['contact:website'] || null,
+        phone: tags.phone || tags['contact:phone'] || null,
+      });
+    }
+    return { results: results.slice(0, limit), truncated: results.length > limit };
+  }
+
   async searchOverpassPois(
     category: string,
     bbox: { south: number; west: number; north: number; east: number },

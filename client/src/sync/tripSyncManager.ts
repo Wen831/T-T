@@ -30,6 +30,7 @@ import {
   enforceBlobBudget,
 } from '../db/offlineDb'
 import { prefetchTilesForTrip } from './tilePrefetcher'
+import { prefetchPlacesForTrip } from './placePrefetcher'
 import { isAuthed } from './authGate'
 import { getOfflinePrefs, isTripOfflineEnabled, isTripPinned } from './offlinePrefs'
 import { useSettingsStore } from '../store/settingsStore'
@@ -266,6 +267,9 @@ export const tripSyncManager = {
             if (!isAuthed() || !navigator.onLine) return
             const places = await offlineDb.places.where('trip_id').equals(trip.id).toArray()
             await prefetchTilesForTrip(trip.id, places, tileUrl, undefined, cartoKey).catch(console.error)
+            // The area place cache rides the same idle window as the tiles: one
+            // request per trip, next to the map tiles it searches beside.
+            await prefetchPlacesForTrip(trip.id, places).catch(console.error)
           }
         })
       }
@@ -330,6 +334,8 @@ export const tripSyncManager = {
           onProgress?.({ phase: 'tiles', current: ++i, total, label: trip.title })
           const places = await offlineDb.places.where('trip_id').equals(trip.id).toArray()
           await prefetchTilesForTrip(trip.id, places, tileUrl, true, cartoKey).catch(console.error)
+          // Forced like the tiles: prepare-for-offline guarantees the area cache.
+          await prefetchPlacesForTrip(trip.id, places, true).catch(console.error)
         }
       }
 

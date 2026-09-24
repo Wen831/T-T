@@ -99,6 +99,35 @@ export class MapsController {
     }
   }
 
+  // The area download behind the offline place cache (TT port of upstream 4.3.0,
+  // re-sourced onto the Overpass channel — see MapsService.placesInArea). A null
+  // means the source is off or unreachable; an empty area is not an error.
+  @Get('area')
+  async area(
+    @Query('minLat') minLat?: string,
+    @Query('minLng') minLng?: string,
+    @Query('maxLat') maxLat?: string,
+    @Query('maxLng') maxLng?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const bbox = {
+      minLat: Number(minLat),
+      minLng: Number(minLng),
+      maxLat: Number(maxLat),
+      maxLng: Number(maxLng),
+    };
+    if (Object.values(bbox).some((v) => !Number.isFinite(v))) {
+      throw new HttpException({ error: 'A valid bbox (minLat, minLng, maxLat, maxLng) is required' }, 400);
+    }
+    const capped = Math.min(Math.max(Number(limit) || 2000, 1), 5000);
+    try {
+      return await this.maps.placesInArea(bbox, capped);
+    } catch (err: unknown) {
+      console.error('Maps area error:', err);
+      return { results: [], truncated: false, unavailable: true };
+    }
+  }
+
   // AMap (高德) route with traffic-aware durations. The browser's route
   // calculator asks here when the user picks the "amap" route profile; the key
   // never leaves the server. Coordinates are WGS-84 on the wire in both

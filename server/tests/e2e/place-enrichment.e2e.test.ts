@@ -233,5 +233,8 @@ describe('Place enrichment e2e (real auth guard + real validation pipe)', () => 
 
     expect(blocked.status).toBe(429);
     expect(blocked.body).toEqual({ error: 'Too many requests' });
-  });
+    // Sixty-one sequential round-trips: a couple of seconds alone, but a full
+    // parallel run has blown the 15s default more than once. Same budget the
+    // collab and Atlas slow cases carry.
+  }, 60_000);
 });

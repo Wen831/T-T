@@ -1,3 +1,4 @@
+import { isEffectivelyOffline } from '../sync/networkMode'
 import axios, { AxiosInstance } from 'axios'
 import type { z } from 'zod'
 import type { Place } from '../types'
@@ -1086,16 +1087,94 @@ export const memoriesApi = {
     }).then(r => r.data),
 }
 
+
+// ── Offline search/details fallbacks over the area place cache ───────────────
+// TT port of upstream 4.3.0. The cache answers with no network, and adopts the
+// server's answer when a request went out and never arrived (an offline window
+// mid-flight) without ever masking a real server rejection.
+
+async function withCachedPlace(
+  placeId: string,
+  online: () => Promise<{ place: Record<string, unknown> | null }>,
+): Promise<{ place: Record<string, unknown> | null }> {
+  const fromCache = async (): Promise<{ place: Record<string, unknown> | null } | null> => {
+    const { getCachedPlace, cachedToPlaceRecord } = await import('../sync/placePrefetcher')
+    const hit = await getCachedPlace(placeId)
+    return hit ? { place: cachedToPlaceRecord(hit) } : null
+  }
+
+  if (isEffectivelyOffline()) {
+    const cached = await fromCache()
+    if (cached) return cached
+    return online()
+  }
+  try {
+    return await online()
+  } catch (err) {
+    const e = err as { isAxiosError?: boolean; response?: unknown; code?: string } | null
+    const neverArrived = !!e && e.isAxiosError === true && e.response == null && e.code !== 'ERR_CANCELED'
+    if (!neverArrived) throw err
+    const cached = await fromCache()
+    if (!cached) throw err
+    return cached
+  }
+}
+
+async function withCachedPlaces<T>(
+  query: string,
+  shape: (places: Record<string, unknown>[]) => T,
+  online: () => Promise<T>,
+  signal?: AbortSignal,
+): Promise<T> {
+  const fromCache = async (): Promise<Record<string, unknown>[]> => {
+    const { searchCachedPlaces, cachedToPlaceRecord } = await import('../sync/placePrefetcher')
+    return (await searchCachedPlaces(query)).map(cachedToPlaceRecord)
+  }
+
+  if (isEffectivelyOffline()) return shape(await fromCache())
+  try {
+    return await online()
+  } catch (err) {
+    const e = err as { isAxiosError?: boolean; response?: unknown; code?: string } | null
+    const neverArrived = !!e && e.isAxiosError === true && e.response == null && e.code !== 'ERR_CANCELED'
+    if (!neverArrived) throw err
+    const cached = await fromCache()
+    if (!cached.length) throw err
+    return shape(cached)
+  }
+}
+
 export const mapsApi = {
   search: (query: string, lang?: string, provider?: 'amap' | 'native') =>
-    apiClient.post(`/maps/search?lang=${lang || 'en'}`, { query, provider }).then(r => checkInDev(mapsSearchResultSchema, r.data, 'maps.search')),
+    withCachedPlaces(query, (places) => ({ places, source: 'offline-cache' }), async () =>
+      apiClient.post(`/maps/search?lang=${lang || 'en'}`, { query, provider }).then(r => checkInDev(mapsSearchResultSchema, r.data, 'maps.search'))),
   autocomplete: (input: string, lang?: string, locationBias?: { low: { lat: number; lng: number }; high: { lat: number; lng: number } }, signal?: AbortSignal, sessionToken?: string, provider?: 'amap' | 'native') =>
       apiClient.post('/maps/autocomplete', { input, lang, locationBias, sessionToken, provider }, { signal }).then(r => checkInDev(mapsAutocompleteResultSchema, r.data, 'maps.autocomplete')),
   // AMap routing runs server-side so the key stays on the server and the
   // browser needs no restapi.amap.com CSP allowance. Coordinates are WGS-84.
   amapRoute: (profile: 'driving' | 'walking' | 'cycling', waypoints: { lat: number; lng: number }[], signal?: AbortSignal) =>
     apiClient.post('/maps/amap-route', { profile, waypoints }, { signal, timeout: 20000 }).then(r => r.data as { coordinates: [number, number][]; distance: number; duration: number; legs: { distance: number; duration: number }[] }),
-  details: (placeId: string, lang?: string, sessionToken?: string) => apiClient.get(`/maps/details/${encodeURIComponent(placeId)}`, { params: { lang, sessionToken } }).then(r => checkInDev(mapsPlaceDetailsResultSchema, r.data, 'maps.details')),
+  // The area download behind the offline place cache. A longer timeout than the
+  // search ones: the answer is a few thousand rows fetched once per trip area,
+  // not something a keystroke waits on.
+  area: (
+    bbox: { minLat: number; minLng: number; maxLat: number; maxLng: number },
+    limit?: number,
+    signal?: AbortSignal,
+  ) =>
+    apiClient
+      .get('/maps/area', { params: { ...bbox, limit }, signal, timeout: 30000 })
+      .then(
+        (r) =>
+          r.data as {
+            results: Record<string, unknown>[]
+            truncated: boolean
+            unavailable?: boolean
+          },
+      ),
+  details: (placeId: string, lang?: string, sessionToken?: string) =>
+    withCachedPlace(placeId, () =>
+      apiClient.get(`/maps/details/${encodeURIComponent(placeId)}`, { params: { lang, sessionToken } }).then(r => checkInDev(mapsPlaceDetailsResultSchema, r.data, 'maps.details'))),
   // Pictures and a description for a place that is being looked at but not yet
   // saved. Fans out to several providers server-side, so it takes a signal and
   // the caller is expected to abort it when the selection changes, and a longer

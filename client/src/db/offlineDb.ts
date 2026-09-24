@@ -69,6 +69,32 @@ export interface SyncMeta {
   tilesBbox: [number, number, number, number] | null;
   /** Non-photo files available offline for this trip after the last sync. */
   filesCachedCount: number;
+  /** Fingerprint of the bbox the area place cache was filled for, so a moved
+   *  trip re-downloads its area and a stationary one does not. */
+  areaPlacesKey?: string;
+}
+
+/**
+ * A place from the area around a trip, kept so search answers with no network
+ * (TT port of upstream 4.3.0's offline area cache). The provider id is stored
+ * without a prefix — OSM rows arrive as `type:id`, an AMap row would arrive as
+ * its `amap:<id>` form — and `tripId` is indexed so the whole set can be
+ * dropped with the trip.
+ */
+export interface CachedAreaPlace {
+  /** Provider place id, without the prefix a suggestion carries. */
+  gers: string;
+  tripId: number;
+  name: string;
+  /** Lowercased, diacritics folded — what an offline search actually matches on. */
+  searchName: string;
+  address: string;
+  lat: number | null;
+  lng: number | null;
+  category: string | null;
+  website: string | null;
+  phone: string | null;
+  cachedAt: number;
 }
 
 export interface BlobCacheEntry {
@@ -127,6 +153,7 @@ function initialDbName(): string {
 
 class TrekOfflineDb extends Dexie {
   roadtripPreferences!: Table<{ tripId: number; preferences: RoadtripPreferences }, number>;
+  areaPlaces!: Table<CachedAreaPlace, [string, number]>;
   trips!: Table<Trip, number>;
   days!: Table<Day, number>;
   places!: Table<Place, number>;
@@ -186,6 +213,14 @@ class TrekOfflineDb extends Dexie {
 
     // v6: cache roadtrip preferences alongside the trip for offline settings.
     this.version(6).stores({ roadtripPreferences: 'tripId' });
+
+    // v7: the area place cache behind offline search. Upstream grew this table
+    // across three versions (v5 add, v7 drop, v8 compound-key rebuild) — TT takes
+    // the final shape in one step: the compound primary key, because a provider
+    // place id is only unique per trip, plus the indexes search and eviction read.
+    this.version(7).stores({
+      areaPlaces: '[gers+tripId], gers, tripId, searchName',
+    });
   }
 }
 
@@ -410,6 +445,7 @@ export async function clearTripData(tripId: number): Promise<void> {
       offlineDb.syncMeta,
       offlineDb.blobCache,
       offlineDb.roadtripPreferences,
+      offlineDb.areaPlaces,
     ],
     async () => {
       await offlineDb.roadtripPreferences.delete(tripId);
@@ -424,6 +460,11 @@ export async function clearTripData(tripId: number): Promise<void> {
       await offlineDb.tripMembers.where('tripId').equals(tripId).delete();
       // Keep pending/syncing/conflict mutations — only purge dead 'failed' rows.
       await offlineDb.mutationQueue.where('tripId').equals(tripId).and(m => m.status === 'failed').delete();
+      // The cached places around this trip's area go with it. They are searched
+      // across every trip, so leaving them behind kept a switched-off trip
+      // answering offline searches — and nothing else ever deleted them, so they
+      // accumulated for the life of the install.
+      await offlineDb.areaPlaces.where('tripId').equals(tripId).delete();
       await offlineDb.syncMeta.where('tripId').equals(tripId).delete();
       await offlineDb.blobCache.where('tripId').equals(tripId).delete();
     },
