@@ -151,21 +151,81 @@ build 均通过。且服务端只把 `hook:search-provider` 当**权限标识符
 
 ---
 
-## 交付摘要
+## r6 —— 让本地测试真正可跑（2026-09-25）
 
-- **各根因分类改了什么文件**：r3 的 7 类改动保留在 `20fc06a`（19 文件）；r4 修 `CustomTimePicker`
-  （1 文件）；**r5 修 26 文件**——`sync/mutationQueue.ts` + `repo/roadtripPreferencesRepo.ts` +
-  `hooks/useRoadtripSettings.ts` + `api/wsEventPolicy.ts`（离线回放与 WS 事件）、18 个语种的
-  `shared/src/i18n/*/admin.ts`、3 个测试文件。
-- **错误数对比：143 → 0**（r3 达成；接手时复核确认）。
-- **单测：23 失败 → 0 失败**（客户端 14780/14780 通过）。
-- **三端 build + 三个 tsc**：`npm run build` 三端全绿；client / shared / server tsc 均 EXIT=0。
-- **有没有用断言**：没有。全程 0 处掩盖手段，未放宽 tsconfig。
-- **剩余未修项**：仅两项**功能性待办**（不表现为测试失败，需产品决策）——① `MTripShell` 未渲染
-  `MRoadtripTab`（手机端 roadtrip tab 未接线）；② 除 `CustomTimePicker` 外，其它移植控件是否也有
-  「调用点传了、props 没声明」的 ARIA 静默丢弃，值得排查。另服务端集成测试需先修原生模块才能跑。
+r5 的交付摘要里写着「服务端集成测试需先修原生模块才能跑」。本轮把这句修掉：**`npm test` 现在
+一条命令跑通三端，EXIT=0，连跑两轮全绿。**
+
+### 1. 原生模块 ABI 不匹配（阻塞一切服务端测试）
+
+- **症状**：`better-sqlite3` 编译于 Node ABI **127**，本机 Node **137**（v24.21.0）→
+  `ERR_DLOPEN_FAILED`，服务端**每个**测试（unit / integration / e2e）都在 import 阶段死。
+- **为何先前绕不过**：本机无 gcc/g++/make/node-gyp，不能就地重编译；`prebuild-install` 之前在
+  错误目录运行且当时网络不通。
+- **修法**：`~/.npm/_prebuilds` 里本就有匹配的 linux-x64 / ABI 137 预编译包。
+  新增 `scripts/fix-native-modules.mjs`：比对当前 Node 的 ABI 与已装模块，不符则装对应预编译二进制；
+  顶层 `package.json` 加 `pretest` 钩子自动运行（另加 `npm run fix:native` 手动入口）。
+  **脚本经实测**：还原成 ABI 127 后运行，自动修复成功。
+
+### 2. 服务端 5 处失败——全是「移植新增了 surface，但审查棘轮没同步」
+
+服务端测试此前从未在本机跑过（见 1），所以这些从 r2 起就红着。三类是**棘轮要求补登记**，
+两处是**断言过期**。全部按「让分类正确」处理，没有放宽任何检查：
+
+| 项 | 性质 | 处理 |
+|---|---|---|
+| `DocSyncWebhookController.nudge` 不在 `PUBLIC_ROUTE_ALLOW_LIST` | 启动守卫直接抛错，**所有** integration 测试因此失败 | 登记并写明理由（provider 无会话，路径里的 per-binding token 即凭证，body 从不作为真相） |
+| `DROP TABLE roadtrip_day_boundaries`（迁移 241） | 破坏性 DDL 未过白名单 | 核实为标准 SQLite 表重建（建新表→复制行→DROP→RENAME，仅放宽 `day_number` 上界）→ 按同组写入 `ALLOWED_DESTRUCTIVE` |
+| `hook:search-provider` 不在 PLUGHOOK-002 契约表 | 主机确实在调用它 | 补入，预算 2000ms（与调用点一致） |
+| ADMIN-SVC-069 拿 `documents` 当「无 MCP surface」样本 | 移植后 documents 有了 MCP surface（doc-sync） | 样本改用 `llm_parsing`（唯一不在清单内的） |
+| VNOTIF-001 假设 current 来自 `package.json` | 实际来自 `APP_VERSION` 环境变量，兜底硬编码 `0.7.2` | 测试内 mock `readEnv` 把版本锚定到 `package.json`，不再依赖 shell 环境 |
+
+> **注意**：`validate-route-guards.ts` 那一条是关键——没有它，几乎所有 integration 测试都在
+> `buildApp()` 阶段抛错。我实测过：stash 掉本轮改动后服务端反而有 **9 条失败**（且多个文件整体失败）。
+
+### 3. 两处 flake 与两条慢用例
+
+- **间歇性未捕获错误**（约 1/3 概率让 `npm test` 退出码非 0，尽管测试全绿）：
+  `BackgroundTasksWidget` 的 `features()` 请求活得比组件久，卸载后 `setAiParsing` 触发
+  react-dom 内部读 `window` → 环境已拆除 → `ReferenceError: window is not defined` 成为
+  unhandled rejection。**修法**：加 `cancelled` 标志（React 官方模式），顺带消除真实的卸载后 setState。
+  实测**连跑 6 轮客户端全量，0 次未捕获错误**。
+- **Atlas 两条 GeoJSON 用例超时**：各含数 MB 压缩/解压，单独跑约 7 秒，并行时超过 15 秒默认预算。
+  给它们显式 60 秒（而不是换小 fixture——真实文件正是被测对象）。
+
+### 最终验证（全部实测）
+
+| 命令 | 结果 |
+|---|---|
+| **`npm test`（顶层）** | ✅ **EXIT=0**，连跑两轮（shared 669 / server 10213 / client 14780，0 失败） |
+| `tsc --noEmit -p client / shared / server` | ✅ 三者均 EXIT=0 |
+| `npm run build` | ✅ 三端全绿 |
+| 客户端全量连跑 6 轮 | ✅ 0 未捕获错误 |
+| 服务端全量（含 e2e / integration） | ✅ 492 文件 / 10213 通过 |
+
+### 红线遵守（r6 继续）
+
+- **0 处** `as any` / `@ts-ignore` / `@ts-expect-error`，未放宽 tsconfig。
+- 未回退 r1–r5；未改 `migrations.ts`（**只动了迁移白名单测试，不碰迁移本身**）；未碰密钥；
+  **未 push**；未部署/重启服务。
+- 修 `better-sqlite3` 只替换了 `node_modules` 里的原生二进制（不属仓库内容），旧件留有
+  `better_sqlite3.node.abi127.bak` 备份。
+
+---
+
+## 交付摘要（r6 更新）
+
+- **改了什么**：r3 的 7 类在 `20fc06a`（19 文件）；r4 `CustomTimePicker`（1 文件）；
+  r5 26 文件（离线回放 / WS 事件 / 18 语种 i18n / 3 测试）；**r6 10 文件**
+  （`scripts/fix-native-modules.mjs` + `package.json`、`validate-route-guards.ts`、
+  3 处棘轮清单、4 处 flake/断言、1 处卸载后 setState）。
+- **错误数对比：143 → 0**。
+- **单测：客户端 23 失败 → 0；服务端从「根本跑不起来」→ 10213 全通过**。
+- **`npm test`：EXIT=0（三端全绿，连跑两轮）**；三个 tsc EXIT=0；`npm run build` 三端全绿。
+- **有没有用断言**：没有。全程 0 处掩盖手段。
+- **剩余未修项**：两项**功能性待办**（需产品决策，不表现为测试失败）——
+  ① `MTripShell` 未渲染 `MRoadtripTab`（手机端 roadtrip tab 未接线）；
+  ② 除 `CustomTimePicker` 外，其它移植控件是否也有「调用点传了、props 没声明」的 ARIA 静默丢弃，值得排查。
 
 FINAL_DONE
 
-
-FINAL_DONE
