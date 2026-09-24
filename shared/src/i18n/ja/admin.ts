@@ -414,6 +414,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': '「写真」機能への写真の提供',
   'admin.plugins.perm.hook:calendar-source': 'カレンダーへの予定の提供',
   'admin.plugins.perm.hook:place-detail-provider': '場所に追加の詳細情報（レビュー、評価、リンク）を提供',
+  'admin.plugins.perm.hook:search-provider': '独自のインデックスから場所検索に応答（TT 自身の結果と並んで表示）',
   'admin.plugins.perm.hook:trip-warning-provider': '旅程に検証警告を表示（プランナー内に表示）',
   'admin.plugins.perm.hook:table-contributor': '旅行のビュー（予約、場所、日程）に列とアクションを追加',
   'admin.plugins.perm.hook:map-marker-provider': '旅行の地図にマーカーを追加（例: 予約や POI を表示）',

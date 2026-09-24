@@ -399,6 +399,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Események biztosítása a naptárhoz',
   'admin.plugins.perm.hook:place-detail-provider':
     'További részletek (értékelések, minősítések, hivatkozások) hozzáadása egy helyhez',
+  'admin.plugins.perm.hook:search-provider': 'Saját indexéből válaszol a helykeresésekre, a TREK saját találatai mellett',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Ellenőrzési figyelmeztetések megjelenítése egy utazáson (a tervezőben látható)',
   'admin.plugins.perm.hook:table-contributor':

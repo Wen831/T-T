@@ -397,6 +397,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Proporcionar eventos al calendario',
   'admin.plugins.perm.hook:place-detail-provider':
     'Aportar detalles adicionales (reseñas, valoraciones, enlaces) a un lugar',
+  'admin.plugins.perm.hook:search-provider': 'Responder a las búsquedas de lugares desde su propio índice, junto a los resultados de TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Generar advertencias de validación en un viaje (mostradas en el planificador)',
   'admin.plugins.perm.hook:table-contributor':

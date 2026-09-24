@@ -393,6 +393,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Надавати фотографії для Спогадів',
   'admin.plugins.perm.hook:calendar-source': 'Надавати події для календаря',
   'admin.plugins.perm.hook:place-detail-provider': 'Додавати додаткові деталі (відгуки, оцінки, посилання) до місця',
+  'admin.plugins.perm.hook:search-provider': 'Відповідає на пошук місць із власного індексу, поруч із результатами TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Створювати попередження перевірки для подорожі (показуються в планувальнику)',
   'admin.plugins.perm.hook:table-contributor': 'Додавати стовпці та дії до подань подорожі (бронювання, місця, дні)',

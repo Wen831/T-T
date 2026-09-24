@@ -440,6 +440,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Takvime etkinlik sağlar',
   'admin.plugins.perm.hook:place-detail-provider':
     'Bir yere ek ayrıntılar (yorumlar, puanlar, bağlantılar) katkıda bulunur',
+  'admin.plugins.perm.hook:search-provider': "Yer aramalarını kendi dizininden, TREK'in kendi sonuçlarının yanında yanıtlar",
   'admin.plugins.perm.hook:trip-warning-provider': 'Bir gezide doğrulama uyarıları oluşturur (planlayıcıda gösterilir)',
   'admin.plugins.perm.hook:table-contributor':
     'Seyahat görünümlerine sütunlar ve eylemler ekler (rezervasyonlar, yerler, günler)',

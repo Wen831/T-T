@@ -403,6 +403,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': '為「回憶」提供照片',
   'admin.plugins.perm.hook:calendar-source': '為行事曆提供事件',
   'admin.plugins.perm.hook:place-detail-provider': '為地點提供額外資訊（評論、評分、連結）',
+  'admin.plugins.perm.hook:search-provider': '從自己的索引回答地點搜尋，與 TT 自身結果並列',
   'admin.plugins.perm.hook:trip-warning-provider': '對行程發出驗證警告（顯示於規劃工具中）',
   'admin.plugins.perm.hook:table-contributor': '向行程檢視（預訂、地點、日期）新增欄位與操作',
   'admin.plugins.perm.hook:map-marker-provider': '向行程地圖新增標記（例如顯示預訂或興趣點）',

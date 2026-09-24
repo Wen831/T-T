@@ -395,6 +395,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Evenementen aanleveren voor de kalender',
   'admin.plugins.perm.hook:place-detail-provider':
     'Extra details (reviews, beoordelingen, links) aan een plek toevoegen',
+  'admin.plugins.perm.hook:search-provider': 'Beantwoordt plaatszoekopdrachten vanuit zijn eigen index, naast de resultaten van TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Validatiewaarschuwingen tonen bij een reis (zichtbaar in de planner)',
   'admin.plugins.perm.hook:table-contributor':

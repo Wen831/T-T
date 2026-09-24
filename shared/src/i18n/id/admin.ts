@@ -443,6 +443,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Menyediakan acara untuk kalender',
   'admin.plugins.perm.hook:place-detail-provider':
     'Menyumbangkan detail tambahan (ulasan, peringkat, tautan) untuk suatu tempat',
+  'admin.plugins.perm.hook:search-provider': 'Menjawab penelusuran tempat dari indeksnya sendiri, di samping hasil TREK sendiri',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Munculkan peringatan validasi pada perjalanan (ditampilkan di perencana)',
   'admin.plugins.perm.hook:table-contributor':

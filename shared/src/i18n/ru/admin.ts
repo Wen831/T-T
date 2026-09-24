@@ -395,6 +395,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Предоставлять фотографии для «Воспоминаний»',
   'admin.plugins.perm.hook:calendar-source': 'Предоставлять события для календаря',
   'admin.plugins.perm.hook:place-detail-provider': 'Добавлять дополнительные сведения (отзывы, оценки, ссылки) к месту',
+  'admin.plugins.perm.hook:search-provider': 'Отвечает на поиск мест из собственного индекса, рядом с результатами TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Выдавать предупреждения проверки для поездки (отображаются в планировщике)',
   'admin.plugins.perm.hook:table-contributor':

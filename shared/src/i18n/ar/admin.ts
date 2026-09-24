@@ -405,6 +405,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'توفير الصور لميزة الذكريات',
   'admin.plugins.perm.hook:calendar-source': 'توفير الأحداث للتقويم',
   'admin.plugins.perm.hook:place-detail-provider': 'المساهمة بتفاصيل إضافية (مراجعات، تقييمات، روابط) لمكان ما',
+  'admin.plugins.perm.hook:search-provider': 'يستجيب لعمليات البحث عن الأماكن من فهرسه الخاص، إلى جانب نتائج TREK',
   'admin.plugins.perm.hook:trip-warning-provider': 'إظهار تحذيرات التحقق على الرحلة (تظهر في المخطط)',
   'admin.plugins.perm.hook:table-contributor': 'إضافة أعمدة وإجراءات إلى عروض الرحلة (الحجوزات، الأماكن، الأيام)',
   'admin.plugins.perm.hook:map-marker-provider': 'إضافة علامات إلى خريطة الرحلة (مثل عرض الحجوزات أو نقاط الاهتمام)',

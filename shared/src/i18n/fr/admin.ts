@@ -397,6 +397,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Fournir des photos à Photos',
   'admin.plugins.perm.hook:calendar-source': 'Fournir des événements au calendrier',
   'admin.plugins.perm.hook:place-detail-provider': 'Ajouter des détails supplémentaires (avis, notes, liens) à un lieu',
+  'admin.plugins.perm.hook:search-provider': 'Répondre aux recherches de lieux depuis son propre index, à côté des résultats de TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Émettre des avertissements de validation sur un voyage (affichés dans le planificateur)',
   'admin.plugins.perm.hook:table-contributor':

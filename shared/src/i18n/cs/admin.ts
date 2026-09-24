@@ -391,6 +391,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Poskytovat fotky do sekce Fotky',
   'admin.plugins.perm.hook:calendar-source': 'Poskytovat události do kalendáře',
   'admin.plugins.perm.hook:place-detail-provider': 'Přidávat další podrobnosti (recenze, hodnocení, odkazy) k místu',
+  'admin.plugins.perm.hook:search-provider': 'Odpovídá na hledání míst z vlastního indexu, vedle vlastních výsledků TREK',
   'admin.plugins.perm.hook:trip-warning-provider': 'Vyvolávat ověřovací upozornění u cesty (zobrazená v plánovači)',
   'admin.plugins.perm.hook:table-contributor': 'Přidávat sloupce a akce do zobrazení cesty (rezervace, místa, dny)',
   'admin.plugins.perm.hook:map-marker-provider': 'Přidávat značky na mapu cesty (např. zobrazit rezervace nebo POI)',

@@ -446,6 +446,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Παροχή συμβάντων στο ημερολόγιο',
   'admin.plugins.perm.hook:place-detail-provider':
     'Συνεισφορά επιπλέον λεπτομερειών (κριτικές, βαθμολογίες, σύνδεσμοι) σε ένα μέρος',
+  'admin.plugins.perm.hook:search-provider': 'Απαντά σε αναζητήσεις τόπων από το δικό του ευρετήριο, δίπλα στα αποτελέσματα του TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Εμφάνιση προειδοποιήσεων επικύρωσης σε ένα ταξίδι (εμφανίζονται στον σχεδιαστή)',
   'admin.plugins.perm.hook:table-contributor':
