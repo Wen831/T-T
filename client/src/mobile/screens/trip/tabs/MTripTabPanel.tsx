@@ -5,6 +5,7 @@ import MCollabTab from './MCollabTab';
 import MCostsTab from './MCostsTab';
 import MFilesTab from './MFilesTab';
 import MListsTab from './MListsTab';
+import MRoadtripTab from '../roadtrip/MRoadtripTab';
 import MTransportsTab from './MTransportsTab';
 import { TabScroller } from './tabChrome';
 
@@ -53,6 +54,11 @@ export default function MTripTabPanel({ planner, shell, tab }: MTripTabPanelProp
       return <MCollabTab planner={planner} shell={shell} />;
     case 'listen':
       return <MListsTab planner={planner} shell={shell} />;
+    // The only tab with two halves of its own: the chain, or the same map showing
+    // the stage. Both are this one component, because they share a stage and the
+    // switch between them must not lose it.
+    case 'roadtrip':
+      return <MRoadtripTab planner={planner} shell={shell} tab={tab} />;
     default:
       return <TabScroller>{null}</TabScroller>;
   }

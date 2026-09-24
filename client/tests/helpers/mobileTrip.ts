@@ -229,6 +229,55 @@ export function buildPlanner(overrides: Partial<TripPlanner> = {}): TripPlanner 
 
     mapTileUrl: 'https://tile.example/{z}/{x}/{y}.png',
     fontStyle: {},
+    // The road trip addon's routing round. The shell reads days/totalDistance for
+    // its stage header on every render, addon on or off, so the empty-but-valid
+    // shape belongs in the base rather than in the overrides of one suite.
+    roadtripRoutes: {
+      days: [], quietDays: [], lines: [], lineDays: [], accessLines: [], vias: [], segments: [],
+      totalDistance: 0, totalDuration: 0, totalStops: 0, loading: false,
+    },
+
+    // The corridor search, idle. Both the search bar over the stage and the search
+    // sheet read it on every render of the road trip tab, addon on or off, so the
+    // empty-but-valid shape belongs here rather than in one suite's overrides.
+    roadtripCorridor: {
+      dayId: '', setDayId: vi.fn(), day: undefined,
+      categories: ['fuel'], toggleCategory: vi.fn(),
+      widthKm: 5, setWidthKm: vi.fn(),
+      search: {
+        results: [], progress: { done: 0, total: 0 }, loading: false, capped: false,
+        failedSources: [], failedAreas: 0, truncatedAreas: 0, error: false, spine: [],
+        search: vi.fn(), clear: vi.fn(),
+      },
+      nameFilter: '', setNameFilter: vi.fn(), anchors: [],
+      section: null, setSection: vi.fn(), sectionKm: 50, setSectionKm: vi.fn(),
+      socketFilter: '', setSocketFilter: vi.fn(), minKw: 0, setMinKw: vi.fn(),
+      visible: [], insertIndexFor: vi.fn(() => 0), stopsAlongKm: [], clear: vi.fn(),
+    },
+    // The fuel search, idle: the dry band in the chain reads it per leg.
+    refuel: {
+      openFor: null, loading: false, outcome: null, results: [], offered: [],
+      ask: vi.fn(), close: vi.fn(),
+    },
+    askRefuel: vi.fn(),
+    acceptRefuel: vi.fn(),
+    // Other ways of driving a leg, with no picker open. The road trip tab and the map area
+    // read the picker on every render, so the closed shape belongs in the base.
+    routeAlternatives: { open: null, ask: vi.fn(), close: vi.fn() },
+    askRouteAlternatives: vi.fn(),
+    chooseRouteAlternative: vi.fn(async () => undefined),
+    alternativeOverlays: [],
+    alternativeFocusPoints: [],
+    highlightedAlternative: null,
+    setHighlightedAlternative: vi.fn(),
+    // The drive's vias, online and empty. `editable` is what the leg buttons read.
+    roadtripVias: {
+      byDay: {}, trackByDay: {}, stale: false, editable: true,
+      add: vi.fn(), addMany: vi.fn(), move: vi.fn(), remove: vi.fn(), reanchor: vi.fn(),
+    },
+    mapFocusPoints: [],
+    focusRoadtripPoint: vi.fn(),
+
     splashDone: true,
   };
 

@@ -11,7 +11,7 @@ import { buildPlanner, buildShell } from '../../../helpers/mobileTrip'
 import { resetAllStores, seedStore } from '../../../helpers/store'
 import { fireEvent, render, screen, waitFor } from '../../../helpers/render'
 
-// FE-MOB-SHOST-001 to FE-MOB-SHOST-027
+// FE-MOB-SHOST-001 to FE-MOB-SHOST-029
 //
 // Every child sheet is stubbed: this file is about the host — which sheet is
 // mounted for which shell.sheet id, and how the host's own callbacks wire the
@@ -33,6 +33,10 @@ vi.mock('../../../../src/mobile/screens/trip/sheets/MAccommodationSheet', () => 
 vi.mock('../../../../src/mobile/screens/trip/sheets/MTransportSheet', () => ({ default: selfRouted('stub-transport') }))
 vi.mock('../../../../src/mobile/screens/trip/sheets/MBrowseActionsSheet', () => ({ default: selfRouted('stub-bract') }))
 vi.mock('../../../../src/mobile/screens/trip/sheets/MMehrSheet', () => ({ default: selfRouted('stub-mehr') }))
+vi.mock('../../../../src/mobile/screens/trip/roadtrip/MRtCorridorSheet', () => ({ default: selfRouted('stub-rtsearch') }))
+vi.mock('../../../../src/mobile/screens/trip/roadtrip/MRtDraftSheet', () => ({
+  default: ({ planner }: { planner: TripPlanner }) => <div data-testid="stub-rtdraft" data-trip={planner.tripId} />,
+}))
 vi.mock('../../../../src/mobile/screens/trip/sheets/MExportSheet', () => ({ default: selfRouted('stub-export') }))
 
 vi.mock('../../../../src/mobile/screens/trip/sheets/MNoteSheet', () => ({

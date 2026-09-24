@@ -301,6 +301,48 @@ function baseState(): HookState {
     dayPlaces: [],
     mapTileUrl: 'https://tiles/{z}/{x}/{y}.png',
     fontStyle: { fontFamily: 'var(--font-system)' },
+    // Road trip mode off, which is the state every assertion below reads: the page keeps
+    // its ordinary map, sidebar and route wiring, and the road-trip branches stay unmounted.
+    // The shapes still have to be here, because the page reaches into routeAlternatives.open,
+    // roadtripRoutes.lines and roadtripVias.byDay before it ever checks whether the mode is on.
+    roadtripMode: false,
+    toggleRoadtripMode: vi.fn(),
+    roadtripActive: false,
+    roadtripRoutes: { lines: [], segments: [], days: [], loading: false, totalStops: 0 },
+    roadtripCorridor: { visible: [], day: null, dayId: '', setDayId: vi.fn(), categories: [], toggleCategory: vi.fn(), widthKm: 5, setWidthKm: vi.fn(), search: vi.fn(), nameFilter: '', setNameFilter: vi.fn(), insertIndexFor: vi.fn() },
+    refuel: { openFor: null, loading: false, outcome: null, results: [], offered: [], ask: vi.fn(), close: vi.fn() },
+    askRefuel: vi.fn(),
+    acceptRefuel: vi.fn(),
+    followTrack: { dayId: null, open: vi.fn(), close: vi.fn(), tracks: [], busy: false, round: 0, error: null, outcome: null, apply: vi.fn(), clear: vi.fn(), viaCount: 0, available: false },
+    // The recorded-route overlay (#2279). Off and empty: the page reads
+    // `dawarichTrail.track` unconditionally, so the fixture has to carry the
+    // shape the hook returns even when the addon is not in play.
+    dawarichEnabled: false,
+    dawarichTrailShown: false,
+    toggleDawarichTrail: vi.fn(),
+    dawarichTrail: { track: null, status: 'idle', reload: vi.fn() },
+    roadtripViaCounts: {},
+    stopDraft: null,
+    setStopDraft: vi.fn(),
+    saveStopDraft: vi.fn(async () => undefined),
+    stopDraftToForm: vi.fn(),
+    stopDraftDuplicate: null,
+    reorderRoadtripStop: vi.fn(async () => undefined),
+    roadtripVias: { byDay: {}, refresh: vi.fn(async () => undefined) },
+    addRoadtripVia: vi.fn(async () => undefined),
+    moveRoadtripVia: vi.fn(async () => undefined),
+    removeRoadtripVia: vi.fn(async () => undefined),
+    routeAlternatives: { open: null, close: vi.fn(), loading: false, ask: vi.fn(async () => undefined) },
+    askRouteAlternatives: vi.fn(async () => undefined),
+    chooseRouteAlternative: vi.fn(async () => undefined),
+    alternativeOverlays: [],
+    alternativeFocusPoints: [],
+    stayDraft: null,
+    setStayDraft: vi.fn(),
+    setRoadtripStay: vi.fn(async () => undefined),
+    highlightedAlternative: null,
+    setHighlightedAlternative: vi.fn(),
+
     splashDone: true,
   };
 }

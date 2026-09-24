@@ -55,6 +55,8 @@ export type MTripListsTab = 'packing' | 'todo';
 export type MTripCollabTab = 'chat' | 'notes' | 'polls';
 /** The road trip tab's own list ⇄ map switch, independent of `view`. */
 export type MRtView = 'list' | 'map';
+/** Tabs whose content is a map with a list half — the toggle switches the halves. */
+const MAP_TABS = new Set(['plan', 'roadtrip']);
 
 /**
  * Currently open bottom/floating sheet. Well-known ids (owned by the sheets
@@ -217,6 +219,8 @@ export default function MTripShell({
 
   const [view, setView] = useState<MTripView>('plan');
   const [rtView, setRtView] = useState<MRtView>('list');
+  // Whether the front layer of the active tab is a list (vs the map showing the
+  // same content) — one reading for the toggle icon on both map tabs.
   const [rtReach, setRtReach] = useState<CorridorReach>('ahead');
   const [mode, setMode] = useState<MTripMode>('go');
   const [browseFromEdit, setBrowseFromEdit] = useState(false);
@@ -286,6 +290,7 @@ export default function MTripShell({
   }, [planner.selectedDayId, days]);
 
   const trTab = planner.activeTab;
+  const mapFront = (trTab === 'plan' && view === 'map') || (trTab === 'roadtrip' && rtView === 'map');
 
   const setTrTab = (tabId: string) => {
     planner.handleTabChange(tabId);
@@ -453,7 +458,18 @@ export default function MTripShell({
           )}
         </div>
       )}
-      {trTab !== 'plan' && (
+      {/* The stage lives at z-20, below the day chips at z-25, which is the whole
+          of the stage picker: the chips belong to the shell and were only ever
+          hidden because non-plan panels cover them at z-30. */}
+      {trTab === 'roadtrip' && rtView === 'list' && (
+        <div className="absolute inset-0 z-20 bg-[color:var(--m-bg)] bg-[image:var(--m-scr)]">
+          <TabPanel planner={planner} shell={shell} tab={trTab} />
+        </div>
+      )}
+      {trTab === 'roadtrip' && rtView === 'map' && (
+        <TabPanel planner={planner} shell={shell} tab={trTab} />
+      )}
+      {!MAP_TABS.has(trTab) && (
         <div className="absolute inset-0 z-30 bg-[color:var(--m-bg)] bg-[image:var(--m-scr)]">
           <TabPanel planner={planner} shell={shell} tab={trTab} />
         </div>
@@ -726,13 +742,16 @@ export default function MTripShell({
             );
           })()}
 
-        {trTab === 'plan' ? (
+        {/* Same slot, same markup, same icons in both map tabs, so the switch does
+            not move or change shape when the tab does. The two views stay separate
+            states: coupling them would drag one tab into the other's half. */}
+        {MAP_TABS.has(trTab) ? (
           <MIconBtn
-            ariaLabel={view === 'plan' ? t('mobileTrip.mapView') : t('mobileTrip.listView')}
-            onClick={toggleView}
+            ariaLabel={mapFront ? t('mobileTrip.listView') : t('mobileTrip.mapView')}
+            onClick={trTab === 'roadtrip' ? toggleRtView : toggleView}
             className="backdrop-blur-[24px] backdrop-saturate-[1.7]"
           >
-            {view === 'plan' ? <MapIcon size={18} strokeWidth={2} /> : <List size={18} strokeWidth={2} />}
+            {mapFront ? <List size={18} strokeWidth={2} /> : <MapIcon size={18} strokeWidth={2} />}
           </MIconBtn>
         ) : (
           <span className="w-[38px] flex-none" />

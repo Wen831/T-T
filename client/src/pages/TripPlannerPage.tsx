@@ -6,6 +6,7 @@ import AirTrailImportModal from '../components/Planner/AirTrailImportModal';
 import BookingImportModal from '../components/Planner/BookingImportModal';
 import DayDetailPanel from '../components/Planner/DayDetailPanel';
 import DayPlanSidebarWithActivities from '../components/Planner/DayPlanSidebarWithActivities';
+import RoadtripModeSwitch from '../components/Roadtrip/RoadtripModeSwitch';
 import PlaceFormModal from '../components/Planner/PlaceFormModal';
 import PlaceInspector from '../components/Planner/PlaceInspector';
 import PlacesSidebar from '../components/Planner/PlacesSidebar';
@@ -58,6 +59,13 @@ import { useTripPlanner } from './tripPlanner/useTripPlanner';
 const ReservationsPanel = lazyWithRetry(() => import('../components/Planner/ReservationsPanel'));
 const PackingListPanel = lazyWithRetry(() => import('../components/Packing/PackingListPanel'));
 const TodoListPanel = lazyWithRetry(() => import('../components/Todo/TodoListPanel'));
+const RoadtripSidebar = lazyWithRetry(() => import('../components/Roadtrip/RoadtripSidebar'));
+const RoadtripCorridorPanel = lazyWithRetry(() => import('../components/Roadtrip/RoadtripCorridorPanel'));
+const RoadtripLimitsCard = lazyWithRetry(() => import('../components/Roadtrip/RoadtripLimitsCard'));
+const RoadtripStopPopup = lazyWithRetry(() => import('../components/Roadtrip/RoadtripStopPopup'));
+const RoadtripStayModal = lazyWithRetry(() => import('../components/Roadtrip/RoadtripStayModal'));
+const RoadtripTrackModal = lazyWithRetry(() => import('../components/Roadtrip/RoadtripTrackModal'));
+const RoadtripAlternativesBar = lazyWithRetry(() => import('../components/Roadtrip/RoadtripAlternativesBar'));
 const FileManager = lazyWithRetry(() => import('../components/Files/FileManager'));
 const CostsPanel = lazyWithRetry(() => import('../components/Budget/CostsPanel'));
 // Named export, so it needs the extra hop. Importing it statically would keep the
@@ -85,12 +93,15 @@ const TransportModal = lazyWithRetry(() =>
  * No label: ErrorBoundary lets label win over the panel level and would title a
  * broken packing list "This plugin could not be shown".
  */
-function LazyPanel({ id, children }: { id: string; children: React.ReactNode }): React.ReactElement {
+function LazyPanel({ id, children, overlay }: { id: string; children: React.ReactNode; overlay?: boolean }): React.ReactElement {
   return (
     <ErrorBoundary boundaryId={`planner-panel:${id}`}>
-      <Suspense
-        fallback={<div className="h-full min-h-[180px] w-full animate-pulse rounded-xl bg-surface-secondary" />}
-      >
+      {/* A panel holds its place with a skeleton while its chunk arrives; a dialog has no
+          place to hold. Drawn in the page flow, that skeleton was a pale block flashing
+          under the planner the first time each dialog was ever opened, and never again
+          once the chunk was cached. Nothing is the right placeholder for something that
+          is about to cover the screen anyway. */}
+      <Suspense fallback={overlay ? null : <div className="h-full min-h-[180px] w-full animate-pulse rounded-xl bg-surface-secondary" />}>
         {children}
       </Suspense>
     </ErrorBoundary>
@@ -478,6 +489,47 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
     mapTileUrl,
     fontStyle,
     splashDone,
+    // Road trip addon wiring (TT port of upstream 4.3.0): the drive mode, its
+    // sidebar/corridor data and the three overlay editors.
+    roadtripMode,
+    toggleRoadtripMode,
+    roadtripActive,
+    roadtripRoutes,
+    focusRoadtripPoint,
+    roadtripViaCounts,
+    collapsedRoadtripDays,
+    toggleRoadtripDay,
+    reorderRoadtripStop,
+    moveRoadtripStopToDay,
+    askRouteAlternatives,
+    chooseRouteAlternative,
+    alternativeOverlays,
+    alternativeFocusPoints,
+    highlightedAlternative,
+    setHighlightedAlternative,
+    routeAlternatives,
+    editRoadtripStay,
+    setRoadtripStopKind,
+    setRoadtripStopFill,
+    followTrack,
+    refuel,
+    askRefuel,
+    acceptRefuel,
+    roadtripCorridor,
+    handlePoiClick,
+    openManualRoadtripStop,
+    roadtripSettingsLoading,
+    saveRoadtripLimit,
+    resetDayBoundaries,
+    stayDraft,
+    setStayDraft,
+    setRoadtripStay,
+    stopDraft,
+    setStopDraft,
+    stopDraftDuplicate,
+    saveStopDraft,
+    saveStopDraftAsNight,
+    stopDraftToForm,
   } = useTripPlanner();
 
   // The place inspector's booking strip opens the editor the booking belongs to.
@@ -651,6 +703,20 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
               onViewportChange={poi.onViewportChange}
               onMapReady={setGlMap}
             />
+            {/* The drive's other ways, floating over the map while the picker is open. */}
+            {routeAlternatives.open && (
+              <div style={{ position: 'absolute', bottom: 18, left: '50%', transform: 'translateX(-50%)', zIndex: 26, pointerEvents: 'none', display: 'flex', justifyContent: 'center' }}>
+                <LazyPanel id="roadtrip-alternatives" overlay>
+                  <RoadtripAlternativesBar
+                    open={routeAlternatives.open}
+                    overlays={alternativeOverlays}
+                    onChoose={chooseRouteAlternative}
+                    onClose={routeAlternatives.close}
+                    onHighlight={setHighlightedAlternative}
+                  />
+                </LazyPanel>
+              </div>
+            )}
 
             {(poiPillEnabled || glMap) && (
               <div
@@ -790,6 +856,32 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
                   opacity: leftHidden ? 0 : 1,
                 }}
               >
+                {enabledAddons.roadtrip && <RoadtripModeSwitch active={roadtripMode} onChange={(v) => { if (v !== roadtripMode) toggleRoadtripMode(); }} />}
+                {enabledAddons.roadtrip && roadtripMode ? (
+                  <LazyPanel id="roadtrip-rail">
+                    <RoadtripSidebar
+                      routes={roadtripRoutes}
+                      onFocusPoint={focusRoadtripPoint}
+                      selectedAssignmentId={selectedAssignmentId}
+                      onSelectStop={(placeId, assignmentId) => handlePlaceClick(placeId, assignmentId)}
+                      onReorderStop={can('day_edit', trip) ? reorderRoadtripStop : undefined}
+                      onMoveStopToDay={can('day_edit', trip) ? moveRoadtripStopToDay : undefined}
+                      onAskAlternatives={can('day_edit', trip) ? askRouteAlternatives : undefined}
+                      openAlternatives={routeAlternatives.open}
+                      onEditStay={can('place_edit', trip) ? editRoadtripStay : undefined}
+                      onSetStopKind={can('place_edit', trip) ? setRoadtripStopKind : undefined}
+                      onSetStopFill={can('place_edit', trip) ? setRoadtripStopFill : undefined}
+                      onFollowTrack={can('day_edit', trip) && followTrack.available ? followTrack.open : undefined}
+                      viaCounts={roadtripViaCounts}
+                      trackNames={followTrack.namesByDay}
+                      refuel={refuel}
+                      onAskRefuel={askRefuel}
+                      onAcceptRefuel={can('day_edit', trip) ? acceptRefuel : undefined}
+                      collapsedDayIds={collapsedRoadtripDays}
+                      onToggleDay={toggleRoadtripDay}
+                    />
+                  </LazyPanel>
+                ) : (
                 <DayPlanSidebarWithActivities
                   isMobile={isMobile}
                   tripId={tripId}
@@ -917,6 +1009,7 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
                       : undefined
                   }
                 />
+                )}
                 {!leftHidden && !narrowPanels && (
                   <div
                     role="presentation"
@@ -1011,6 +1104,26 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
                   />
                 )}
                 <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', paddingLeft: 4 }}>
+                  {roadtripActive ? (
+                    <LazyPanel id="roadtrip-corridor">
+                      {/* No Add button for someone who may not add: openAddPlaceFromPoi
+                          returns silently without the permission, which reads as a broken
+                          button rather than a missing one. */}
+                      <RoadtripCorridorPanel
+                        tripId={Number(tripId)} canImport={can('place_edit', trip) && can('day_edit', trip)}
+                        corridor={roadtripCorridor}
+                        routes={roadtripRoutes}
+                        onAddPoi={can('place_edit', trip) ? handlePoiClick : undefined}
+                        onAddManual={can('place_edit', trip) ? openManualRoadtripStop : undefined}
+                        onFocusPoint={focusRoadtripPoint}
+                      />
+                      {/* Under the search, because the limits are read while looking at
+                          what the drive is doing rather than set up front. */}
+                      <div className="px-3.5 pb-3.5">
+                        <RoadtripLimitsCard loading={roadtripSettingsLoading} onSave={saveRoadtripLimit} onResetDayBoundaries={resetDayBoundaries} />
+                      </div>
+                    </LazyPanel>
+                  ) : (
                   <PlacesSidebar
                     tripId={tripId}
                     places={places}
@@ -1034,6 +1147,7 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
                     isMobile={false}
                     isTouch={isTouch}
                   />
+                  )}
                 </div>
               </div>
             </div>
@@ -1715,6 +1829,37 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
         )}
       </div>
 
+      {/* The small way in for something found along the drive. Mounted only while a
+          draft exists, so the chunk stays unloaded for anyone not using road trip mode. */}
+      {/* How long a stop takes. Its own gate, not the corridor draft's: a stay is set on
+          any stop of the trip, not only on something just found along the route. */}
+      {/* Which track a day drives along. Mounted only while it is open, so the chunk and
+          the parsing of every imported line stay out of an ordinary planner session. */}
+      {followTrack.dayId !== null && (
+        <LazyPanel id="roadtrip-track" overlay>
+          <RoadtripTrackModal
+            follow={followTrack}
+            dayNumber={roadtripRoutes.days.find(d => d.dayId === followTrack.dayId)?.dayNumber ?? 0}
+          />
+        </LazyPanel>
+      )}
+      {stayDraft && (
+        <LazyPanel id="roadtrip-stay" overlay>
+          <RoadtripStayModal stop={stayDraft} onClose={() => setStayDraft(null)} onSave={setRoadtripStay} />
+        </LazyPanel>
+      )}
+      {stopDraft && (
+        <LazyPanel id="roadtrip-stop" overlay>
+          <RoadtripStopPopup
+            draft={stopDraft}
+            duplicateName={stopDraftDuplicate}
+            onClose={() => setStopDraft(null)}
+            onSave={saveStopDraft}
+            onSaveNight={saveStopDraftAsNight}
+            onMoreDetails={stopDraftToForm}
+          />
+        </LazyPanel>
+      )}
       <PlaceFormModal
         isOpen={showPlaceForm}
         onClose={() => {
