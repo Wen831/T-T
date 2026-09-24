@@ -260,3 +260,30 @@ describe('AssignmentOpsController (parity with the per-assignment op routes)', (
     );
   });
 });
+
+describe('PUT /:id/end-day (roadtrip overnight marker)', () => {
+  it('404 missing, else sets + broadcasts without a reconcile', () => {
+    expect(
+      thrown(() =>
+        new AssignmentOpsController(
+          svc({ getAssignmentForTrip: vi.fn().mockReturnValue(undefined) } as Partial<AssignmentsService>),
+        ).endDay(user, '5', '9', { end_day: true }),
+      ),
+    ).toEqual({ status: 404, body: { error: 'Assignment not found' } });
+    const setEndDay = vi.fn().mockReturnValue({ id: 9, end_day: 1 });
+    const broadcast = vi.fn();
+    const reconcile = vi.fn();
+    const s = svc({
+      getAssignmentForTrip: vi.fn().mockReturnValue({ id: 9 }),
+      setEndDay,
+      broadcast,
+      reconcile,
+    } as Partial<AssignmentsService>);
+    expect(new AssignmentOpsController(s).endDay(user, '5', '9', { end_day: true }, 'sock')).toEqual({
+      assignment: { id: 9, end_day: 1 },
+    });
+    expect(setEndDay).toHaveBeenCalledWith('9', true);
+    expect(broadcast).toHaveBeenCalledWith('5', 'assignment:updated', { assignment: { id: 9, end_day: 1 } }, 'sock');
+    expect(reconcile).not.toHaveBeenCalled();
+  });
+});

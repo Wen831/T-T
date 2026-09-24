@@ -6,6 +6,7 @@ import {
   assignmentNotesRequestSchema,
   assignmentTransportRequestSchema,
   assignmentParticipantsRequestSchema,
+  assignmentEndDayRequestSchema,
 } from '@trek/shared';
 
 import { createZodDto } from 'nestjs-zod';
@@ -24,3 +25,4 @@ export class AssignmentTimeDto extends createZodDto(assignmentTimeRequestSchema)
 export class AssignmentNotesDto extends createZodDto(assignmentNotesRequestSchema) {}
 export class AssignmentTransportDto extends createZodDto(assignmentTransportRequestSchema) {}
 export class AssignmentParticipantsDto extends createZodDto(assignmentParticipantsRequestSchema) {}
+export class AssignmentEndDayDto extends createZodDto(assignmentEndDayRequestSchema) {}

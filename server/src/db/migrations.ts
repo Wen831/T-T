@@ -4692,6 +4692,43 @@ function runMigrations(db: Database.Database): void {
         .get();
       if (!hasColumn) db.exec('ALTER TABLE document_sync_items ADD COLUMN remote_trashed_at TEXT');
     },
+    /* ===== TT port: upstream v4.3.0 migration #207 (appended; roadtrip) ===== */
+    //
+    // What kind of stop a place is on a drive — fuel, charging, rest area, campsite.
+    //
+    // Deliberately NOT a `categories` row. Those are the traveller's own list, editable
+    // and instance-wide (`categories.service.ts` selects them without a user filter), so
+    // seeding four road-trip kinds there would push them into everyone's dropdown and hand
+    // their colour to whoever edits the list first. A refuelling stop is not a taste; it is
+    // a fact about the place, and the road-trip categories already own its icon and colour
+    // (`poiCategories.ts`).
+    //
+    // Free text rather than a CHECK constraint: the set grows with what the corridor
+    // search can look for, and SQLite cannot alter a constraint without rebuilding the
+    // table. NULL means an ordinary place, which is every row that exists today.
+    //
+    // This one landed in TT's shared types during r3 but the column itself was missed —
+    // charging.service and roadtrip-plan.service select it, so without the column those
+    // queries die with "no such column" on every real database.
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('places')").all() as Array<{ name: string }>;
+      if (!cols.some(c => c.name === 'stop_type')) {
+        db.exec('ALTER TABLE places ADD COLUMN stop_type TEXT');
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #211 (appended; doc-sync) ===== */
+    //
+    // Lets a synced document be attached to a budget item, the same way file_links
+    // already attaches one to a reservation/assignment/place. doc-sync's replace path
+    // copies these columns verbatim, so without the column that path dies.
+    () => {
+      const flCols = db.prepare("SELECT name FROM pragma_table_info('file_links')").all() as Array<{ name: string }>;
+      if (!flCols.some((c) => c.name === 'budget_item_id')) {
+        db.exec('ALTER TABLE file_links ADD COLUMN budget_item_id INTEGER REFERENCES budget_items(id) ON DELETE SET NULL');
+      }
+      db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_file_links_file_budget ON file_links(file_id, budget_item_id)');
+      db.exec('CREATE INDEX IF NOT EXISTS idx_file_links_budget_item_id ON file_links(budget_item_id)');
+    },
   ];
 
   if (currentVersion < migrations.length) {

@@ -2145,3 +2145,56 @@ describe('attachAmapPhoto', () => {
     expect(row.image_url ?? null).toBeNull();
   });
 });
+
+// ── road-trip stop fields (4.3 port) ─────────────────────────────────────────
+
+describe('road-trip stop fields', () => {
+  it('PLACE-SVC-090 — create persists stop_type and fill_percent', () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    const place = svc.create(String(trip.id), {
+      name: 'Loader',
+      stop_type: 'charging',
+      fill_percent: 15,
+    }) as any;
+    expect(place.stop_type).toBe('charging');
+    expect(place.fill_percent).toBe(15);
+  });
+
+  it('PLACE-SVC-091 — update patches both fields', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    const place = svc.create(String(trip.id), { name: 'Loader', stop_type: 'charging' }) as any;
+    const updated = (await svc.update(String(trip.id), String(place.id), {
+      stop_type: 'rest_area',
+      fill_percent: 40,
+    })) as any;
+    expect(updated.stop_type).toBe('rest_area');
+    expect(updated.fill_percent).toBe(40);
+  });
+
+  it('PLACE-SVC-092 — an explicit null stop_type makes the stop ordinary again', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    const place = svc.create(String(trip.id), { name: 'Loader', stop_type: 'fuel' }) as any;
+    const updated = (await svc.update(String(trip.id), String(place.id), { stop_type: null })) as any;
+    expect(updated.stop_type).toBeNull();
+  });
+
+  it('PLACE-SVC-093 — an explicit null duration_minutes clears the planned stay', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    const place = svc.create(String(trip.id), { name: 'Loader', duration_minutes: 20 }) as any;
+    const updated = (await svc.update(String(trip.id), String(place.id), { duration_minutes: null })) as any;
+    expect(updated.duration_minutes).toBeNull();
+  });
+
+  it('PLACE-SVC-094 — an absent stop_type patch leaves the kind alone', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    const place = svc.create(String(trip.id), { name: 'Loader', stop_type: 'fuel' }) as any;
+    const updated = (await svc.update(String(trip.id), String(place.id), { notes: 'note only' })) as any;
+    expect(updated.stop_type).toBe('fuel');
+    expect(updated.notes).toBe('note only');
+  });
+});

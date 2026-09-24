@@ -10,6 +10,7 @@ import {
   AssignmentNotesDto,
   AssignmentTransportDto,
   AssignmentParticipantsDto,
+  AssignmentEndDayDto,
 } from './assignments.dto';
 import { AssignmentsService } from './assignments.service';
 import { Body, Controller, Delete, Get, Headers, HttpException, Param, Post, Put, UseGuards } from '@nestjs/common';
@@ -171,6 +172,26 @@ export class AssignmentOpsController {
     const assignment = this.assignments.updateTime(id, body.place_time, body.end_time);
     this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
     this.assignments.reconcile(tripId, socketId);
+    return { assignment };
+  }
+
+  // The road trip's overnight marker flips without touching order or times, so
+  // like the note write there is no reconcile — the journey skeleton mirror
+  // doesn't read end_day. Same guard shape and 404 body as the neighbours.
+  @RequirePermission('day_edit')
+  @Put(':id/end-day')
+  endDay(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: AssignmentEndDayDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!this.assignments.getAssignmentForTrip(id, tripId)) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
+    }
+    const assignment = this.assignments.setEndDay(id, body.end_day);
+    this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
     return { assignment };
   }
 

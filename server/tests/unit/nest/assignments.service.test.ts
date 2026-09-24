@@ -480,3 +480,23 @@ describe('setLegTransportMode', () => {
 
 // ASG-SVC-026 pinned the deleted assignments.bridge and died with it — the
 // same paths are covered on the service above and via places.mcp injection.
+
+describe('setEndDay', () => {
+  it('ASG-SVC-033: flips the overnight marker without touching the day order', () => {
+    const { day, place } = fixture();
+    const a = createDayAssignment(testDb, day.id, place.id);
+    const b = createDayAssignment(testDb, day.id, place.id);
+
+    expect(svc.setEndDay(a.id, true)!.end_day).toBe(true);
+    expect(svc.setEndDay(b.id, false)!.end_day).toBe(false);
+    // The write is a plain column update: no auto-sort, order untouched.
+    expect(
+      (testDb.prepare('SELECT order_index FROM day_assignments WHERE id = ?').get(a.id) as { order_index: number })
+        .order_index,
+    ).toBe(0);
+    expect(
+      (testDb.prepare('SELECT order_index FROM day_assignments WHERE id = ?').get(b.id) as { order_index: number })
+        .order_index,
+    ).toBe(1);
+  });
+});

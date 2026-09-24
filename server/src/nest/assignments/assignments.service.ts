@@ -71,6 +71,7 @@ export class AssignmentsService {
         COALESCE(da.assignment_end_time, p.end_time) as end_time,
         p.duration_minutes, p.notes as place_notes,
         p.image_url, p.transport_mode, p.google_place_id, p.google_ftid, p.osm_id, p.website, p.phone,
+        p.stop_type, p.fill_percent,
         c.name as category_name, c.color as category_color, c.icon as category_icon
       FROM day_assignments da
       JOIN places p ON da.place_id = p.id
@@ -104,6 +105,9 @@ export class AssignmentsService {
       notes: a.notes,
       assignment_time: a.assignment_time ?? null,
       assignment_end_time: a.assignment_end_time ?? null,
+      // Same boolean normalisation the list path's rowShape applies — the two read
+      // paths must hand the client one wire shape, end_day included.
+      end_day: a.end_day === 1,
       leg_transport_mode: a.leg_transport_mode ?? null,
       incoming_leg_transport_mode: a.incoming_leg_transport_mode ?? null,
       participants,
@@ -129,6 +133,10 @@ export class AssignmentsService {
         osm_id: a.osm_id,
         website: a.website,
         phone: a.phone,
+        // Same fields the list path carries: the rail marks a fuel stop as one and
+        // reads the fill amount off the stop itself.
+        stop_type: a.stop_type ?? null,
+        fill_percent: a.fill_percent ?? null,
         category: a.category_id
           ? {
               id: a.category_id,
@@ -151,6 +159,7 @@ export class AssignmentsService {
         COALESCE(da.assignment_end_time, p.end_time) as end_time,
         p.duration_minutes, p.notes as place_notes,
         p.image_url, p.transport_mode, p.google_place_id, p.google_ftid, p.osm_id, p.website, p.phone,
+        p.stop_type, p.fill_percent,
         c.name as category_name, c.color as category_color, c.icon as category_icon
       FROM day_assignments da
       JOIN places p ON da.place_id = p.id
@@ -307,6 +316,17 @@ export class AssignmentsService {
       }
     });
 
+    return this.getAssignmentWithPlace(Number(id));
+  }
+
+  /**
+   * Whether a visit ends its day — the road trip's overnight marker. A plain
+   * column write on purpose: like the transport-mode writes, end_day affects
+   * neither the day order nor the journey skeleton, so there is no auto-sort
+   * and no reconcile to run (TT port of upstream 4.3.0 #1799).
+   */
+  setEndDay(id: string | number, endDay: boolean) {
+    this.dbs.run('UPDATE day_assignments SET end_day = ? WHERE id = ?', endDay ? 1 : 0, id);
     return this.getAssignmentWithPlace(Number(id));
   }
 

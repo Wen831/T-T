@@ -85,6 +85,8 @@ export interface PlaceCreateInput {
   transport_mode?: string;
   route_geometry?: string;
   route_color?: string;
+  stop_type?: string | null;
+  fill_percent?: number | null;
   tags?: number[];
 }
 
@@ -111,6 +113,8 @@ export interface PlaceUpdateInput {
   phone?: string;
   transport_mode?: string;
   route_color?: string | null;
+  stop_type?: string | null;
+  fill_percent?: number | null;
   tags?: number[];
 }
 
@@ -284,6 +288,8 @@ export class PlacesService {
       transport_mode,
       route_geometry,
       route_color,
+      stop_type,
+      fill_percent,
       tags = [],
     } = body;
 
@@ -292,8 +298,8 @@ export class PlacesService {
     INSERT INTO places (trip_id, name, description, lat, lng, address, category_id, price, currency,
       place_time, end_time,
       duration_minutes, notes, image_url, google_place_id, google_ftid, osm_id, amap_id, website, phone, transport_mode,
-      route_geometry, route_color)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      route_geometry, route_color, stop_type, fill_percent)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `,
       // lat/lng/price/duration_minutes use an explicit undefined check, not `||`:
       // 0 is a legitimate value for all four (Null Island, a free entry, a
@@ -321,6 +327,10 @@ export class PlacesService {
       transport_mode || 'walking',
       route_geometry || null,
       route_color || null,
+      stop_type || null,
+      // `?? null` rather than `|| null`, the same reason lat/lng have it: the column is a
+      // percentage and the falsy check would be a silent floor.
+      fill_percent ?? null,
     );
 
     const placeId = result.lastInsertRowid;
@@ -403,6 +413,8 @@ export class PlacesService {
       phone,
       transport_mode,
       route_color,
+      stop_type,
+      fill_percent,
       tags,
     } = body;
 
@@ -419,7 +431,7 @@ export class PlacesService {
       currency = COALESCE(?, currency),
       place_time = ?,
       end_time = ?,
-      duration_minutes = COALESCE(?, duration_minutes),
+      duration_minutes = ?,
       notes = ?,
       image_url = ?,
       google_place_id = ?,
@@ -430,6 +442,8 @@ export class PlacesService {
       phone = ?,
       transport_mode = COALESCE(?, transport_mode),
       route_color = ?,
+      stop_type = ?,
+      fill_percent = ?,
       updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `,
@@ -443,9 +457,11 @@ export class PlacesService {
       currency || null,
       place_time !== undefined ? place_time : existingPlace.place_time,
       end_time !== undefined ? end_time : existingPlace.end_time,
-      // `?? null` rather than `|| null`: with COALESCE(?, duration_minutes) a
-      // falsy-coerced 0 read as "absent" and silently kept the old duration.
-      duration_minutes ?? null,
+      // Not COALESCE, like its neighbours: the contract says an explicit null
+      // clears the planned stay length, and COALESCE made null and absent the
+      // same thing, so the field advertised a reset it never performed. 0 keeps
+      // working, which a `|| null` bind would have swallowed.
+      duration_minutes !== undefined ? duration_minutes : existingPlace.duration_minutes,
       notes !== undefined ? notes : existingPlace.notes,
       image_url !== undefined ? image_url : existingPlace.image_url,
       google_place_id !== undefined ? google_place_id : existingPlace.google_place_id,
@@ -458,6 +474,10 @@ export class PlacesService {
       // Deliberately not COALESCE: an explicit null is how the picker resets a
       // track back to its category colour (#776).
       route_color !== undefined ? route_color : existingPlace.route_color,
+      // Same shape: an explicit null is how a fuel stop becomes an ordinary place again.
+      stop_type !== undefined ? stop_type : existingPlace.stop_type,
+      // And how a stop that had its own fill amount goes back to following the setting.
+      fill_percent !== undefined ? fill_percent : existingPlace.fill_percent,
       placeId,
     );
 

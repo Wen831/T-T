@@ -76,6 +76,9 @@ export interface Place {
   amap_id?: string | null;
   route_geometry?: string | null;
   route_color?: string | null;
+  /** Road-trip stop kind — fuel, charging, rest area, campsite, … NULL is an ordinary place. */
+  stop_type?: string | null;
+  fill_percent?: number | null;
   website?: string | null;
   phone?: string | null;
   transport_mode?: string;
@@ -111,6 +114,8 @@ export interface DayAssignment {
   reservation_datetime?: string | null;
   assignment_time?: string | null;
   assignment_end_time?: string | null;
+  /** The road trip's overnight marker (0/1 in SQLite, boolean on the wire). */
+  end_day?: number | null;
   leg_transport_mode?: string | null;
   incoming_leg_transport_mode?: string | null;
   created_at?: string;
@@ -336,6 +341,9 @@ export interface AssignmentRow extends DayAssignment {
   osm_id: string | null;
   website: string | null;
   phone: string | null;
+  /** Road-trip stop kind carried on the joined place row. */
+  stop_type?: string | null;
+  fill_percent?: number | null;
   category_name: string | null;
   category_color: string | null;
   category_icon: string | null;
