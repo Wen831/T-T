@@ -74,6 +74,16 @@ export const HANDLED_OUTSIDE_TRIP_STORE = [
   'import:progress',
   'import:done',
   'import:error',
+  // Road trip + doc-sync (4.3 addons) — each has its own listener that takes the
+  // server's answer for one day of the trip on screen: useRoadtripVias (vias and
+  // track), useDayBoundaries (boundaries), useDocSync / useDocSyncOffered (a
+  // refresh ping), useLoadRoadtripSettings (preferences, adopted into the cache
+  // the settings readers overlay).
+  'roadtripVia:changed',
+  'roadtripTrack:changed',
+  'roadtripBoundary:changed',
+  'roadtripPreferences:changed',
+  'docsync:changed',
 ] as const satisfies readonly TrekWsEventName[]
 
 /**

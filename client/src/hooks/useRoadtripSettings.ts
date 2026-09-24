@@ -1,9 +1,10 @@
 import { liveQuery } from 'dexie'
 import { onNetworkModeChange } from '../sync/networkMode'
 import { useEffect, useState } from 'react'
-import type { RoadtripPreferences } from '@trek/shared'
+import { roadtripPreferencesSchema, type RoadtripPreferences } from '@trek/shared'
 import { useAuthStore } from '../store/authStore'
 import { useTripStore } from '../store/tripStore'
+import { addListener, removeListener } from '../api/websocket'
 import { EMPTY_ROADTRIP_PREFERENCES, publishRoadtripPreferences, useRoadtripPreferencesStore } from '../store/roadtripPreferencesStore'
 import { cachedRoadtripPreferences, roadtripPreferencesRepo } from '../repo/roadtripPreferencesRepo'
 
@@ -38,5 +39,21 @@ export function useLoadRoadtripSettings(tripId: number, enabled: boolean) {
     window.addEventListener('online', load)
     return () => { cancelled = true; cacheSubscription.unsubscribe(); unsubscribe(); window.removeEventListener('online', load) }
   }, [tripId, userId, enabled, key])
+
+  // Another member saving the drive settings broadcasts the server's answer. Adopting it
+  // into the cache is what republishes it here (the liveQuery above), so this tab stops
+  // routing off the numbers it read before that edit.
+  useEffect(() => {
+    if (!enabled || !userId || !Number.isFinite(tripId)) return
+    const receive = (event: Record<string, unknown>) => {
+      if (event.type !== 'roadtripPreferences:changed' || String(event.tripId) !== String(tripId)) return
+      const parsed = roadtripPreferencesSchema.safeParse(event.preferences)
+      if (!parsed.success) return
+      void roadtripPreferencesRepo.adopt(tripId, parsed.data).catch(() => {})
+    }
+    addListener(receive)
+    return () => removeListener(receive)
+  }, [tripId, userId, enabled])
+
   return { ready: loadedKey === key, failed: failedKey === key }
 }

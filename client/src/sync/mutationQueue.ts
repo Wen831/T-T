@@ -12,6 +12,7 @@ import { isEffectivelyOffline } from './networkMode'
 import { getOfflinePrefs } from './offlinePrefs'
 import { randomId } from '../utils/randomId'
 import type { QueuedMutation } from '../db/offlineDb'
+import type { RoadtripPreferences } from '@trek/shared'
 import type { Table } from 'dexie'
 
 // Map Dexie table names used in `resource` field → actual Dexie tables.
@@ -80,9 +81,27 @@ function extractConflictServer(err: unknown): unknown {
   return null
 }
 
+/** Resources whose row is keyed by `tripId` and carries no `id` of its own, so the
+ *  generic `'id' in entity` path below never matches them. A trip's driving settings
+ *  answer `{ tripId, preferences }` — adopting that answer is what drains a queued
+ *  preference edit back into the cache the reader overlays. */
+async function applyPreferenceEntity(mutation: QueuedMutation, data: unknown): Promise<boolean> {
+  if (mutation.resource !== 'roadtripPreferences') return false
+  if (!data || typeof data !== 'object') return false
+  const body = data as { tripId?: unknown; preferences?: unknown }
+  if (typeof body.tripId !== 'number' || !body.preferences || typeof body.preferences !== 'object') return false
+  await offlineDb.roadtripPreferences.put({
+    tripId: body.tripId,
+    preferences: body.preferences as RoadtripPreferences,
+  })
+  return true
+}
+
 /** Write a server entity into its Dexie table (used when "theirs" wins a conflict). */
 async function applyServerEntity(mutation: QueuedMutation, server: unknown): Promise<void> {
-  if (!mutation.resource || !server || typeof server !== 'object' || !('id' in server)) return
+  if (!mutation.resource || !server || typeof server !== 'object') return
+  if (await applyPreferenceEntity(mutation, server)) return
+  if (!('id' in server)) return
   const table = getTable(mutation.resource)
   if (table) await table.put(server)
 }
@@ -196,7 +215,10 @@ export const mutationQueue = {
           // Apply canonical server response to Dexie
           if (mutation.method !== 'DELETE' && mutation.resource) {
             const table = getTable(mutation.resource)
-            if (table && response.data && typeof response.data === 'object') {
+            // Preferences are keyed by tripId and answer { tripId, preferences }, so they
+            // take the dedicated path; the generic one below looks for an `id`.
+            const appliedPreference = await applyPreferenceEntity(mutation, response.data)
+            if (!appliedPreference && table && response.data && typeof response.data === 'object') {
               // Server returns { place: {...} } or { item: {...} } — grab first value
               const values = Object.values(response.data as Record<string, unknown>)
               const entity = values[0]

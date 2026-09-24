@@ -18,6 +18,17 @@ export async function cachedRoadtripPreferences(tripId: number, excludeMutation?
 const writes = new Map<number, Promise<RoadtripPreferences>>()
 
 export const roadtripPreferencesRepo = {
+  /**
+   * Adopt preferences another member of the trip just saved, as announced by
+   * `roadtripPreferences:changed`. The socket payload is the server's own answer, so it
+   * replaces the cache outright — the liveQuery in useLoadRoadtripSettings then publishes
+   * it, which is what moves the range, the day window and the other drive numbers on this
+   * client. Without this the tab keeps computing routes off the settings it last read.
+   */
+  async adopt(tripId: number, preferences: RoadtripPreferences): Promise<void> {
+    await offlineDb.roadtripPreferences.put({ tripId, preferences })
+  },
+
   async read(tripId: number): Promise<RoadtripPreferences> {
     const cacheName = offlineDb.name
     return onlineThenCache(async () => {
