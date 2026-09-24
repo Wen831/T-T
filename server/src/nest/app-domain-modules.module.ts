@@ -52,6 +52,8 @@ import { TripInviteModule } from './trip-invite/trip-invite.module';
 import { TripsModule } from './trips/trips.module';
 import { TunnelModule } from './tunnel/tunnel.module';
 import { VacayModule } from './vacay/vacay.module';
+import { PlaceShadowModule } from './place-shadow/place-shadow.module';
+import { RouteUsageModule } from './route-usage/route-usage.module';
 import { WeatherModule } from './weather/weather.module';
 import { SchoolHolidaysModule } from './school-holidays/school-holidays.module';
 import { Module } from '@nestjs/common';
@@ -73,6 +75,8 @@ import { Module } from '@nestjs/common';
     AtlasModule,
     VacayModule,
     SchoolHolidaysModule,
+    PlaceShadowModule,
+    RouteUsageModule,
     PackingModule,
     TodoModule,
     BudgetModule,

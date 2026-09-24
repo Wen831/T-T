@@ -369,6 +369,23 @@ export class AdminController {
     return result;
   }
 
+  @Get('place-shadow')
+  getPlaceShadow() {
+    return this.addons.getPlaceShadow();
+  }
+
+  @Put('place-shadow')
+  updatePlaceShadow(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = this.addons.updatePlaceShadow(body.enabled);
+    this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.place_shadow',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
   // Switch for the AMap (高德) place-search provider. The key itself rides the
   // existing API-keys save; this only decides which provider the search uses,
   // and the effective value additionally needs a stored key (see app-config).

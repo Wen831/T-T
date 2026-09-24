@@ -95,3 +95,7 @@ export * from './geo/gcj02';
 
 // The manual school-holiday catalog the Vacay addon merges with the external feed.
 export * from './vacay/school-holiday-catalog.schema';
+
+// Place-search shadow corpus and route usage counters (TT port of upstream 4.3.0).
+export * from './maps/place-shadow.schema';
+export * from './maps/route-usage.schema';

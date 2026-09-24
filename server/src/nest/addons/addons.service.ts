@@ -199,6 +199,19 @@ export class AddonsService {
   }
 
   /**
+   * Place-search shadow corpus (TT port of upstream 4.3.0). Fail-closed like the
+   * switches above, so an absent row correctly means off — an install that has
+   * been recording does not exist yet, so there is nothing to backfill.
+   * PlaceShadowService.enabled() reads the same key the same way.
+   */
+  getPlaceShadow() {
+    return this.readFlag('place_shadow_enabled');
+  }
+  updatePlaceShadow(enabled: boolean) {
+    return this.writeFlag('place_shadow_enabled', enabled);
+  }
+
+  /**
    * AMap (高德) place search — instance-wide switch, fail-closed like the three
    * above. Only meaningful together with a stored `amap_api_key`; the switch
    * alone answers "enabled" while no search can run, so the admin panel and
