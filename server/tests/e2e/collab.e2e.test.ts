@@ -242,6 +242,10 @@ describe('Collab e2e (real auth guard + temp SQLite)', () => {
     expect(res.body.title).toBe('Lesbar');
   });
 
+  // Sixty-one sequential round-trips through the real guard; alone the loop takes a
+  // couple of seconds, but under a full parallel run it blew the 15s default. The
+  // budget is raised rather than the loop shortened, because spending the whole
+  // window is what the case is about.
   it('429 once the caller has spent a minute of preview fetches', async () => {
     vi.stubGlobal(
       'fetch',
@@ -265,7 +269,7 @@ describe('Collab e2e (real auth guard + temp SQLite)', () => {
     // The counters live on the container singleton, so a spent budget would
     // follow this user into every test declared after it.
     app.get(RateLimitService).reset('collab_link_preview');
-  });
+  }, 60_000);
 
   it('400 on link-preview without a url', async () => {
     const res = await request(server).get('/api/trips/5/collab/link-preview').set('Cookie', sessionCookie(1));

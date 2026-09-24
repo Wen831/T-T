@@ -4729,6 +4729,406 @@ function runMigrations(db: Database.Database): void {
       db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_file_links_file_budget ON file_links(file_id, budget_item_id)');
       db.exec('CREATE INDEX IF NOT EXISTS idx_file_links_budget_item_id ON file_links(budget_item_id)');
     },
+    /* ===== TT port: upstream v4.3.0 migration #206 (appended; place-shadow) ===== */
+    //
+    // The corpus behind the place-search evaluation: what a user searched, what the
+    // live provider ranked where, and which result they actually picked. No user id,
+    // no session, no trip — the pick is a fact about the query, not the person.
+    //
+    // The table is created regardless of the switch: the switch decides whether
+    // rows are written, and a schema that appears only when a feature is
+    // enabled is a schema that differs between installs.
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS place_shadow_picks (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          query TEXT NOT NULL,
+          lang TEXT,
+          bias_lat REAL,
+          bias_lng REAL,
+          source TEXT NOT NULL,
+          live_rank INTEGER NOT NULL,
+          live_count INTEGER NOT NULL,
+          picked_name TEXT NOT NULL,
+          picked_lat REAL NOT NULL,
+          picked_lng REAL NOT NULL,
+          picked_place_id TEXT
+        )
+      `);
+      // Retention deletes by age, the export pages by id.
+      db.exec('CREATE INDEX IF NOT EXISTS idx_place_shadow_created ON place_shadow_picks(created_at)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #210 (appended; atlas data fix) ===== */
+    //
+    // "Guangdong Province" used to resolve as "Guangzhou Province" — the city, not
+    // the province — and both names made it into stored region codes. This renames
+    // the mistyped rows and removes the duplicates the rename collides with.
+    //
+    // UPDATE OR IGNORE for visited_regions/hidden_regions, which carry a unique
+    // region key: renaming into a correct region that already exists would
+    // otherwise hit the unique index and keep a duplicate, and place_regions with a
+    // plain UPDATE, because place_id is its primary key and nothing there can
+    // collide.
+    () => {
+      db.prepare(
+        `UPDATE OR IGNORE visited_regions
+         SET region_code = 'CN-GUANGDONGPROVINCE', region_name = 'Guangdong Province'
+         WHERE UPPER(country_code) = 'CN' AND (region_code = 'CN-GUANGZHOUPROVINCE' OR region_name = 'Guangzhou Province')`,
+      ).run();
+      db.prepare(
+        `DELETE FROM visited_regions
+         WHERE UPPER(country_code) = 'CN' AND (region_code = 'CN-GUANGZHOUPROVINCE' OR region_name = 'Guangzhou Province')`,
+      ).run();
+      db.prepare(
+        `UPDATE OR IGNORE place_regions
+         SET region_code = 'CN-GUANGDONGPROVINCE', region_name = 'Guangdong Province'
+         WHERE UPPER(country_code) = 'CN' AND (region_code = 'CN-GUANGZHOUPROVINCE' OR region_name = 'Guangzhou Province')`,
+      ).run();
+      // hidden_regions is the other direction: it remembers which derived region
+      // a user switched off. Left behind, the tombstone stops matching and the
+      // region a user deliberately hid comes back.
+      db.prepare(
+        `UPDATE OR IGNORE hidden_regions
+         SET region_code = 'CN-GUANGDONGPROVINCE'
+         WHERE UPPER(country_code) = 'CN' AND region_code = 'CN-GUANGZHOUPROVINCE'`,
+      ).run();
+      db.prepare(
+        `DELETE FROM hidden_regions
+         WHERE UPPER(country_code) = 'CN' AND region_code = 'CN-GUANGZHOUPROVINCE'`,
+      ).run();
+    },
+    /* ===== TT port: upstream v4.3.0 migration #212 (appended; collab) ===== */
+    //
+    // Which chat message an uploaded image belongs to — the file row learns its
+    // message, so deleting the message can take the file with it.
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('trip_files')").all() as Array<{ name: string }>;
+      if (!cols.some((c) => c.name === 'message_id')) {
+        db.exec('ALTER TABLE trip_files ADD COLUMN message_id INTEGER REFERENCES collab_messages(id) ON DELETE CASCADE');
+      }
+      db.exec('CREATE INDEX IF NOT EXISTS idx_trip_files_message_id ON trip_files(message_id)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #213 (appended; collab) ===== */
+    //
+    // Links somebody shared with the trip.
+    //
+    // Its own table rather than a note with a URL in it: a link is pinned,
+    // ordered and opened, and none of that is what a note does. `user_id` is who
+    // shared it, so the list can say so and so a member leaving takes their rows
+    // with them.
+    () => {
+      db.exec(`CREATE TABLE IF NOT EXISTS collab_links (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trip_id INTEGER NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        url TEXT NOT NULL,
+        pinned INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_collab_links_trip ON collab_links(trip_id)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #214 (appended; route-usage) ===== */
+    //
+    // Route usage counters — how much routing this instance really does.
+    //
+    // Daily aggregates, not a log: one row per day, profile, surface and engine
+    // kind, carrying totals. No query, no coordinate, no route, no user, no trip.
+    // The question they answer is whether the instance could host a router
+    // itself, and that needs volume, not itineraries.
+    //
+    // The table is created regardless of the switch, like the shadow log above:
+    // the switch decides whether rows are written, and a schema that appears only
+    // when a feature is on is a schema that differs between installs.
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS route_usage_daily (
+          day TEXT NOT NULL,
+          profile TEXT NOT NULL,
+          surface TEXT NOT NULL,
+          self_hosted INTEGER NOT NULL,
+          requests INTEGER NOT NULL DEFAULT 0,
+          waypoints INTEGER NOT NULL DEFAULT 0,
+          km REAL NOT NULL DEFAULT 0,
+          failed INTEGER NOT NULL DEFAULT 0,
+          PRIMARY KEY (day, profile, surface, self_hosted)
+        )
+      `);
+      // Retention deletes by day, and the summary reads the newest days first.
+      db.exec('CREATE INDEX IF NOT EXISTS idx_route_usage_day ON route_usage_daily(day)');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #216 (appended; school-holidays) ===== */
+    //
+    // The manual school-holiday catalog the Vacay addon merges with the external
+    // OpenHolidays feed: countries, their regions (revision-locked for concurrent
+    // admin edits), and the date ranges themselves.
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS school_holiday_countries (
+          code TEXT PRIMARY KEY, name TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS school_holiday_regions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          country TEXT NOT NULL REFERENCES school_holiday_countries(code),
+          name TEXT NOT NULL COLLATE NOCASE, revision INTEGER NOT NULL DEFAULT 1,
+          UNIQUE(country, name)
+        );
+        CREATE TABLE IF NOT EXISTS school_holiday_periods (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          region_id INTEGER NOT NULL REFERENCES school_holiday_regions(id) ON DELETE CASCADE,
+          name TEXT NOT NULL, start_date TEXT NOT NULL, end_date TEXT NOT NULL,
+          CHECK (end_date >= start_date)
+        );
+        CREATE INDEX IF NOT EXISTS idx_school_holiday_periods_region ON school_holiday_periods(region_id);
+      `);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #220 (appended; budget) ===== */
+    //
+    // When a settlement was actually settled, as opposed to when the row was
+    // written — the bookkeeping answer to "did this happen before the trip ended".
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('budget_settlements')").all() as Array<{ name: string }>;
+      if (!cols.some(c => c.name === 'settled_at')) {
+        db.exec('ALTER TABLE budget_settlements ADD COLUMN settled_at TEXT');
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #226 (appended; mcp) ===== */
+    //
+    // Per-token scoping for MCP keys. scope_mode 'all' is today's behaviour, and
+    // every existing key is 'all', so nothing that works today stops working —
+    // the restriction is opt-in at mint time.
+    () => {
+      const hasMode = db.prepare("SELECT 1 FROM pragma_table_info('mcp_tokens') WHERE name = 'scope_mode'").get();
+      if (!hasMode) db.exec("ALTER TABLE mcp_tokens ADD COLUMN scope_mode TEXT NOT NULL DEFAULT 'all'");
+      const hasScopes = db.prepare("SELECT 1 FROM pragma_table_info('mcp_tokens') WHERE name = 'api_scopes'").get();
+      if (!hasScopes) db.exec('ALTER TABLE mcp_tokens ADD COLUMN api_scopes TEXT');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #228 (appended; roadtrip stay) ===== */
+    //
+    // Provenance for a day stop that a lodging booking put there rather than the
+    // traveller: it carries the stay's id, so moving or deleting the booking can
+    // move or delete exactly that stop and never one somebody placed by hand.
+    // Every row that already exists stays NULL: those were planned by hand, and a
+    // booking must not start claiming ownership of them. The steps below add the
+    // missing stops instead, which is a different thing from claiming old ones.
+    () => {
+      const hasColumn = db.prepare("SELECT 1 FROM pragma_table_info('day_assignments') WHERE name = 'accommodation_id'").get();
+      if (!hasColumn) db.exec('ALTER TABLE day_assignments ADD COLUMN accommodation_id INTEGER');
+    },
+    /* ===== TT port: upstream v4.3.0 migration #229 (appended; roadtrip stay) ===== */
+    //
+    // Give every stay booked before this release the day stop it would get today.
+    //
+    // Road trip mode builds its drive out of day_assignments alone, so a hotel
+    // booked in Days mode was invisible there and the traveller had to add the
+    // same place a second time by hand. New bookings get the stop as they are
+    // written; without this step the fix would only ever apply to trips planned
+    // after the upgrade, and the trips people already have would stay broken.
+    //
+    // Skipped on purpose: a stay whose place is gone (place_id is ON DELETE SET
+    // NULL, and the booking form writes stays that never had one), and a place the
+    // traveller already planned for that day, whose row stays theirs and unmarked.
+    // Re-runnable: the same NOT EXISTS decides both times.
+    () => {
+      const stays = db.prepare(`
+        SELECT a.id, a.place_id, a.start_day_id
+        FROM day_accommodations a
+        WHERE a.place_id IS NOT NULL
+          AND NOT EXISTS (
+            SELECT 1 FROM day_assignments da
+            WHERE da.day_id = a.start_day_id AND da.place_id = a.place_id
+          )
+        ORDER BY a.id
+      `).all() as Array<{ id: number; place_id: number; start_day_id: number }>;
+
+      const insert = db.prepare(
+        `INSERT INTO day_assignments (day_id, place_id, order_index, accommodation_id)
+         VALUES (?, ?, COALESCE((SELECT MAX(order_index) + 1 FROM day_assignments WHERE day_id = ?), 0), ?)`
+      );
+      // Arriving somewhere is what the day was for, so the stop goes last, the same
+      // position a stay booked today lands in.
+      const stamp = db.prepare("UPDATE places SET stop_type = 'hotel' WHERE id = ? AND (stop_type IS NULL OR stop_type = '')");
+      for (const stay of stays) {
+        insert.run(stay.start_day_id, stay.place_id, stay.start_day_id, stay.id);
+        stamp.run(stay.place_id);
+      }
+      if (stays.length > 0) console.log(`[DB] Put ${stays.length} booked night(s) on their check-in day`);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #230 (appended; roadtrip stay) ===== */
+    //
+    // The same sweep once more, for the nights the first one could not have seen.
+    //
+    // A migration runs while the old container is still answering: a booking written
+    // in those seconds is written by code that knows nothing about the day stop, and
+    // lands behind the sweep that would have given it one. Safe to repeat: the same
+    // NOT EXISTS decides it, so a stay that already has its stop is passed over, and
+    // one whose place the traveller planned by hand keeps that row unclaimed. Every
+    // future release can carry the same step for the same reason.
+    () => {
+      const stays = db.prepare(`
+        SELECT a.id, a.place_id, a.start_day_id
+        FROM day_accommodations a
+        WHERE a.place_id IS NOT NULL
+          AND NOT EXISTS (
+            SELECT 1 FROM day_assignments da
+            WHERE da.day_id = a.start_day_id AND da.place_id = a.place_id
+          )
+        ORDER BY a.id
+      `).all() as Array<{ id: number; place_id: number; start_day_id: number }>;
+
+      const insert = db.prepare(
+        `INSERT INTO day_assignments (day_id, place_id, order_index, accommodation_id)
+         VALUES (?, ?, COALESCE((SELECT MAX(order_index) + 1 FROM day_assignments WHERE day_id = ?), 0), ?)`
+      );
+      const stamp = db.prepare("UPDATE places SET stop_type = 'hotel' WHERE id = ? AND (stop_type IS NULL OR stop_type = '')");
+      for (const stay of stays) {
+        insert.run(stay.start_day_id, stay.place_id, stay.start_day_id, stay.id);
+        stamp.run(stay.place_id);
+      }
+      if (stays.length > 0) console.log(`[DB] Caught up ${stays.length} booked night(s) missed during the upgrade`);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #231 (appended; journey) ===== */
+    //
+    // A suggestion the traveller has waved away. Skeletons are real rows, and the
+    // trip sync decides what to create by asking which source places already have
+    // one — deleting a dismissed suggestion would bring it straight back on the
+    // next sync. So it stays, marked, and drops out of every read instead.
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('journey_entries')").all() as Array<{ name: string }>;
+      if (!cols.some((c) => c.name === 'dismissed')) {
+        db.exec('ALTER TABLE journey_entries ADD COLUMN dismissed INTEGER NOT NULL DEFAULT 0');
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #232 (appended; journey) ===== */
+    //
+    // The country an entry happened in, resolved once from its coordinates.
+    // Resolved on write rather than on read because the answer never changes and
+    // the polygon test should not run on every render of every entry.
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('journey_entries')").all() as Array<{ name: string }>;
+      if (!cols.some((c) => c.name === 'country_code')) {
+        db.exec('ALTER TABLE journey_entries ADD COLUMN country_code TEXT');
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #233 (appended; journey) ===== */
+    //
+    // Which of the optional entry fields a journey uses. Mood, weather and the
+    // pros/cons list are the three things that make the editor feel like a form;
+    // not everybody journals that way. DEFAULT 1: every existing journey keeps
+    // all three, which is what it had.
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('journeys')").all() as Array<{ name: string }>;
+      for (const col of ['show_verdict', 'show_mood', 'show_weather']) {
+        if (!cols.some((c) => c.name === col)) {
+          db.exec(`ALTER TABLE journeys ADD COLUMN ${col} INTEGER NOT NULL DEFAULT 1`);
+        }
+      }
+    },
+    /* ===== TT port: upstream v4.3.0 migration #234 (appended; roadtrip stay) ===== */
+    //
+    // Let go of a booking the day stop can no longer reach.
+    //
+    // A stay can vanish without anybody asking: day_accommodations.end_day_id is ON
+    // DELETE CASCADE, so shortening a trip past a booking's last night deletes the
+    // booking while the stop on its first night survives, now pointing at nothing —
+    // and the day list hides any stop that carries an accommodation_id, so the hotel
+    // drops off every surface while the route still drives to it.
+    //
+    // A trigger rather than a column rebuild: day_assignments is referenced by two
+    // cascading tables of its own, and SQLite fires this even when the stay went
+    // down with a foreign-key cascade.
+    () => {
+      db.exec(`
+        UPDATE day_assignments SET accommodation_id = NULL
+        WHERE accommodation_id IS NOT NULL
+          AND accommodation_id NOT IN (SELECT id FROM day_accommodations)
+      `);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_day_assignments_accommodation_id ON day_assignments(accommodation_id)');
+      db.exec(`
+        CREATE TRIGGER IF NOT EXISTS trg_release_stop_on_stay_delete
+        AFTER DELETE ON day_accommodations
+        BEGIN
+          UPDATE day_assignments SET accommodation_id = NULL WHERE accommodation_id = OLD.id;
+        END
+      `);
+    },
+    /* ===== TT port: upstream v4.3.0 migration #235 (appended; journey) ===== */
+    //
+    // A journal skeleton belongs to a day, not just to a place. The sync keyed a
+    // skeleton by source_place_id alone, so the same place standing on two days
+    // produced one entry and nothing on the rest. The id of the assignment the
+    // entry came from disambiguates; existing rows are backfilled to the earliest
+    // assignment of their place, which is what the old key resolved to.
+    () => {
+      const hasColumn = db
+        .prepare("SELECT 1 FROM pragma_table_info('journey_entries') WHERE name = 'source_assignment_id'")
+        .get();
+      if (!hasColumn) db.exec('ALTER TABLE journey_entries ADD COLUMN source_assignment_id INTEGER');
+      // `source_assignment_id IS NULL` keeps the replay from re-resolving a row that
+      // has since followed its stop to another day.
+      db.exec(`
+        UPDATE journey_entries
+           SET source_assignment_id = (
+             SELECT da.id
+               FROM day_assignments da
+               JOIN days d ON d.id = da.day_id
+              WHERE da.place_id = journey_entries.source_place_id
+              ORDER BY d.day_number ASC, d.date ASC, da.order_index ASC, da.id ASC
+              LIMIT 1
+           )
+         WHERE source_place_id IS NOT NULL AND source_assignment_id IS NULL
+      `);
+      db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_journey_entries_source_assignment ON journey_entries(source_place_id, source_assignment_id)',
+      );
+    },
+    /* ===== TT port: upstream v4.3.0 migration #240 (appended; trips) ===== */
+    //
+    // Trips longer than a year lost every day past the 365th: generateDays
+    // clipped the day rows at the old limit while the trip kept its full end
+    // date, so the last days had a date but nothing to plan on. The limit is
+    // 999 now, and this gives the affected trips their missing days.
+    //
+    // Only a range whose dated days still run unbroken from the start date is
+    // extended; a trip that was re-dated by hand or lost a day in the middle is
+    // left as it is. Dateless days that still hold content stay behind the
+    // dated ones, where generateDays keeps them. The two-phase renumbering is
+    // the same dance generateDays does around UNIQUE(trip_id, day_number).
+    //
+    // Upstream also skipped users.amap_api_key / places.amap_poi_id here (#221):
+    // TT keeps its own instance-level AMap key and places.amap_id column instead.
+    () => {
+      const dayAfter = (start: string, n: number) => {
+        const [y, m, d] = start.split('-').map(Number);
+        return new Date(Date.UTC(y, m - 1, d) + n * 86400000).toISOString().slice(0, 10);
+      };
+      const trips = db
+        .prepare(`
+          SELECT id, start_date, end_date,
+            CAST(julianday(end_date) - julianday(start_date) + 1 AS INTEGER) AS span
+          FROM trips
+          WHERE start_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+            AND end_date GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+            AND julianday(end_date) - julianday(start_date) + 1 BETWEEN 366 AND 999
+        `)
+        .all() as { id: number; start_date: string; end_date: string; span: number }[];
+      const dayRows = db.prepare('SELECT id, date FROM days WHERE trip_id = ? ORDER BY day_number');
+      const setDayNumber = db.prepare('UPDATE days SET day_number = ? WHERE id = ?');
+      const insertDay = db.prepare('INSERT INTO days (trip_id, day_number, date) VALUES (?, ?, ?)');
+      for (const trip of trips) {
+        const rows = dayRows.all(trip.id) as { id: number; date: string | null }[];
+        const dated = rows.filter((r) => r.date);
+        if (dated.length >= trip.span) continue;
+        if (dated.some((r, i) => r.date !== dayAfter(trip.start_date, i))) continue;
+        const dateless = rows.filter((r) => !r.date);
+        rows.forEach((r, i) => setDayNumber.run(-(i + 1), r.id));
+        dated.forEach((r, i) => setDayNumber.run(i + 1, r.id));
+        for (let i = dated.length; i < trip.span; i++) insertDay.run(trip.id, i + 1, dayAfter(trip.start_date, i));
+        dateless.forEach((r, i) => setDayNumber.run(trip.span + i + 1, r.id));
+      }
+    },
   ];
 
   if (currentVersion < migrations.length) {

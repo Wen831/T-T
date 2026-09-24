@@ -96,6 +96,10 @@ const ALLOWED_DESTRUCTIVE: Record<string, string> = {
   'DROP TABLE schema_version': 'Add surrogate id PK to schema_version. Rebuild, version row copied.',
   'DROP TABLE roadtrip_day_boundaries':
     'Migration 241 (4.3 port): relax the day_number CHECK from BETWEEN 1 AND 366 to >= 1. Rebuild, rows copied first.',
+  'DELETE FROM visited_regions':
+    'Migration 210 (4.3 port): Guangdong data fix — removes the mistyped rows the UPDATE OR IGNORE could not rename (unique key collision). Bounded by the CN-GUANGZHOUPROVINCE key.',
+  'DELETE FROM hidden_regions':
+    'Migration 210 (4.3 port): Guangdong data fix — stale tombstones keyed to the mistyped code would otherwise resurrect a region the user hid. Bounded by the same key.',
 
   // ── photo/journey table rebuilds (data preserved) ────────────────────────
   'DROP TABLE trip_photos': 'trip_photos normalisation + later photo_id FK refactor. Rebuilds, rows copied.',
