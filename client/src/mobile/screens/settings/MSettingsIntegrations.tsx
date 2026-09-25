@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAddonStore } from '../../../store/addonStore';
 import { useAuthStore } from '../../../store/authStore';
 import MAirTrailConnectionSection from './MAirTrailConnectionSection';
+import MDawarichConnectionSection from './MDawarichConnectionSection';
 import MLlmConnectionSection from './MLlmConnectionSection';
 import MPhotoProvidersSection from './MPhotoProvidersSection';
 import MSettingsMcp from './MSettingsMcp';
@@ -17,6 +18,7 @@ export default function MSettingsIntegrations() {
   const mcpEnabled = addonEnabled('mcp');
   const airtrailEnabled = addonEnabled('airtrail');
   const llmEnabled = addonEnabled('llm_parsing');
+  const dawarichEnabled = addonEnabled('dawarich');
   const managed = useAuthStore((s) => s.managed);
 
   useEffect(() => {
@@ -31,6 +33,8 @@ export default function MSettingsIntegrations() {
        a managed install. The per-user fallback exists for people who supply their
        own key, and there nobody does. */}
       {llmEnabled && !managed && <MLlmConnectionSection />}
+      {/* The recorded-route service, gated on its addon like the others. */}
+      {dawarichEnabled && !managed && <MDawarichConnectionSection />}
       {mcpEnabled && <MSettingsMcp />}
     </>
   );

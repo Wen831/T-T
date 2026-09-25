@@ -11,6 +11,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { useTripStore } from '../../store/tripStore';
 import type { Assignment, BudgetItem, Category, Place } from '../../types';
 import { getApiErrorMessage } from '../../utils/apiError';
+import { sourceLabelFor } from '../../utils/placeSource';
 import { PlacesSession } from '../../utils/placesSession';
 import CollectionPicker from '../Collections/CollectionPicker';
 import CustomSelect from '../shared/CustomSelect';
@@ -972,7 +973,12 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
                       <div className="flex items-center gap-1.5">
                         <span className="truncate text-sm font-medium">{result.name}</span>
                         {result.source === 'amap' && (
-                          <span className="bg-accent/15 flex-none rounded px-1 py-[1px] text-[10px]">高德</span>
+                          // Per-locale rather than the literal 高德 it used to be:
+                          // the label is "Amap" to everyone it does not exist for,
+                          // and 高德地图 to the readers it does.
+                          <span className="bg-accent/15 flex-none rounded px-1 py-[1px] text-[10px]">
+                            {sourceLabelFor(result, 'native', t) ?? '高德'}
+                          </span>
                         )}
                       </div>
                       <div className="truncate text-xs text-content-muted">{result.address}</div>

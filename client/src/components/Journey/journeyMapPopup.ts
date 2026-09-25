@@ -1,3 +1,12 @@
+/**
+ * NOT WIRED UP IN TT.
+ *
+ * Upstream's single popup markup shared by the Leaflet and GL journey maps. TT
+ * builds journey popups in `JourneyMap.tsx` / `JourneyMapGL.tsx` with its own
+ * markup, and the two have not drifted — the reason upstream extracted this.
+ * Wiring it now would be a refactor with no defect behind it. Delete this note
+ * if the two ever diverge.
+ */
 import { escapeHtml } from '@trek/shared';
 
 /**

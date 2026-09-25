@@ -136,5 +136,6 @@ const places: TranslationStrings = {
   'places.removeImage': 'Remove image',
   'places.imageUploadError': 'Could not upload image',
   'places.imageRemoveError': 'Could not remove image',
+  'places.source.amap': 'Amap',
 };
 export default places;

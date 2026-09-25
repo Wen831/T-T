@@ -136,5 +136,6 @@ const places: TranslationStrings = {
   'places.searchProvider': '検索:',
   'places.searchProviderAmap': 'AMap',
   'places.searchProviderNative': 'TREK',
+  'places.source.amap': 'Amap',
 };
 export default places;

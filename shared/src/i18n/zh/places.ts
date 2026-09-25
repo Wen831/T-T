@@ -132,5 +132,6 @@ const places: TranslationStrings = {
   'places.removeImage': '移除图片',
   'places.imageUploadError': '无法上传图片',
   'places.imageRemoveError': '无法删除图片',
+  'places.source.amap': '高德地图',
 };
 export default places;

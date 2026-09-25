@@ -136,5 +136,6 @@ const places: TranslationStrings = {
   'places.searchProvider': '',
   'places.searchProviderAmap': '',
   'places.searchProviderNative': '',
+  'places.source.amap': 'Amap',
 };
 export default places;

@@ -46,3 +46,37 @@ its hover card, click target and drag handle with it).
 
 `coincidentPlaces.ts` carries this reasoning in its header. When the harness can
 project honestly, delete that note and wire the three.
+
+## The rest of the wired-or-not picture
+
+Two audits swept every file this port added, checking each for a non-test
+reference. 367 source files came over; 24 had none, and the honest split is:
+
+**Wired after the audit found them** — these had a clear home and were mounted:
+
+| File | Where |
+|---|---|
+| `MDawarichConnectionSection` | `MSettingsIntegrations` — the phone twin of the card the desktop screen already had |
+| `placeSource` | `PlaceFormModal` — the AMap result badge was the literal `高德`, so a reader of any other language saw Chinese; it now resolves per locale |
+| `dockTabs` | `MTripShell` — its five-seat cap is what keeps the pill's targets apart |
+| `ReleaseNoticeVisuals` | `ReleaseNoticeModal` — the card's picture, falling back to the icon |
+
+**Predate this port** — 20 of the 24 were added by r1/r2 (`a64ac62b`) and are
+unmounted for reasons already recorded there: `DawarichTrailPill`,
+`HazardLayers`, `useRoadtripHazards`, `ServiceStopSection`, `NightPause*`,
+`RoadtripViaMarkers`, `stageMap`, `serviceMarker`. They are the road trip's
+optional layers, and wiring them is a product decision about which of those
+surfaces a trip should show by default — not a defect in the port.
+
+**Documented as deliberately unwired** — the two remaining have a TT equivalent
+that has not drifted, so adopting them would be a refactor with no defect behind
+it. Each carries the reason in its own header:
+
+- `shared/MarkdownText.tsx` — TT already renders Markdown through `JournalBody`
+  and `markdownLinkComponents`, and clamps row previews with `stripMarkdown`.
+- `Journey/journeyMapPopup.ts` — TT builds journey popups in both map components
+  and they have not diverged, which is the drift upstream extracted it to stop.
+
+A file with no caller is how ~90 roadtrip components came to pass their own
+tests while nothing rendered them. The difference here is that each of the
+remaining ones says why, in the file, where the next reader will meet it.

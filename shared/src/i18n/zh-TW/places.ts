@@ -133,5 +133,6 @@ const places: TranslationStrings = {
   'places.searchProvider': '搜尋來源：',
   'places.searchProviderAmap': '高德',
   'places.searchProviderNative': 'TREK',
+  'places.source.amap': '高德地圖',
 };
 export default places;

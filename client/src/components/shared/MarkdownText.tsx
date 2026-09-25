@@ -1,3 +1,15 @@
+/**
+ * NOT WIRED UP IN TT.
+ *
+ * Upstream uses this to render a clamped one-line Markdown caption inside a
+ * tappable list row, links stripped so the anchor cannot eat the tap. TT's
+ * surfaces that show a description or note already render Markdown directly
+ * through `JournalBody` (react-markdown + remark-gfm + remark-breaks) or
+ * `markdownLinkComponents`, and the row variants use `stripMarkdown` for their
+ * one-line previews — so adopting this would be a third way to do the same
+ * thing rather than a consolidation. It is kept for the next surface that wants
+ * a clamped caption; delete this note when one does.
+ */
 import type { Components } from 'react-markdown';
 import Markdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';

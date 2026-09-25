@@ -138,5 +138,6 @@ const places: TranslationStrings = {
   'places.searchProvider': 'Ara:',
   'places.searchProviderAmap': 'AMap',
   'places.searchProviderNative': 'TREK',
+  'places.source.amap': 'Amap',
 };
 export default places;
