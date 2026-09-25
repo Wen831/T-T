@@ -12,6 +12,7 @@ import {
   CATEGORIES_KEY,
 } from '../../../../src/nest/storage/storage-registry.service';
 import { StorageStatsService } from '../../../../src/nest/storage/storage-stats.service';
+import { SEED_CONFIG_PATH } from '../../../../src/nest/storage/storage-paths';
 import { StorageService } from '../../../../src/nest/storage/storage.service';
 import { StorageConflictError } from '../../../../src/nest/storage/storage.types';
 import { Logger } from '@nestjs/common';
@@ -106,15 +107,29 @@ afterEach(() => {
 describe('StorageAdminService.state', () => {
   it('STORADM-001 renders the effective world: sources, categories-per-backend, flags', () => {
     const { service, uploadsRoot } = makeService();
-    const state = service.state();
-    const uploads = state.backends.find((b) => b.name === 'uploads-local')!;
-    expect(uploads).toMatchObject({ type: 'local', source: 'settings', options: { root: uploadsRoot } });
-    expect(uploads.categories).toContain('files');
-    expect(uploads.categories).not.toContain('backups');
-    expect(state.backends.find((b) => b.name === 'backups-local')).toMatchObject({ source: 'built-in' });
-    expect(state.categories.backups).toEqual({ backend: 'backups-local', source: 'default' });
-    expect(state.seedFilePresent).toBe(false);
-    expect(state.health).toEqual({ replicaFailures: [] });
+    // `seedFilePresent` is the one field here that reads the real filesystem
+    // rather than the test db, and it reads a fixed path it shares with every
+    // other suite in the run: the seed-once import tests write that file and
+    // remove it in their own afterEach, so a worker overlapping this file can be
+    // observed mid-write. Pin the precondition rather than depend on the
+    // neighbours' timing — the assertion below is about the state the service
+    // *reports*, not about what the rest of the run happens to leave on disk.
+    const hadSeed = fs.existsSync(SEED_CONFIG_PATH);
+    fs.rmSync(SEED_CONFIG_PATH, { force: true });
+    try {
+      const state = service.state();
+      const uploads = state.backends.find((b) => b.name === 'uploads-local')!;
+      expect(uploads).toMatchObject({ type: 'local', source: 'settings', options: { root: uploadsRoot } });
+      expect(uploads.categories).toContain('files');
+      expect(uploads.categories).not.toContain('backups');
+      expect(state.backends.find((b) => b.name === 'backups-local')).toMatchObject({ source: 'built-in' });
+      expect(state.categories.backups).toEqual({ backend: 'backups-local', source: 'default' });
+      expect(state.seedFilePresent).toBe(false);
+      expect(state.health).toEqual({ replicaFailures: [] });
+    } finally {
+      // Never leave the tree dirtier than it was found.
+      if (hadSeed) fs.writeFileSync(SEED_CONFIG_PATH, '');
+    }
   });
 
   it('STORADM-002 masks exactly the secret fields (accessKeyId stays visible)', () => {

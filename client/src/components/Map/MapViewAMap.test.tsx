@@ -376,6 +376,130 @@ describe('MapViewAMap event priority', () => {
   });
 });
 
+describe('MapViewAMap recorded trail (4.3 port)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    currentMockInstance = null;
+  });
+
+  // The AMap renderer is the one engine upstream has no twin of, so this is the
+  // only place the GCJ boundary in front of the recorded track is pinned. A
+  // regression here is invisible: the map still draws a line, just one that sits
+  // a few hundred metres west of where the user walked.
+  const track = {
+    days: [
+      {
+        date: '2026-05-01',
+        segments: [
+          {
+            points: [
+              [39.9, 116.4],
+              [39.91, 116.42],
+            ] as [number, number][],
+            mode: 'walking',
+            startedAt: '2026-05-01T08:00:00.000Z',
+            endedAt: '2026-05-01T09:00:00.000Z',
+            distanceMeters: 1200,
+          },
+        ],
+      },
+    ],
+    source: 'tracks' as const,
+    fetchedAt: '2026-05-02T00:00:00.000Z',
+    pointCount: 2,
+    truncated: false,
+  };
+
+  it('FE-COMP-MAPVIEWAMAP-007: draws the recorded trail as casing under a day-coloured dashed line', async () => {
+    const { loadAmap } = await import('./engines/amap');
+    render(<MapViewAMap zoom={11} center={[39.9, 116.4]} dawarichTrack={track} />);
+
+    await waitFor(() => expect(loadAmap).toHaveBeenCalled(), { timeout: 3000 });
+    await waitFor(() => expect(currentMockInstance).toBeTruthy(), { timeout: 3000 });
+    const AMap = currentMockInstance!.AMap;
+
+    // Two lines: the casing pass and the coloured pass, in that order.
+    await waitFor(
+      () => {
+        expect(AMap.Polyline.mock.calls.length).toBeGreaterThanOrEqual(2);
+      },
+      { timeout: 3000 }
+    );
+
+    const casing = AMap.Polyline.mock.calls.find((call: any) => call[0]?.strokeWeight === 6);
+    const main = AMap.Polyline.mock.calls.find((call: any) => call[0]?.strokeStyle === 'dashed');
+    expect(casing).toBeTruthy();
+    expect(main).toBeTruthy();
+    expect(casing![0].strokeOpacity).toBe(0.55);
+    expect(main![0].strokeWeight).toBe(3);
+    // The casing is drawn first, so every coloured line sits above every casing.
+    expect(AMap.Polyline.mock.calls.indexOf(casing!)).toBeLessThan(AMap.Polyline.mock.calls.indexOf(main!));
+
+    // Every vertex crossed WGS-84 → GCJ-02 at the boundary.
+    expect(main![0].path).toEqual([
+      [116.406, 39.906],
+      [116.426, 39.916],
+    ]);
+  });
+
+  it('FE-COMP-MAPVIEWAMAP-008: a selected day narrows the trail to that day and clearing removes it', async () => {
+    const { loadAmap } = await import('./engines/amap');
+    const twoDays = {
+      ...track,
+      days: [
+        track.days[0],
+        {
+          date: '2026-05-02',
+          segments: [
+            {
+              points: [
+                [39.92, 116.44],
+                [39.93, 116.46],
+              ] as [number, number][],
+              mode: 'cycling',
+              startedAt: '2026-05-02T08:00:00.000Z',
+              endedAt: '2026-05-02T09:00:00.000Z',
+              distanceMeters: 3000,
+            },
+          ],
+        },
+      ],
+    };
+
+    const { rerender } = render(
+      <MapViewAMap zoom={11} center={[39.9, 116.4]} dawarichTrack={twoDays} dawarichSelectedDate="2026-05-02" />
+    );
+
+    await waitFor(() => expect(loadAmap).toHaveBeenCalled(), { timeout: 3000 });
+    await waitFor(() => expect(currentMockInstance).toBeTruthy(), { timeout: 3000 });
+    const AMap = currentMockInstance!.AMap;
+
+    await waitFor(
+      () => {
+        expect(AMap.Polyline.mock.calls.length).toBeGreaterThanOrEqual(2);
+      },
+      { timeout: 3000 }
+    );
+    // Only the selected day is drawn: one segment, so exactly two lines.
+    expect(AMap.Polyline.mock.calls.length).toBe(2);
+    expect(AMap.Polyline.mock.calls[1][0].path).toEqual([
+      [116.446, 39.926],
+      [116.466, 39.936],
+    ]);
+
+    const drawn = AMap.Polyline.mock.results.map((r: any) => r.value);
+    AMap.Polyline.mockClear();
+
+    // Dropping the track takes every overlay back off the map.
+    rerender(<MapViewAMap zoom={11} center={[39.9, 116.4]} dawarichTrack={null} />);
+
+    await waitFor(() => {
+      expect(drawn.every((line: any) => line.setMap.mock.calls.some((call: any[]) => call[0] === null))).toBe(true);
+    });
+    expect(AMap.Polyline.mock.calls.length).toBe(0);
+  });
+});
+
 describe('MapViewAMap lifecycle', () => {
   beforeEach(() => {
     vi.clearAllMocks();

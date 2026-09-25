@@ -1,5 +1,10 @@
 # TT 升级 r3 断点检查点
 
+> **状态：全部完成（FINAL_DONE）。** 四个功能（roadtrip / dawarich / doc-sync / offline）
+> 已全线移植并接线；三个 tsc、`npm run build`、`npm test` 全部 EXIT=0。
+> 唯一待人工执行的是第 5.1 节的 12 条高德引擎手测清单（见 `docs/HANDOFF-4.3-addons.md`）。
+> 续跑前请先读该文档的第 0 节与第 7 节（环境坑）。
+
 起始状态：2026-09-24，client `npx tsc --noEmit -p client/tsconfig.json` 共 143 条错误。
 基线提交：`a64ac62 feat: complete TT 4.3 addon port r2`。严格不回退 r1/r2，不改变运行时行为，不使用 `as any` / `@ts-ignore` / `@ts-expect-error`。
 
@@ -213,19 +218,27 @@ r5 的交付摘要里写着「服务端集成测试需先修原生模块才能�
 
 ---
 
-## 交付摘要（r6 更新）
+## 交付摘要（r14 更新）
 
 - **改了什么**：r3 的 7 类在 `20fc06a`（19 文件）；r4 `CustomTimePicker`（1 文件）；
-  r5 26 文件（离线回放 / WS 事件 / 18 语种 i18n / 3 测试）；**r6 10 文件**
+  r5 26 文件（离线回放 / WS 事件 / 18 语种 i18n / 3 测试）；r6 10 文件
   （`scripts/fix-native-modules.mjs` + `package.json`、`validate-route-guards.ts`、
   3 处棘轮清单、4 处 flake/断言、1 处卸载后 setState）。
+  **r7–r14：四个功能（roadtrip / dawarich / doc-sync / offline）全线移植与接线**——
+  服务端模块 + 迁移 #206–#243（#221 按决策跳过）、shared 契约与 `geo/gcj02` 单源化、
+  桌面双入口、移动端 shell、**三家地图引擎**（含 TT 自有的高德轨迹层）、
+  文件管理的 doc-sync、Atlas、Journey；r14 补入口挂载断言并修掉 `MapViewAMap` 的非法 hook 调用。
 - **错误数对比：143 → 0**。
-- **单测：客户端 23 失败 → 0；服务端从「根本跑不起来」→ 10213 全通过**。
-- **`npm test`：EXIT=0（三端全绿，连跑两轮）**；三个 tsc EXIT=0；`npm run build` 三端全绿。
-- **有没有用断言**：没有。全程 0 处掩盖手段。
-- **剩余未修项**：两项**功能性待办**（需产品决策，不表现为测试失败）——
-  ① `MTripShell` 未渲染 `MRoadtripTab`（手机端 roadtrip tab 未接线）；
-  ② 除 `CustomTimePicker` 外，其它移植控件是否也有「调用点传了、props 没声明」的 ARIA 静默丢弃，值得排查。
+- **单测：客户端 23 失败 → 0；服务端从「根本跑不起来」→ 10287 全通过**。
+- **`npm test`：EXIT=0（三端全绿，shared 687 / server 10287 / client 14824）**；
+  三个 tsc EXIT=0；`npm run build` 三端全绿。
+- **有没有用断言**：没有。全程 0 处 `as any` / `@ts-ignore` / `@ts-expect-error`。
+- **剩余未修项**：**代码层面已清零**。两项旧的功能性待办（① 手机端 `MRoadtripTab` 孤儿；
+  ② 其它控件的 ARIA 静默丢弃）在 r12 / r11–r13 分别关闭。**唯一剩下的不是代码工作**：
+  `docs/HANDOFF-4.3-addons.md` 第 5.1 节的 **12 条高德引擎手测清单**，
+  必须人工在浏览器里用真实 AMap key 执行。
+- **未做**：全程未 push、未部署、未重启任何服务、未读改任何密钥。
+
 
 ---
 
@@ -284,5 +297,124 @@ r5 的交付摘要里写着「服务端集成测试需先修原生模块才能�
 
 ### 下一步：R9 shared/geo 单源化 + school-holidays 模块
 
-FINAL_DONE
+---
+
+## r9 —— shared/geo 单源化 + 校历/影子地点/路线用量模块（2026-09-25）
+
+- **shared/geo 单源化**：WGS-84 ⇄ GCJ-02 的六个函数从 client 的 `engines/amap` 提到
+  `shared/src/geo/gcj02.ts`，client 只做 re-export。此前 Leaflet / GL / AMap 三家各有一份转换，
+  一旦漂移就是「三家地图上同一地点差几百米」。现在只有一个实现，`client/src/components/Map/engines/amap.ts`
+  保留同名导出以免改动 15+ 个调用点。
+- **school-holidays 模块**（server）：三张表（#216）的读写 + `/api/school-holidays` 路由，
+  含公共假期叠加与跨年窗口查询。
+- **place-shadow 模块**（server）：上游 `place_shadow_picks`（#206）的读写与「同一天同一地点只留一条」的收敛。
+- **route-usage 模块**（server）：`route_usage_daily`（#214）的按日聚合与配额扣减。
+- **Overpass `/api/maps/area`**：按 bbox 取区域 POI（**只打 OSM，即使配了 Google key 也不打**），
+  供 corridor 搜索与探索面板共用。
+- i18n：`schoolCatalog.*`、`admin.placeShadow.*` 铺满 20 个语种。
+
+提交系列见 r9 标签下的本地提交。
+
+---
+
+## r10 —— 离线底座 v7 + placePrefetcher（2026-09-25）
+
+- `offlineDb` 升到 **v7**，新增 `areaPlaces` 表（区域 POI 的离线缓存），升级路径与前六版一致
+  （纯追加 store，不动既有 store 的 keyPath / index）。
+- `placePrefetcher`：按当前视口 + 行程日期窗口预取 POI，写入 `areaPlaces`；
+  离线时 `maps` 的相关查询先读缓存再决定是否发请求。
+- 离线判定与 `mutationQueue` 回放的既有覆盖面（偏好、assignments）保持，不改语义。
+
+---
+
+## r11 —— 桌面端 roadtrip 接线（2026-09-25）
+
+`TripPlannerPage` 与 `JourneyDetailPage` 两个入口都接上了 roadtrip：
+- 侧栏 mode switch（`mapFront` 语义**修正为与上游一致**：`mapFront ? List : MapIcon`，
+  修前是反的）、corridor 面板、续航/时段设置面板、逐日驾驶时限、避让类别。
+- 日轨在 roadtrip 模式下换成 drive rail（与日轨是同一个条件分支的两半，不是叠加）。
+- `TripPlannerPage.wiring.test.tsx`：67 例全绿，覆盖 mode 开/关两条路径。
+
+---
+
+## r12 —— 移动端 roadtrip 接线（2026-09-25）
+
+- `MTripShell` / `MTripTabPanel` 补上 `tab === 'roadtrip'` 分支，**`MRoadtripTab` 不再是孤儿文件**
+  （r4/r5 文档里那条「手机端未接线」的待办到此关闭）。
+- 新建 `client/tests/unit/mobile/trip/MTripTabPanel.roadtrip.test.tsx`：断言 `tab="roadtrip"`
+  时路由到 `MRoadtripTab`（带 planner/shell/tab 三个 prop，`data-rtview="list"`）。
+
+---
+
+## r13 —— 其余 surface 接线（2026-09-25）
+
+- **doc-sync**：`FileManager` 的同步按钮 + `DocSyncPanel` 在文件管理器、行程详情、移动端 sheet
+  三处都能进；匿名 webhook 路由 `DocSyncWebhookController.nudge` 登记进 `PUBLIC_ROUTE_ALLOW_LIST`
+  （位置排在全部 `DiscoveryController` 之后，满足排序棘轮）。
+- **dawarich**：轨迹数据从服务端到三家渲染器全部打通——Leaflet 用 `Polyline` 组件、GL 用
+  GeoJSON source、**高德用 TT 自有的 `amapDawarichTrail.ts`**（上游无高德渲染器可移植）。
+- **atlas**：Dawarich 记录派生出的国家列表接入 Atlas 页面。
+- **三个地图引擎的 dawarich 输入在 `MapView` 层面统一**，`dawarichTrack` / `dawarichSelectedDate` /
+  `dawarichHiddenDates` 三个 prop 一路透传。
+
+---
+
+## r14 —— 挂载冒烟：把孤儿堵死（2026-09-25）
+
+**根因**：r11–r13 能让约 90 个 roadtrip 组件单测全绿，却**没有任何入口渲染它们**——
+单测各自 render 组件本身，于是「组件对」和「组件被用上」被混为一谈，
+r4/r5 文档里连着两轮写的「`MRoadtripTab` 是孤儿文件」正是这个盲区。
+
+**对策**：断言**入口**，不断言孤立组件。本轮新增/加强：
+
+| 文件 | 断言的事 |
+|---|---|
+| `TripPlannerPage.wiring.test.tsx`（+2 例） | roadtrip 打开时 drive rail / mode switch / corridor **确实挂上**；关闭时**一个都不挂** |
+| `MTripTabPanel.roadtrip.test.tsx`（新，1 例） | 手机端 `tab="roadtrip"` 真的路由到 `MRoadtripTab` |
+| `FileManager.test.tsx`（+1 例） | doc-sync 按钮点了之后 `DocSyncPanel` 真的出现，且拿到 `trip` / `can-manage` |
+| `MapViewAMap.test.tsx`（+2 例，本轮补完） | 高德渲染器真的把轨迹交给图层：先 casing（w6/0.55）后日色虚线（w3/dashed），顶点逐个过了 GCJ 转换；换天只画那天、清空时逐个 `setMap(null)` |
+| `amapDawarichTrail.test.ts`（新，4 例） | 高德轨迹层本身的构造顺序、顶点转换、日期收窄、`clear()` |
+
+**为什么高德那两条非写不可**：单测里 `wgs84ToGcj02` 是 `+0.006` 的桩，
+「转换方向写反」或「少转/多转一次」时**测试依然全绿**——期望值也是用同一个桩算的。
+所以坐标正确性只由第 5.1 节的手测清单兜底，两条单测只钉住「调用与顺序」。
+
+**顺带修掉的**：
+- `MapViewAMap` 的轨迹 effect 原先被写在 marker effect **内部**（非法 hook 调用），
+  高德全线测试炸掉；提到组件顶层并按 `[ready, 三个 dawarich prop]` 重跑。
+- `mapFront` 的图标/aria 语义与上游相反，已改回 `mapFront ? List : MapIcon`。
+- **`STORADM-001` 的全量假失败**（本机首次全量 `npm test` 命中一次，单体跑永远绿）：
+  `state.seedFilePresent` 读的是 `server/data/storage-config.json` 这个**固定路径**，
+  而 `storage-registry.service.test.ts` 的 seed-once 组会写它、在自己的 `afterEach` 里删它。
+  两个文件落在不同 worker 时，本用例会撞见邻居**写到一半**的状态。
+  修法是**在用例内部先钉住前置条件**（`rmSync` → 断言 → `finally` 还原），
+  不依赖邻居的时序。**这是并发下的既有脆弱性，不是移植引入的缺陷**，
+  但会让「全量绿」这句话变得不可信，故一并修掉。
+
+提交：`c70ad641`（wiring 用例）+ 本轮补的 `MapViewAMap` 轨迹两例与手测清单。
+
+### r14 验收（全部实测）
+
+| 命令 | 结果 |
+|---|---|
+| `tsc --noEmit -p shared/tsconfig.json` | EXIT=0 |
+| `tsc --noEmit -p server/tsconfig.json` | EXIT=0 |
+| `tsc --noEmit -p client/tsconfig.json` | EXIT=0 |
+| `npm run build` | BUILD_EXIT=0（三端全绿） |
+| `npm test` | EXIT=0（shared 61 文件/687 · server 499/10287 · client 745/14824，0 失败） |
+
+红线遵守：全程 0 处 `as any` / `@ts-ignore` / `@ts-expect-error`；未放宽任何 tsconfig；
+未回退 r1–r13；未改 `migrations.ts` 既有顺序（只追加，至 #243）；未读未改任何密钥；
+TREK 参考仓未使用（本机不存在）；**全程只本地提交，未 push**；未部署、未重启任何服务。
+
+### 交付
+
+四个功能（roadtrip / dawarich / doc-sync / offline）已在**服务端模块 + 迁移、shared 契约、
+桌面双入口、移动端 shell、三家地图引擎、文件管理、Atlas、Journey** 全线打通，
+每个入口都有断言它真的挂载的测试。**唯一需要人工做的是第 5.1 节的 12 条高德手测**——
+它们是桩测不到的运行时行为（转换方向/次数、无用例网络请求、残影、降级）。
+
+---
+
+**FINAL_DONE**
 
