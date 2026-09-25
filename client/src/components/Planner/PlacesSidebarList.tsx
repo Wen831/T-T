@@ -1,9 +1,18 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { PluginCardFooter, usePluginViewContributions } from '../Plugins/PluginContributions';
 import { MemoPlaceRow } from './PlacesSidebarRow';
 import type { SidebarState } from './usePlacesSidebar';
 
-export function PlacesList(S: SidebarState) {
+export function PlacesList({ header, ...S }: SidebarState & {
+  /**
+   * A block that sits above the places and scrolls WITH them (TT port of
+   * upstream 4.3.0): the Dawarich panel lives here rather than in a band of its
+   * own above the list. As its own band it could not grow — the list is the
+   * flex child that scrolls, so a panel with ten stays in it squeezed the list
+   * to nothing. Inside the scroller it simply opens to its full height.
+   */
+  header?: ReactNode
+}) {
   const {
     filtered,
     scrollContainerRef,
@@ -38,6 +47,7 @@ export function PlacesList(S: SidebarState) {
       ref={scrollContainerRef}
       onScroll={(e) => onScrollTopChange?.((e.currentTarget as HTMLElement).scrollTop)}
     >
+      {header}
       {filtered.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 16px', gap: 8 }}>
           <span className="text-content-faint" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}>

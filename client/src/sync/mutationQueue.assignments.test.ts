@@ -42,7 +42,7 @@ describe('mutationQueue > assignments write-back', () => {
     await mutationQueue.flush()
 
     expect(await offlineDb.mutationQueue.count()).toBe(0)
-    const day = (await offlineDb.days.get(3)) as { assignments: Array<{ assignment_time: string | null }> }
+    const day = (await offlineDb.days.get(3)) as unknown as { assignments: Array<{ assignment_time: string | null; assignment_end_time: string | null }> }
     expect(day.assignments[0].assignment_time).toBe('10:00')
     expect(day.assignments[0].assignment_end_time).toBe('11:00')
   })
@@ -58,14 +58,14 @@ describe('mutationQueue > assignments write-back', () => {
     // the path that exercises the write-back.
     setConflictStrategy('server')
     const conflict = Object.assign(new Error('conflict'), {
-      response: { status: 409, data: { server: { id: 5, day_id: 3, place_id: 7, order_index: 0, end_day: 1 } } },
+      response: { status: 409, data: { server: { id: 5, day_id: 3, place_id: 7, order_index: 0, end_day: true } } },
     })
     vi.mocked(apiClient.request).mockRejectedValue(conflict)
 
     await mutationQueue.flush()
 
     expect(await offlineDb.mutationQueue.count()).toBe(0)
-    const day = (await offlineDb.days.get(3)) as { assignments: Array<{ end_day?: number }> }
-    expect(day.assignments[0].end_day).toBe(1)
+    const day = (await offlineDb.days.get(3)) as unknown as { assignments: Array<{ end_day?: boolean }> }
+    expect(day.assignments[0].end_day).toBe(true)
   })
 })

@@ -8,6 +8,9 @@ import type { JourneyTrack } from '@trek/shared'
 import { DAY_COLORS } from '../../components/Journey/dayColors'
 import type { JourneyMapAutoHandle as JourneyMapHandle } from '../../components/Journey/JourneyMapAuto'
 import { useToast } from '../../components/shared/Toast'
+import { useDawarichSuggestions } from '../../hooks/useDawarichSuggestions'
+import { openStaysByDate } from '../../components/Dawarich/dawarichSuggestionModel'
+import type { DawarichSuggestion, DawarichSuggestionTarget } from '@trek/shared'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { lockBodyScroll } from '../../utils/bodyScrollLock'
 import type { JourneyEntry } from '../../store/journeyStore'
@@ -399,6 +402,29 @@ export function useJourneyDetail() {
     void import('../JourneyStudioPage')
   }, [])
 
+  /**
+   * The stays Dawarich recorded over this journal's dates, by the day they happened on
+   * (TT port of upstream 4.3.0).
+   *
+   * Read here rather than inside a panel so the timeline can fold each day's stays into
+   * that day. Only what is still open — an accepted stay is an entry on the timeline
+   * already, and a dismissed one was waved away on purpose.
+   */
+  const dawarich = useDawarichSuggestions()
+  const dawarichByDate = useMemo(() => openStaysByDate(dawarich.suggestions), [dawarich.suggestions])
+
+  /** Accepting writes the stay into THIS journal and reloads it, which is how the
+   *  new entry reaches the timeline the stay was standing in. */
+  const acceptDawarich = useCallback(async (suggestion: DawarichSuggestion, target: DawarichSuggestionTarget) => {
+    if (!current) return
+    const ok = await dawarich.accept(suggestion.id, { target, journalId: current.id })
+    if (ok) await loadJourney(current.id)
+  }, [dawarich, current, loadJourney])
+
+  const dismissDawarich = useCallback((suggestion: DawarichSuggestion) => {
+    void dawarich.dismiss(suggestion.id)
+  }, [dawarich])
+
   return {
     id, navigate, toast, t, locale,
     openStudio, prefetchStudio,
@@ -415,5 +441,6 @@ export function useJourneyDetail() {
     mapEntries, sidebarMapItems, tripDates, isMobile, tracks,
     feedEdge, scrollFeedTo,
     loadJourney, updateEntry, deleteEntry, reorderEntries, uploadPhotos, deletePhoto,
+    dawarichByDate, dawarichBusyId: dawarich.busyId, acceptDawarich, dismissDawarich,
   }
 }

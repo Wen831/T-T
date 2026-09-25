@@ -15,6 +15,7 @@ import { getCheckedPlaces } from '../utils/checkinStorage';
 import { getLandmarkColor } from '../utils/landmarkIcons';
 import { getLandmarkVisitedAt, getVisitedLandmarks, isLandmarkVisited } from '../utils/landmarkStorage';
 import AtlasCountrySearch from './atlas/AtlasCountrySearch';
+import DawarichAtlasSidePanel from '../components/Dawarich/DawarichAtlasSidePanel';
 import AtlasLayerToggle from './atlas/AtlasLayerToggle';
 import {
   A2_TO_A3,
@@ -108,6 +109,7 @@ function AtlasPageDesktop(): React.ReactElement {
     bucketSearching,
     bucketSearch,
     setBucketSearch,
+    reloadAfterDawarich,
     selectedLandmark,
     setSelectedLandmark,
     showLandmarks,
@@ -249,6 +251,27 @@ function AtlasPageDesktop(): React.ReactElement {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* The dawarich side panel (TT port of upstream 4.3.0): where a recorded
+            visit can be accepted onto the map. Right edge, desktop only — the
+            mobile layout has its own sheets and no room for a rail. */}
+        <div
+          className="absolute right-4 z-10 hidden md:block"
+          style={{ top: 'calc(var(--nav-h, 56px) + 16px)', width: 320, pointerEvents: 'auto' }}
+        >
+          <DawarichAtlasSidePanel
+            style={{
+              background: noTransparency ? (dark ? '#15151c' : '#ffffff') : dark ? 'rgba(10,10,15,0.55)' : 'rgba(255,255,255,0.2)',
+              backdropFilter: 'blur(24px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+              border: '1px solid ' + (dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'),
+              borderRadius: 20,
+              boxShadow: dark ? '0 8px 32px rgba(0,0,0,0.3)' : '0 8px 32px rgba(0,0,0,0.08)',
+            }}
+            dark={dark}
+            onChanged={reloadAfterDawarich}
+          />
         </div>
 
         {/* Desktop Panel — bottom center, glass effect */}

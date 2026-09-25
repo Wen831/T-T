@@ -530,6 +530,11 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
     saveStopDraft,
     saveStopDraftAsNight,
     stopDraftToForm,
+    dawarichEnabled,
+    dawarichTrailShown,
+    toggleDawarichTrail,
+    dawarichTrail,
+    dawarichHiddenDates,
   } = useTripPlanner();
 
   // The place inspector's booking strip opens the editor the booking belongs to.
@@ -668,6 +673,8 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
           <div style={{ position: 'absolute', inset: 0 }}>
             <MapView
               tripId={tripId}
+              dawarichTrack={dawarichTrail.track}
+              dawarichHiddenDates={dawarichHiddenDates}
               places={mapPlaces}
               dayPlaces={dayPlaces}
               route={route}

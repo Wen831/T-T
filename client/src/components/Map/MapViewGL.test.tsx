@@ -33,6 +33,11 @@ const glMap = vi.hoisted(() => ({
   addSource: vi.fn(),
   getSource: vi.fn().mockReturnValue(null),
   addLayer: vi.fn(),
+  // Every overlay that adds a layer takes it away again on cleanup; a real
+  // MapLibre/Mapbox map has both halves, and a double with only the adding half
+  // fails the teardown rather than the behaviour under test.
+  removeLayer: vi.fn(),
+  removeSource: vi.fn(),
   setLayoutProperty: vi.fn(),
   getStyle: vi.fn().mockReturnValue({ layers: [] }),
   isStyleLoaded: vi.fn().mockReturnValue(true),

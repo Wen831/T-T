@@ -18,6 +18,10 @@ import { collectionsApi } from '../../../../api/collections';
 import { resolveTrackColor } from '../../../../components/Map/trackColors';
 import PlaceAvatar from '../../../../components/shared/PlaceAvatar';
 import { useToast } from '../../../../components/shared/Toast';
+import DawarichSuggestionsPanel from '../../../../components/Dawarich/DawarichSuggestionsPanel';
+import { formatDayOption } from '../../../../components/Dawarich/dawarichSuggestionModel';
+import { refreshTripAfterAccept } from '../../../../components/Dawarich/dawarichTripRefresh';
+import { useTranslation } from '../../../../i18n';
 import { getCategoryIcon } from '../../../../components/shared/categoryIcons';
 import { useAddonStore } from '../../../../store/addonStore';
 import { useTripStore } from '../../../../store/tripStore';
@@ -42,6 +46,7 @@ import { filterPool, firstPlannedDayNumbers, plannedPlaceIds } from './placesBro
  */
 export default function MPlacesBrowser({ planner, shell }: MPlacesBrowserProps) {
   const { t, places, categories, assignments, days, trip } = planner;
+  const { locale } = useTranslation();
   const canEditPlaces = planner.can('place_edit', trip);
   const collectionsEnabled = useAddonStore((s) => s.isEnabled('collections'));
 
@@ -342,6 +347,24 @@ export default function MPlacesBrowser({ planner, shell }: MPlacesBrowserProps) 
             )}
           </div>
         )}
+
+        {/* Stays Dawarich recorded on these dates (#2279). Same component as the
+            desktop rail — the rows are the same rows, and the panel renders
+            nothing when there is nothing pending. */}
+        <div className="mt-3">
+          <DawarichSuggestionsPanel
+            tripId={planner.tripId}
+            trips={[{ id: planner.tripId, label: t('dawarich.accept.thisTrip') }]}
+            daysForTrip={() => days.map(day => ({
+              id: day.id,
+              ...formatDayOption(day.day_number, day.date, locale, t),
+            }))}
+            // The place it just created belongs on the map and in the list
+            // now, not after a reload.
+            onAccepted={() => { void refreshTripAfterAccept(planner.tripId) }}
+            initiallyCollapsed
+          />
+        </div>
 
         {/* ── Count divider ── */}
         <div className="mb-1 mt-[14px] flex items-center gap-[10px]">

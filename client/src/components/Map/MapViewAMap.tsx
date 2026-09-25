@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { applyTrackAmap, type TrailOverlayApi, type TrailMap } from './amapDawarichTrail';
 import { pluginsApi, type PluginMapLayer, type PluginMapMarker } from '../../api/client';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -36,6 +37,9 @@ export function MapViewAMap(props: any) {
   const mapRef = useRef<AMapMap | null>(null);
   const amapRef = useRef<AMapModule | null>(null);
   const overlaysRef = useRef<AMapOverlay[]>([]);
+  const trailRef = useRef<{ clear: () => void } | null>(null);
+  const trailPropsRef = useRef({ track: props.dawarichTrack ?? null, selectedDate: props.dawarichSelectedDate ?? null, hiddenDates: props.dawarichHiddenDates ?? null });
+  trailPropsRef.current = { track: props.dawarichTrack ?? null, selectedDate: props.dawarichSelectedDate ?? null, hiddenDates: props.dawarichHiddenDates ?? null };
   const infoRef = useRef<any>(null);
   const reservationOverlayRef = useRef<ReservationAMapOverlay | null>(null);
   const locationOverlayRef = useRef<ReturnType<typeof attachLocationAMapOverlay> | null>(null);
@@ -122,6 +126,8 @@ export function MapViewAMap(props: any) {
         if (onContextMenu) map.off('contextmenu', onContextMenu);
         if (onZoomEnd) map.off('zoomend', onZoomEnd);
       }
+      trailRef.current?.clear();
+      trailRef.current = null;
       reservationOverlayRef.current?.destroy();
       reservationOverlayRef.current = null;
       locationOverlayRef.current?.destroy();
@@ -139,6 +145,23 @@ export function MapViewAMap(props: any) {
     const c = wgs84ToGcj02(Number(center[1]), Number(center[0]));
     map.setZoomAndCenter(Number(props.zoom ?? 5), [c.lng, c.lat]);
   }, [props.center?.[0], props.center?.[1], props.zoom, ready]);
+
+  // The recorded trail, drawn under the planned route the way the Leaflet layer
+  // and the GL source are (TT port of upstream 4.3.0; upstream has no AMap
+  // engine, so this is TT's own twin). Segments are flattened by date outside
+  // AMap and each becomes a casing line plus its day-coloured dashed line.
+  useEffect(() => {
+    const map = mapRef.current as unknown as TrailMap | null;
+    const AMap = amapRef.current as unknown as TrailOverlayApi | null;
+    if (!map || !AMap || !ready) {
+      trailRef.current?.clear();
+      trailRef.current = null;
+      return;
+    }
+    trailRef.current?.clear();
+    const { track, selectedDate, hiddenDates } = trailPropsRef.current;
+    trailRef.current = applyTrackAmap(AMap, map, track, selectedDate, hiddenDates);
+  }, [ready, props.dawarichTrack, props.dawarichSelectedDate, props.dawarichHiddenDates]);
 
   // Core place markers, POIs, via points, plugin markers and InfoWindow interactions.
   useEffect(() => {

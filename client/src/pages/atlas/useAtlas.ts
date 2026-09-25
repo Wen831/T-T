@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { continentForCountry, escapeHtml, type VisitStatus } from '@trek/shared';
 import L from 'leaflet';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -372,6 +373,9 @@ export function useAtlas() {
   }, [geoData, resolveName]);
 
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Bumped when a dawarich accept changes what the map should show; the load
+  // effect below is keyed on it so the page refetches without a navigation.
+  const [atlasEpoch, setAtlasEpoch] = useState(0)
   const atlasRequestActive = useRef(true);
 
   useEffect(
@@ -397,7 +401,7 @@ export function useAtlas() {
         setLoading(false);
         toast.error(getApiErrorMessage(err, t('common.error')));
       });
-  }, []);
+  }, [atlasEpoch]);
 
   // Load country-border GeoJSON from our API (geoBoundaries, served server-side —
   // no third-party fetch from the browser). Even gzipped the payload is a few MB, so
@@ -1756,6 +1760,9 @@ export function useAtlas() {
   const countryDetailRequest = useRef(0);
   const placeLocateRequest = useRef(0);
 
+  /** Re-read the atlas after a dawarich accept: the map's visited set changed. */
+  const reloadAfterDawarich = useCallback(() => setAtlasEpoch(epoch => epoch + 1), [])
+
   const loadCountryDetail = async (code: string): Promise<void> => {
     const requestId = ++countryDetailRequest.current;
     setSelectedCountry(code);
@@ -1839,6 +1846,7 @@ export function useAtlas() {
     bucketSearching,
     bucketSearch,
     setBucketSearch,
+    reloadAfterDawarich,
     // Landmark features
     selectedLandmark,
     setSelectedLandmark,

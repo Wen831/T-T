@@ -10,9 +10,15 @@ import { ListImportModal } from './PlacesSidebarListImportModal';
 import { MobileDayPickerSheet } from './PlacesSidebarMobileDayPicker';
 import { PlacesSelectionBar } from './PlacesSidebarSelectionBar';
 import { usePlacesSidebar, type PlacesSidebarProps } from './usePlacesSidebar';
+import DawarichSuggestionsPanel from '../Dawarich/DawarichSuggestionsPanel';
+import { formatDayOption } from '../Dawarich/dawarichSuggestionModel';
+import { refreshTripAfterAccept } from '../Dawarich/dawarichTripRefresh';
+import { useTranslation } from '../../i18n';
 
 const PlacesSidebar = React.memo(function PlacesSidebar(props: PlacesSidebarProps) {
   const S = usePlacesSidebar(props);
+  // The sidebar hook carries `t` but not the locale; day labels need both.
+  const { locale } = useTranslation();
   const {
     sidebarDragOver,
     handleSidebarDragEnter,
@@ -29,6 +35,7 @@ const PlacesSidebar = React.memo(function PlacesSidebar(props: PlacesSidebarProp
     sidebarDropFile,
     setSidebarDropFile,
     tripId,
+    days,
     pushUndo,
     ctxMenu,
     isMobile,
@@ -82,8 +89,27 @@ const PlacesSidebar = React.memo(function PlacesSidebar(props: PlacesSidebarProp
         </div>
       )}
 
-      {/* Liste */}
-      <PlacesList {...S} />
+      {/* Liste, with the Dawarich stays riding on top of it inside the same scroller —
+          see the `header` prop for why they are not a band of their own. */}
+      <PlacesList
+        {...S}
+        header={(
+          <div style={{ padding: '0 12px 8px' }}>
+            <DawarichSuggestionsPanel
+              tripId={tripId}
+              trips={[{ id: tripId, label: t('dawarich.accept.thisTrip') }]}
+              daysForTrip={() => days.map(day => ({
+                id: day.id,
+                ...formatDayOption(day.day_number, day.date, locale, t),
+              }))}
+              // The place it just created belongs on the map and in the list
+              // now, not after a reload.
+              onAccepted={() => { void refreshTripAfterAccept(tripId) }}
+              initiallyCollapsed
+            />
+          </div>
+        )}
+      />
 
       {dayPickerPlace && <MobileDayPickerSheet {...S} />}
       {listImportOpen && <ListImportModal {...S} />}

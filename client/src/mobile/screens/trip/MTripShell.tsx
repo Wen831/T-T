@@ -17,14 +17,16 @@ import {
   Trash2,
   Upload,
   Wallet,
+  FolderSync,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { findEntryDayId, findFocusDayId } from '../../../components/Planner/today';
 import type { CorridorReach } from '../../../components/Roadtrip/corridorSearchModel';
 import { dayTintBackground, usePluginDayTints } from '../../../components/Plugins/PluginDaySchedule';
 import { useTripPlanner } from '../../../pages/tripPlanner/useTripPlanner';
+import { useAuthStore } from '../../../store/authStore';
 import { useTripStore } from '../../../store/tripStore';
-import type { Day } from '../../../types';
+import type { Trip, Day } from '../../../types';
 import MIconBtn from '../../components/MIconBtn';
 import MMapArea from './map/MMapArea';
 import MTripLoadingSplash from './MTripLoadingSplash';
@@ -32,6 +34,8 @@ import MPlacesBrowser from './places/MPlacesBrowser';
 import MPlanTimeline from './plan/MPlanTimeline';
 import MTripSheets from './sheets/MTripSheets';
 import MTripTabPanel from './tabs/MTripTabPanel';
+import { canManageDocSync } from '../../../components/Files/docsync/useDocSync';
+import { useDocSyncOffered } from '../../../components/Files/docsync/useDocSyncOffered';
 
 /**
  * Mobile trip screen frame. Owns the chrome the design shares across every
@@ -122,6 +126,9 @@ export interface MTripShellApi {
   exportCostsCsvSignal: number;
   uploadFilesSignal: number;
   openFilesTrashSignal: number;
+  /** Dateien 头部的同步入口 → MFilesTab 打开 MDocSyncSheet（TT port of upstream 4.3.0）。 */
+  openDocSyncSignal: number;
+  setOpenDocSyncSignal: React.Dispatch<React.SetStateAction<number>>;
 }
 
 /**
@@ -236,6 +243,7 @@ export default function MTripShell({
   const [exportCostsCsvSignal, setExportCostsCsvSignal] = useState(0);
   const [uploadFilesSignal, setUploadFilesSignal] = useState(0);
   const [openFilesTrashSignal, setOpenFilesTrashSignal] = useState(0);
+  const [openDocSyncSignal, setOpenDocSyncSignal] = useState(0);
 
   // The mobile plan is single-day: make sure a day is active once days arrive.
   // Only seed once so an intentional deselect elsewhere is not fought. Open on
@@ -417,6 +425,8 @@ export default function MTripShell({
     exportCostsCsvSignal,
     uploadFilesSignal,
     openFilesTrashSignal,
+    openDocSyncSignal,
+    setOpenDocSyncSignal,
   };
 
   // Splash — same gate as the desktop page, in the mobile design language.
@@ -712,6 +722,7 @@ export default function MTripShell({
               label={t('common.upload')}
               onClick={() => setUploadFilesSignal((s) => s + 1)}
             />
+            <DocSyncButton tripId={tripId} trip={trip} label={t('docsync.title')} onOpen={() => setOpenDocSyncSignal(s => s + 1)} />
             <MIconBtn
               ariaLabel={t('files.trash')}
               onClick={() => setOpenFilesTrashSignal((s) => s + 1)}
@@ -812,6 +823,19 @@ function PrimaryPill({ label, onClick, icon }: { label: string; onClick: () => v
       {icon ?? <Plus size={14} strokeWidth={2.2} />}
       {label}
     </button>
+  );
+}
+
+/** The dateien header's sync entry — visible only where a binding makes sense
+ *  (offered check inside), so the button disappears rather than dead-ends. */
+function DocSyncButton({ tripId, trip, label, onOpen }: { tripId: number; trip: Trip | null; label: string; onOpen: () => void }) {
+  const user = useAuthStore(s => s.user);
+  const offered = useDocSyncOffered(tripId, canManageDocSync(user, trip));
+  if (!offered) return null;
+  return (
+    <MIconBtn ariaLabel={label} onClick={onOpen} size={40} className="text-m-muted backdrop-blur-[24px] backdrop-saturate-[1.7]">
+      <FolderSync size={15} strokeWidth={2} />
+    </MIconBtn>
   );
 }
 

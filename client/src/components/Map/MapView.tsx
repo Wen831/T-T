@@ -4,6 +4,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { createElement, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Circle, CircleMarker, MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
+import DawarichTrailLayer from './DawarichTrailLayer';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import {
   attributionForTile,
@@ -596,6 +597,9 @@ export const MapView = memo(function MapView({
   onViewportChange,
   tripId,
   routeVias = [],
+  dawarichTrack = null,
+  dawarichSelectedDate = null,
+  dawarichHiddenDates = null,
 }: any) {
   const isMobile = useIsMobile();
   // The caller hands over whatever the user configured; what kind of basemap
@@ -1022,6 +1026,14 @@ export const MapView = memo(function MapView({
           >
             {markers}
           </MarkerClusterGroup>
+
+          {/* The route as it was actually recorded (#2279). Drawn before the
+              planned route so it sits under it — the plan is what is being edited. */}
+          <DawarichTrailLayer
+            track={dawarichTrack}
+            selectedDate={dawarichSelectedDate}
+            hiddenDates={dawarichHiddenDates}
+          />
 
           {/* Apple-Maps style: darker-blue casing under a bright-blue core, rounded. */}
           {route &&

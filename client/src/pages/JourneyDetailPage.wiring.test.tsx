@@ -120,6 +120,12 @@ function buildHook(over: Record<string, unknown> = {}): Record<string, unknown> 
     toast,
     t: (key: string) => key,
     locale: 'en',
+    // The timeline folds each day's dawarich stays into that day (4.3 port);
+    // these cases run with none pending.
+    dawarichByDate: new Map(),
+    dawarichBusyId: null,
+    acceptDawarich: vi.fn(async () => undefined),
+    dismissDawarich: vi.fn(async () => undefined),
     current,
     loading: false,
     canEditEntries: true,

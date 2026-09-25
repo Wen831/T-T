@@ -15,6 +15,7 @@ import {
 import { Outlet } from 'react-router';
 import { journeyApi } from '../api/client';
 import ContributorInviteDialog from '../components/Journey/ContributorInviteDialog';
+import JourneyDayDawarich from '../components/Journey/JourneyDayDawarich';
 import { DAY_COLORS } from '../components/Journey/dayColors';
 import { AddTripDialog } from '../components/Journey/JourneyDetailPageAddTripDialog';
 import { CheckinCard, EntryCard, SkeletonCard } from '../components/Journey/JourneyDetailPageEntryCard';
@@ -101,6 +102,10 @@ function JourneyDetailPageDesktop() {
     tracks,
     feedEdge,
     scrollFeedTo,
+    dawarichByDate,
+    dawarichBusyId,
+    acceptDawarich,
+    dismissDawarich,
     loadJourney,
     updateEntry,
     deleteEntry,
@@ -542,6 +547,8 @@ function JourneyDetailPageDesktop() {
 
                       {sortedDates.map((date, dayIdx) => {
                         const entries = dayGroups.get(date)!;
+                        // Empty on a day that only has stays waiting on it (TT port of upstream 4.3.0).
+                        const stays = canEditEntries ? dawarichByDate.get(date) ?? [] : [];
                         const fd = formatDate(date, locale);
                         const locations = [...new Set(entries.map((e) => e.location_name).filter(Boolean))];
 
@@ -674,6 +681,15 @@ function JourneyDetailPageDesktop() {
                                 </div>
                               );
                             })}
+                          {/* What Dawarich recorded on this day, folded into it. One line
+                              with a count, the mark for where it came from, and the rows on
+                              a tap. Nothing at all on a day with nothing pending. */}
+                          <JourneyDayDawarich
+                            suggestions={stays}
+                            busyId={dawarichBusyId}
+                            onAccept={acceptDawarich}
+                            onDismiss={dismissDawarich}
+                          />
                           </div>
                         );
                       })}

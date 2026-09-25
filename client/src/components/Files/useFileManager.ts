@@ -5,6 +5,9 @@ import { useTranslation, translateApiError } from '../../i18n'
 import { filesApi } from '../../api/client'
 import type { Place, Reservation, TripFile, Day, AssignmentsMap } from '../../types'
 import { useCanDo } from '../../store/permissionsStore'
+import { useAuthStore } from '../../store/authStore'
+import { canManageDocSync } from './docsync/useDocSync'
+import { useDocSyncOffered } from './docsync/useDocSyncOffered'
 import { useTripStore } from '../../store/tripStore'
 import { getAuthUrl } from '../../api/authUrl'
 import { isImage, isMedia, isWalletPass } from './FileManager.helpers'
@@ -33,11 +36,15 @@ export function useFileManager({ files = [], onUpload, onDelete, onUpdate, place
   const [filterType, setFilterType] = useState('all')
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [showTrash, setShowTrash] = useState(false)
+  const [showDocSync, setShowDocSync] = useState(false)
   const [trashFiles, setTrashFiles] = useState<TripFile[]>([])
   const [loadingTrash, setLoadingTrash] = useState(false)
   const toast = useToast()
   const can = useCanDo()
   const trip = useTripStore((s) => s.trip)
+  const currentUser = useAuthStore((s) => s.user)
+  const canManageSync = canManageDocSync(currentUser, trip)
+  const docSyncOffered = useDocSyncOffered(tripId, canManageSync)
   const { t, locale } = useTranslation()
 
   const loadTrash = useCallback(async () => {
@@ -206,6 +213,7 @@ export function useFileManager({ files = [], onUpload, onDelete, onUpdate, place
     files, places, days, assignments, reservations, tripId, allowedFileTypes,
     uploading, filterType, setFilterType, lightboxIndex, setLightboxIndex,
     showTrash, trashFiles, loadingTrash, toast, can, trip, t, locale,
+    showDocSync, setShowDocSync, canManageSync, docSyncOffered,
     toggleTrash, refreshFiles, handleStar, handleRestore, handlePermanentDelete, handleEmptyTrash,
     previewFile, setPreviewFile, previewFileUrl, assignFileId, setAssignFileId,
     getRootProps, getInputProps, isDragActive, handlePaste, filteredFiles, handleDelete,

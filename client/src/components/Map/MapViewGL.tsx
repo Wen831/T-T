@@ -31,6 +31,7 @@ import { buildPoiPopupHtml } from './placePopup';
 import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories';
 import { ReservationMapboxOverlay } from './reservationsMapbox';
 import { hasManualTrackColor, resolveTrackColor } from './trackColors';
+import { useDawarichTrailGL } from './useDawarichTrailGL';
 
 function categoryIconSvg(iconName: string | null | undefined, size: number): string {
   const IconComponent = (iconName && CATEGORY_ICON_MAP[iconName]) || CATEGORY_ICON_MAP['MapPin'];
@@ -106,6 +107,9 @@ interface Props {
   tripId?: number | string;
   // Charging stops / rest areas a plugin route places on the drawn day route.
   routeVias?: RouteVia[];
+  dawarichTrack?: import('@trek/shared').DawarichTrack | null;
+  dawarichSelectedDate?: string | null;
+  dawarichHiddenDates?: ReadonlySet<string> | null;
   route?: [number, number][][] | null;
   routeSegments?: RouteSegment[];
   selectedPlaceId?: number | null;
@@ -443,6 +447,9 @@ export function MapViewGL({
   dayPlaces = NO_PLACES,
   tripId,
   routeVias = NO_ROUTE_VIAS,
+  dawarichTrack = null,
+  dawarichSelectedDate = null,
+  dawarichHiddenDates = null,
   route = null,
   routeSegments = NO_ROUTE_SEGMENTS,
   selectedPlaceId = null,
@@ -520,6 +527,9 @@ export function MapViewGL({
   const containerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapRef = useRef<any | null>(null);
+  // The recorded trail, under the planned route's casing — the GL twin of the
+  // Leaflet pane order (TT port of upstream 4.3.0).
+  useDawarichTrailGL(mapRef.current, mapReady, dawarichTrack, dawarichSelectedDate, 'trip-route-casing', dawarichHiddenDates);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<Map<number, PlacePin>>(new Map());
   // Own layer for the hand-positioned place pins (MapLibre path, see makePlacePin).
