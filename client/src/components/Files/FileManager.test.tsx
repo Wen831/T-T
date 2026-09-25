@@ -9,6 +9,13 @@ import { useAuthStore } from '../../store/authStore';
 import { useTripStore } from '../../store/tripStore';
 import type { TripFile } from '../../types';
 import FileManager from './FileManager';
+import { useDocSyncOfferStore } from '../../store/docSyncOfferStore';
+
+vi.mock('./docsync/DocSyncPanel', () => ({
+  default: ({ tripId, canManage }: { tripId: number; canManage: boolean }) => (
+    <div data-testid="stub-docsync-panel" data-trip={String(tripId)} data-can-manage={String(canManage)} />
+  ),
+}));
 
 // Mock getAuthUrl
 vi.mock('../../api/authUrl', () => ({
@@ -95,6 +102,10 @@ beforeEach(() => {
 
   // Default trash endpoint
   server.use(
+    // A provider is available, so the doc-sync entry shows for a manager. It has to
+    // live inside server.use: the offered hook re-asks on mount, and a bare handler
+    // is never registered, so the refresh failed and dropped the entry again.
+    http.get('/api/trips/:tripId/docsync/providers', () => HttpResponse.json([{ id: 'paperless', available: true }])),
     http.get('/api/trips/:tripId/files', ({ request }) => {
       const url = new URL(request.url);
       if (url.searchParams.get('trash') === 'true') {
@@ -277,6 +288,27 @@ describe('FileManager', () => {
     await waitFor(() => {
       expect(screen.queryByText('1 / 1')).not.toBeInTheDocument();
     });
+  });
+
+  it('FE-COMP-FILEMANAGER-014b: the doc-sync entry opens the panel for a manager (4.3 port)', async () => {
+    // Admin + providers available → the entry shows; clicking opens the panel.
+    useDocSyncOfferStore.setState({ bound: {}, providers: true });
+    render(<FileManager {...defaultProps} files={[buildFile()]} />);
+    const user = userEvent.setup();
+
+    // The label comes through i18n in this suite, so the button reads by its copy.
+    await user.click(screen.getByRole('button', { name: 'Document sync' }));
+
+    const panel = screen.getByTestId('stub-docsync-panel');
+    expect(panel).toHaveAttribute('data-trip', '1');
+    expect(panel).toHaveAttribute('data-can-manage', 'true');
+  });
+
+  it('FE-COMP-FILEMANAGER-014c: no doc-sync entry when nothing is offered', () => {
+    useDocSyncOfferStore.setState({ bound: {}, providers: null });
+    render(<FileManager {...defaultProps} files={[buildFile()]} />);
+
+    expect(screen.queryByRole('button', { name: 'Document sync' })).toBeNull();
   });
 
   it('FE-COMP-FILEMANAGER-013: soft-delete button calls onDelete', async () => {

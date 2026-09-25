@@ -347,6 +347,11 @@ function baseState(): HookState {
   };
 }
 
+vi.mock('../components/Roadtrip/RoadtripSidebar', () => ({ default: stub('rtSidebar', 'stub-rt-sidebar') }));
+vi.mock('../components/Roadtrip/RoadtripCorridorPanel', () => ({ default: stub('rtCorridor', 'stub-rt-corridor') }));
+vi.mock('../components/Roadtrip/RoadtripModeSwitch', () => ({
+  default: ({ active }: { active: boolean }) => <div data-testid="stub-rt-mode-switch" data-active={String(active)} />,
+}));
 vi.mock('./tripPlanner/useTripPlanner', () => ({
   useTripPlanner: () => hookState,
 }));
@@ -368,6 +373,25 @@ beforeEach(() => {
   hookState = baseState();
   seedStore(useAuthStore, { isAuthenticated: true, user: buildUser({ id: 5 }) });
   useTripStore.setState({ loadBudgetItems: vi.fn(async () => undefined) } as never);
+});
+
+describe('TripPlannerPage — roadtrip mode wiring (4.3 port)', () => {
+  it('FE-PAGE-TPW-061: with the mode on, the drive rail replaces the day rail and the mode switch reads active', async () => {
+    renderPage({ roadtripMode: true, roadtripActive: true, enabledAddons: { packing: true, budget: true, documents: true, collab: true, roadtrip: true } as never });
+
+    await screen.findByTestId('stub-rt-sidebar');
+    expect(screen.getByTestId('stub-rt-mode-switch')).toHaveAttribute('data-active', 'true');
+    // The corridor search is the other half of the same mode, on the places pool —
+    // its own lazy chunk, so wait for it separately from the rail.
+    await screen.findByTestId('stub-rt-corridor');
+  });
+
+  it('FE-PAGE-TPW-062: with the mode off, none of the roadtrip surfaces mount', () => {
+    renderPage({});
+
+    expect(screen.queryByTestId('stub-rt-sidebar')).toBeNull();
+    expect(screen.queryByTestId('stub-rt-corridor')).toBeNull();
+  });
 });
 
 describe('TripPlannerPage — shell', () => {
