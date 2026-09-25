@@ -1057,3 +1057,29 @@ describe('IntegrationsTab – failure toasts', () => {
     expect(screen.getByText('Session App')).toBeInTheDocument();
   });
 });
+
+/**
+ * The Dawarich card is mounted here, gated on its addon like the others. It was a
+ * working component with no caller until this assertion existed — the orphan
+ * shape that lets a component's own tests pass while nothing renders it.
+ */
+describe('IntegrationsTab — Dawarich connection', () => {
+  // The card's own copy, so the assertion does not depend on the translation
+  // table being loaded before the query runs.
+  const CARD_TEXT = /Found in Dawarich under Account/i;
+
+  it('FE-COMP-INTEGRATIONS-DAW-001: the card is absent while the addon is off', () => {
+    render(<IntegrationsTab />);
+    expect(screen.queryByText(CARD_TEXT)).toBeNull();
+  });
+
+  it('FE-COMP-INTEGRATIONS-DAW-002: the card appears once the addon is on', async () => {
+    seedStore(useAddonStore, {
+      addons: [{ id: 'dawarich', name: 'Dawarich', type: 'integration', icon: '', enabled: true }],
+      loaded: true,
+      loadAddons: vi.fn(),
+    });
+    render(<IntegrationsTab />);
+    expect(await screen.findByText(CARD_TEXT)).toBeInTheDocument();
+  });
+});

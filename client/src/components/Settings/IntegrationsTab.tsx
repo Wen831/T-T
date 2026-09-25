@@ -9,6 +9,7 @@ import ScopeGroupPicker from '../OAuth/ScopeGroupPicker';
 import { useToast } from '../shared/Toast';
 import AirTrailConnectionSection from './AirTrailConnectionSection';
 import ApiKeysSection from './ApiKeysSection';
+import DawarichConnectionSection from './DawarichConnectionSection';
 import LlmConnectionSection from './LlmConnectionSection';
 import PhotoProvidersSection from './PhotoProvidersSection';
 import Section from './Section';
@@ -109,6 +110,9 @@ export default function IntegrationsTab(): React.ReactElement {
        a managed install. The per-user fallback exists for people who supply their
        own key, and there nobody does. */}
       {S.llmEnabled && !managed && <LlmConnectionSection />}
+      {/* The recorded-route service. Gated on its addon like the others: an
+          instance that never turned it on should not carry its card. */}
+      {S.dawarichEnabled && !managed && <DawarichConnectionSection />}
       {/* Above MCP on purpose: an API key needs no addon, and someone looking for
           one should not have to read past a section about AI assistants. */}
       <ApiKeysSection />
@@ -126,6 +130,7 @@ function useIntegrations() {
   const mcpEnabled = addonEnabled('mcp');
   const airtrailEnabled = addonEnabled('airtrail');
   const llmEnabled = addonEnabled('llm_parsing');
+  const dawarichEnabled = addonEnabled('dawarich');
 
   useEffect(() => {
     loadAddons();
@@ -336,6 +341,7 @@ function useIntegrations() {
     mcpEnabled,
     airtrailEnabled,
     llmEnabled,
+    dawarichEnabled,
     oauthClients,
     setOauthClients,
     oauthSessions,

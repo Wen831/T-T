@@ -26,6 +26,7 @@ import {
   wantsTerrain,
 } from './mapboxSetup';
 import { makeMarkerDraggable } from './markerDrag';
+import PlaceHoverCard from './PlaceHoverCard';
 import { isCustomPlaceImage, photoCacheKey } from './placePhoto';
 import { buildPoiPopupHtml } from './placePopup';
 import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories';
@@ -529,7 +530,14 @@ export function MapViewGL({
   const mapRef = useRef<any | null>(null);
   // The recorded trail, under the planned route's casing — the GL twin of the
   // Leaflet pane order (TT port of upstream 4.3.0).
-  useDawarichTrailGL(mapRef.current, mapReady, dawarichTrack, dawarichSelectedDate, 'trip-route-casing', dawarichHiddenDates);
+  useDawarichTrailGL(
+    mapRef.current,
+    mapReady,
+    dawarichTrack,
+    dawarichSelectedDate,
+    'trip-route-casing',
+    dawarichHiddenDates
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<Map<number, PlacePin>>(new Map());
   // Own layer for the hand-positioned place pins (MapLibre path, see makePlacePin).
@@ -1722,43 +1730,20 @@ export function MapViewGL({
           bottomOffset={buttonBottom as unknown as number}
         />
       )}
-      {/* Hover tooltip — cursor-following name/category/address card, identical to
-          the Leaflet map's overlay (no anchored popup, no photo). */}
+      {/* Hover tooltip — cursor-following name/category/address card. One component
+          for every renderer now: the two copies had already drifted in how they
+          resolved the category icon, which is exactly what this consolidates. */}
       {!hoverDisabled && hoverPlace && hoverPos && !isMobile && (
-        <div
-          data-testid="tooltip"
-          style={{
-            position: 'fixed',
-            left: hoverPos.x + 14,
-            top: hoverPos.y - 10,
-            zIndex: 9999,
-            pointerEvents: 'none',
-            background: 'white',
-            borderRadius: 8,
-            boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
-            padding: '6px 10px',
-            fontFamily: 'var(--font-system)',
-            maxWidth: 220,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <div
-            style={{ fontWeight: 600, fontSize: 12, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis' }}
-          >
-            {hoverPlace.name}
-          </div>
-          {hoverPlace.category_name && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 1 }}>
-              <HoverIcon size={10} style={{ color: hoverPlace.category_color || '#6b7280', flexShrink: 0 }} />
-              <span style={{ fontSize: 11, color: '#6b7280' }}>{hoverPlace.category_name}</span>
-            </div>
-          )}
-          {hoverPlace.address && (
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {hoverPlace.address}
-            </div>
-          )}
-        </div>
+        <PlaceHoverCard
+          x={hoverPos.x}
+          y={hoverPos.y}
+          name={hoverPlace.name}
+          categoryName={hoverPlace.category_name}
+          categoryIcon={hoverPlace.category_icon}
+          categoryColor={hoverPlace.category_color}
+          address={hoverPlace.address}
+          rating={hoverPlace.rating_avg}
+        />
       )}
     </div>
   );

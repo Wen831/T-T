@@ -38,6 +38,8 @@ import { renderIconMarkup } from '../utils/iconMarkup';
 import { computeMapViewport, TILE_SIZE_RASTER } from '../utils/mapViewport';
 import { safeHexColor } from '../utils/safeColor';
 import { resolveBasemap } from '../utils/tileUrl';
+import { SharedBookingDetails } from './sharedTrip/SharedBookingDetails';
+import { SharedPlaceDetails } from './sharedTrip/SharedPlaceDetails';
 import { useSharedTrip } from './sharedTrip/useSharedTrip';
 
 const TRANSPORT_ICONS = { flight: Plane, train: Train, bus: Bus, car: Car, cruise: Ship };
@@ -747,75 +749,80 @@ export default function SharedTripPage() {
                           if (!place) return null;
                           const cat = categories?.find((c: any) => c.id === place.category_id);
                           return (
-                            <div
-                              key={`p-${item.data.id}`}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 10,
-                                padding: '6px 8px',
-                                borderRadius: 6,
-                              }}
-                            >
+                            // A column now: the row above names the place, and the
+                            // details the owner chose to share sit under it instead
+                            // of being cut down to one truncated line (#2320).
+                            <div key={`p-${item.data.id}`} style={{ display: 'flex', flexDirection: 'column' }}>
                               <div
                                 style={{
-                                  width: 28,
-                                  height: 28,
-                                  borderRadius: '50%',
-                                  background: cat?.color || '#6366f1',
                                   display: 'flex',
                                   alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
+                                  gap: 10,
+                                  padding: '6px 8px',
+                                  borderRadius: 6,
                                 }}
                               >
-                                {place.image_url ? (
-                                  <img
-                                    src={place.image_url}
-                                    alt=""
-                                    style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }}
-                                  />
-                                ) : (
-                                  <MapPin size={13} color="white" />
-                                )}
-                              </div>
-                              <div style={{ flex: 1, minWidth: 0 }}>
                                 <div
-                                  className="text-[#111827]"
-                                  style={{ fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 500 }}
-                                >
-                                  {place.name}
-                                </div>
-                                {(place.address || place.description) && (
-                                  <div
-                                    className="text-[#9ca3af]"
-                                    style={{
-                                      fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis',
-                                      whiteSpace: 'nowrap',
-                                    }}
-                                  >
-                                    {place.address || place.description}
-                                  </div>
-                                )}
-                              </div>
-                              {place.place_time && (
-                                <span
-                                  className="text-[#6b7280]"
                                   style={{
-                                    fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
+                                    width: 28,
+                                    height: 28,
+                                    borderRadius: '50%',
+                                    background: cat?.color || '#6366f1',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: 3,
+                                    justifyContent: 'center',
                                     flexShrink: 0,
                                   }}
                                 >
-                                  <Clock size={9} />
-                                  {place.place_time}
-                                  {place.end_time ? ` – ${place.end_time}` : ''}
-                                </span>
-                              )}
+                                  {place.image_url ? (
+                                    <img
+                                      src={place.image_url}
+                                      alt=""
+                                      style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }}
+                                    />
+                                  ) : (
+                                    <MapPin size={13} color="white" />
+                                  )}
+                                </div>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div
+                                    className="text-[#111827]"
+                                    style={{ fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 500 }}
+                                  >
+                                    {place.name}
+                                  </div>
+                                  {(place.address || place.description) && (
+                                    <div
+                                      className="text-[#9ca3af]"
+                                      style={{
+                                        fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                      }}
+                                    >
+                                      {place.address || place.description}
+                                    </div>
+                                  )}
+                                </div>
+                                {place.place_time && (
+                                  <span
+                                    className="text-[#6b7280]"
+                                    style={{
+                                      fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 3,
+                                      flexShrink: 0,
+                                    }}
+                                  >
+                                    <Clock size={9} />
+                                    {place.place_time}
+                                    {place.end_time ? ` – ${place.end_time}` : ''}
+                                  </span>
+                                )}
+                              </div>
+                              <SharedPlaceDetails place={place} assignmentNotes={item.data.notes} />
                             </div>
                           );
                         })}
@@ -929,6 +936,10 @@ export default function SharedTripPage() {
                   >
                     {r.status === 'confirmed' ? t('shared.confirmed') : t('shared.pending')}
                   </span>
+                  {/* The booking's own note and link. The server keeps the
+                      confirmation number and ticket data back; these two are what
+                      the owner chose to share. */}
+                  <SharedBookingDetails notes={r.notes} url={r.url} />
                 </div>
               );
             })}

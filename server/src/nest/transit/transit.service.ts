@@ -1,5 +1,6 @@
 import { getAppUrl, readEnv } from '../../app-config';
 import { buildUserAgent } from '../maps/maps.helpers';
+import { GoogleTransitProvider } from './google-transit.provider';
 import {
   deriveTransitStats,
   SCHEDULED_TRANSIT_MODES,
@@ -10,6 +11,7 @@ import {
   type TransitPlace,
 } from './transit.helpers';
 import { Injectable } from '@nestjs/common';
+import type { TransitProvider } from '@trek/shared';
 
 /**
  * Public transit routing (#1065) backed by Transitous (api.transitous.org), the
@@ -139,14 +141,35 @@ function mapStop(p: MotisPlaceRaw | undefined, kind: 'departure' | 'arrival'): T
 
 @Injectable()
 export class TransitService {
+  constructor(private readonly google: GoogleTransitProvider) {}
+
+  /**
+   * Which backend answers this request (#1699): Google when an admin has picked
+   * it AND a key resolves for this caller, Transitous otherwise. Transitous is
+   * free and keyless, so an install that never opens the setting — or that picks
+   * Google without a key — keeps costing nothing.
+   */
+  private backendFor(userId: number): TransitProvider {
+    return this.google.isActive(userId) ? 'google' : 'transitous';
+  }
+
   /** Station/place search for the from/to pickers. `near` biases results. */
-  async geocode(query: string, language?: string, near?: string): Promise<{ results: TransitPlace[] }> {
+  async geocode(
+    query: string,
+    language?: string,
+    near?: string,
+    userId = 0,
+  ): Promise<{ results: TransitPlace[]; provider: TransitProvider }> {
     const text = (query || '').trim();
-    if (text.length < 2) return { results: [] };
+    if (text.length < 2) return { results: [], provider: this.backendFor(userId) };
     if (text.length > 200) {
       const e = new Error('Query too long') as Error & { status: number };
       e.status = 400;
       throw e;
+    }
+
+    if (this.backendFor(userId) === 'google') {
+      return { ...(await this.google.geocode(text, language, near, userId)), provider: 'google' };
     }
 
     const params = new URLSearchParams({ text });
@@ -155,7 +178,7 @@ export class TransitService {
 
     const key = `geo:${params.toString()}`;
     const cached = cacheGet(key);
-    if (cached) return cached as { results: TransitPlace[] };
+    if (cached) return { ...(cached as { results: TransitPlace[] }), provider: 'transitous' };
 
     const raw = (await upstream('/api/v1/geocode', params)) as Array<{
       name?: string;
@@ -173,11 +196,11 @@ export class TransitService {
 
     const data = { results };
     cacheSet(key, data);
-    return data;
+    return { ...data, provider: 'transitous' };
   }
 
   /** Route search between two coordinates. Returns compact itineraries for the picker. */
-  async plan(q: PlanQuery): Promise<{ itineraries: TransitItinerary[] }> {
+  async plan(q: PlanQuery, userId = 0): Promise<{ itineraries: TransitItinerary[]; provider: TransitProvider }> {
     const bad = (msg: string) => {
       const e = new Error(msg) as Error & { status: number };
       e.status = 400;
@@ -185,6 +208,10 @@ export class TransitService {
     };
     if (!q.from || !isCoord(q.from)) bad('from must be "lat,lng"');
     if (!q.to || !isCoord(q.to)) bad('to must be "lat,lng"');
+
+    if (this.backendFor(userId) === 'google') {
+      return { ...(await this.google.plan(q, undefined, userId)), provider: 'google' };
+    }
 
     const params = new URLSearchParams({ fromPlace: q.from, toPlace: q.to, numItineraries: '8' });
 
@@ -214,7 +241,7 @@ export class TransitService {
 
     const key = `plan:${params.toString()}`;
     const cached = cacheGet(key);
-    if (cached) return cached as { itineraries: TransitItinerary[] };
+    if (cached) return { ...(cached as { itineraries: TransitItinerary[] }), provider: 'transitous' };
 
     const raw = (await upstream('/api/v6/plan', params)) as {
       itineraries?: Array<{
@@ -276,6 +303,6 @@ export class TransitService {
 
     const data = { itineraries };
     cacheSet(key, data);
-    return data;
+    return { ...data, provider: 'transitous' };
   }
 }

@@ -891,10 +891,13 @@ describe('SharedTripPage', () => {
       expect(screen.getByText('3 places')).toBeInTheDocument();
       fireEvent.click(screen.getByText('Day One'));
 
-      await waitFor(() => expect(screen.getByText('Rue de Rivoli')).toBeInTheDocument());
+      // The address shows twice now: once truncated on the row, and again in the
+      // shared details below it (#2320), which is the point of the block.
+      await waitFor(() => expect(screen.getAllByText('Rue de Rivoli').length).toBeGreaterThan(0));
       expect(document.querySelector('img[src="/uploads/places/louvre.jpg"]') as HTMLImageElement).toBeInTheDocument();
-      // A place with no address falls back to its description.
-      expect(screen.getByText('Along the river')).toBeInTheDocument();
+      // A place with no address falls back to its description — on the row and,
+      // like the address above, again in the details block.
+      expect(screen.getAllByText('Along the river').length).toBeGreaterThan(0);
       // The bare place shows neither line and no time badge.
       expect(screen.getByText('Mystery Stop')).toBeInTheDocument();
       expect(screen.getByText(/09:00 – 11:00/)).toBeInTheDocument();

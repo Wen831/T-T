@@ -4,7 +4,6 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { createElement, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Circle, CircleMarker, MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
-import DawarichTrailLayer from './DawarichTrailLayer';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import {
   attributionForTile,
@@ -26,10 +25,12 @@ import { visibleRouteReservations } from '../../utils/reservationRoutes';
 import { safeHexColor } from '../../utils/safeColor';
 import { resolveBasemap } from '../../utils/tileUrl';
 import { CATEGORY_ICON_MAP, getCategoryIcon } from '../shared/categoryIcons';
+import DawarichTrailLayer from './DawarichTrailLayer';
 import { MapLayerSwitcher } from './MapLayerSwitcher';
 import { PluginMapLayers } from './MapPluginLayers';
 import { PluginMapMarkers } from './MapPluginMarkers';
 import { makeMarkerDraggable } from './markerDrag';
+import PlaceHoverCard from './PlaceHoverCard';
 import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories';
 import ReservationOverlay from './ReservationOverlay';
 import { hasManualTrackColor, resolveTrackColor } from './trackColors';
@@ -1110,40 +1111,16 @@ export const MapView = memo(function MapView({
       </div>
 
       {TooltipOverlay && (
-        <div
-          data-testid="tooltip"
-          style={{
-            position: 'fixed',
-            left: tooltipPos.x + 14,
-            top: tooltipPos.y - 10,
-            zIndex: 9999,
-            pointerEvents: 'none',
-            background: 'white',
-            borderRadius: 8,
-            boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
-            padding: '6px 10px',
-            fontFamily: 'var(--font-system)',
-            maxWidth: 220,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <div
-            style={{ fontWeight: 600, fontSize: 12, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis' }}
-          >
-            {hoveredPlace.name}
-          </div>
-          {hoveredPlace.category_name && CatIcon && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 1 }}>
-              <CatIcon size={10} style={{ color: hoveredPlace.category_color || '#6b7280', flexShrink: 0 }} />
-              <span style={{ fontSize: 11, color: '#6b7280' }}>{hoveredPlace.category_name}</span>
-            </div>
-          )}
-          {hoveredPlace.address && (
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {hoveredPlace.address}
-            </div>
-          )}
-        </div>
+        <PlaceHoverCard
+          x={tooltipPos.x}
+          y={tooltipPos.y}
+          name={hoveredPlace.name}
+          categoryName={hoveredPlace.category_name}
+          categoryIcon={hoveredPlace.category_icon}
+          categoryColor={hoveredPlace.category_color}
+          address={hoveredPlace.address}
+          rating={hoveredPlace.rating_avg}
+        />
       )}
     </>
   );

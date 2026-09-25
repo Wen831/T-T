@@ -21,7 +21,13 @@ vi.mock('../../../src/app-config', async (importOriginal) => {
 vi.mock('../../../src/nest/maps/maps.helpers', () => ({ buildUserAgent: () => 'TREK-Test-UA' }));
 
 const fetchMock = vi.fn();
-const svc = new TransitService();
+// These cases are all about the Transitous path, so the Google backend is
+// injected inactive — it would otherwise try to resolve a key and take over.
+const svc = new TransitService({
+  isActive: () => false,
+  geocode: async () => ({ results: [] }),
+  plan: async () => ({ itineraries: [] }),
+} as unknown as ConstructorParameters<typeof TransitService>[0]);
 
 beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock);

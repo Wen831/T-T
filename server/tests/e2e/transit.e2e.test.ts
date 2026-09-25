@@ -80,7 +80,9 @@ describe('Transit proxy e2e (real auth guard + temp SQLite)', () => {
       .set('Cookie', sessionCookie(1));
     expect(res.status).toBe(200);
     expect(res.body.results[0].name).toBe('Alexanderplatz');
-    expect(geocodeSpy).toHaveBeenCalledWith('alex', 'de', '52.5,13.4');
+    // The acting user rides along so the Google backend can resolve THAT caller's
+    // key; the Transitous path ignores it.
+    expect(geocodeSpy).toHaveBeenCalledWith('alex', 'de', '52.5,13.4', 1);
   });
 
   it('plan passes all params through (arriveBy + maxTransfers coerced)', async () => {
@@ -91,14 +93,17 @@ describe('Transit proxy e2e (real auth guard + temp SQLite)', () => {
       )
       .set('Cookie', sessionCookie(1));
     expect(res.status).toBe(200);
-    expect(planSpy).toHaveBeenCalledWith({
-      from: '52.5,13.4',
-      to: '52.6,13.5',
-      time: '2026-07-13T09:00:00Z',
-      arriveBy: true,
-      modes: 'BUS',
-      maxTransfers: 2,
-    });
+    expect(planSpy).toHaveBeenCalledWith(
+      {
+        from: '52.5,13.4',
+        to: '52.6,13.5',
+        time: '2026-07-13T09:00:00Z',
+        arriveBy: true,
+        modes: 'BUS',
+        maxTransfers: 2,
+      },
+      1,
+    );
   });
 
   it('service validation errors propagate with their status', async () => {

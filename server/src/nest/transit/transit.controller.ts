@@ -21,6 +21,15 @@ export class TransitController {
     private readonly transit: TransitService,
   ) {}
 
+  /**
+   * The acting user id, from the JWT the guard already verified. Only the Google
+   * backend reads it — it resolves that user's key — and Transitous is keyless,
+   * so an absent id is not an error, just no key.
+   */
+  private actor(req: Request): number {
+    return Number((req as Request & { user?: { id?: number } }).user?.id ?? 0);
+  }
+
   private limit(bucket: string, req: Request, max: number): void {
     if (!this.rl.check(bucket, req.ip || 'unknown', max, RL_WINDOW, Date.now())) {
       throw new HttpException({ error: 'Too many requests. Please try again later.' }, 429);
@@ -42,7 +51,7 @@ export class TransitController {
   ) {
     this.limit('transit_geocode', req, 300);
     try {
-      return await this.transit.geocode(q || '', lang, near);
+      return await this.transit.geocode(q || '', lang, near, this.actor(req));
     } catch (err) {
       this.rethrow(err);
     }
@@ -60,14 +69,17 @@ export class TransitController {
   ) {
     this.limit('transit_plan', req, 60);
     try {
-      return await this.transit.plan({
-        from: from || '',
-        to: to || '',
-        time,
-        arriveBy: arriveBy === 'true' || arriveBy === '1',
-        modes,
-        maxTransfers: maxTransfers !== undefined && maxTransfers !== '' ? Number(maxTransfers) : undefined,
-      });
+      return await this.transit.plan(
+        {
+          from: from || '',
+          to: to || '',
+          time,
+          arriveBy: arriveBy === 'true' || arriveBy === '1',
+          modes,
+          maxTransfers: maxTransfers !== undefined && maxTransfers !== '' ? Number(maxTransfers) : undefined,
+        },
+        this.actor(req),
+      );
     } catch (err) {
       this.rethrow(err);
     }
