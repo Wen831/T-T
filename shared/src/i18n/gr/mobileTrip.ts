@@ -47,5 +47,27 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Επόμενο',
   'mobileTrip.viewDetails': 'Προβολή λεπτομερειών',
   'mobileTrip.transportsEmpty': 'Δεν υπάρχει μεταφορά ακόμη',
+  'mobileTrip.rtBehind': '{time} πίσω από το πρόγραμμα',
+  'mobileTrip.rtDesktopNote':
+    'Αυτά τα στοιχεία ορίζονται στον υπολογιστή, όπου μπορείτε επίσης να συγκρίνετε άλλες διαδρομές και να κάνετε μια ημέρα να ακολουθεί ένα εισαγόμενο ίχνος.',
+  'mobileTrip.rtFromNext': 'Από την επόμενη στάση σας',
+  'mobileTrip.rtFromStart': 'Από την αρχή του σκέλους',
+  'mobileTrip.rtInfoTitle': 'Στοιχεία οδήγησης',
+  'mobileTrip.rtNightDesktopOnly':
+    'Η κράτηση διανυκτέρευσης σε αυτό το μέρος γίνεται στον σχεδιαστή του υπολογιστή. Εδώ μπορείτε μόνο να την αφαιρέσετε.',
+  'mobileTrip.rtNoDay': 'Δεν επιλέχθηκε ημέρα',
+  'mobileTrip.rtNoDayHint': 'Ο χάρτης δείχνει ολόκληρο το ταξίδι. Πατήστε μια ημέρα παραπάνω για τη διαδρομή της.',
+  'mobileTrip.rtNoneAhead': 'Τίποτα στον δρόμο μπροστά σας. Δοκιμάστε όλο το σκέλος.',
+  'mobileTrip.rtNoneOnStage': 'Τίποτα τέτοιο κατά μήκος αυτού του σκέλους.',
+  'mobileTrip.rtPlanOnDesktop':
+    'Ο σχεδιασμός γίνεται στον υπολογιστή. Το TREK υπολογίζει τη διαδρομή μόλις μια ημέρα έχει δύο μέρη.',
+  'mobileTrip.rtReach': 'Πόσο μακριά',
+  'mobileTrip.rtReachAhead': '{distance} μπροστά',
+  'mobileTrip.rtSearchOffline': 'Χρειάζεται σύνδεση: η αναζήτηση διαβάζει τη διαδρομή που ακολουθεί.',
+  'mobileTrip.rtStart': 'Έναρξη',
+  'mobileTrip.rtStayLess': '{count} λεπτά λιγότερα',
+  'mobileTrip.rtStayMore': '{count} λεπτά περισσότερα',
+  'mobileTrip.rtStayScope':
+    'Η διάρκεια της στάσης ανήκει στο μέρος, οπότε μετράει σε κάθε ημέρα που είναι προγραμματισμένη αυτή η στάση.',
 };
 export default mobileTrip;

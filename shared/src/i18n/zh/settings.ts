@@ -528,6 +528,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API 密钥已创建',
   'settings.apiKeys.modal.createdWarning': '请立即复制密钥。它只显示一次，之后无法再次获取。',
   'settings.apiKeys.modal.done': '完成',
+  'settings.mapMaplibreSubtitle': '免费开源矢量地图，无需账号',
+  'settings.plugins.compatibility': '兼容性',
 };
 
 export default settings;

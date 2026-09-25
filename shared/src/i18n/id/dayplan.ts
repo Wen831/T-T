@@ -90,5 +90,6 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderUndo': 'Atur ulang hari',
   'dayplan.reorderError': 'Gagal mengatur ulang hari',
   'dayplan.addDayError': 'Gagal menambah hari',
+  'export.gpx': 'GPX',
 };
 export default dayplan;

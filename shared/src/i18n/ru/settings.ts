@@ -572,6 +572,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Скопируйте ключ сейчас. Он показывается один раз, позже получить его нельзя.',
   'settings.apiKeys.modal.done': 'Готово',
+  'settings.mapMaplibreSubtitle': 'Свободные открытые векторные карты без аккаунта',
+  'settings.plugins.compatibility': 'Совместимость',
 };
 
 export default settings;

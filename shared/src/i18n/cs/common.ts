@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': 'Je dostupná nová verze',
   'common.errorUpdateBody': 'TREK byl aktualizován, zatímco byla tato karta otevřená. Načtěte znovu pro novou verzi.',
   'common.errorPluginTitle': 'Tento plugin se nepodařilo zobrazit',
+  'common.errorOccurred': 'Něco se pokazilo',
+  'common.remove': 'Odebrat',
 };
 export default common;

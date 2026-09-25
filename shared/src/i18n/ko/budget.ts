@@ -153,5 +153,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': '저장에 실패했고 업로드된 영수증 {count}개가 남아 있습니다. 파일 탭에서 삭제하세요.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': '카테고리 추가',
 };
 export default budget;

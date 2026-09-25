@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'リンクを固定',
   'collab.links.unpin': 'リンクの固定を解除',
   'collab.links.delete': 'リンクを削除',
+  'collab.chat.attachedImage': '添付画像',
+  'collab.chat.closeImage': '画像を閉じる',
+  'collab.chat.imageLimit': '1件のメッセージに添付できる画像は{max}枚までです',
+  'collab.chat.imageRejected': 'JPEG、PNG、GIF、WebP の画像のみ、10 MB までです',
+  'collab.notes.expand': 'もっと見る',
 };
 export default collab;

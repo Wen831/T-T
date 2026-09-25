@@ -570,6 +570,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'Ключ API створено',
   'settings.apiKeys.modal.createdWarning': 'Скопіюйте ключ зараз. Він показується один раз, пізніше його не отримати.',
   'settings.apiKeys.modal.done': 'Готово',
+  'settings.mapMaplibreSubtitle': 'Вільні відкриті векторні карти без акаунта',
+  'settings.plugins.compatibility': 'Сумісність',
 };
 
 export default settings;

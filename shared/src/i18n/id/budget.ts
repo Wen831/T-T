@@ -153,5 +153,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': 'Gagal menyimpan, dan {count} struk yang diunggah masih ada. Hapus di tab Berkas.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Tambah kategori',
 };
 export default budget;

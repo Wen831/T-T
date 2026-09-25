@@ -569,6 +569,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Salin kunci sekarang. Kunci hanya ditampilkan sekali dan tidak bisa diambil lagi.',
   'settings.apiKeys.modal.done': 'Selesai',
+  'settings.mapMaplibreSubtitle': 'Peta vektor gratis dan terbuka tanpa akun',
+  'settings.plugins.compatibility': 'Kompatibilitas',
 };
 
 export default settings;

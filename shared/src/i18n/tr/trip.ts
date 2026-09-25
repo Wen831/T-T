@@ -87,5 +87,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Aktarma',
   'transit.walkLabel': 'Yürüyüş',
   'transit.searchHint': 'Gerçek bağlantıları ara ve doğrudan güne ekle — veriler Transitous üzerinden.',
+  'trip.confirm.deletePlaceBooked': '“{name}” için ayrılan gece, “{booking}” rezervasyonu ve ona bağlı tüm harcamalarla birlikte yerle beraber silinir.',
+  'trip.confirm.deletePlaceNight': '“{name}” için ayrılan gece yerle birlikte silinir.',
+  'trip.toast.loadError': 'Gezi yüklenemedi',
 };
 export default trip;

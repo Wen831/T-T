@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': 'Památky',
   'atlas.checkinPlaces': 'Místa cesty',
   'atlas.checkinEmpty': 'Zatím žádné check-iny — označte památku nebo místo cesty jako navštívené',
+  'atlas.lastVisitLabel': 'Poslední cesta',
 };
 export default atlas;

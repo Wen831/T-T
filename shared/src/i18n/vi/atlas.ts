@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': '',
   'atlas.checkinTab': '',
   'atlas.checkinTotal': '',
+  'atlas.lastVisitLabel': 'Chuyến đi cuối cùng',
 };
 export default atlas;

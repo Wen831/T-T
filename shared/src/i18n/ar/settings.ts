@@ -554,6 +554,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'تم إنشاء مفتاح API',
   'settings.apiKeys.modal.createdWarning': 'انسخ المفتاح الآن. يُعرض مرة واحدة فقط ولا يمكن استرجاعه لاحقًا.',
   'settings.apiKeys.modal.done': 'تم',
+  'settings.mapMaplibreSubtitle': 'خرائط متجهية مجانية ومفتوحة دون حساب',
+  'settings.plugins.compatibility': 'التوافق',
 };
 
 export default settings;

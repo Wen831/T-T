@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.showPlanned': '显示计划中的国家',
   'atlas.plannedFor': '计划于',
   'atlas.antarctica': '南极洲',
+  'atlas.lastVisitLabel': '最近旅行',
 };
 export default atlas;

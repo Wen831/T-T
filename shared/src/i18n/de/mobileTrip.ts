@@ -47,5 +47,26 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Als Nächstes',
   'mobileTrip.viewDetails': 'Details anzeigen',
   'mobileTrip.transportsEmpty': 'Noch keine Transporte',
+  'mobileTrip.rtBehind': '{time} hinter dem Plan',
+  'mobileTrip.rtDesktopNote':
+    'Diese Werte werden am Desktop gesetzt. Dort kannst du auch Routenvarianten vergleichen und einen Tag einer importierten Spur folgen lassen.',
+  'mobileTrip.rtFromNext': 'Ab deinem nächsten Stopp',
+  'mobileTrip.rtFromStart': 'Ab dem Anfang der Etappe',
+  'mobileTrip.rtInfoTitle': 'Fahrdaten',
+  'mobileTrip.rtNightDesktopOnly':
+    'Eine Übernachtung an diesem Ort legst du im Desktop-Planer an. Hier kannst du sie nur verwerfen.',
+  'mobileTrip.rtNoDay': 'Kein Tag gewählt',
+  'mobileTrip.rtNoDayHint': 'Die Karte zeigt die ganze Reise. Tippe oben auf einen Tag, um seine Fahrt zu sehen.',
+  'mobileTrip.rtNoneAhead': 'Auf der Strecke voraus ist nichts. Versuch die ganze Etappe.',
+  'mobileTrip.rtNoneOnStage': 'Auf dieser Etappe gibt es davon nichts.',
+  'mobileTrip.rtPlanOnDesktop': 'Geplant wird am Desktop. TREK berechnet die Fahrt, sobald ein Tag zwei Orte hat.',
+  'mobileTrip.rtReach': 'Wie weit',
+  'mobileTrip.rtReachAhead': '{distance} voraus',
+  'mobileTrip.rtSearchOffline': 'Braucht eine Verbindung: Die Suche liest die Strecke, die vor dir liegt.',
+  'mobileTrip.rtStart': 'Start',
+  'mobileTrip.rtStayLess': '{count} Minuten weniger',
+  'mobileTrip.rtStayMore': '{count} Minuten mehr',
+  'mobileTrip.rtStayScope':
+    'Der Aufenthalt gehört zum Ort und zählt deshalb an jedem Tag, an dem dieser Stopp geplant ist.',
 };
 export default mobileTrip;

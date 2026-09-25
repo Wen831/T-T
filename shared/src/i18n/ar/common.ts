@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': 'يتوفر إصدار جديد',
   'common.errorUpdateBody': 'تم تحديث TREK أثناء فتح علامة التبويب هذه. أعد التحميل للحصول على الإصدار الجديد.',
   'common.errorPluginTitle': 'تعذّر عرض هذه الإضافة',
+  'common.errorOccurred': 'حدث خطأ ما',
+  'common.remove': 'إزالة',
 };
 export default common;

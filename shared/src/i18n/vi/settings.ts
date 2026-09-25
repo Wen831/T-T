@@ -572,6 +572,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Hãy sao chép khóa ngay. Khóa chỉ hiện một lần và không thể lấy lại sau này.',
   'settings.apiKeys.modal.done': 'Xong',
+  'settings.mapMaplibreSubtitle': 'Bản đồ vector mở, miễn phí, không cần tài khoản',
+  'settings.plugins.compatibility': 'Tương thích',
 };
 
 export default settings;

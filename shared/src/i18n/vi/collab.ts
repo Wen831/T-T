@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Ghim liên kết',
   'collab.links.unpin': 'Bỏ ghim liên kết',
   'collab.links.delete': 'Xóa liên kết',
+  'collab.chat.attachedImage': 'Ảnh đính kèm',
+  'collab.chat.closeImage': 'Đóng ảnh',
+  'collab.chat.imageLimit': 'Bạn có thể đính kèm tối đa {max} ảnh cho mỗi tin nhắn',
+  'collab.chat.imageRejected': 'Chỉ chấp nhận ảnh JPEG, PNG, GIF và WebP tối đa 10 MB',
+  'collab.notes.expand': 'Xem thêm',
 };
 export default collab;

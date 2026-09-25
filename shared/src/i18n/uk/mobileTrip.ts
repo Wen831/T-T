@@ -47,5 +47,27 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Далі',
   'mobileTrip.viewDetails': 'Переглянути деталі',
   'mobileTrip.transportsEmpty': 'Поки немає транспорту',
+  'mobileTrip.rtBehind': 'на {time} пізніше плану',
+  'mobileTrip.rtDesktopNote':
+    'Ці дані задаються на комп’ютері: там само можна порівнювати інші маршрути та провести день за імпортованим треком.',
+  'mobileTrip.rtFromNext': 'Від наступної зупинки',
+  'mobileTrip.rtFromStart': 'Від початку етапу',
+  'mobileTrip.rtInfoTitle': 'Дані про водіння',
+  'mobileTrip.rtNightDesktopOnly':
+    'Забронювати ночівлю в цьому місці можна в планувальнику на комп’ютері. Тут її можна лише прибрати.',
+  'mobileTrip.rtNoDay': 'День не вибрано',
+  'mobileTrip.rtNoDayHint': 'На мапі вся подорож. Торкніться дня вгорі, щоб побачити його маршрут.',
+  'mobileTrip.rtNoneAhead': 'На дорозі попереду нічого немає. Спробуйте весь етап.',
+  'mobileTrip.rtNoneOnStage': 'На цьому етапі нічого такого немає.',
+  'mobileTrip.rtPlanOnDesktop':
+    'Планування відбувається на комп’ютері. TREK розрахує маршрут, щойно в дні буде два місця.',
+  'mobileTrip.rtReach': 'Наскільки далеко',
+  'mobileTrip.rtReachAhead': '{distance} попереду',
+  'mobileTrip.rtSearchOffline': 'Потрібне з’єднання: пошук зчитує маршрут попереду.',
+  'mobileTrip.rtStart': 'Початок',
+  'mobileTrip.rtStayLess': 'на {count} хвилин менше',
+  'mobileTrip.rtStayMore': 'на {count} хвилин більше',
+  'mobileTrip.rtStayScope':
+    'Стоянка належить місцю, тому вона враховується в кожен день, на який заплановано цю зупинку.',
 };
 export default mobileTrip;

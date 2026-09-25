@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.showPlanned': 'Show planned countries',
   'atlas.plannedFor': 'Planned for',
   'atlas.antarctica': 'Antarctica',
+  'atlas.lastVisitLabel': 'Last trip',
 };
 export default atlas;

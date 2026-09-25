@@ -152,5 +152,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': '儲存失敗，還有 {count} 張已上傳的收據。請到「檔案」分頁刪除。',
   'costs.addReceipt': '新增收據',
   'costs.removeReceipt': '移除收據',
+  'budget.addCategory': '新增分類',
 };
 export default budget;

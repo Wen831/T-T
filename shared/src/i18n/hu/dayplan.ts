@@ -90,5 +90,6 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderUndo': 'Napok átrendezése',
   'dayplan.reorderError': 'Nem sikerült átrendezni a napokat',
   'dayplan.addDayError': 'Nem sikerült napot hozzáadni',
+  'export.gpx': 'GPX',
 };
 export default dayplan;

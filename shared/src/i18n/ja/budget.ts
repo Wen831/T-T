@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     '保存に失敗し、アップロード済みの領収書が {count} 件残っています。ファイルタブで削除してください。',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'カテゴリを追加',
 };
 export default budget;

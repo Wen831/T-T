@@ -152,5 +152,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': '保存失败，还有 {count} 个已上传的收据。请在“文件”标签页中删除。',
   'costs.addReceipt': '添加收据',
   'costs.removeReceipt': '移除收据',
+  'budget.addCategory': '添加分类',
 };
 export default budget;

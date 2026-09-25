@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Fäst länk',
   'collab.links.unpin': 'Lossa länk',
   'collab.links.delete': 'Ta bort länk',
+  'collab.chat.attachedImage': 'Bifogad bild',
+  'collab.chat.closeImage': 'Stäng bild',
+  'collab.chat.imageLimit': 'Du kan bifoga upp till {max} bilder per meddelande',
+  'collab.chat.imageRejected': 'Endast JPEG-, PNG-, GIF- och WebP-bilder upp till 10 MB tillåts',
+  'collab.notes.expand': 'Visa mer',
 };
 export default collab;

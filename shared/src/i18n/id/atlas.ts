@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': 'Landmark',
   'atlas.checkinPlaces': 'Tempat perjalanan',
   'atlas.checkinEmpty': 'Belum ada check-in — tandai landmark atau tempat perjalanan sebagai dikunjungi',
+  'atlas.lastVisitLabel': 'Perjalanan terakhir',
 };
 export default atlas;

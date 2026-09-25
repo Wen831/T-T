@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': 'Dostępna jest nowa wersja',
   'common.errorUpdateBody': 'TREK został zaktualizowany, gdy ta karta była otwarta. Odśwież, aby pobrać nową wersję.',
   'common.errorPluginTitle': 'Nie udało się wyświetlić tej wtyczki',
+  'common.errorOccurred': 'Coś poszło nie tak',
+  'common.remove': 'Usuń',
 };
 export default common;

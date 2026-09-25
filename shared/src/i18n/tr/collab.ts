@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Bağlantıyı sabitle',
   'collab.links.unpin': 'Sabitlemeyi kaldır',
   'collab.links.delete': 'Bağlantıyı sil',
+  'collab.chat.attachedImage': 'Eklenen görsel',
+  'collab.chat.closeImage': 'Görseli kapat',
+  'collab.chat.imageLimit': 'Her mesaja en fazla {max} görsel ekleyebilirsiniz',
+  'collab.chat.imageRejected': 'Yalnızca 10 MB boyutuna kadar JPEG, PNG, GIF ve WebP görselleri kabul edilir',
+  'collab.notes.expand': 'Daha fazla göster',
 };
 export default collab;

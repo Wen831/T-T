@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Link rögzítése',
   'collab.links.unpin': 'Link feloldása',
   'collab.links.delete': 'Link törlése',
+  'collab.chat.attachedImage': 'Csatolt kép',
+  'collab.chat.closeImage': 'Kép bezárása',
+  'collab.chat.imageLimit': 'Üzenetenként legfeljebb {max} képet csatolhatsz',
+  'collab.chat.imageRejected': 'Csak legfeljebb 10 MB méretű JPEG, PNG, GIF és WebP képek engedélyezettek',
+  'collab.notes.expand': 'Több megjelenítése',
 };
 export default collab;

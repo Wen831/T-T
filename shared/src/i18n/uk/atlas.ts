@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': 'Визначні місця',
   'atlas.checkinPlaces': 'Місця поїздки',
   'atlas.checkinEmpty': 'Ще немає чек-інів — позначте визначне місце або місце поїздки як відвідане',
+  'atlas.lastVisitLabel': 'Остання поїздка',
 };
 export default atlas;

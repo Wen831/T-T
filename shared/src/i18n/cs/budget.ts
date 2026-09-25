@@ -153,5 +153,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': 'Uložení selhalo, {count} nahraných účtenek tam stále je. Odstraňte je v záložce Soubory.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Přidat kategorii',
 };
 export default budget;

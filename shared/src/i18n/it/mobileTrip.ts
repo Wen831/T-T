@@ -47,5 +47,27 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Prossimo',
   'mobileTrip.viewDetails': 'Vedi dettagli',
   'mobileTrip.transportsEmpty': 'Ancora nessun trasporto',
+  'mobileTrip.rtBehind': '{time} di ritardo sul programma',
+  'mobileTrip.rtDesktopNote':
+    'Questi dati si impostano da computer, dove puoi anche confrontare percorsi alternativi e far seguire a un giorno una traccia importata.',
+  'mobileTrip.rtFromNext': 'Dalla tua prossima sosta',
+  'mobileTrip.rtFromStart': 'Dall’inizio della tappa',
+  'mobileTrip.rtInfoTitle': 'Dati del tragitto',
+  'mobileTrip.rtNightDesktopOnly':
+    'Prenotare un pernottamento in questo luogo si fa nel pianificatore da computer. Qui puoi solo scartarlo.',
+  'mobileTrip.rtNoDay': 'Nessun giorno selezionato',
+  'mobileTrip.rtNoDayHint': 'La mappa mostra l’intero viaggio. Tocca un giorno qui sopra per vederne il percorso.',
+  'mobileTrip.rtNoneAhead': 'Niente sulla strada davanti a te. Prova con tutta la tappa.',
+  'mobileTrip.rtNoneOnStage': 'Niente del genere lungo questa tappa.',
+  'mobileTrip.rtPlanOnDesktop':
+    'La pianificazione si fa da computer. TREK calcola il tragitto appena un giorno ha due luoghi.',
+  'mobileTrip.rtReach': 'Fin dove',
+  'mobileTrip.rtReachAhead': '{distance} davanti',
+  'mobileTrip.rtSearchOffline': 'Serve una connessione: la ricerca legge il percorso che hai davanti.',
+  'mobileTrip.rtStart': 'Inizio',
+  'mobileTrip.rtStayLess': '{count} minuti in meno',
+  'mobileTrip.rtStayMore': '{count} minuti in più',
+  'mobileTrip.rtStayScope':
+    'La durata della sosta appartiene al luogo, quindi vale in ogni giorno in cui questa tappa è prevista.',
 };
 export default mobileTrip;

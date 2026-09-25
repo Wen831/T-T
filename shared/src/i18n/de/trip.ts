@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Umstiege',
   'transit.walkLabel': 'Fußweg',
   'transit.searchHint': 'Echte Verbindungen suchen und direkt zum Tag hinzufügen — Daten via Transitous.',
+  'trip.confirm.deletePlaceBooked': 'Die in „{name}“ gebuchte Nacht geht mit dem Ort verloren, zusammen mit der Buchung „{booking}“ und jeder damit verknüpften Ausgabe.',
+  'trip.confirm.deletePlaceNight': 'Die in „{name}“ gebuchte Nacht geht mit dem Ort verloren.',
+  'trip.toast.loadError': 'Reise konnte nicht geladen werden',
 };
 export default trip;

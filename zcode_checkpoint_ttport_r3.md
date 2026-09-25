@@ -484,6 +484,62 @@ r7 踩过 `stop_type` / `fill_percent` / `duration_minutes`：类型里有、查
 
 ---
 
+## r15 —— 上游 4.3.0 剩余功能全量移植（2026-09-26）
+
+用户在 r14 之后扩大范围：**上游 4.3.0 的新功能要全部移植**，并给了两条原则——
+① 不得影响 TT 原有功能；② TT 已有的功能不移植，只做接洽适配（点名高德：TT 原生高德
+搜索已经很成熟，上游同类功能不移植，只把新功能接到 TT 的高德上）。
+
+### 清点
+
+`v4.2.1 → v4.3.0`：1670 个文件变更、632 个新增。TT 已有对应物 428 个，
+缺失 204 个（其中非测试/非 wiki 源文件 68 个 + 6 个资源），归成 16 个功能集群。
+
+### 分五批推进，每批独立验收后才提交
+
+| 批次 | 内容 | 提交 |
+|---|---|---|
+| 0 | 6 个被引用却不存在的资源、`webgl`/`placeSource`/`CountryFlag`/`MarkdownText`/`TrekMark`/`ReleaseNoticeVisuals`、WebGL 降级接入 | `bb40403f` |
+| 1 | PDF 行程地图（MapLibre 烘图 + 轮廓图回退）、Atlas 出发/返回日期修正、上传 spool 清理、插件搜索 REST + MCP | `feb19c5e` |
+| 2a/2b/2c | 收藏列表导出/导入（TREK 文件 + GPX 双向）、行程共享链接看板、聊天图片、预算收据 | `ea0af7e4` `97531611` `9070446d` |
+| 3 | Journey 日进度条 + 照片即卡片、4 个 hook（`useLocationBias` 等）接线 | `d81f4317` |
+| 4 | 三渲染器统一 hover card、Google 公交后端、共享行程详情、Dawarich 设置卡、Map 组件簇 | `f7a046e7` |
+| 5 | `dockTabs` 席位上限、发布说明插画、i18n 补齐（598 条上游译文 + 7 条 TT 自有键） | 见本批提交 |
+
+### 按「TT 已有功能不移植」明确未做的部分
+
+- **上游 `PlacesProvider` 架构**（`places_provider` 设置项 + TREK Places API +
+  上游 `amap.provider.ts`）：TT 的 `geo/amap.service.ts` + `maps.service.ts`
+  的 `amap`/`native` 分流已等价且更成熟，重构它纯风险无收益。
+- **上游设置页的 provider 卡片重写**（`TrekApiCard`/`ProviderBlock`/1000 行
+  `AdminSettingsTab`）：那套架构的界面，未移植。
+- **`gcj02Crs`**：Leaflet 的 GCJ-02 **栅格瓦片** CRS；TT 的高德是 JS API + 边界转换，
+  没有栅格路径，挂了是死代码。逐文件判定见 `docs/PORT-NOTES-4.3-map-cluster.md`。
+
+### 过程中发现并修掉的真实问题
+
+1. **i18n 提取脚本把多行 value 截断**，导致整个 locale 对象语法错误、所有文案退化成 key。
+   是我给组件补的单测把它逼出来的；改成按「整条语句」提取后修复。
+2. **`journey_entries` 类型缺三列**（`country_code`/`dismissed`/`source_assignment_id`）——
+   迁移早加了，类型没写，新卡片读不到。正是 r7 那类「类型有、列没有」。
+3. **一个既有的测试 flake**：`BackupPanel` 用 sleep 等 1500ms reload 定时器，
+   定时器在 jsdom 拆除后触发 → vitest 报 unhandled error → **全绿却整轮退出码 1**。
+   改为推进定时器而非赛跑。
+4. **`coincidentPlaces` 的 GL 接线试过又回退**：该渲染器测试用桩投影（度数 ×10），
+   在其下折叠加会合并相距数公里的真实地点。可验证性优先，回退并在文件头写明原因。
+
+### r15 验收（全部实测）
+
+三个 tsc EXIT=0；`npm run build` 三端全绿；`npm test` EXIT=0。
+final: shared 692 / server 10349 / client 15061，0 失败。
+
+### 仍然只由人工覆盖的部分
+
+第 5.1 节那 12 条高德引擎手测清单——单测里坐标转换是桩，**转换方向写反时测试依然全绿**，
+只能人工在浏览器里用真实 key 验证。
+
+---
+
 **FINAL_DONE**
 
 

@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': '환승',
   'transit.walkLabel': '도보',
   'transit.searchHint': '실제 연결편을 검색하고 바로 일정에 추가하세요 — 데이터 제공: Transitous.',
+  'trip.confirm.deletePlaceBooked': '“{name}”에 예약된 숙박이 장소와 함께 삭제되며, 예약 “{booking}” 및 연결된 지출도 함께 삭제됩니다.',
+  'trip.confirm.deletePlaceNight': '“{name}”에 예약된 숙박도 장소와 함께 삭제됩니다.',
+  'trip.toast.loadError': '여행을 불러오지 못했습니다',
 };
 export default trip;

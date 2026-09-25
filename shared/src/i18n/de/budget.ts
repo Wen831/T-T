@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Speichern fehlgeschlagen, {count} hochgeladene Belege liegen noch da. Im Dateien-Tab entfernen.',
   'costs.addReceipt': 'Beleg hinzufügen',
   'costs.removeReceipt': 'Beleg entfernen',
+  'budget.addCategory': 'Kategorie hinzufügen',
 };
 export default budget;

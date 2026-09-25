@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Zapis nie powiódł się, a {count} przesłanych paragonów wciąż tam jest. Usuń je w zakładce Pliki.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Dodaj kategorię',
 };
 export default budget;

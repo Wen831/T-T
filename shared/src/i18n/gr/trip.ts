@@ -88,5 +88,8 @@ const trip: TranslationStrings = {
   'transit.walkLabel': 'Περπάτημα',
   'transit.searchHint':
     'Αναζητήστε πραγματικές συνδέσεις και προσθέστε τις απευθείας στην ημέρα — δεδομένα μέσω Transitous.',
+  'trip.confirm.deletePlaceBooked': 'Η διανυκτέρευση που κρατήθηκε στο «{name}» χάνεται μαζί με το μέρος, μαζί με την κράτηση «{booking}» και κάθε συνδεδεμένο έξοδο.',
+  'trip.confirm.deletePlaceNight': 'Η διανυκτέρευση που κρατήθηκε στο «{name}» χάνεται μαζί με το μέρος.',
+  'trip.toast.loadError': 'Δεν ήταν δυνατή η φόρτωση του ταξιδιού',
 };
 export default trip;

@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Sparandet misslyckades och {count} uppladdade kvitton finns kvar. Ta bort dem under Filer.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Lägg till kategori',
 };
 export default budget;

@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Kaydetme başarısız oldu ve yüklenen {count} fiş hâlâ duruyor. Dosyalar sekmesinden silin.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Kategori ekle',
 };
 export default budget;

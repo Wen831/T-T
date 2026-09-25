@@ -560,6 +560,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API key created',
   'settings.apiKeys.modal.createdWarning': 'Copy the key now. It is shown once and cannot be retrieved later.',
   'settings.apiKeys.modal.done': 'Done',
+  'settings.mapMaplibreSubtitle': 'Free, open vector maps with no account',
+  'settings.plugins.compatibility': 'Compatibility',
 };
 
 export default settings;

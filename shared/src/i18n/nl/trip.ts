@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Overstappen',
   'transit.walkLabel': 'Lopen',
   'transit.searchHint': 'Zoek echte verbindingen en voeg ze direct toe aan de dag — gegevens via Transitous.',
+  'trip.confirm.deletePlaceBooked': 'De nacht geboekt bij ‘{name}’ verdwijnt met de plek, samen met de boeking ‘{booking}’ en elke gekoppelde uitgave.',
+  'trip.confirm.deletePlaceNight': 'De nacht geboekt bij ‘{name}’ verdwijnt met de plek.',
+  'trip.toast.loadError': 'Kan de reis niet laden',
 };
 export default trip;

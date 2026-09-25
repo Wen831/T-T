@@ -580,6 +580,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     "Copiez la clé maintenant. Elle n'est affichée qu'une seule fois et ne peut pas être récupérée ensuite.",
   'settings.apiKeys.modal.done': 'Terminé',
+  'settings.mapMaplibreSubtitle': 'Cartes vectorielles libres et ouvertes, sans compte',
+  'settings.plugins.compatibility': 'Compatibilité',
 };
 
 export default settings;

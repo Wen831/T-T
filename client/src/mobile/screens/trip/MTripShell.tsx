@@ -1,41 +1,37 @@
-import type { LucideIcon } from 'lucide-react';
 import {
   CalendarDays,
   ChevronDown,
   ChevronLeft,
   Download,
   FileDown,
+  FolderSync,
   List,
   Map as MapIcon,
   MoreHorizontal,
-  PackageCheck,
   Plane,
   Plus,
   Rows3,
-  Ticket,
-  TrainFront,
   Trash2,
   Upload,
-  Wallet,
-  FolderSync,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import { canManageDocSync } from '../../../components/Files/docsync/useDocSync';
+import { useDocSyncOffered } from '../../../components/Files/docsync/useDocSyncOffered';
 import { findEntryDayId, findFocusDayId } from '../../../components/Planner/today';
-import type { CorridorReach } from '../../../components/Roadtrip/corridorSearchModel';
 import { dayTintBackground, usePluginDayTints } from '../../../components/Plugins/PluginDaySchedule';
+import type { CorridorReach } from '../../../components/Roadtrip/corridorSearchModel';
 import { useTripPlanner } from '../../../pages/tripPlanner/useTripPlanner';
 import { useAuthStore } from '../../../store/authStore';
 import { useTripStore } from '../../../store/tripStore';
-import type { Trip, Day } from '../../../types';
+import type { Day, Trip } from '../../../types';
 import MIconBtn from '../../components/MIconBtn';
+import { pickDockTabs } from './dockTabs';
 import MMapArea from './map/MMapArea';
 import MTripLoadingSplash from './MTripLoadingSplash';
 import MPlacesBrowser from './places/MPlacesBrowser';
 import MPlanTimeline from './plan/MPlanTimeline';
 import MTripSheets from './sheets/MTripSheets';
 import MTripTabPanel from './tabs/MTripTabPanel';
-import { canManageDocSync } from '../../../components/Files/docsync/useDocSync';
-import { useDocSyncOffered } from '../../../components/Files/docsync/useDocSyncOffered';
 
 /**
  * Mobile trip screen frame. Owns the chrome the design shares across every
@@ -190,15 +186,6 @@ interface MTripShellProps {
   TabPanel?: ComponentType<MTripTabPanelProps>;
   Sheets?: ComponentType<MTripSheetsProps>;
 }
-
-/** The 5 dock tabs in demo order; files/collab/plugins live in the Mehr sheet. */
-const DOCK_TABS: { id: string; icon: LucideIcon }[] = [
-  { id: 'plan', icon: MapIcon },
-  { id: 'transports', icon: TrainFront },
-  { id: 'buchungen', icon: Ticket },
-  { id: 'finanzplan', icon: Wallet },
-  { id: 'listen', icon: PackageCheck },
-];
 
 function dayChipLabel(day: Day, language: string, fallback: string): string {
   if (day.date) {
@@ -385,7 +372,7 @@ export default function MTripShell({
    * last. Only entering the map asks for the route to be drawn if nothing has been.
    */
   const toggleRtView = () => {
-    setRtView(prev => {
+    setRtView((prev) => {
       const next = prev === 'list' ? 'map' : 'list';
       if (next === 'map') planner.autoShowRoute();
       return next;
@@ -436,7 +423,10 @@ export default function MTripShell({
   if (!trip) return null;
 
   const enabledTabIds = new Set(planner.TRIP_TABS.map((tab) => tab.id));
-  const dockTabs = DOCK_TABS.filter((d) => enabledTabIds.has(d.id));
+  // A fixed pill with no overflow, so seats are a budget rather than a
+  // preference: `pickDockTabs` applies the cap and decides who is cut, which is
+  // what puts the road trip in and the packing list into the More sheet.
+  const dockTabs = pickDockTabs(enabledTabIds);
   const tabLabel = (id: string) => planner.TRIP_TABS.find((tab) => tab.id === id)?.label ?? id;
 
   const onDayChipTap = (dayId: number) => {
@@ -476,9 +466,7 @@ export default function MTripShell({
           <TabPanel planner={planner} shell={shell} tab={trTab} />
         </div>
       )}
-      {trTab === 'roadtrip' && rtView === 'map' && (
-        <TabPanel planner={planner} shell={shell} tab={trTab} />
-      )}
+      {trTab === 'roadtrip' && rtView === 'map' && <TabPanel planner={planner} shell={shell} tab={trTab} />}
       {!MAP_TABS.has(trTab) && (
         <div className="absolute inset-0 z-30 bg-[color:var(--m-bg)] bg-[image:var(--m-scr)]">
           <TabPanel planner={planner} shell={shell} tab={trTab} />
@@ -722,7 +710,12 @@ export default function MTripShell({
               label={t('common.upload')}
               onClick={() => setUploadFilesSignal((s) => s + 1)}
             />
-            <DocSyncButton tripId={tripId} trip={trip} label={t('docsync.title')} onOpen={() => setOpenDocSyncSignal(s => s + 1)} />
+            <DocSyncButton
+              tripId={tripId}
+              trip={trip}
+              label={t('docsync.title')}
+              onOpen={() => setOpenDocSyncSignal((s) => s + 1)}
+            />
             <MIconBtn
               ariaLabel={t('files.trash')}
               onClick={() => setOpenFilesTrashSignal((s) => s + 1)}
@@ -828,12 +821,27 @@ function PrimaryPill({ label, onClick, icon }: { label: string; onClick: () => v
 
 /** The dateien header's sync entry — visible only where a binding makes sense
  *  (offered check inside), so the button disappears rather than dead-ends. */
-function DocSyncButton({ tripId, trip, label, onOpen }: { tripId: number; trip: Trip | null; label: string; onOpen: () => void }) {
-  const user = useAuthStore(s => s.user);
+function DocSyncButton({
+  tripId,
+  trip,
+  label,
+  onOpen,
+}: {
+  tripId: number;
+  trip: Trip | null;
+  label: string;
+  onOpen: () => void;
+}) {
+  const user = useAuthStore((s) => s.user);
   const offered = useDocSyncOffered(tripId, canManageDocSync(user, trip));
   if (!offered) return null;
   return (
-    <MIconBtn ariaLabel={label} onClick={onOpen} size={40} className="text-m-muted backdrop-blur-[24px] backdrop-saturate-[1.7]">
+    <MIconBtn
+      ariaLabel={label}
+      onClick={onOpen}
+      size={40}
+      className="text-m-muted backdrop-blur-[24px] backdrop-saturate-[1.7]"
+    >
       <FolderSync size={15} strokeWidth={2} />
     </MIconBtn>
   );

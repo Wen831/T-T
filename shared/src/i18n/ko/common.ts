@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': '새 버전이 있습니다',
   'common.errorUpdateBody': '이 탭이 열려 있는 동안 TREK이 업데이트되었습니다. 새로고침하여 새 버전을 받으세요.',
   'common.errorPluginTitle': '이 플러그인을 표시할 수 없습니다',
+  'common.errorOccurred': '문제가 발생했습니다',
+  'common.remove': '제거',
 };
 export default common;

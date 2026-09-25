@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Připnout odkaz',
   'collab.links.unpin': 'Odepnout odkaz',
   'collab.links.delete': 'Smazat odkaz',
+  'collab.chat.attachedImage': 'Připojený obrázek',
+  'collab.chat.closeImage': 'Zavřít obrázek',
+  'collab.chat.imageLimit': 'K jedné zprávě můžete připojit nejvýše {max} obrázků',
+  'collab.chat.imageRejected': 'Povoleny jsou pouze obrázky JPEG, PNG, GIF a WebP do 10 MB',
+  'collab.notes.expand': 'Zobrazit více',
 };
 export default collab;

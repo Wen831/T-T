@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Salvataggio non riuscito e {count} ricevute caricate sono ancora lì. Rimuovile nella scheda File.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Aggiungi categoria',
 };
 export default budget;

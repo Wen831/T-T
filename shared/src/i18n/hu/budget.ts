@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'A mentés nem sikerült, és {count} feltöltött blokk még ott van. Törölje őket a Fájlok fülön.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Kategória hozzáadása',
 };
 export default budget;

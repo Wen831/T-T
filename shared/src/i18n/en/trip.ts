@@ -86,5 +86,9 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Transfers',
   'transit.walkLabel': 'Walking',
   'transit.searchHint': 'Search real connections and add them straight to the day — data via Transitous.',
+  'trip.confirm.deletePlaceBooked':
+    'The night booked at “{name}” goes with the place, together with the booking “{booking}” and any expense linked to it.',
+  'trip.confirm.deletePlaceNight': 'The night booked at “{name}” goes with the place.',
+  'trip.toast.loadError': 'Could not load the trip',
 };
 export default trip;

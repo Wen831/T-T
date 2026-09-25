@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'trip.loadingSteps.road': 'Sortint de camí...',
   'trip.loadingSteps.arrive': 'Gairebé hi som...',
   'trip.toast.tripUpdated': 'Viatge actualitzat',
+  'trip.confirm.deletePlaceBooked': 'La nit reservada a «{name}» es perd amb el lloc, juntament amb la reserva «{booking}» i qualsevol despesa vinculada.',
+  'trip.confirm.deletePlaceNight': 'La nit reservada a «{name}» es perd amb el lloc.',
+  'trip.toast.loadError': "No s'ha pogut carregar el viatge",
 };
 export default trip;

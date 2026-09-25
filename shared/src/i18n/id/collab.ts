@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Sematkan tautan',
   'collab.links.unpin': 'Lepas sematan tautan',
   'collab.links.delete': 'Hapus tautan',
+  'collab.chat.attachedImage': 'Gambar terlampir',
+  'collab.chat.closeImage': 'Tutup gambar',
+  'collab.chat.imageLimit': 'Anda dapat melampirkan hingga {max} gambar per pesan',
+  'collab.chat.imageRejected': 'Hanya gambar JPEG, PNG, GIF, dan WebP hingga 10 MB yang diizinkan',
+  'collab.notes.expand': 'Tampilkan selengkapnya',
 };
 export default collab;

@@ -153,5 +153,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': 'Error al guardar y quedan {count} recibos subidos. Elimínalos en la pestaña Archivos.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Añadir categoría',
 };
 export default budget;

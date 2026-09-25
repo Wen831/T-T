@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': 'ランドマーク',
   'atlas.checkinPlaces': '旅行先の地点',
   'atlas.checkinEmpty': 'まだチェックインはありません — ランドマークや旅行先の地点を訪問済みとして記録しましょう',
+  'atlas.lastVisitLabel': '最後の旅行',
 };
 export default atlas;

@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': '地標',
   'atlas.checkinPlaces': '行程地點',
   'atlas.checkinEmpty': '還沒有打卡 — 在地圖或行程中標記去過的地方',
+  'atlas.lastVisitLabel': '最近旅行',
 };
 export default atlas;

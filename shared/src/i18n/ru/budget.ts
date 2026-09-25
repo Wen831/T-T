@@ -153,5 +153,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': 'Не удалось сохранить, {count} загруженных чеков остались. Удалите их на вкладке «Файлы».',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Добавить категорию',
 };
 export default budget;

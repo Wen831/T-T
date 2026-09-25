@@ -568,6 +568,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API anahtarı oluşturuldu',
   'settings.apiKeys.modal.createdWarning': 'Anahtarı şimdi kopyala. Yalnızca bir kez gösterilir ve sonradan alınamaz.',
   'settings.apiKeys.modal.done': 'Tamam',
+  'settings.mapMaplibreSubtitle': 'Hesapsız, özgür ve açık vektör haritalar',
+  'settings.plugins.compatibility': 'Uyumluluk',
 };
 
 export default settings;

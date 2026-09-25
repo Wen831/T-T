@@ -154,6 +154,7 @@ const budget: TranslationStrings = {
     'No es pot desar i encara hi ha {count} rebuts pujats. Elimina aquests fitxers a la pestanya Fitxers.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Afegeix categoria',
 };
 
 export default budget;

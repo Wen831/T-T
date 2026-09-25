@@ -47,5 +47,25 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Härnäst',
   'mobileTrip.viewDetails': 'Visa detaljer',
   'mobileTrip.transportsEmpty': 'Ingen transport än',
+  'mobileTrip.rtBehind': '{time} efter planen',
+  'mobileTrip.rtDesktopNote':
+    'De här värdena ställer du in på datorn. Där kan du också jämföra alternativa vägar och låta en dag följa ett importerat spår.',
+  'mobileTrip.rtFromNext': 'Från ditt nästa stopp',
+  'mobileTrip.rtFromStart': 'Från etappens början',
+  'mobileTrip.rtInfoTitle': 'Kördata',
+  'mobileTrip.rtNightDesktopOnly':
+    'En övernattning på den här platsen lägger du till i planeraren på datorn. Här kan du bara ta bort den.',
+  'mobileTrip.rtNoDay': 'Ingen dag vald',
+  'mobileTrip.rtNoDayHint': 'Kartan visar hela resan. Tryck på en dag ovanför för att se dess körning.',
+  'mobileTrip.rtNoneAhead': 'Inget på vägen framför dig. Prova hela etappen.',
+  'mobileTrip.rtNoneOnStage': 'Inget sådant längs den här etappen.',
+  'mobileTrip.rtPlanOnDesktop': 'Planeringen sker på datorn. TREK räknar ut körningen så snart en dag har två platser.',
+  'mobileTrip.rtReach': 'Hur långt',
+  'mobileTrip.rtReachAhead': '{distance} framåt',
+  'mobileTrip.rtSearchOffline': 'Kräver anslutning: sökningen läser rutten som ligger framför dig.',
+  'mobileTrip.rtStart': 'Start',
+  'mobileTrip.rtStayLess': '{count} minuter mindre',
+  'mobileTrip.rtStayMore': '{count} minuter mer',
+  'mobileTrip.rtStayScope': 'Vistelsen hör till platsen och räknas därför varje dag som det här stoppet är inplanerat.',
 };
 export default mobileTrip;

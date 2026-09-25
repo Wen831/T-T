@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': '랜드마크',
   'atlas.checkinPlaces': '여행지',
   'atlas.checkinEmpty': '아직 체크인이 없습니다 — 방문한 랜드마크나 여행지를 기록해 보세요',
+  'atlas.lastVisitLabel': '마지막 여행',
 };
 export default atlas;

@@ -153,6 +153,7 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': 'Lưu thất bại và {count} biên lai đã tải lên vẫn còn. Hãy xoá chúng trong tab Tệp.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Thêm danh mục',
 };
 
 export default budget;

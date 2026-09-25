@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': 'Đã có phiên bản mới',
   'common.errorUpdateBody': 'TREK đã được cập nhật trong khi thẻ này đang mở. Hãy tải lại để nhận phiên bản mới.',
   'common.errorPluginTitle': 'Không thể hiển thị plugin này',
+  'common.errorOccurred': 'Đã xảy ra lỗi',
+  'common.remove': 'Xóa',
 };
 export default common;

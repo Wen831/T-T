@@ -47,5 +47,25 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Sırada',
   'mobileTrip.viewDetails': 'Ayrıntıları görüntüle',
   'mobileTrip.transportsEmpty': 'Henüz ulaşım yok',
+  'mobileTrip.rtBehind': 'plandan {time} geride',
+  'mobileTrip.rtDesktopNote':
+    'Bu değerler masaüstünde ayarlanır; orada başka yolları karşılaştırabilir ve bir günü içe aktarılmış bir izi takip ettirebilirsiniz.',
+  'mobileTrip.rtFromNext': 'Bir sonraki durağınızdan itibaren',
+  'mobileTrip.rtFromStart': 'Etabın başından itibaren',
+  'mobileTrip.rtInfoTitle': 'Sürüş değerleri',
+  'mobileTrip.rtNightDesktopOnly':
+    'Bu yerde konaklama masaüstü planlayıcıda ayarlanır. Burada yalnızca kaldırabilirsiniz.',
+  'mobileTrip.rtNoDay': 'Gün seçilmedi',
+  'mobileTrip.rtNoDayHint': 'Harita tüm yolculuğu gösteriyor. Günün sürüşünü görmek için yukarıdan bir güne dokunun.',
+  'mobileTrip.rtNoneAhead': 'İleride yol üzerinde bir şey yok. Tüm etabı deneyin.',
+  'mobileTrip.rtNoneOnStage': 'Bu etap boyunca bu türden bir şey yok.',
+  'mobileTrip.rtPlanOnDesktop': 'Planlama masaüstünde yapılır. Bir günde iki yer olduğunda TREK sürüşü hesaplar.',
+  'mobileTrip.rtReach': 'Ne kadar uzağa',
+  'mobileTrip.rtReachAhead': '{distance} ileride',
+  'mobileTrip.rtSearchOffline': 'Bağlantı gerekir: arama, ileride kalan rotayı okur.',
+  'mobileTrip.rtStart': 'Başlangıç',
+  'mobileTrip.rtStayLess': '{count} dakika daha az',
+  'mobileTrip.rtStayMore': '{count} dakika daha fazla',
+  'mobileTrip.rtStayScope': 'Bu süre yere aittir, bu yüzden bu durağın planlandığı her gün için geçerlidir.',
 };
 export default mobileTrip;

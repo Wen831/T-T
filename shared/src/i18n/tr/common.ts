@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': 'Yeni bir sürüm mevcut',
   'common.errorUpdateBody': 'Bu sekme açıkken TREK güncellendi. Yeni sürümü almak için sayfayı yenileyin.',
   'common.errorPluginTitle': 'Bu eklenti gösterilemedi',
+  'common.errorOccurred': 'Bir şeyler ters gitti',
+  'common.remove': 'Kaldır',
 };
 export default common;

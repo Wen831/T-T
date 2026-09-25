@@ -90,5 +90,6 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderUndo': '날짜 순서 변경',
   'dayplan.reorderError': '날짜 순서를 변경하지 못했습니다',
   'dayplan.addDayError': '날짜를 추가하지 못했습니다',
+  'export.gpx': 'GPX',
 };
 export default dayplan;

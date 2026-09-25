@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': 'Ορόσημα',
   'atlas.checkinPlaces': 'Τοποθεσίες ταξιδιού',
   'atlas.checkinEmpty': 'Δεν υπάρχουν check-in ακόμη — επισημάνετε ορόσημο ή τοποθεσία ταξιδιού ως επισκεφθείσα',
+  'atlas.lastVisitLabel': 'Τελευταίο ταξίδι',
 };
 export default atlas;

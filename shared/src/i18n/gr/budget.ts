@@ -155,5 +155,6 @@ const budget: TranslationStrings = {
     'Η αποθήκευση απέτυχε και {count} ανεβασμένες αποδείξεις παραμένουν. Διαγράψτε τες στην καρτέλα Αρχεία.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Προσθήκη κατηγορίας',
 };
 export default budget;

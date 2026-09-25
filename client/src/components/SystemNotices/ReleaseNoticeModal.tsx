@@ -1,8 +1,7 @@
-import * as LucideIcons from 'lucide-react';
-import { ArrowRight, Coffee, Heart, Infinity as InfinityIcon, Sparkles, X } from 'lucide-react';
-import React from 'react';
+import { ArrowRight, Coffee, Heart, Infinity as InfinityIcon, X } from 'lucide-react';
 import { useTranslation } from '../../i18n/TranslationContext.js';
 import type { SystemNoticeDTO } from '../../store/systemNoticeStore.js';
+import { ReleaseFeatureVisual } from './ReleaseNoticeVisuals.js';
 import './releaseNotice.css';
 
 interface Props {
@@ -79,12 +78,15 @@ export function ReleaseNoticeModal({ notice, visible, onDismiss, onCTA, onSecond
 
             <div className="rn-features">
               {release.features.map((f) => {
-                const Icon: React.ElementType =
-                  ((LucideIcons as Record<string, unknown>)[f.iconName] as React.ElementType) ?? Sparkles;
                 return (
                   <div key={f.titleKey} className="rn-feature">
+                    {/* The card's picture: a drawn illustration when the release
+                        names one, and otherwise the lucide icon it always showed.
+                        The fallback is in the component, so an unknown name — a
+                        release written for a newer client — degrades to the icon
+                        rather than to nothing. */}
                     <span className="rn-feature-icon">
-                      <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
+                      <ReleaseFeatureVisual visual={f.visual} iconName={f.iconName} />
                     </span>
                     <div className="rn-feature-text">
                       <div className="rn-feature-title">

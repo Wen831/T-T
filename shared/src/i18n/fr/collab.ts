@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Épingler le lien',
   'collab.links.unpin': 'Désépingler le lien',
   'collab.links.delete': 'Supprimer le lien',
+  'collab.chat.attachedImage': 'Image jointe',
+  'collab.chat.closeImage': 'Fermer l’image',
+  'collab.chat.imageLimit': 'Vous pouvez joindre jusqu’à {max} images par message',
+  'collab.chat.imageRejected': "Seules les images JPEG, PNG, GIF et WebP jusqu'à 10 Mo sont autorisées",
+  'collab.notes.expand': 'Afficher plus',
 };
 export default collab;

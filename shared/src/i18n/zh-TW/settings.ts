@@ -532,6 +532,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API 金鑰已建立',
   'settings.apiKeys.modal.createdWarning': '請立即複製金鑰。它只會顯示一次，之後無法再取得。',
   'settings.apiKeys.modal.done': '完成',
+  'settings.mapMaplibreSubtitle': '免費開源向量地圖，不需帳號',
+  'settings.plugins.compatibility': '相容性',
 };
 
 export default settings;

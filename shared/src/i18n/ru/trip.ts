@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Пересадки',
   'transit.walkLabel': 'Пешком',
   'transit.searchHint': 'Ищите реальные маршруты и добавляйте их прямо в день — данные от Transitous.',
+  'trip.confirm.deletePlaceBooked': 'Ночёвка, забронированная в «{name}», исчезнет вместе с местом, а с ней бронирование «{booking}» и связанные расходы.',
+  'trip.confirm.deletePlaceNight': 'Ночёвка, забронированная в «{name}», исчезнет вместе с местом.',
+  'trip.toast.loadError': 'Не удалось загрузить поездку',
 };
 export default trip;

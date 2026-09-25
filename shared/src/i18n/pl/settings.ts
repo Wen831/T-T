@@ -571,6 +571,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Skopiuj klucz teraz. Jest pokazywany tylko raz i później nie można go odzyskać.',
   'settings.apiKeys.modal.done': 'Gotowe',
+  'settings.mapMaplibreSubtitle': 'Darmowe, otwarte mapy wektorowe bez konta',
+  'settings.plugins.compatibility': 'Zgodność',
 };
 
 export default settings;

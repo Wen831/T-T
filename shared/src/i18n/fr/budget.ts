@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Échec de la sauvegarde, {count} reçus téléversés sont toujours là. Supprimez-les dans les Fichiers.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Ajouter une catégorie',
 };
 export default budget;

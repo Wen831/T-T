@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': '釘選連結',
   'collab.links.unpin': '取消釘選連結',
   'collab.links.delete': '刪除連結',
+  'collab.chat.attachedImage': '附加的圖片',
+  'collab.chat.closeImage': '關閉圖片',
+  'collab.chat.imageLimit': '每則訊息最多可附加 {max} 張圖片',
+  'collab.chat.imageRejected': '僅支援 10 MB 以內的 JPEG、PNG、GIF 和 WebP 圖片',
+  'collab.notes.expand': '顯示更多',
 };
 export default collab;

@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Пересадки',
   'transit.walkLabel': 'Пішки',
   'transit.searchHint': 'Шукайте справжні маршрути та додавайте їх одразу до дня — дані від Transitous.',
+  'trip.confirm.deletePlaceBooked': 'Ночівля, заброньована в «{name}», зникне разом із місцем, а з нею бронювання «{booking}» і пов’язані витрати.',
+  'trip.confirm.deletePlaceNight': 'Ночівля, заброньована в «{name}», зникне разом із місцем.',
+  'trip.toast.loadError': 'Не вдалося завантажити подорож',
 };
 export default trip;

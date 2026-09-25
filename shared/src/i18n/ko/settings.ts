@@ -556,6 +556,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API 키를 만들었습니다',
   'settings.apiKeys.modal.createdWarning': '지금 키를 복사하세요. 한 번만 표시되며 나중에 다시 확인할 수 없습니다.',
   'settings.apiKeys.modal.done': '완료',
+  'settings.mapMaplibreSubtitle': '계정 없이 쓰는 자유·오픈 벡터 지도',
+  'settings.plugins.compatibility': '호환성',
 };
 
 export default settings;

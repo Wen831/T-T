@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': '有新版本可用',
   'common.errorUpdateBody': '此标签页打开期间 TREK 已更新。请重新加载以获取新版本。',
   'common.errorPluginTitle': '无法显示此插件',
+  'common.errorOccurred': '出错了',
+  'common.remove': '移除',
 };
 export default common;

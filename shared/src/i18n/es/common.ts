@@ -74,5 +74,7 @@ const common: TranslationStrings = {
   'common.errorUpdateBody':
     'TREK se actualizó mientras esta pestaña estaba abierta. Recarga para obtener la nueva versión.',
   'common.errorPluginTitle': 'No se pudo mostrar este plugin',
+  'common.errorOccurred': 'Algo ha ido mal',
+  'common.remove': 'Quitar',
 };
 export default common;

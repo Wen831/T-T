@@ -74,5 +74,7 @@ const common: TranslationStrings = {
   'common.errorUpdateBody':
     'TREK uppdaterades medan den här fliken var öppen. Ladda om för att hämta den nya versionen.',
   'common.errorPluginTitle': 'Det här tillägget kunde inte visas',
+  'common.errorOccurred': 'Något gick fel',
+  'common.remove': 'Ta bort',
 };
 export default common;

@@ -90,5 +90,6 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderUndo': '日付を並べ替え',
   'dayplan.reorderError': '日付の並べ替えに失敗しました',
   'dayplan.addDayError': '日付の追加に失敗しました',
+  'export.gpx': 'GPX',
 };
 export default dayplan;

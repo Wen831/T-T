@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': '링크 고정',
   'collab.links.unpin': '링크 고정 해제',
   'collab.links.delete': '링크 삭제',
+  'collab.chat.attachedImage': '첨부된 이미지',
+  'collab.chat.closeImage': '이미지 닫기',
+  'collab.chat.imageLimit': '메시지당 최대 {max}장의 이미지를 첨부할 수 있습니다',
+  'collab.chat.imageRejected': 'JPEG, PNG, GIF, WebP 이미지만 최대 10 MB까지 허용됩니다',
+  'collab.notes.expand': '더 보기',
 };
 export default collab;

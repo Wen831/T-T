@@ -542,6 +542,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     '今すぐキーをコピーしてください。表示は一度きりで、あとから取得はできません。',
   'settings.apiKeys.modal.done': '完了',
+  'settings.mapMaplibreSubtitle': 'アカウント不要の自由でオープンなベクター地図',
+  'settings.plugins.compatibility': '互換性',
 };
 
 export default settings;

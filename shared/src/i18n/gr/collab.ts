@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Καρφίτσωμα συνδέσμου',
   'collab.links.unpin': 'Ξεκαρφίτσωμα συνδέσμου',
   'collab.links.delete': 'Διαγραφή συνδέσμου',
+  'collab.chat.attachedImage': 'Συνημμένη εικόνα',
+  'collab.chat.closeImage': 'Κλείσιμο εικόνας',
+  'collab.chat.imageLimit': 'Μπορείτε να επισυνάψετε έως {max} εικόνες ανά μήνυμα',
+  'collab.chat.imageRejected': 'Επιτρέπονται μόνο εικόνες JPEG, PNG, GIF και WebP έως 10 MB',
+  'collab.notes.expand': 'Περισσότερα',
 };
 export default collab;

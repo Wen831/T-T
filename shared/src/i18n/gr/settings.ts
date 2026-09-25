@@ -585,6 +585,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Αντίγραψε το κλειδί τώρα. Εμφανίζεται μία φορά και δεν μπορεί να ανακτηθεί αργότερα.',
   'settings.apiKeys.modal.done': 'Έτοιμο',
+  'settings.mapMaplibreSubtitle': 'Δωρεάν, ανοιχτοί διανυσματικοί χάρτες χωρίς λογαριασμό',
+  'settings.plugins.compatibility': 'Συμβατότητα',
 };
 
 export default settings;

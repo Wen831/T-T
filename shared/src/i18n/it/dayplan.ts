@@ -91,5 +91,6 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderUndo': 'Riordina i giorni',
   'dayplan.reorderError': 'Riordino dei giorni non riuscito',
   'dayplan.addDayError': 'Aggiunta del giorno non riuscita',
+  'export.gpx': 'GPX',
 };
 export default dayplan;

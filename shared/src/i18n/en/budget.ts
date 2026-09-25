@@ -154,6 +154,7 @@ const budget: TranslationStrings = {
     'Save failed, and {count} uploaded receipts are still there. Remove them in the Files tab.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Add category',
 };
 
 export default budget;

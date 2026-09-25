@@ -87,5 +87,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Transit',
   'transit.walkLabel': 'Jalan kaki',
   'transit.searchHint': 'Cari koneksi nyata dan tambahkan langsung ke hari itu — data melalui Transitous.',
+  'trip.confirm.deletePlaceBooked': 'Malam yang dipesan di “{name}” ikut hilang bersama tempat ini, beserta pemesanan “{booking}” dan pengeluaran yang terkait.',
+  'trip.confirm.deletePlaceNight': 'Malam yang dipesan di “{name}” ikut hilang bersama tempat ini.',
+  'trip.toast.loadError': 'Tidak dapat memuat perjalanan',
 };
 export default trip;

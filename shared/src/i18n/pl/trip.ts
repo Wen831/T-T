@@ -86,5 +86,8 @@ const trip: TranslationStrings = {
   'transit.transfersLabel': 'Przesiadki',
   'transit.walkLabel': 'Pieszo',
   'transit.searchHint': 'Wyszukaj prawdziwe połączenia i dodaj je od razu do dnia — dane z Transitous.',
+  'trip.confirm.deletePlaceBooked': 'Nocleg zarezerwowany w „{name}” zniknie razem z miejscem, wraz z rezerwacją „{booking}” i powiązanymi wydatkami.',
+  'trip.confirm.deletePlaceNight': 'Nocleg zarezerwowany w „{name}” zniknie razem z miejscem.',
+  'trip.toast.loadError': 'Nie udało się wczytać podróży',
 };
 export default trip;

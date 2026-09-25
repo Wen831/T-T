@@ -573,6 +573,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Kopieer de sleutel nu. Hij wordt één keer getoond en kan later niet worden opgehaald.',
   'settings.apiKeys.modal.done': 'Klaar',
+  'settings.mapMaplibreSubtitle': 'Vrije, open vectorkaarten zonder account',
+  'settings.plugins.compatibility': 'Compatibiliteit',
 };
 
 export default settings;

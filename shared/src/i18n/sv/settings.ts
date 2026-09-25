@@ -565,6 +565,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API-nyckel skapad',
   'settings.apiKeys.modal.createdWarning': 'Kopiera nyckeln nu. Den visas en gång och kan inte hämtas senare.',
   'settings.apiKeys.modal.done': 'Klar',
+  'settings.mapMaplibreSubtitle': 'Fria, öppna vektorkartor utan konto',
+  'settings.plugins.compatibility': 'Kompatibilitet',
 };
 
 export default settings;

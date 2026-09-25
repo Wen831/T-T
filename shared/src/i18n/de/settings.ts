@@ -576,6 +576,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Kopiere den Schlüssel jetzt. Er wird nur einmal angezeigt und lässt sich später nicht mehr abrufen.',
   'settings.apiKeys.modal.done': 'Fertig',
+  'settings.mapMaplibreSubtitle': 'Freie, offene Vektorkarten ohne Konto',
+  'settings.plugins.compatibility': 'Kompatibilität',
 };
 
 export default settings;

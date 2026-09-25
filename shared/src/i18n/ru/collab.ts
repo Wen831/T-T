@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Закрепить ссылку',
   'collab.links.unpin': 'Открепить ссылку',
   'collab.links.delete': 'Удалить ссылку',
+  'collab.chat.attachedImage': 'Прикреплённое изображение',
+  'collab.chat.closeImage': 'Закрыть изображение',
+  'collab.chat.imageLimit': 'К одному сообщению можно прикрепить до {max} изображений',
+  'collab.chat.imageRejected': 'Допускаются только изображения JPEG, PNG, GIF и WebP размером до 10 МБ',
+  'collab.notes.expand': 'Показать больше',
 };
 export default collab;

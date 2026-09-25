@@ -47,5 +47,25 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Volgende',
   'mobileTrip.viewDetails': 'Details bekijken',
   'mobileTrip.transportsEmpty': 'Nog geen transport',
+  'mobileTrip.rtBehind': '{time} achter op schema',
+  'mobileTrip.rtDesktopNote':
+    'Deze waarden stel je in op de desktop. Daar kun je ook routevarianten vergelijken en een dag een geïmporteerde track laten volgen.',
+  'mobileTrip.rtFromNext': 'Vanaf je volgende stop',
+  'mobileTrip.rtFromStart': 'Vanaf het begin van de etappe',
+  'mobileTrip.rtInfoTitle': 'Rijgegevens',
+  'mobileTrip.rtNightDesktopOnly':
+    'Een overnachting op deze plaats voeg je toe in de desktopplanner. Hier kun je die alleen verwijderen.',
+  'mobileTrip.rtNoDay': 'Geen dag gekozen',
+  'mobileTrip.rtNoDayHint': 'De kaart toont de hele reis. Tik hierboven op een dag om de rit te zien.',
+  'mobileTrip.rtNoneAhead': 'Niets op de weg die voor je ligt. Probeer de hele etappe.',
+  'mobileTrip.rtNoneOnStage': 'Niets van dat soort langs deze etappe.',
+  'mobileTrip.rtPlanOnDesktop': 'Plannen doe je op de desktop. TREK berekent de rit zodra een dag twee plaatsen heeft.',
+  'mobileTrip.rtReach': 'Hoe ver',
+  'mobileTrip.rtReachAhead': '{distance} vooruit',
+  'mobileTrip.rtSearchOffline': 'Vereist een verbinding: de zoekopdracht leest de route die voor je ligt.',
+  'mobileTrip.rtStart': 'Start',
+  'mobileTrip.rtStayLess': '{count} minuten minder',
+  'mobileTrip.rtStayMore': '{count} minuten meer',
+  'mobileTrip.rtStayScope': 'Het verblijf hoort bij de plaats en telt dus op elke dag waarop deze stop gepland staat.',
 };
 export default mobileTrip;

@@ -74,5 +74,7 @@ const common: TranslationStrings = {
   'common.errorUpdateBody':
     'TREK a zo bet hizivaet e-pad ma oa digor an ivinell-mañ. Adkargit evit kaout an handelv nevez.',
   'common.errorPluginTitle': "N'eus ket bet gallet diskwel an enlugellad-mañ",
+  'common.errorOccurred': 'Algo deu errado',
+  'common.remove': 'Remover',
 };
 export default common;

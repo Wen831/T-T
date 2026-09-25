@@ -153,5 +153,6 @@ const budget: TranslationStrings = {
   'costs.receiptLeftBehind': 'فشل الحفظ، وما زال هناك {count} إيصالات مرفوعة. احذفها من تبويب الملفات.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'إضافة فئة',
 };
 export default budget;

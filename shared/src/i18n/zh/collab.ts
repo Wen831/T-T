@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': '固定链接',
   'collab.links.unpin': '取消固定链接',
   'collab.links.delete': '删除链接',
+  'collab.chat.attachedImage': '附加的图片',
+  'collab.chat.closeImage': '关闭图片',
+  'collab.chat.imageLimit': '每条消息最多可附加 {max} 张图片',
+  'collab.chat.imageRejected': '仅支持 10 MB 以内的 JPEG、PNG、GIF 和 WebP 图片',
+  'collab.notes.expand': '显示更多',
 };
 export default collab;

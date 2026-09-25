@@ -89,5 +89,6 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderUndo': 'إعادة ترتيب الأيام',
   'dayplan.reorderError': 'تعذّر إعادة ترتيب الأيام',
   'dayplan.addDayError': 'تعذّر إضافة يوم',
+  'export.gpx': 'GPX',
 };
 export default dayplan;

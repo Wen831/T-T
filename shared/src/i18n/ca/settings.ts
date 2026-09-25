@@ -573,6 +573,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'Clau API creada',
   'settings.apiKeys.modal.createdWarning': 'Copia la clau ara. Només es mostra un cop i no es pot recuperar després.',
   'settings.apiKeys.modal.done': 'Fet',
+  'settings.mapMaplibreSubtitle': 'Mapes vectorials lliures i oberts, sense compte',
+  'settings.plugins.compatibility': 'Compatibilitat',
 };
 
 export default settings;

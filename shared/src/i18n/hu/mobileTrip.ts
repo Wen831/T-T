@@ -47,5 +47,27 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Következő',
   'mobileTrip.viewDetails': 'Részletek megtekintése',
   'mobileTrip.transportsEmpty': 'Még nincs közlekedés',
+  'mobileTrip.rtBehind': '{time} késés a tervhez képest',
+  'mobileTrip.rtDesktopNote':
+    'Ezeket az adatokat asztali gépen adod meg, ott hasonlíthatod össze az útvonalváltozatokat, és állíthatod be, hogy egy nap importált nyomvonalat kövessen.',
+  'mobileTrip.rtFromNext': 'A következő megállódtól',
+  'mobileTrip.rtFromStart': 'A szakasz elejétől',
+  'mobileTrip.rtInfoTitle': 'Vezetési adatok',
+  'mobileTrip.rtNightDesktopOnly':
+    'Az éjszakázást ezen a helyen az asztali tervezőben lehet megadni. Itt csak elvetni tudod.',
+  'mobileTrip.rtNoDay': 'Nincs kiválasztott nap',
+  'mobileTrip.rtNoDayHint': 'A térkép a teljes utat mutatja. Koppints fent egy napra a napi útvonalhoz.',
+  'mobileTrip.rtNoneAhead': 'Az előtted lévő úton nincs semmi. Próbáld az egész szakaszt.',
+  'mobileTrip.rtNoneOnStage': 'Ezen a szakaszon nincs ilyesmi.',
+  'mobileTrip.rtPlanOnDesktop':
+    'A tervezés asztali gépen történik. Amint egy napon két hely szerepel, a TREK kiszámolja az útvonalat.',
+  'mobileTrip.rtReach': 'Meddig',
+  'mobileTrip.rtReachAhead': '{distance} előre',
+  'mobileTrip.rtSearchOffline': 'Internetkapcsolat kell hozzá: a keresés az előtted lévő útvonalat olvassa be.',
+  'mobileTrip.rtStart': 'Kezdés',
+  'mobileTrip.rtStayLess': '{count} perccel kevesebb',
+  'mobileTrip.rtStayMore': '{count} perccel több',
+  'mobileTrip.rtStayScope':
+    'Az itt töltött idő a helyhez tartozik, ezért minden olyan napon számít, amelyre ez a megálló be van tervezve.',
 };
 export default mobileTrip;

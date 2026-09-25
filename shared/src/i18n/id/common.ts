@@ -73,5 +73,7 @@ const common: TranslationStrings = {
   'common.errorUpdateTitle': 'Versi baru tersedia',
   'common.errorUpdateBody': 'TREK diperbarui saat tab ini terbuka. Muat ulang untuk mendapatkan versi baru.',
   'common.errorPluginTitle': 'Plugin ini tidak dapat ditampilkan',
+  'common.errorOccurred': 'Terjadi kesalahan',
+  'common.remove': 'Hapus',
 };
 export default common;

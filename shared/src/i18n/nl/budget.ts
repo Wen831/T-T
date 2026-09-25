@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Opslaan mislukt en er staan nog {count} geüploade bonnen. Verwijder ze op het tabblad Bestanden.',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Categorie toevoegen',
 };
 export default budget;

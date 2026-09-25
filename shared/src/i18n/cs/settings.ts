@@ -562,6 +562,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdWarning':
     'Zkopíruj klíč hned teď. Zobrazí se jen jednou a později ho už nelze získat.',
   'settings.apiKeys.modal.done': 'Hotovo',
+  'settings.mapMaplibreSubtitle': 'Volné a otevřené vektorové mapy bez účtu',
+  'settings.plugins.compatibility': 'Kompatibilita',
 };
 
 export default settings;

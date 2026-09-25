@@ -573,6 +573,8 @@ const settings: TranslationStrings = {
   'settings.apiKeys.modal.createdTitle': 'API-kulcs létrehozva',
   'settings.apiKeys.modal.createdWarning': 'Másold ki a kulcsot most. Csak egyszer jelenik meg, később nem kérhető le.',
   'settings.apiKeys.modal.done': 'Kész',
+  'settings.mapMaplibreSubtitle': 'Ingyenes, nyílt vektortérképek fiók nélkül',
+  'settings.plugins.compatibility': 'Kompatibilitás',
 };
 
 export default settings;

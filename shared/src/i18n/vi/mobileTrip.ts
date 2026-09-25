@@ -47,5 +47,27 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.upNext': 'Tiếp theo',
   'mobileTrip.viewDetails': 'Xem chi tiết',
   'mobileTrip.transportsEmpty': 'Chưa có phương tiện di chuyển',
+  'mobileTrip.rtBehind': 'chậm {time} so với kế hoạch',
+  'mobileTrip.rtDesktopNote':
+    'Các số liệu này được đặt trên máy tính, nơi bạn cũng có thể so sánh các lộ trình khác và cho một ngày đi theo tuyến đã nhập.',
+  'mobileTrip.rtFromNext': 'Từ điểm dừng kế tiếp',
+  'mobileTrip.rtFromStart': 'Từ đầu chặng',
+  'mobileTrip.rtInfoTitle': 'Số liệu lái xe',
+  'mobileTrip.rtNightDesktopOnly':
+    'Việc đặt nghỉ đêm tại địa điểm này được thực hiện trong trình lập kế hoạch trên máy tính. Ở đây bạn chỉ có thể bỏ nó đi.',
+  'mobileTrip.rtNoDay': 'Chưa chọn ngày',
+  'mobileTrip.rtNoDayHint': 'Bản đồ đang hiển thị cả chuyến đi. Chạm vào một ngày ở trên để xem chặng lái.',
+  'mobileTrip.rtNoneAhead': 'Không có gì trên đường phía trước. Thử cả chặng xem sao.',
+  'mobileTrip.rtNoneOnStage': 'Không có gì thuộc loại đó dọc chặng này.',
+  'mobileTrip.rtPlanOnDesktop':
+    'Việc lên kế hoạch diễn ra trên máy tính. TREK tính chặng lái xe ngay khi một ngày có hai địa điểm.',
+  'mobileTrip.rtReach': 'Xa đến đâu',
+  'mobileTrip.rtReachAhead': '{distance} phía trước',
+  'mobileTrip.rtSearchOffline': 'Cần có kết nối: việc tìm kiếm đọc lộ trình phía trước.',
+  'mobileTrip.rtStart': 'Bắt đầu',
+  'mobileTrip.rtStayLess': 'ít hơn {count} phút',
+  'mobileTrip.rtStayMore': 'nhiều hơn {count} phút',
+  'mobileTrip.rtStayScope':
+    'Thời gian dừng thuộc về địa điểm, nên nó được tính vào mọi ngày có điểm dừng này trong kế hoạch.',
 };
 export default mobileTrip;

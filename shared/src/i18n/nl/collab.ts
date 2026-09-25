@@ -92,5 +92,10 @@ const collab: TranslationStrings = {
   'collab.links.pin': 'Link vastmaken',
   'collab.links.unpin': 'Link losmaken',
   'collab.links.delete': 'Link verwijderen',
+  'collab.chat.attachedImage': 'Bijgevoegde afbeelding',
+  'collab.chat.closeImage': 'Afbeelding sluiten',
+  'collab.chat.imageLimit': 'Je kunt maximaal {max} afbeeldingen per bericht toevoegen',
+  'collab.chat.imageRejected': 'Alleen JPEG-, PNG-, GIF- en WebP-afbeeldingen tot 10 MB zijn toegestaan',
+  'collab.notes.expand': 'Meer weergeven',
 };
 export default collab;

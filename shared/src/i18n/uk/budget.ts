@@ -154,5 +154,6 @@ const budget: TranslationStrings = {
     'Не вдалося зберегти, {count} завантажених чеків залишилися. Видаліть їх на вкладці «Файли».',
   'costs.addReceipt': 'Add receipt',
   'costs.removeReceipt': 'Remove receipt',
+  'budget.addCategory': 'Додати категорію',
 };
 export default budget;

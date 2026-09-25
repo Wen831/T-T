@@ -66,5 +66,6 @@ const atlas: TranslationStrings = {
   'atlas.checkinLandmarks': 'Monumenti',
   'atlas.checkinPlaces': 'Luoghi del viaggio',
   'atlas.checkinEmpty': 'Ancora nessun check-in — segnala un monumento o un luogo del viaggio come visitato',
+  'atlas.lastVisitLabel': 'Ultimo viaggio',
 };
 export default atlas;
