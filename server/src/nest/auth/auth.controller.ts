@@ -5,6 +5,7 @@ import { getClientIp } from '../audit/client-ip';
 import { isDemoWriteBlocked, DEMO_WRITE_ERROR } from '../common/demo-write';
 import { ManagedForbidden } from '../common/managed';
 import { RateLimitService } from '../common/rate-limit.service';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../tokens/token.service';
 import {
@@ -209,7 +210,7 @@ export class AuthController {
 
   @Post('avatar')
   @HttpCode(200)
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseInterceptors(FileInterceptor('avatar'), SpoolCleanupInterceptor)
   async avatar(@CurrentUser() user: User, @UploadedFile() file: Express.Multer.File | undefined) {
     if (isDemoWriteBlocked(this.env, user.email)) {
       throw new HttpException(DEMO_WRITE_ERROR, 403);

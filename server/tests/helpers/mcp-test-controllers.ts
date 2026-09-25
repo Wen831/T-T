@@ -73,6 +73,7 @@ import { PlacesService } from '../../src/nest/places/places.service';
 // No plugin supervisor in this harness, so PluginHooks is built over an inert runtime
 // and the warnings tool answers empty by default; the trip-warnings suite spies on
 // PluginHooks.prototype to play the provider fan-out.
+import { PluginSearchMcp } from '../../src/nest/plugins/contributions/plugin-search.mcp';
 import { TripWarningsMcp } from '../../src/nest/plugins/contributions/trip-warnings.mcp';
 import { PluginHooks } from '../../src/nest/plugins/plugin-hooks.service';
 import type { PluginRuntimeService } from '../../src/nest/plugins/plugin-runtime.service';
@@ -352,6 +353,9 @@ export function createMcpTestRegistry(): McpRegistry {
       new TripWarningsMcp(
         new PluginHooks({ providersOf: () => [], invokeHook: async () => [] } as unknown as PluginRuntimeService),
         dbService,
+      ),
+      new PluginSearchMcp(
+        new PluginHooks({ providersOf: () => [], invokeHook: async () => [] } as unknown as PluginRuntimeService),
       ),
     ],
     { accessPolicy: trekMcpAccessPolicy, validateAccess: trekMcpValidateAccess },

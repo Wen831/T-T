@@ -6,6 +6,7 @@ import { isUpdateConflict } from '../common/conflictResult';
 import { contentDisposition } from '../common/content-disposition';
 import { isDemoWriteBlocked, DEMO_WRITE_ERROR } from '../common/demo-write';
 import { PLACE_IMAGE_FILE_FILTER } from '../common/place-image-upload';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { RequirePermission, TripAccessGuard } from '../permissions/trip-access.guard';
 import { StorageService } from '../storage/storage.service';
 import { placeImageUrl } from './place-image';
@@ -399,7 +400,7 @@ export class PlacesController {
 
   @Post(':id/image')
   @HttpCode(200)
-  @UseInterceptors(FileInterceptor('image', { fileFilter: PLACE_IMAGE_FILE_FILTER }))
+  @UseInterceptors(FileInterceptor('image', { fileFilter: PLACE_IMAGE_FILE_FILTER }), SpoolCleanupInterceptor)
   async uploadImage(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,

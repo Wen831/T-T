@@ -8,6 +8,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CalendarService } from '../calendar/calendar.service';
 import { contentDisposition } from '../common/content-disposition';
 import { isDemoWriteBlocked, DEMO_WRITE_ERROR } from '../common/demo-write';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { GLOBAL_TEMP_DIR } from '../storage/storage-paths';
 import { StorageService } from '../storage/storage.service';
 import { TripReadModelService } from '../trip-read-model/trip-read-model.service';
@@ -315,7 +316,7 @@ export class TripsController {
   }
 
   @Post(':id/cover')
-  @UseInterceptors(FileInterceptor('cover'))
+  @UseInterceptors(FileInterceptor('cover'), SpoolCleanupInterceptor)
   async cover(
     @CurrentUser() user: User,
     @Param('id') id: string,

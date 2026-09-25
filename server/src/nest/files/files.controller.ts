@@ -3,6 +3,7 @@ import { RuntimeEnvService } from '../app-config/runtime-env.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { isDemoWriteBlocked, DEMO_WRITE_ERROR } from '../common/demo-write';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import type { TripAccess } from '../database/database.service';
 import { TripAccessGuard } from '../permissions/trip-access.guard';
 import { Trip } from '../permissions/trip.decorator';
@@ -127,7 +128,7 @@ export class FilesController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'), SpoolCleanupInterceptor)
   async upload(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,

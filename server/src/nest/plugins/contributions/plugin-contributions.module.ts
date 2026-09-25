@@ -13,6 +13,8 @@ import { PluginCalendarController } from './plugin-calendar.controller';
 import { PluginMcpToolsService } from './plugin-mcp-tools.service';
 import { PluginPhotosController } from './plugin-photos.controller';
 import { PluginRoutesController } from './plugin-routes.controller';
+import { PluginSearchController } from './plugin-search.controller';
+import { PluginSearchMcp } from './plugin-search.mcp';
 import { TripCardContributionsController } from './trip-card-contributions.controller';
 import { TripWarningsController } from './trip-warnings.controller';
 import { TripWarningsMcp } from './trip-warnings.mcp';
@@ -47,6 +49,7 @@ import { Module } from '@nestjs/common';
     PdfSectionsController,
     AtlasLayersController,
     JournalEntryRowsController,
+    PluginSearchController,
   ],
   // The contributions with an MCP counterpart. TripWarningsMcp belongs to this
   // module rather than to the trip read model because the plugin runtime and the
@@ -55,6 +58,6 @@ import { Module } from '@nestjs/common';
   // PluginMcpToolsService owns the process-level tool source. It lives here, and
   // not on PluginRuntimeService beside the other sinks, because it needs
   // PluginHooks and PluginHooks injects PluginRuntimeService.
-  providers: [TripWarningsMcp, PluginMcpToolsService],
+  providers: [TripWarningsMcp, PluginSearchMcp, PluginMcpToolsService],
 })
 export class PluginContributionsModule {}

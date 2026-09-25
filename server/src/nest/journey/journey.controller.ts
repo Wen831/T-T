@@ -4,6 +4,7 @@ import { AddonGuard } from '../addons/addon.guard';
 import { RequireAddon } from '../addons/require-addon.decorator';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { AllowedFileTypesService } from '../files/allowed-file-types.service';
 import { isVideoMime, isVideoExtension, MAX_VIDEO_SIZE } from '../files/files.constants';
 import { PhotoCaptureBackfillService } from '../memories/photo-capture-backfill.service';
@@ -259,7 +260,7 @@ export class JourneyController {
   }
 
   @Post('entries/:entryId/photos')
-  @UseInterceptors(FilesInterceptor('photos'))
+  @UseInterceptors(FilesInterceptor('photos'), SpoolCleanupInterceptor)
   async uploadEntryPhotos(
     @CurrentUser() user: User,
     @Param('entryId') entryId: string,
@@ -435,7 +436,7 @@ export class JourneyController {
 
   // ── Gallery (prefix /:id/gallery — before /:id) ─────────────────────────
   @Post(':id/gallery/photos')
-  @UseInterceptors(FilesInterceptor('photos'))
+  @UseInterceptors(FilesInterceptor('photos'), SpoolCleanupInterceptor)
   async uploadGalleryPhotos(
     @CurrentUser() user: User,
     @Param('id') id: string,
@@ -587,7 +588,7 @@ export class JourneyController {
 
   @Post(':id/cover')
   @HttpCode(200) // Express answers cover with res.json (200).
-  @UseInterceptors(FileInterceptor('cover'))
+  @UseInterceptors(FileInterceptor('cover'), SpoolCleanupInterceptor)
   async cover(
     @CurrentUser() user: User,
     @Param('id') id: string,

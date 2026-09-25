@@ -7,6 +7,7 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { isDemoWriteBlocked, DEMO_WRITE_ERROR } from '../common/demo-write';
 import { PLACE_IMAGE_FILE_FILTER } from '../common/place-image-upload';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { placeImageUrl } from '../places/place-image';
 import { PlaceRatingDto } from '../places/places.dto';
 import { StorageService } from '../storage/storage.service';
@@ -218,7 +219,7 @@ export class CollectionsController {
 
   @Post('places/:pid/image')
   @HttpCode(200)
-  @UseInterceptors(FileInterceptor('image', { fileFilter: PLACE_IMAGE_FILE_FILTER }))
+  @UseInterceptors(FileInterceptor('image', { fileFilter: PLACE_IMAGE_FILE_FILTER }), SpoolCleanupInterceptor)
   async uploadPlaceImage(
     @CurrentUser() user: User,
     @Param('pid') pid: string,
@@ -412,7 +413,7 @@ export class CollectionsController {
   }
 
   @Post(':id/cover')
-  @UseInterceptors(FileInterceptor('cover', { fileFilter: COVER_FILE_FILTER }))
+  @UseInterceptors(FileInterceptor('cover', { fileFilter: COVER_FILE_FILTER }), SpoolCleanupInterceptor)
   async uploadCover(
     @CurrentUser() user: User,
     @Param('id') id: string,

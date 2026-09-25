@@ -57,7 +57,11 @@ import {
 } from '../../utils/formatters';
 import { renderIconMarkup } from '../../utils/iconMarkup';
 import { safeHexColor } from '../../utils/safeColor';
+import { formatDistance } from '../../utils/units';
+import { routeTrip, type TripRouteSummary } from '../Map/tripRouteGeometry';
 import { getCategoryIcon } from '../shared/categoryIcons';
+import { renderTripMapImage } from './tripMapImage';
+import { buildTripMapSvg } from './tripMapSvg';
 
 /**
  * Every day starts a new page by default. On a trip of short days that prints
@@ -294,6 +298,8 @@ interface downloadTripPDFProps {
    * way `locale` does (#2066).
    */
   timeFormat?: string;
+  /** Same display unit as the planner; passed explicitly because this is not a hook. */
+  distanceUnit?: string;
 }
 
 // `assignments` is normalised here once — every read below (and fetchPlacePhotos)
@@ -309,6 +315,7 @@ export async function downloadTripPDF({
   t: _t,
   locale: _locale,
   timeFormat: _timeFormat,
+  distanceUnit: _distanceUnit,
 }: downloadTripPDFProps) {
   const breaksPerDay = pageBreakPerDay();
   const loc = _locale || undefined;
@@ -321,7 +328,68 @@ export async function downloadTripPDF({
   const range = longDateRange(sorted, loc);
   const coverImg = safeImg(trip?.cover_image);
   //retrieve accommodations for the trip to display on the day sections and prefetch their photos if needed
-  const accommodations = await accommodationsApi.list(trip.id);
+  const accommodationsResponse = await accommodationsApi.list(trip.id);
+  const accommodationList = Array.isArray(accommodationsResponse?.accommodations)
+    ? accommodationsResponse.accommodations
+    : Array.isArray(accommodationsResponse)
+      ? accommodationsResponse
+      : [];
+
+  const unit =
+    _distanceUnit === 'imperial' || useSettingsStore.getState().settings.distance_unit === 'imperial'
+      ? 'imperial'
+      : 'metric';
+  let tripRoute: TripRouteSummary | null = null;
+  try {
+    tripRoute = await routeTrip(
+      {
+        days: sorted,
+        assignments,
+        reservations,
+        accommodations: accommodationList,
+        optimizeFromAccommodation: useSettingsStore.getState().settings.optimize_from_accommodation,
+      },
+      { profile: 'driving', tripId: trip.id, timeoutMs: 8000 }
+    );
+  } catch (error) {
+    console.warn('[tripPdfMap] routing the trip failed; continuing without a map', error);
+  }
+  const mapFrame = {
+    width: 720,
+    height: 420,
+    formatDistance: (km: number) => formatDistance(km, unit),
+  };
+  const tripMapSvg = tripRoute
+    ? ((await renderTripMapImage(tripRoute.days, {
+        ...mapFrame,
+        style: useSettingsStore.getState().settings.maplibre_style,
+      })) ?? buildTripMapSvg(tripRoute.days, mapFrame))
+    : null;
+  const totalDistanceLabel =
+    tripRoute && tripRoute.totalDistance > 0 ? formatDistance(tripRoute.totalDistance / 1000, unit) : null;
+  const tripMapHtml = tripMapSvg
+    ? `
+<div class="trip-map">
+  <div class="trip-map-head">
+    <span class="trip-map-title">${escHtml(tr('pdf.mapTitle'))}</span>
+    ${totalDistanceLabel ? `<span class="trip-map-total">${escHtml(tr('pdf.distanceLabel'))}: ${escHtml(totalDistanceLabel)}</span>` : ''}
+  </div>
+  ${tripMapSvg}
+  <div class="trip-map-legend">
+    ${(tripRoute?.days ?? [])
+      .filter((day) => day.lines.length > 0)
+      .map(
+        (day) => `<span class="trip-map-leg">
+      <span class="trip-map-dot" style="background:${safeHexColor(day.color.line, '#0a84ff')}"></span>
+      ${escHtml(day.title || tr('dayplan.dayN', { n: day.dayNumber }))}
+      <span class="trip-map-leg-dist">${escHtml(formatDistance(day.distance / 1000, unit))}</span>
+    </span>`
+      )
+      .join('')}
+  </div>
+  <div class="trip-map-credit">${escHtml(tr('pdf.mapCredit'))}</div>
+</div>`
+    : '';
 
   // Sections contributed by pdfSectionProvider plugins — server-normalized plain
   // text (counts + lengths capped), appended after the days. Fail-safe: an error
@@ -624,7 +692,7 @@ export async function downloadTripPDF({
               })
               .join('');
 
-      const accommodationsForDay = (accommodations.accommodations || [])
+      const accommodationsForDay = accommodationList
         .filter((a) => (day ? isDayInAccommodationRange(day, a.start_day_id, a.end_day_id, days) : false))
         .sort((a, b) => {
           const startA = days.find((d) => d.id === a.start_day_id);
@@ -782,7 +850,19 @@ export async function downloadTripPDF({
   .cover-stat-num { font-size: 28px; font-weight: 700; color: #fff; line-height: 1; }
   .cover-stat-lbl { font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase; }
 
-  /* ── Day ───────────────────────────────────────── */
+  .trip-map { padding: 26px 30px 20px; page-break-after: always; page-break-inside: avoid; }
+  .pdf-flow .trip-map { page-break-after: auto; }
+  .trip-map-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+  .trip-map-title { font-size: 11px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: #64748b; }
+  .trip-map-total { font-size: 12px; font-weight: 600; color: #334155; }
+  .trip-map-svg { width: 100%; height: auto; border-radius: 8px; border: 1px solid #e2e8f0; display: block; }
+  .trip-map-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; }
+  .trip-map-leg { display: flex; align-items: center; gap: 6px; font-size: 9px; color: #475569; }
+  .trip-map-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .trip-map-leg-dist { color: #94a3b8; }
+  .trip-map-credit { font-size: 7.5px; color: #94a3b8; margin-top: 10px; }
+
+
   /* .day-section is a real <table>; its <thead> day header repeats on overflow pages. */
   .page-break { page-break-before: always; }
   /* Days break by default; .pdf-flow on <body> is the toggle in the preview (#1292).
@@ -954,6 +1034,9 @@ export async function downloadTripPDF({
     </div>
   </div>
 </div>
+
+<!-- Trip map -->
+${tripMapHtml}
 
 <!-- Days -->
 ${daysHtml}

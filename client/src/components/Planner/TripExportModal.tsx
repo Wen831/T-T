@@ -121,6 +121,7 @@ export function TripExportModal({
         t,
         locale,
         timeFormat,
+        distanceUnit: useSettingsStore.getState().settings.distance_unit,
       });
       onClose();
     } catch (e) {

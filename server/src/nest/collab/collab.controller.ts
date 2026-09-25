@@ -1,6 +1,7 @@
 import type { User } from '../../types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { BLOCKED_EXTENSIONS } from '../files/files.constants';
 import { RequirePermission, TripAccessGuard } from '../permissions/trip-access.guard';
 import { StorageService } from '../storage/storage.service';
@@ -167,7 +168,7 @@ export class CollabController {
   }
 
   @Post('notes/:id/files')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'), SpoolCleanupInterceptor)
   async addNoteFile(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,

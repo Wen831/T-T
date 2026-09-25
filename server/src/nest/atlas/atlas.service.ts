@@ -12,6 +12,7 @@ import {
   reverseGeocodeRegion,
 } from './atlas-geo';
 import { cityFromAddress } from './city-from-address';
+import { countryVisitDates } from './visit-dates';
 import { KNOWN_COUNTRIES } from './known-countries';
 import { transferEndpointIds } from './transfer-endpoints';
 import type { FlightEndpointRow } from './transfer-endpoints';
@@ -256,16 +257,17 @@ export class AtlasService {
 
     const countries = [...countrySet.values()].map((c) => {
       const countryTrips = trips.filter((t) => c.tripIds.has(t.id));
-      const dates = countryTrips
-        .map((t) => t.start_date)
-        .filter(Boolean)
-        .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+      // Only the trips that give the country its status count, and lastVisit is where
+      // the latest of them ends rather than where it starts — otherwise the month you
+      // came home never appeared and a booked trip could outrank a place you had been
+      // to (#1535).
+      const { firstVisit, lastVisit } = countryVisitDates(countryTrips, c.status, now);
       return {
         code: c.code,
         placeCount: c.places.length,
         tripCount: c.tripIds.size,
-        firstVisit: dates[0] || null,
-        lastVisit: dates[dates.length - 1] || null,
+        firstVisit,
+        lastVisit,
         status: c.status,
       };
     });
