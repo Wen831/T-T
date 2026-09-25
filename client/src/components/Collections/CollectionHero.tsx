@@ -3,6 +3,8 @@ import { Link2, Pencil, Share2, Users } from 'lucide-react';
 import React from 'react';
 import type { TranslationFn } from '../../types';
 import { avatarSrc } from '../../utils/avatarSrc';
+import CollectionExportMenu from './CollectionExportMenu';
+import type { CollectionExportFormat } from './collectionFile';
 
 const AV_COLORS = ['#6366f1', '#ec4899', '#14b8a6', '#f97316', '#8b5cf6', '#3b82f6', '#ef4444', '#22c55e'];
 
@@ -33,6 +35,9 @@ interface CollectionHeroProps {
   onEdit: () => void;
   shareMemberCount: number;
   onShare: () => void;
+  /** Absent on a surface that may not export, e.g. the "All saved" union. */
+  onExport?: (format: CollectionExportFormat) => void;
+  exporting?: boolean;
   t: TranslationFn;
 }
 
@@ -65,6 +70,8 @@ export default function CollectionHero({
   onEdit,
   shareMemberCount,
   onShare,
+  onExport,
+  exporting,
   t,
 }: CollectionHeroProps): React.ReactElement {
   const accepted = members.filter((m) => m.status === 'accepted' || m.is_owner);
@@ -155,6 +162,7 @@ export default function CollectionHero({
                 {isOwner && shareMemberCount > 0 && <span className="cnt">{shareMemberCount}</span>}
               </button>
             )}
+            {onExport && <CollectionExportMenu onExport={onExport} exporting={exporting} t={t} />}
           </div>
         </div>
 

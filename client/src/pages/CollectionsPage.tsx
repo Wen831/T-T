@@ -11,6 +11,7 @@ import {
   Search,
   Tags,
   Trash2,
+  Upload,
   X,
 } from 'lucide-react';
 import React from 'react';
@@ -22,6 +23,7 @@ import CollectionList from '../components/Collections/CollectionList';
 import CollectionMapPanel from '../components/Collections/CollectionMapPanel';
 import CollectionPlaceDetail from '../components/Collections/CollectionPlaceDetail';
 import CopyToTripModal from '../components/Collections/CopyToTripModal';
+import ImportCollectionModal from '../components/Collections/ImportCollectionModal';
 import ImportFromTripModal from '../components/Collections/ImportFromTripModal';
 import LabelManager from '../components/Collections/LabelManager';
 import ListEditorModal from '../components/Collections/ListEditorModal';
@@ -182,6 +184,9 @@ function CollectionsPageDesktop(): React.ReactElement {
             <button type="button" onClick={() => c.setShowImport(true)} className="col-cta col-cta-ghost">
               <DownloadCloud size={16} /> {t('collections.importFromTrip')}
             </button>
+            <button type="button" onClick={() => c.setShowImportFile(true)} className="col-cta col-cta-ghost">
+              <Upload size={16} /> {t('collections.file.importButton')}
+            </button>
           </div>
         )}
       </div>
@@ -254,6 +259,8 @@ function CollectionsPageDesktop(): React.ReactElement {
                     }}
                     shareMemberCount={c.shareMemberCount}
                     onShare={() => c.setShowShare(true)}
+                    onExport={c.isAllSaved || !c.activeCollection ? undefined : c.handleExportList}
+                    exporting={c.exporting}
                     t={t}
                   />
                 </div>
@@ -433,6 +440,21 @@ function CollectionsPageDesktop(): React.ReactElement {
           categories={c.categories}
           onClose={() => c.setShowImport(false)}
           onImported={c.handlePlaceAdded}
+          t={t}
+        />
+      )}
+
+      {/* Import a list from a file (#2198) — a TREK list file or a GPX. Mounted,
+          not merely opened: the dialog owns the chosen file, so closing it must
+          discard the read. */}
+      {c.showImportFile && (
+        <ImportCollectionModal
+          onClose={() => c.setShowImportFile(false)}
+          onImport={c.handleImportFile}
+          onImportInto={c.handleImportFileInto}
+          onReadGpx={c.handleReadGpx}
+          lists={c.writableLists}
+          defaultListId={typeof c.activeId === 'number' ? c.activeId : null}
           t={t}
         />
       )}

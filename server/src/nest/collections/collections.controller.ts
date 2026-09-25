@@ -11,6 +11,7 @@ import { SpoolCleanupInterceptor } from '../common/spool-cleanup.interceptor';
 import { placeImageUrl } from '../places/place-image';
 import { PlaceRatingDto } from '../places/places.dto';
 import { StorageService } from '../storage/storage.service';
+import { CollectionGpxError } from './collection-gpx.helpers';
 import {
   CollectionCreateDto,
   CollectionUpdateDto,
@@ -32,6 +33,9 @@ import {
   CollectionLabelCreateDto,
   CollectionLabelUpdateDto,
   CollectionLabelAssignDto,
+  CollectionImportDto,
+  CollectionImportIntoDto,
+  CollectionGpxReadDto,
 } from './collections.dto';
 import { CollectionsService } from './collections.service';
 import {
@@ -243,6 +247,22 @@ export class CollectionsController {
   }
 
   // ── Copy to trip ────────────────────────────────────────────────────────────
+  @Post('import')
+  importCollection(@CurrentUser() user: User, @Body() body: CollectionImportDto) {
+    return this.collections.importCollection(user.id, body);
+  }
+
+  @Post('gpx/read')
+  @HttpCode(200)
+  readGpx(@Body() body: CollectionGpxReadDto) {
+    try {
+      return this.collections.readCollectionGpx(body);
+    } catch (err) {
+      if (!(err instanceof CollectionGpxError)) throw err;
+      throw new HttpException({ error: err.message, code: err.code }, err.code === 'too-large' ? 413 : 400);
+    }
+  }
+
   @Post('copy-to-trip')
   @HttpCode(200)
   copyToTrip(@CurrentUser() user: User, @Body() body: CollectionCopyToTripDto) {
@@ -434,6 +454,27 @@ export class CollectionsController {
   /** Preview for the bulk trip import: the trip's places plus, per place, the same
    *  duplicate verdict the import itself applies. Read-only, so the dialog can grey out
    *  what would be skipped instead of reporting it afterwards. */
+  @Get(':id/export')
+  exportCollection(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.collections.exportCollection(user.id, Number(id));
+  }
+
+  @Get(':id/export/gpx')
+  exportCollectionGpx(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.collections.exportCollectionGpx(user.id, Number(id));
+  }
+
+  @Post(':id/import')
+  @HttpCode(200)
+  importIntoCollection(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Body() body: CollectionImportIntoDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    return this.collections.importIntoCollection(user.id, Number(id), body, socketId);
+  }
+
   @Get(':id/importable/:tripId')
   importable(@CurrentUser() user: User, @Param('id') id: string, @Param('tripId') tripId: string) {
     return this.collections.importablePlaces(user.id, Number(id), Number(tripId));

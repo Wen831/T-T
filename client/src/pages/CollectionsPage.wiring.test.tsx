@@ -34,7 +34,14 @@ vi.mock('../components/Collections/ListsRail', () => ({
 }));
 
 vi.mock('../components/Collections/CollectionHero', () => ({
-  default: (p: { eyebrow: string; title: string; canEdit: boolean; onEdit: () => void; onShare: () => void }) => (
+  default: (p: {
+    eyebrow: string;
+    title: string;
+    canEdit: boolean;
+    onEdit: () => void;
+    onShare: () => void;
+    onExport?: (format: string) => void;
+  }) => (
     <div data-testid="hero">
       <span data-testid="hero-eyebrow">{p.eyebrow}</span>
       <span data-testid="hero-title">{p.title}</span>
@@ -46,6 +53,11 @@ vi.mock('../components/Collections/CollectionHero', () => ({
       <button type="button" onClick={p.onShare}>
         hero-share
       </button>
+      {p.onExport && (
+        <button type="button" data-testid="hero-export" onClick={() => p.onExport?.('trek')}>
+          hero-export
+        </button>
+      )}
     </div>
   ),
 }));
@@ -328,6 +340,16 @@ vi.mock('../components/shared/EmptyState', () => ({
 const mockUseCollections = vi.fn();
 vi.mock('./collections/useCollections', () => ({ useCollections: () => mockUseCollections() }));
 
+vi.mock('../components/Collections/ImportCollectionModal', () => ({
+  default: (p: { lists?: unknown[]; defaultListId?: number | null }) => (
+    <div
+      data-testid="import-file-modal"
+      data-lists={String(p.lists?.length ?? 0)}
+      data-default={String(p.defaultListId ?? '')}
+    />
+  ),
+}));
+
 type Hook = Record<string, unknown>;
 const noop = vi.fn(() => {});
 
@@ -437,6 +459,14 @@ function makeHook(overrides: Hook = {}): Hook {
     setListPickerMode: vi.fn(() => {}),
     handleMoveToList: vi.fn(() => {}),
     handleDuplicateToList: vi.fn(() => {}),
+    exporting: false,
+    handleExportList: vi.fn(() => {}),
+    showImportFile: false,
+    setShowImportFile: vi.fn(() => {}),
+    handleImportFile: vi.fn(() => {}),
+    handleImportFileInto: vi.fn(() => {}),
+    handleReadGpx: vi.fn(() => {}),
+    writableLists: [list],
     ...overrides,
   };
 }
@@ -904,5 +934,44 @@ describe('CollectionsPage — detail sheet and modals', () => {
   it('FE-PAGE-COLLPAGE-047: no confirmation is rendered without a pending delete', () => {
     renderPage();
     expect(screen.queryByTestId('confirm-modal')).toBeNull();
+  });
+});
+
+/**
+ * Export / import as a file (#2198). Both entry points live on this page: the
+ * menu in the hero, and the import dialog mounted at the page level. Asserting
+ * them here rather than on the components is the point — the components had
+ * their own tests while nothing rendered them.
+ */
+describe('CollectionsPage — list export and import entry points', () => {
+  it('FE-PAGE-COLL-PORT-001: the hero gets the export handler for a real list', () => {
+    renderPage();
+    expect(screen.getByTestId('hero-export')).toBeInTheDocument();
+  });
+
+  it('FE-PAGE-COLL-PORT-002: the "All saved" union offers no export', () => {
+    renderPage({ isAllSaved: true, activeCollection: null });
+    // The union is not a list, so there is no file to hand out.
+    expect(screen.queryByTestId('hero-export')).toBeNull();
+  });
+
+  it('FE-PAGE-COLL-PORT-003: pressing export hands the chosen format to the hook', () => {
+    const hook = renderPage();
+    fireEvent.click(screen.getByTestId('hero-export'));
+    expect(hook.handleExportList).toHaveBeenCalledWith('trek');
+  });
+
+  it('FE-PAGE-COLL-PORT-004: the import dialog is absent until opened, then carries the writable lists', () => {
+    const closed = renderPage({ showImportFile: false });
+    expect(closed.showImportFile).toBe(false);
+    expect(screen.queryByTestId('import-file-modal')).toBeNull();
+  });
+
+  it('FE-PAGE-COLL-PORT-005: an open dialog is given the writable lists and the open one preselected', () => {
+    renderPage({ showImportFile: true, writableLists: [{ id: 1 }, { id: 2 }] });
+    const modal = screen.getByTestId('import-file-modal');
+    expect(modal).toHaveAttribute('data-lists', '2');
+    // The open list is the obvious target, so it is preselected.
+    expect(modal).toHaveAttribute('data-default', '1');
   });
 });
