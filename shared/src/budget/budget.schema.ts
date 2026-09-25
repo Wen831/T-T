@@ -97,6 +97,16 @@ export const budgetItemPayerSchema = z.object({
 });
 export type BudgetItemPayer = z.infer<typeof budgetItemPayerSchema>;
 
+export const budgetItemReceiptSchema = z.object({
+  id: z.number(),
+  filename: z.string(),
+  original_name: z.string(),
+  file_size: z.number().nullable().optional(),
+  mime_type: z.string().nullable().optional(),
+  url: z.string(),
+});
+export type BudgetItemReceipt = z.infer<typeof budgetItemReceiptSchema>;
+
 /**
  * Budget item entity as returned by the budget list/create/update endpoints
  * (server/src/services/budgetService.ts). Columns of the `budget_items` table
@@ -127,6 +137,7 @@ export const budgetItemSchema = z.object({
   created_at: z.string().optional(),
   members: z.array(budgetItemMemberSchema).optional(),
   payers: z.array(budgetItemPayerSchema).optional(),
+  receipts: z.array(budgetItemReceiptSchema).optional(),
 });
 export type BudgetItem = z.infer<typeof budgetItemSchema>;
 
@@ -163,6 +174,8 @@ export const budgetCreateItemRequestSchema = z.object({
   // The same for a place: the place form's "add expense" flow saves the place
   // first, then creates the expense against it (#1298).
   place_id: z.number().optional(),
+  // Receipt files to link to this expense
+  receipt_file_ids: z.array(z.number()).optional(),
 });
 export type BudgetCreateItemRequest = z.infer<typeof budgetCreateItemRequestSchema>;
 

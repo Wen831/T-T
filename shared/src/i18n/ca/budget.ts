@@ -147,6 +147,13 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'Suma de les parts: {sum} de {total} (en falten {diff})',
   'costs.splitSumOver': 'Suma de les parts: {sum} de {total} ({diff} de més)',
   'costs.toggleSign': 'Alterna entre despesa i devolució',
+  'costs.receipts': 'Rebuts',
+  'costs.receiptsTitle': 'Rebuts i factures',
+  'costs.viewReceipt': 'Veure rebut',
+  'costs.receiptLeftBehind':
+    'No es pot desar i encara hi ha {count} rebuts pujats. Elimina aquests fitxers a la pestanya Fitxers.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 
 export default budget;

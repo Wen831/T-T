@@ -147,5 +147,11 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': '분할 합계: {total} 중 {sum} ({diff} 부족)',
   'costs.splitSumOver': '분할 합계: {total} 중 {sum} ({diff} 초과)',
   'costs.toggleSign': '지출과 환불 전환',
+  'costs.receipts': '영수증',
+  'costs.receiptsTitle': '영수증 및 청구서',
+  'costs.viewReceipt': '영수증 보기',
+  'costs.receiptLeftBehind': '저장에 실패했고 업로드된 영수증 {count}개가 남아 있습니다. 파일 탭에서 삭제하세요.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 export default budget;

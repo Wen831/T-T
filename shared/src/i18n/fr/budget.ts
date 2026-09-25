@@ -147,5 +147,12 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'Somme des parts : {sum} sur {total} (il manque {diff})',
   'costs.splitSumOver': 'Somme des parts : {sum} sur {total} ({diff} de trop)',
   'costs.toggleSign': 'Basculer entre dépense et remboursement',
+  'costs.receipts': 'Reçus',
+  'costs.receiptsTitle': 'Reçus et factures',
+  'costs.viewReceipt': 'Voir le reçu',
+  'costs.receiptLeftBehind':
+    'Échec de la sauvegarde, {count} reçus téléversés sont toujours là. Supprimez-les dans les Fichiers.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 export default budget;

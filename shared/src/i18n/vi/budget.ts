@@ -147,6 +147,12 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'Tổng các phần: {sum} trên {total} (thiếu {diff})',
   'costs.splitSumOver': 'Tổng các phần: {sum} trên {total} (thừa {diff})',
   'costs.toggleSign': 'Chuyển giữa khoản chi và khoản hoàn',
+  'costs.receipts': 'Hóa đơn',
+  'costs.receiptsTitle': 'Hóa đơn & Biên lai',
+  'costs.viewReceipt': 'Xem hóa đơn',
+  'costs.receiptLeftBehind': 'Lưu thất bại và {count} biên lai đã tải lên vẫn còn. Hãy xoá chúng trong tab Tệp.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 
 export default budget;

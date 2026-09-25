@@ -147,5 +147,11 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'مجموع الحصص: {sum} من {total} (ناقص {diff})',
   'costs.splitSumOver': 'مجموع الحصص: {sum} من {total} (زائد {diff})',
   'costs.toggleSign': 'التبديل بين المصروف والاسترداد',
+  'costs.receipts': 'الإيصالات',
+  'costs.receiptsTitle': 'الإيصالات والفواتير',
+  'costs.viewReceipt': 'عرض الإيصال',
+  'costs.receiptLeftBehind': 'فشل الحفظ، وما زال هناك {count} إيصالات مرفوعة. احذفها من تبويب الملفات.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 export default budget;

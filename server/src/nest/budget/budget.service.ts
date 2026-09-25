@@ -1,4 +1,4 @@
-import type { User, BudgetItem, BudgetItemMember, BudgetItemPayer } from '../../types';
+import type { User, BudgetItem, BudgetItemMember, BudgetItemPayer, BudgetItemReceipt } from '../../types';
 import { avatarUrl } from '../common/avatarUrl';
 import { DatabaseService, type TripAccess } from '../database/database.service';
 import { PermissionsService } from '../permissions/permissions.service';
@@ -167,6 +167,72 @@ export class BudgetService {
    * name and an avatar attached. Off-roster ids drop silently, the way the
    * packing and reservations assignee paths handle them.
    */
+  /** The receipt files linked to one expense, newest last. */
+  private loadItemReceipts(itemId: number | string): BudgetItemReceipt[] {
+    const rows = this.db.all<{
+      id: number;
+      filename: string;
+      original_name: string;
+      file_size: number | null;
+      mime_type: string | null;
+      trip_id: number;
+    }>(
+      `
+      SELECT f.id, f.filename, f.original_name, f.file_size, f.mime_type, f.trip_id
+      FROM trip_files f
+      JOIN file_links fl ON fl.file_id = f.id
+      WHERE f.deleted_at IS NULL AND fl.budget_item_id = ?
+      ORDER BY f.created_at ASC
+    `,
+      itemId,
+    );
+
+    return rows.map((f) => ({
+      id: f.id,
+      filename: f.filename,
+      original_name: f.original_name,
+      file_size: f.file_size,
+      mime_type: f.mime_type,
+      url: `/api/trips/${f.trip_id}/files/${f.id}/download`,
+    }));
+  }
+
+  /**
+   * Drop this item's receipt links, leaving the files themselves alone.
+   *
+   * A receipt and a trip file are separate things with separate permissions, and
+   * a receipt id is any file the caller may read — so removing the expense must
+   * not delete the document somebody uploaded.
+   *
+   * A row is only removed when the receipt link was all it carried. The same row
+   * can also tie the file to a place or a booking, and those links have nothing
+   * to do with the expense. A link whose file already sits in the trash is left
+   * in place, so restoring that file brings it back attached.
+   */
+  private unlinkReceipts(budgetItemId: number | string, keep: ReadonlySet<number> = new Set()) {
+    const rows = this.db.all<{
+      id: number;
+      file_id: number;
+      reservation_id: number | null;
+      assignment_id: number | null;
+      place_id: number | null;
+    }>(
+      `SELECT fl.id, fl.file_id, fl.reservation_id, fl.assignment_id, fl.place_id
+       FROM file_links fl
+       JOIN trip_files f ON f.id = fl.file_id
+       WHERE fl.budget_item_id = ? AND f.deleted_at IS NULL`,
+      budgetItemId,
+    );
+    for (const row of rows) {
+      if (keep.has(row.file_id)) continue;
+      if (row.reservation_id || row.assignment_id || row.place_id) {
+        this.db.run('UPDATE file_links SET budget_item_id = NULL WHERE id = ?', row.id);
+      } else {
+        this.db.run('DELETE FROM file_links WHERE id = ?', row.id);
+      }
+    }
+  }
+
   private rosterMemberIds(tripId: string | number, userIds: number[]): Set<number> {
     const unique = new Set(userIds);
     if (unique.size === 0) return new Set();
@@ -270,6 +336,7 @@ export class BudgetService {
     items.forEach((item) => {
       item.members = membersByItem[item.id] || [];
       item.payers = payersByItem[item.id] || [];
+      item.receipts = this.loadItemReceipts(item.id);
     });
     return items;
   }
@@ -418,6 +485,8 @@ export class BudgetService {
       ticket_json?: string | null;
       reservation_id?: number | null;
       place_id?: number | null;
+      /** Receipt files to link to this expense. */
+      receipt_file_ids?: number[];
     },
   ) {
     return this.db.transaction(() => {
@@ -511,9 +580,18 @@ export class BudgetService {
         for (const uid of memberIds) insert.run(itemId, uid);
       }
 
+      if (data.receipt_file_ids && data.receipt_file_ids.length > 0) {
+        // Only files on this trip get linked: a receipt id is any file id, so an
+        // unchecked one would let an expense reference a file it has no business
+        // showing. Off-trip ids drop silently, the way the roster paths handle them.
+        const link = this.db.prepare('UPDATE file_links SET budget_item_id = ? WHERE file_id = ? AND trip_id = ?');
+        for (const fid of data.receipt_file_ids) link.run(itemId, Number(fid), tripId);
+      }
+
       const item = this.db.get<BudgetItem>('SELECT * FROM budget_items WHERE id = ?', itemId)!;
       item.members = this.loadItemMembers(itemId);
       item.payers = this.loadItemPayers(itemId);
+      item.receipts = this.loadItemReceipts(itemId);
       return item;
     });
   }
@@ -524,6 +602,7 @@ export class BudgetService {
     if (!item) return null;
     item.members = this.loadItemMembers(id);
     item.payers = this.loadItemPayers(id);
+    item.receipts = this.loadItemReceipts(id);
     return item;
   }
 
@@ -557,6 +636,8 @@ export class BudgetService {
       ticket_json?: string | null;
       reservation_id?: number | null;
       place_id?: number | null;
+      /** Receipt files to link to this expense. */
+      receipt_file_ids?: number[];
     },
   ) {
     return this.db.transaction(() => {
@@ -677,9 +758,41 @@ export class BudgetService {
         }
       }
 
+      if (data.receipt_file_ids !== undefined) {
+        // Reconcile rather than replace: an id the caller did not mention loses
+        // its receipt link, which is how removing one works. Files stay put —
+        // the expense is what is being edited, not the document.
+        const wanted = [...new Set(data.receipt_file_ids.map(Number))];
+        const keep = new Set<number>();
+        const link = this.db.prepare('UPDATE file_links SET budget_item_id = ? WHERE file_id = ? AND trip_id = ?');
+        for (const fid of wanted) {
+          // Only if it is on this trip and currently unlinked-or-already-ours;
+          // the same guard the create path uses.
+          const owned = this.db.get<{ id: number }>(
+            'SELECT id FROM trip_files WHERE id = ? AND trip_id = ? AND deleted_at IS NULL',
+            fid,
+            tripId,
+          );
+          if (!owned) continue;
+          const existing = this.db.get<{ id: number }>(
+            'SELECT id FROM file_links WHERE file_id = ? AND trip_id = ?',
+            fid,
+            tripId,
+          );
+          if (existing) {
+            link.run(id, fid, tripId);
+          } else {
+            this.db.run('INSERT INTO file_links (file_id, trip_id, budget_item_id) VALUES (?, ?, ?)', fid, tripId, id);
+          }
+          keep.add(fid);
+        }
+        this.unlinkReceipts(id, keep);
+      }
+
       const updated = this.db.get<BudgetItem>('SELECT * FROM budget_items WHERE id = ?', id)!;
       updated.members = this.loadItemMembers(id);
       updated.payers = this.loadItemPayers(id);
+      updated.receipts = this.loadItemReceipts(id);
       return updated;
     });
   }

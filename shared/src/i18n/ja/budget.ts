@@ -147,5 +147,12 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': '分割の合計: {total} のうち {sum}（{diff} 不足）',
   'costs.splitSumOver': '分割の合計: {total} のうち {sum}（{diff} 超過）',
   'costs.toggleSign': '支出と返金を切り替える',
+  'costs.receipts': 'レシート',
+  'costs.receiptsTitle': 'レシート・請求書',
+  'costs.viewReceipt': 'レシートを表示',
+  'costs.receiptLeftBehind':
+    '保存に失敗し、アップロード済みの領収書が {count} 件残っています。ファイルタブで削除してください。',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 export default budget;

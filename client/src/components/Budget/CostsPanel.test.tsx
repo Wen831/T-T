@@ -11,7 +11,7 @@ import { useAuthStore } from '../../store/authStore';
 import { usePermissionsStore } from '../../store/permissionsStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useTripStore } from '../../store/tripStore';
-import type { BudgetItem } from '../../types';
+import type { BudgetItem, BudgetItemReceipt } from '../../types';
 import CostsPanel, { ExpenseModal } from './CostsPanel';
 import { calculateTicketShares, splitEqualShares, type TicketItem } from './CostsPanel.helpers';
 
@@ -2618,5 +2618,75 @@ describe('CostsPanel — expense modal in another language', () => {
     await user.click(screen.getByRole('button', { name: /bob/i }));
     expect(screen.getByText('Nicht dabei')).toBeInTheDocument();
     expect(screen.queryByText('Excluded')).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * Receipts on an expense. The files chosen in the dialog are uploaded on save,
+ * not on pick, so cancelling costs nothing; the ids then ride on the expense so
+ * a failed save can take the uploads back out.
+ */
+describe('CostsPanel — expense receipts', () => {
+  const receipt = (over: Partial<BudgetItemReceipt> = {}): BudgetItemReceipt => ({
+    id: 501,
+    filename: 'stored-501.jpg',
+    original_name: 'hotel-bill.jpg',
+    file_size: 2048,
+    mime_type: 'image/jpeg',
+    url: '/api/trips/1/files/501/download',
+    ...over,
+  });
+
+  // Counts the multipart uploads the dialog issues, so "not uploaded yet" is
+  // observable rather than assumed.
+  let uploads: string[] = [];
+  beforeEach(() => {
+    uploads = [];
+    server.use(
+      http.post('/api/trips/1/files', () => {
+        uploads.push('upload');
+        return HttpResponse.json({ file: { id: 900 } });
+      })
+    );
+  });
+
+  const renderModal = (editing: BudgetItem | null = null) =>
+    render(
+      <ExpenseModal
+        tripId={1}
+        base="EUR"
+        people={tripMembers}
+        me={1}
+        editing={editing}
+        onClose={() => {}}
+        onSaved={() => {}}
+      />
+    );
+
+  it('FE-COSTS-RECEIPT-001: a new expense offers the picker and starts with no receipts', () => {
+    renderModal();
+    expect(screen.getByTestId('expense-receipt-input')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /add receipt|costs\.addReceipt/i })).toBeInTheDocument();
+  });
+
+  it('FE-COSTS-RECEIPT-002: an expense that has receipts lists them by their original name', () => {
+    renderModal({ ...dinner(), receipts: [receipt()] } as BudgetItem);
+    expect(screen.getByText('hotel-bill.jpg')).toBeInTheDocument();
+  });
+
+  it('FE-COSTS-RECEIPT-003: removing a receipt drops it from the list', async () => {
+    renderModal({ ...dinner(), receipts: [receipt()] } as BudgetItem);
+    await userEvent.click(screen.getByRole('button', { name: /remove receipt|costs\.removeReceipt/i }));
+    expect(screen.queryByText('hotel-bill.jpg')).not.toBeInTheDocument();
+  });
+
+  it('FE-COSTS-RECEIPT-004: a chosen file is shown but not uploaded until save', async () => {
+    renderModal();
+    const file = new File(['bytes'], 'lunch.pdf', { type: 'application/pdf' });
+    await userEvent.upload(screen.getByTestId('expense-receipt-input'), file);
+    // Named in the dialog…
+    expect(screen.getByText('lunch.pdf')).toBeInTheDocument();
+    // …but nothing has been sent: cancelling the dialog leaves nothing behind.
+    expect(uploads).toHaveLength(0);
   });
 });

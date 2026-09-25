@@ -147,5 +147,11 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'Jumlah bagian: {sum} dari {total} (kurang {diff})',
   'costs.splitSumOver': 'Jumlah bagian: {sum} dari {total} (lebih {diff})',
   'costs.toggleSign': 'Beralih antara pengeluaran dan pengembalian dana',
+  'costs.receipts': 'Kuitansi',
+  'costs.receiptsTitle': 'Kuitansi & Faktur',
+  'costs.viewReceipt': 'Lihat kuitansi',
+  'costs.receiptLeftBehind': 'Gagal menyimpan, dan {count} struk yang diunggah masih ada. Hapus di tab Berkas.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 export default budget;

@@ -13,6 +13,7 @@ import type {
   AssignmentPlace,
   BudgetItem,
   BudgetItemMember,
+  BudgetItemReceipt,
   Category,
   Day,
   DayNote,
@@ -38,6 +39,7 @@ export type {
   AssignmentPlace,
   BudgetItem,
   BudgetItemMember,
+  BudgetItemReceipt,
   Category,
   Day,
   DayNote,
@@ -230,7 +232,14 @@ export interface RouteVia {
   tone: 'default' | 'success' | 'warn' | 'danger';
   dwellSeconds?: number;
   hoverCard?: boolean;
-  nightPause?: { day: number; atPlace: boolean; position?: number; manual?: boolean; minPosition?: number; maxPosition?: number };
+  nightPause?: {
+    day: number;
+    atPlace: boolean;
+    position?: number;
+    manual?: boolean;
+    minPosition?: number;
+    maxPosition?: number;
+  };
 }
 
 export interface SnappedWaypoint {
@@ -474,11 +483,7 @@ export interface ApiError {
 }
 
 /** Safely extract an error message from an unknown catch value */
-export function getApiErrorMessage(
-  err: unknown,
-  fallback: string,
-  codeMessages?: Record<string, string>,
-): string {
+export function getApiErrorMessage(err: unknown, fallback: string, codeMessages?: Record<string, string>): string {
   if (typeof err === 'object' && err !== null && 'response' in err) {
     const apiErr = err as ApiError;
     const code = apiErr.response?.data?.code;

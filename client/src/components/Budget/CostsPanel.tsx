@@ -8,13 +8,15 @@ import {
   Check,
   ChevronDown,
   Download,
+  Paperclip,
   Pencil,
   Plus,
   RotateCcw,
   Search,
   Trash2,
+  X,
 } from 'lucide-react';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { budgetApi } from '../../api/client';
 import { useExchangeRates } from '../../hooks/useExchangeRates';
@@ -24,7 +26,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useCanDo } from '../../store/permissionsStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useTripStore } from '../../store/tripStore';
-import type { BudgetItem } from '../../types';
+import type { BudgetItem, BudgetItemReceipt } from '../../types';
 import { downloadBlob } from '../../utils/fileDownload';
 import {
   amountToInputString,
@@ -56,7 +58,9 @@ import {
   writeTicketItems,
   type TicketItem,
 } from './CostsPanel.helpers';
+import { ReceiptPreviewModal } from './ReceiptPreviewModal';
 import { catMeta, COST_CATEGORY_LIST } from './costsCategories';
+import { saveWithReceipts } from './receiptUploads';
 
 interface CostsPanelProps {
   tripId: number;
@@ -2429,6 +2433,16 @@ function SettlementModal({
   );
   const [cur, setCur] = useState<string>((editing?.currency || currency).toUpperCase());
   const [saving, setSaving] = useState(false);
+  // Receipts of the expense being edited: the ones that survive the edit, plus
+  // the files chosen but not yet uploaded (they go up on save, so cancelling
+  // costs nothing).
+  const [keptReceiptIds, setKeptReceiptIds] = useState<number[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [previewReceipts, setPreviewReceipts] = useState<{
+    receipts: BudgetItemReceipt[];
+    initialIndex: number;
+  } | null>(null);
+  const receiptInputRef = useRef<HTMLInputElement>(null);
 
   const amt = Number.parseFloat(amount) || 0;
   const valid = amt > 0 && fromId !== toId;
@@ -2671,6 +2685,17 @@ export function ExpenseModal({
 
   const [saving, setSaving] = useState(false);
 
+  // Receipts of the expense being edited: the ones that survive the edit, plus
+  // the files chosen but not yet uploaded (they go up on save, so cancelling the
+  // dialog costs nothing).
+  const [keptReceiptIds, setKeptReceiptIds] = useState<number[]>([]);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [previewReceipts, setPreviewReceipts] = useState<{
+    receipts: BudgetItemReceipt[];
+    initialIndex: number;
+  } | null>(null);
+  const receiptInputRef = useRef<HTMLInputElement>(null);
+
   const isTicketMode = splitMode === 'ticket';
 
   const ticketInfo = useMemo(() => {
@@ -2730,6 +2755,12 @@ export function ExpenseModal({
   const onTotalChange = (v: string) => {
     setTotal(v.replace(',', '.'));
   };
+
+  // The expense being edited brings its receipts; a new one starts with none.
+  useEffect(() => {
+    setKeptReceiptIds((editing?.receipts ?? []).map((r) => r.id));
+    setPendingFiles([]);
+  }, [editing]);
 
   // Keep the payer amounts summing to the total as it changes — including in ticket
   // mode, where the total is derived from the ticket items rather than typed.
@@ -2884,8 +2915,23 @@ export function ExpenseModal({
       ...(!editing && prefill?.placeId ? { place_id: prefill.placeId } : {}),
     };
     try {
-      if (editing) await updateBudgetItem(tripId, editing.id, data);
-      else await addBudgetItem(tripId, data);
+      // Receipts go up first, then the expense references them; a save that fails
+      // takes the uploaded files back out rather than leaving them orphaned
+      // (saveWithReceipts owns that rollback and reports what it could not undo).
+      if (pendingFiles.length > 0 || editing) {
+        await saveWithReceipts(tripId, pendingFiles, editing?.id ?? null, async (uploadedIds) => {
+          const withReceipts = {
+            ...data,
+            ...(uploadedIds.length > 0 || editing ? { receipt_file_ids: [...keptReceiptIds, ...uploadedIds] } : {}),
+          };
+          if (editing) await updateBudgetItem(tripId, editing.id, withReceipts);
+          else await addBudgetItem(tripId, withReceipts);
+        });
+      } else if (editing) {
+        await updateBudgetItem(tripId, editing.id, data);
+      } else {
+        await addBudgetItem(tripId, data);
+      }
       onSaved();
     } catch {
       toast.error(t('common.unknownError'));
@@ -3734,8 +3780,100 @@ export function ExpenseModal({
               }}
             />
           </div>
+
+          {/* Receipts. The files chosen here are uploaded on save, so cancelling
+              the dialog leaves nothing behind. */}
+          <div className={panelCls}>
+            <label className={labelCls} htmlFor="expense-receipts">
+              {t('costs.receipts')}
+            </label>
+            <input
+              ref={receiptInputRef}
+              id="expense-receipts"
+              type="file"
+              accept="image/*,application/pdf"
+              multiple
+              className="hidden"
+              data-testid="expense-receipt-input"
+              onChange={(e) => {
+                const files = Array.from(e.target.files ?? []);
+                if (files.length) setPendingFiles((prev) => [...prev, ...files]);
+                e.target.value = '';
+              }}
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => receiptInputRef.current?.click()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-edge bg-surface px-3 py-2 text-caption font-medium text-content-secondary transition-colors hover:bg-surface-hover"
+              >
+                <Paperclip size={14} aria-hidden />
+                {t('costs.addReceipt')}
+              </button>
+
+              {(editing?.receipts ?? [])
+                .filter((r) => keptReceiptIds.includes(r.id))
+                .map((r, i) => (
+                  <span
+                    key={r.id}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-edge bg-surface px-2.5 py-1.5 text-caption text-content-secondary"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewReceipts({
+                          receipts: keptReceiptIds
+                            .map((kid) => (editing?.receipts ?? []).find((x) => x.id === kid)!)
+                            .filter(Boolean),
+                          initialIndex: i,
+                        })
+                      }
+                      className="max-w-[14rem] truncate hover:underline"
+                      title={r.original_name}
+                    >
+                      {r.original_name}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setKeptReceiptIds((prev) => prev.filter((kid) => kid !== r.id))}
+                      aria-label={t('costs.removeReceipt')}
+                      className="text-content-faint hover:text-danger"
+                    >
+                      <X size={12} aria-hidden />
+                    </button>
+                  </span>
+                ))}
+
+              {pendingFiles.map((file, i) => (
+                <span
+                  key={`${file.name}-${i}`}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-edge bg-surface px-2.5 py-1.5 text-caption text-content-muted"
+                >
+                  <span className="max-w-[14rem] truncate" title={file.name}>
+                    {file.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))}
+                    aria-label={t('costs.removeReceipt')}
+                    className="text-content-faint hover:text-danger"
+                  >
+                    <X size={12} aria-hidden />
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+      {/* Full-size receipt preview, over the dialog rather than inside it. */}
+      {previewReceipts && (
+        <ReceiptPreviewModal
+          receipts={previewReceipts.receipts}
+          initialIndex={previewReceipts.initialIndex}
+          onClose={() => setPreviewReceipts(null)}
+        />
+      )}
     </Modal>
   );
 }

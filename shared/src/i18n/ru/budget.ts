@@ -147,5 +147,11 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'Сумма долей: {sum} из {total} (не хватает {diff})',
   'costs.splitSumOver': 'Сумма долей: {sum} из {total} (больше на {diff})',
   'costs.toggleSign': 'Переключить между расходом и возвратом',
+  'costs.receipts': 'Чеки',
+  'costs.receiptsTitle': 'Чеки и счета',
+  'costs.viewReceipt': 'Просмотреть чек',
+  'costs.receiptLeftBehind': 'Не удалось сохранить, {count} загруженных чеков остались. Удалите их на вкладке «Файлы».',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 export default budget;

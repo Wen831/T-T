@@ -146,5 +146,11 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': '分攤合計：{total} 中的 {sum}（少 {diff}）',
   'costs.splitSumOver': '分攤合計：{total} 中的 {sum}（多 {diff}）',
   'costs.toggleSign': '在支出與退款之間切換',
+  'costs.receipts': '收據',
+  'costs.receiptsTitle': '收據與發票',
+  'costs.viewReceipt': '查看收據',
+  'costs.receiptLeftBehind': '儲存失敗，還有 {count} 張已上傳的收據。請到「檔案」分頁刪除。',
+  'costs.addReceipt': '新增收據',
+  'costs.removeReceipt': '移除收據',
 };
 export default budget;

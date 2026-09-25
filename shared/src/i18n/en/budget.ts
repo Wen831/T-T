@@ -147,6 +147,13 @@ const budget: TranslationStrings = {
   'costs.splitSumUnder': 'Sum of splits: {sum} of {total} (under by {diff})',
   'costs.splitSumOver': 'Sum of splits: {sum} of {total} (over by {diff})',
   'costs.toggleSign': 'Switch between expense and refund',
+  'costs.receipts': 'Receipts',
+  'costs.receiptsTitle': 'Receipts & Invoices',
+  'costs.viewReceipt': 'View receipt',
+  'costs.receiptLeftBehind':
+    'Save failed, and {count} uploaded receipts are still there. Remove them in the Files tab.',
+  'costs.addReceipt': 'Add receipt',
+  'costs.removeReceipt': 'Remove receipt',
 };
 
 export default budget;
