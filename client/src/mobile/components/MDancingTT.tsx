@@ -23,7 +23,8 @@ export type TTScene =
   | 'notifications'
   | 'costs'
   | 'search'
-  | 'tasks';
+  | 'tasks'
+  | 'links';
 
 export type TTMood = 'default' | 'happy' | 'sad' | 'sleepy' | 'confused' | 'error';
 

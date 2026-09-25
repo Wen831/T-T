@@ -10,6 +10,8 @@ import {
   CollabNoteUpdateDto,
   CollabPollCreateDto,
   CollabPollVoteDto,
+  CollabLinkCreateDto,
+  CollabLinkUpdateDto,
   CollabMessageCreateDto,
   CollabReactionDto,
 } from './collab.dto';
@@ -27,10 +29,11 @@ import {
   Put,
   Query,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 import fs from 'fs';
 import type { Options } from 'multer';
@@ -48,6 +51,29 @@ export const collabNoteFileFilter: Options['fileFilter'] = (_req, file, cb) => {
     file.mimetype.includes('html') ||
     file.mimetype.includes('javascript')
   ) {
+    const err: Error & { statusCode?: number } = new Error('File type not allowed');
+    err.statusCode = 400;
+    return cb(err);
+  }
+  cb(null, true);
+};
+
+/** Up to four pictures in one chat message, 10 MB each. */
+export const MAX_CHAT_IMAGES = 4;
+export const MAX_CHAT_IMAGE_SIZE = 10 * 1024 * 1024;
+
+const CHAT_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+/**
+ * Pictures only, and only the four kinds a browser renders as a picture.
+ *
+ * A chat attachment is drawn inline, so anything that is not on this list is
+ * refused at the door rather than stored and worried about later — an SVG in
+ * particular, which is markup that can carry script.
+ */
+export const collabChatImageFilter: Options['fileFilter'] = (_req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (!CHAT_IMAGE_TYPES.includes(file.mimetype) || BLOCKED_EXTENSIONS.includes(ext)) {
     const err: Error & { statusCode?: number } = new Error('File type not allowed');
     err.statusCode = 400;
     return cb(err);
@@ -240,6 +266,65 @@ export class CollabController {
     return { success: true };
   }
 
+  // ── Shared links ────────────────────────────────────────────────────────
+  @UseGuards(TripAccessGuard)
+  @Get('links')
+  listLinks(@CurrentUser() user: User, @Param('tripId') tripId: string) {
+    return { links: this.collab.listLinks(tripId) };
+  }
+
+  @UseGuards(TripAccessGuard)
+  @RequirePermission('collab_edit')
+  @Post('links')
+  createLink(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Body() body: CollabLinkCreateDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    const link = this.collab.createLink(tripId, user.id, {
+      title: body.title,
+      url: body.url,
+      pinned: Boolean(body.pinned),
+    });
+    this.collab.broadcast(tripId, 'collab:link:created', { link }, socketId);
+    return { link };
+  }
+
+  @UseGuards(TripAccessGuard)
+  @RequirePermission('collab_edit')
+  @Put('links/:id')
+  updateLink(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: CollabLinkUpdateDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    const link = this.collab.updateLink(tripId, id, {
+      title: body.title,
+      url: body.url,
+      pinned: body.pinned === undefined ? undefined : Boolean(body.pinned),
+    });
+    if (!link) throw new HttpException({ error: 'Link not found' }, 404);
+    this.collab.broadcast(tripId, 'collab:link:updated', { link }, socketId);
+    return { link };
+  }
+
+  @UseGuards(TripAccessGuard)
+  @RequirePermission('collab_edit')
+  @Delete('links/:id')
+  deleteLink(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!this.collab.deleteLink(tripId, id)) throw new HttpException({ error: 'Link not found' }, 404);
+    this.collab.broadcast(tripId, 'collab:link:deleted', { linkId: Number(id) }, socketId);
+    return { success: true };
+  }
+
   // ── Polls ───────────────────────────────────────────────────────────────
   @UseGuards(TripAccessGuard)
   @Get('polls')
@@ -326,28 +411,101 @@ export class CollabController {
     return { messages: this.collab.listMessages(tripId, before) };
   }
 
+  // SpoolCleanupInterceptor sits after the file one on purpose: the Zod pipe runs
+  // when the handler's parameters are resolved, which is after both have been
+  // entered, so a rejected body would otherwise leave up to four spooled images
+  // on disk with nothing to sweep them.
   @UseGuards(TripAccessGuard)
   @RequirePermission('collab_edit')
   @Post('messages')
-  createMessage(
+  @UseInterceptors(
+    FilesInterceptor('images', MAX_CHAT_IMAGES, {
+      fileFilter: collabChatImageFilter,
+      limits: { files: MAX_CHAT_IMAGES, fileSize: MAX_CHAT_IMAGE_SIZE },
+    }),
+    SpoolCleanupInterceptor,
+  )
+  async createMessage(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Body() body: CollabMessageCreateDto,
+    @UploadedFiles() files: Express.Multer.File[] | undefined,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    // The pipe's min(1)/max(5000) replaced the bespoke length checks (and still
-    // rejects before the trip-access check, like the legacy pre-access check
-    // did); min(1) doesn't trim, so whitespace-only text keeps its bespoke 400.
-    if (!body.text.trim()) {
-      throw new HttpException({ error: 'Message text is required' }, 400);
+    const uploaded = files || [];
+    // multer has already written the parts to the spool by the time any of these
+    // checks run, so every refusal below takes the bytes back out.
+    const cleanupSpool = () => {
+      for (const file of uploaded) {
+        if (!file.path) continue;
+        try {
+          fs.unlinkSync(file.path);
+        } catch {
+          /* best-effort */
+        }
+      }
+    };
+
+    if (uploaded.length) {
+      try {
+        const trip = this.requireTrip(tripId, user);
+        if (!this.collab.canUploadFiles(trip, user)) {
+          throw new HttpException({ error: 'No permission to upload files' }, 403);
+        }
+      } catch (err) {
+        cleanupSpool();
+        throw err;
+      }
     }
-    const result = this.collab.createMessage(tripId, user.id, body.text, body.reply_to);
+
+    const text = (body.text || '').trim();
+    if (!text && !uploaded.length) {
+      // The old wording is kept for a request that carried no file part at all,
+      // because that is exactly what a client from before this route took images
+      // sends. A multipart request gets the wording that describes its options.
+      const wasMultipart = files !== undefined;
+      throw new HttpException(
+        { error: wasMultipart ? 'Message text or image is required' : 'Message text is required' },
+        400,
+      );
+    }
+
+    // Commit the spooled uploads to their final storage location (atomic
+    // same-volume rename) before the DB rows reference the final paths.
+    const committed: string[] = [];
+    try {
+      for (const file of uploaded) {
+        await this.storage.put('files', file.filename, { tmpPath: file.path });
+        committed.push(file.filename);
+      }
+    } catch (err) {
+      cleanupSpool();
+      for (const name of committed) await this.storage.delete('files', name).catch(() => {});
+      throw err;
+    }
+
+    const replyTo =
+      body.reply_to === undefined || body.reply_to === '' || body.reply_to === null ? null : Number(body.reply_to);
+    const result = this.collab.createMessage(
+      tripId,
+      user.id,
+      text,
+      Number.isFinite(replyTo as number) ? replyTo : null,
+      uploaded.map((file) => ({
+        filename: file.filename,
+        originalname: file.originalname,
+        size: file.size,
+        mimetype: file.mimetype,
+      })),
+    );
     if (result.error === 'reply_not_found') {
+      // The message was never written, so the bytes have nothing pointing at them.
+      for (const name of committed) await this.storage.delete('files', name).catch(() => {});
       throw new HttpException({ error: 'Reply target message not found' }, 400);
     }
     this.collab.broadcast(tripId, 'collab:message:created', { message: result.message }, socketId);
-    const t = body.text.trim();
-    this.collab.notifyCollab(tripId, user, t.length > 80 ? t.substring(0, 80) + '...' : t);
+    const preview = text || uploaded[0]?.originalname || '';
+    this.collab.notifyCollab(tripId, user, preview.length > 80 ? preview.substring(0, 80) + '...' : preview);
     return { message: result.message };
   }
 

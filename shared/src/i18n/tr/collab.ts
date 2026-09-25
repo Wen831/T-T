@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Seçenekler',
   'collab.polls.delete': 'Sil',
   'collab.polls.closedSection': 'Kapalı',
+  'collab.tabs.links': 'Bağlantılar',
+  'collab.links.add': 'Bağlantı ekle',
+  'collab.links.cancel': 'İptal',
+  'collab.links.save': 'Bağlantıyı kaydet',
+  'collab.links.titlePlaceholder': 'Bağlantı başlığı',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Henüz paylaşılan bağlantı yok',
+  'collab.links.pin': 'Bağlantıyı sabitle',
+  'collab.links.unpin': 'Sabitlemeyi kaldır',
+  'collab.links.delete': 'Bağlantıyı sil',
 };
 export default collab;

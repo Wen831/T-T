@@ -77,6 +77,9 @@ const FIXTURES: Record<TrekWsEventName, Record<string, unknown>> = {
   'collab:poll:voted': { poll: { id: 2 } },
   'collab:poll:closed': { poll: { id: 2 } },
   'collab:poll:deleted': { pollId: 2 },
+  'collab:link:created': { link: { id: 9 } },
+  'collab:link:updated': { link: { id: 9 } },
+  'collab:link:deleted': { linkId: 9 },
   'collab:message:created': { message: { id: 14 } },
   'collab:message:reacted': { messageId: 14, reactions: { '👍': [1] } },
   'collab:message:deleted': { messageId: 14, username: 'ana' },
@@ -140,10 +143,10 @@ const DRIFT_VARIANTS: Partial<Record<TrekWsEventName, Record<string, unknown>[]>
 };
 
 describe('@trek/shared realtime event registry', () => {
-  it('WSEVT-REG-001: pins the authoritative inventory counts (66 trip + 32 user = 98)', () => {
-    expect(TREK_WS_TRIP_EVENT_NAMES).toHaveLength(71);
+  it('WSEVT-REG-001: pins the authoritative inventory counts (74 trip + 32 user = 106)', () => {
+    expect(TREK_WS_TRIP_EVENT_NAMES).toHaveLength(74);
     expect(TREK_WS_USER_EVENT_NAMES).toHaveLength(32);
-    expect(TREK_WS_EVENT_NAMES).toHaveLength(103);
+    expect(TREK_WS_EVENT_NAMES).toHaveLength(106);
   });
 
   it('WSEVT-REG-002: every name is domain:action shaped and outside the reserved plugin: namespace', () => {

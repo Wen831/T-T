@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Επιλογές',
   'collab.polls.delete': 'Διαγραφή',
   'collab.polls.closedSection': 'Κλειστές',
+  'collab.tabs.links': 'Σύνδεσμοι',
+  'collab.links.add': 'Προσθήκη συνδέσμου',
+  'collab.links.cancel': 'Ακύρωση',
+  'collab.links.save': 'Αποθήκευση συνδέσμου',
+  'collab.links.titlePlaceholder': 'Τίτλος συνδέσμου',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Δεν υπάρχουν κοινόχρηστοι σύνδεσμοι ακόμη',
+  'collab.links.pin': 'Καρφίτσωμα συνδέσμου',
+  'collab.links.unpin': 'Ξεκαρφίτσωμα συνδέσμου',
+  'collab.links.delete': 'Διαγραφή συνδέσμου',
 };
 export default collab;

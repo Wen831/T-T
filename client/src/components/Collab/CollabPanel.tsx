@@ -1,8 +1,9 @@
-import { BarChart3, MessageCircle, Sparkles, StickyNote } from 'lucide-react';
+import { BarChart3, Link2, MessageCircle, Sparkles, StickyNote } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '../../i18n';
 import { useAuthStore } from '../../store/authStore';
 import CollabChat from './CollabChat';
+import CollabLinks from './CollabLinks';
 import CollabNotes from './CollabNotes';
 import CollabPolls from './CollabPolls';
 import WhatsNextWidget from './WhatsNextWidget';
@@ -28,6 +29,9 @@ interface TripMember {
 interface CollabFeatures {
   chat: boolean;
   notes: boolean;
+  /** Optional: configs written before the Links feature simply omit it, and the
+   *  merge below turns that into "on" rather than into a hidden panel. */
+  links?: boolean;
   polls: boolean;
   whatsnext: boolean;
 }
@@ -41,6 +45,7 @@ interface CollabPanelProps {
 const ALL_TABS = [
   { id: 'chat', featureKey: 'chat' as const, labelKey: 'collab.tabs.chat', icon: MessageCircle },
   { id: 'notes', featureKey: 'notes' as const, labelKey: 'collab.tabs.notes', icon: StickyNote },
+  { id: 'links', featureKey: 'links' as const, labelKey: 'collab.tabs.links', icon: Link2 },
   { id: 'polls', featureKey: 'polls' as const, labelKey: 'collab.tabs.polls', icon: BarChart3 },
   { id: 'next', featureKey: 'whatsnext' as const, labelKey: 'collab.whatsNext.title', icon: Sparkles },
 ];
@@ -50,7 +55,9 @@ export default function CollabPanel({ tripId, tripMembers = [], collabFeatures }
   const { t } = useTranslation();
   const isDesktop = useIsDesktop();
 
-  const features = collabFeatures || { chat: true, notes: true, polls: true, whatsnext: true };
+  // Older server/admin configs predate the Links feature; merge defaults so a
+  // missing `links` key does not silently hide the new panel.
+  const features = { chat: true, notes: true, links: true, polls: true, whatsnext: true, ...(collabFeatures || {}) };
 
   const tabs = useMemo(
     () =>
@@ -71,9 +78,32 @@ export default function CollabPanel({ tripId, tripMembers = [], collabFeatures }
   }, [tabs, mobileTab]);
 
   const chatOn = features.chat;
-  const rightPanels = [features.notes && 'notes', features.polls && 'polls', features.whatsnext && 'whatsnext'].filter(
-    Boolean
-  ) as string[];
+  const rightPanels = [
+    features.notes && 'notes',
+    features.links && 'links',
+    features.polls && 'polls',
+    features.whatsnext && 'whatsnext',
+  ].filter(Boolean) as string[];
+
+  /** One panel's body, by id — the single place the id-to-component mapping lives. */
+  const renderPanel = (id: string) => (
+    <>
+      {id === 'notes' && <CollabNotes tripId={tripId} currentUser={user} />}
+      {id === 'links' && <CollabLinks tripId={tripId} />}
+      {id === 'polls' && <CollabPolls tripId={tripId} currentUser={user} />}
+      {id === 'whatsnext' && <WhatsNextWidget tripMembers={tripMembers} />}
+    </>
+  );
+
+  const panelRow = (ids: string[]) => (
+    <div style={{ flex: 1, display: 'flex', gap: 12, minHeight: 0 }}>
+      {ids.map((p) => (
+        <div key={p} className={cardClass} style={{ flex: 1, minWidth: 0 }}>
+          {renderPanel(p)}
+        </div>
+      ))}
+    </div>
+  );
 
   if (tabs.length === 0) return null;
 
@@ -99,34 +129,23 @@ export default function CollabPanel({ tripId, tripMembers = [], collabFeatures }
             <CollabChat tripId={tripId} currentUser={user} />
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden', minHeight: 0 }}>
-            {rightPanels.length === 1 && (
-              <div className={cardClass} style={{ flex: 1 }}>
-                {rightPanels[0] === 'notes' && <CollabNotes tripId={tripId} currentUser={user} />}
-                {rightPanels[0] === 'polls' && <CollabPolls tripId={tripId} currentUser={user} />}
-                {rightPanels[0] === 'whatsnext' && <WhatsNextWidget tripMembers={tripMembers} />}
-              </div>
-            )}
-            {rightPanels.length === 2 &&
-              rightPanels.map((p) => (
-                <div key={p} className={cardClass} style={{ flex: 1 }}>
-                  {p === 'notes' && <CollabNotes tripId={tripId} currentUser={user} />}
-                  {p === 'polls' && <CollabPolls tripId={tripId} currentUser={user} />}
-                  {p === 'whatsnext' && <WhatsNextWidget tripMembers={tripMembers} />}
-                </div>
-              ))}
-            {rightPanels.length === 3 && (
+            {rightPanels.length <= 2 && panelRow(rightPanels)}
+            {rightPanels.length >= 3 && (
               <>
-                <div className={cardClass} style={{ flex: 1 }}>
-                  <CollabNotes tripId={tripId} currentUser={user} />
-                </div>
-                <div style={{ flex: 1, display: 'flex', gap: 12, overflow: 'hidden', minHeight: 0 }}>
-                  <div className={cardClass} style={{ flex: 1 }}>
-                    <CollabPolls tripId={tripId} currentUser={user} />
-                  </div>
-                  <div className={cardClass} style={{ flex: 1 }}>
-                    <WhatsNextWidget tripMembers={tripMembers} />
-                  </div>
-                </div>
+                {(() => {
+                  // Two rows, split by kind rather than by a pair being present: the
+                  // old condition needed notes AND links together, so turning the new
+                  // Links feature off dropped Notes out of the layout entirely. Each
+                  // row renders only when it has something in it.
+                  const written = rightPanels.filter((p) => p === 'notes' || p === 'links');
+                  const rest = rightPanels.filter((p) => p !== 'notes' && p !== 'links');
+                  return (
+                    <>
+                      {written.length > 0 && panelRow(written)}
+                      {rest.length > 0 && panelRow(rest)}
+                    </>
+                  );
+                })()}
               </>
             )}
           </div>
@@ -136,25 +155,12 @@ export default function CollabPanel({ tripId, tripMembers = [], collabFeatures }
 
     // Chat off — remaining panels share full width
     const panels = rightPanels;
-    if (panels.length === 1) {
-      return (
-        <div style={{ height: '100%', display: 'flex', gap: 12, padding: 12, overflow: 'hidden', minHeight: 0 }}>
-          <div className={cardClass} style={{ flex: 1 }}>
-            {panels[0] === 'notes' && <CollabNotes tripId={tripId} currentUser={user} />}
-            {panels[0] === 'polls' && <CollabPolls tripId={tripId} currentUser={user} />}
-            {panels[0] === 'whatsnext' && <WhatsNextWidget tripMembers={tripMembers} />}
-          </div>
-        </div>
-      );
-    }
-
+    if (panels.length === 0) return null;
     return (
       <div style={{ height: '100%', display: 'flex', gap: 12, padding: 12, overflow: 'hidden', minHeight: 0 }}>
         {panels.map((p) => (
-          <div key={p} className={cardClass} style={{ flex: 1 }}>
-            {p === 'notes' && <CollabNotes tripId={tripId} currentUser={user} />}
-            {p === 'polls' && <CollabPolls tripId={tripId} currentUser={user} />}
-            {p === 'whatsnext' && <WhatsNextWidget tripMembers={tripMembers} />}
+          <div key={p} className={cardClass} style={{ flex: 1, minWidth: 0 }}>
+            {renderPanel(p)}
           </div>
         ))}
       </div>
@@ -217,6 +223,7 @@ export default function CollabPanel({ tripId, tripMembers = [], collabFeatures }
       <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
         {mobileTab === 'chat' && features.chat && <CollabChat tripId={tripId} currentUser={user} />}
         {mobileTab === 'notes' && features.notes && <CollabNotes tripId={tripId} currentUser={user} />}
+        {mobileTab === 'links' && features.links && <CollabLinks tripId={tripId} />}
         {mobileTab === 'polls' && features.polls && <CollabPolls tripId={tripId} currentUser={user} />}
         {mobileTab === 'next' && features.whatsnext && <WhatsNextWidget tripMembers={tripMembers} />}
       </div>

@@ -3,6 +3,8 @@ import {
   collabNoteUpdateRequestSchema,
   collabPollCreateRequestSchema,
   collabPollVoteRequestSchema,
+  collabLinkCreateRequestSchema,
+  collabLinkUpdateRequestSchema,
   collabMessageCreateRequestSchema,
   collabReactionRequestSchema,
 } from '@trek/shared';
@@ -18,5 +20,7 @@ export class CollabNoteCreateDto extends createZodDto(collabNoteCreateRequestSch
 export class CollabNoteUpdateDto extends createZodDto(collabNoteUpdateRequestSchema) {}
 export class CollabPollCreateDto extends createZodDto(collabPollCreateRequestSchema) {}
 export class CollabPollVoteDto extends createZodDto(collabPollVoteRequestSchema) {}
+export class CollabLinkCreateDto extends createZodDto(collabLinkCreateRequestSchema) {}
+export class CollabLinkUpdateDto extends createZodDto(collabLinkUpdateRequestSchema) {}
 export class CollabMessageCreateDto extends createZodDto(collabMessageCreateRequestSchema) {}
 export class CollabReactionDto extends createZodDto(collabReactionRequestSchema) {}

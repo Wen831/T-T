@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.countdownHoursMinutes': '{h}h {m}m restants',
   'collab.polls.countdownMinutes': '{m}m restants',
   'collab.polls.clearDeadline': 'Esborra la data límit',
+  'collab.tabs.links': 'Enllaços',
+  'collab.links.add': 'Afegeix un enllaç',
+  'collab.links.cancel': 'Cancel·la',
+  'collab.links.save': "Desa l'enllaç",
+  'collab.links.titlePlaceholder': "Títol de l'enllaç",
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Encara no hi ha enllaços compartits',
+  'collab.links.pin': "Fixa l'enllaç",
+  'collab.links.unpin': "Desfixa l'enllaç",
+  'collab.links.delete': "Suprimeix l'enllaç",
 };
 export default collab;

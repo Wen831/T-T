@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': '選項',
   'collab.polls.delete': '刪除',
   'collab.polls.closedSection': '已關閉',
+  'collab.tabs.links': '連結',
+  'collab.links.add': '新增連結',
+  'collab.links.cancel': '取消',
+  'collab.links.save': '儲存連結',
+  'collab.links.titlePlaceholder': '連結標題',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': '尚無共享連結',
+  'collab.links.pin': '釘選連結',
+  'collab.links.unpin': '取消釘選連結',
+  'collab.links.delete': '刪除連結',
 };
 export default collab;

@@ -53,7 +53,8 @@ const { db } = vi.hoisted(() => {
     message_id INTEGER NOT NULL, user_id INTEGER NOT NULL, emoji TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP);`);
   tmp.exec(`CREATE TABLE trip_files (id INTEGER PRIMARY KEY AUTOINCREMENT, trip_id INTEGER NOT NULL,
-    note_id INTEGER, filename TEXT NOT NULL, original_name TEXT NOT NULL, file_size INTEGER,
+    note_id INTEGER, message_id INTEGER, uploaded_by INTEGER, deleted_at DATETIME,
+    filename TEXT NOT NULL, original_name TEXT NOT NULL, file_size INTEGER,
     mime_type TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);`);
   // StorageRegistryService (behind StorageModule, now in this module chain) reads
   // this at onModuleInit.

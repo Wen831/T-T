@@ -3,6 +3,7 @@ import React from 'react';
 import EmptyState from '../shared/EmptyState';
 import { URL_REGEX } from './CollabChat.constants';
 import { formatDateSeparator, formatTime, shouldShowDateSeparator } from './CollabChat.helpers';
+import { CollabChatAttachment } from './CollabChatAttachment';
 import { LinkPreview } from './CollabChatLinkPreview';
 import { MessageText } from './CollabChatMessageText';
 import { ReactionBadge } from './CollabChatReactionBadge';
@@ -336,6 +337,14 @@ export function ChatMessages(props: any) {
                             </div>
                           ) : (
                             <MessageText text={msg.text} />
+                          )}
+                          {/* Pictures hang off the message, below its text. A message
+                              may be pictures alone, in which case there is no text and
+                              this is the whole body. */}
+                          {(msg.attachments ?? []).map(
+                            (attachment: { id: number; url: string; original_name?: string; mime_type?: string }) => (
+                              <CollabChatAttachment key={attachment.id} attachment={attachment} />
+                            )
                           )}
                           {(msg.text.match(URL_REGEX) || []).slice(0, 1).map((url) => (
                             <LinkPreview

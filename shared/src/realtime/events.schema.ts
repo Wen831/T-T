@@ -251,6 +251,9 @@ export const TREK_WS_EVENTS = {
   'collab:poll:voted': { scope: 'trip', payload: z.object({ poll: entity }) },
   'collab:poll:closed': { scope: 'trip', payload: z.object({ poll: entity }) },
   'collab:poll:deleted': { scope: 'trip', payload: z.object({ pollId: id }) },
+  'collab:link:created': { scope: 'trip', payload: z.object({ link: entity }) },
+  'collab:link:updated': { scope: 'trip', payload: z.object({ link: entity }) },
+  'collab:link:deleted': { scope: 'trip', payload: z.object({ linkId: id }) },
   'collab:message:created': { scope: 'trip', payload: z.object({ message: entity }) },
   'collab:message:reacted': {
     scope: 'trip',

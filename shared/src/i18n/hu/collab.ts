@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Opciók',
   'collab.polls.delete': 'Törlés',
   'collab.polls.closedSection': 'Lezárva',
+  'collab.tabs.links': 'Linkek',
+  'collab.links.add': 'Link hozzáadása',
+  'collab.links.cancel': 'Mégse',
+  'collab.links.save': 'Link mentése',
+  'collab.links.titlePlaceholder': 'Link címe',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Még nincsenek megosztott linkek',
+  'collab.links.pin': 'Link rögzítése',
+  'collab.links.unpin': 'Link feloldása',
+  'collab.links.delete': 'Link törlése',
 };
 export default collab;

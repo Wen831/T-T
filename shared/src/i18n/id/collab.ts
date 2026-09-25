@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Pilihan',
   'collab.polls.delete': 'Hapus',
   'collab.polls.closedSection': 'Ditutup',
+  'collab.tabs.links': 'Tautan',
+  'collab.links.add': 'Tambah tautan',
+  'collab.links.cancel': 'Batal',
+  'collab.links.save': 'Simpan tautan',
+  'collab.links.titlePlaceholder': 'Judul tautan',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Belum ada tautan bersama',
+  'collab.links.pin': 'Sematkan tautan',
+  'collab.links.unpin': 'Lepas sematan tautan',
+  'collab.links.delete': 'Hapus tautan',
 };
 export default collab;

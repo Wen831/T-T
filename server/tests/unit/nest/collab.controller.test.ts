@@ -279,13 +279,18 @@ describe('CollabController (parity with the legacy /api/trips/:tripId/collab rou
   });
 
   describe('messages', () => {
-    it('POST 400 whitespace-only, 400 reply_not_found, else creates + notifies (length checks now in the Zod pipe)', () => {
-      expect(thrown(() => new CollabController(svc(), storageStub).createMessage(user, '5', { text: '   ' }))).toEqual({
+    it('POST 400 whitespace-only, 400 reply_not_found, else creates + notifies (length checks now in the Zod pipe)', async () => {
+      // The route is async now that it can carry images, so the refusal arrives as
+      // a rejected promise — and `files` being undefined is what marks the request
+      // as JSON rather than multipart, which is what keeps the old wording.
+      expect(
+        await thrownAsync(() => new CollabController(svc(), storageStub).createMessage(user, '5', { text: '   ' })),
+      ).toEqual({
         status: 400,
         body: { error: 'Message text is required' },
       });
       expect(
-        thrown(() =>
+        await thrownAsync(() =>
           new CollabController(
             svc({ createMessage: vi.fn().mockReturnValue({ error: 'reply_not_found' }) } as Partial<CollabService>),
             storageStub,
@@ -299,7 +304,11 @@ describe('CollabController (parity with the legacy /api/trips/:tripId/collab rou
         broadcast,
         notifyCollab,
       } as Partial<CollabService>);
-      expect(new CollabController(s, storageStub).createMessage(user, '5', { text: 'hello' }, 'sock')).toEqual({
+      // `undefined` files + the socket id last: the file part comes before it now
+      // that the route can carry images.
+      expect(
+        await new CollabController(s, storageStub).createMessage(user, '5', { text: 'hello' }, undefined, 'sock'),
+      ).toEqual({
         message: { id: 3 },
       });
       expect(broadcast).toHaveBeenCalledWith('5', 'collab:message:created', { message: { id: 3 } }, 'sock');

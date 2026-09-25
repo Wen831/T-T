@@ -72,11 +72,16 @@ describe('collabPollVoteRequestSchema', () => {
 });
 
 describe('collabMessageCreateRequestSchema', () => {
-  it('requires text, caps it at 5000, allows a nullable reply_to', () => {
+  it('caps text at 5000, allows a nullable reply_to, and permits a bodiless (image-only) message', () => {
     expect(collabMessageCreateRequestSchema.safeParse({ text: 'hi', reply_to: null }).success).toBe(true);
     expect(collabMessageCreateRequestSchema.safeParse({ text: 'hi', reply_to: 4 }).success).toBe(true);
-    expect(collabMessageCreateRequestSchema.safeParse({ text: '' }).success).toBe(false);
     expect(collabMessageCreateRequestSchema.safeParse({ text: 'x'.repeat(5001) }).success).toBe(false);
+    // Empty text is allowed here because a multipart message may be pictures
+    // alone; the controller is what refuses a request with neither.
+    expect(collabMessageCreateRequestSchema.safeParse({ text: '' }).success).toBe(true);
+    expect(collabMessageCreateRequestSchema.safeParse({}).success).toBe(true);
+    // Multipart fields arrive as strings, so a numeric-looking reply_to is legal.
+    expect(collabMessageCreateRequestSchema.safeParse({ text: 'hi', reply_to: '4' }).success).toBe(true);
   });
 });
 

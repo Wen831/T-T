@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.delete': 'حذف',
   'collab.polls.closedSection': 'مغلق',
   'collab.notes.websitePlaceholder': 'https://...', // en-fallback
+  'collab.tabs.links': 'الروابط',
+  'collab.links.add': 'إضافة رابط',
+  'collab.links.cancel': 'إلغاء',
+  'collab.links.save': 'حفظ الرابط',
+  'collab.links.titlePlaceholder': 'عنوان الرابط',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'لا توجد روابط مشتركة بعد',
+  'collab.links.pin': 'تثبيت الرابط',
+  'collab.links.unpin': 'إلغاء تثبيت الرابط',
+  'collab.links.delete': 'حذف الرابط',
 };
 export default collab;

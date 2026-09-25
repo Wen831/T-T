@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Možnosti',
   'collab.polls.delete': 'Smazat',
   'collab.polls.closedSection': 'Uzavřené',
+  'collab.tabs.links': 'Odkazy',
+  'collab.links.add': 'Přidat odkaz',
+  'collab.links.cancel': 'Zrušit',
+  'collab.links.save': 'Uložit odkaz',
+  'collab.links.titlePlaceholder': 'Název odkazu',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Zatím žádné sdílené odkazy',
+  'collab.links.pin': 'Připnout odkaz',
+  'collab.links.unpin': 'Odepnout odkaz',
+  'collab.links.delete': 'Smazat odkaz',
 };
 export default collab;

@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Варианты',
   'collab.polls.delete': 'Удалить',
   'collab.polls.closedSection': 'Закрытые',
+  'collab.tabs.links': 'Ссылки',
+  'collab.links.add': 'Добавить ссылку',
+  'collab.links.cancel': 'Отмена',
+  'collab.links.save': 'Сохранить ссылку',
+  'collab.links.titlePlaceholder': 'Название ссылки',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Пока нет общих ссылок',
+  'collab.links.pin': 'Закрепить ссылку',
+  'collab.links.unpin': 'Открепить ссылку',
+  'collab.links.delete': 'Удалить ссылку',
 };
 export default collab;

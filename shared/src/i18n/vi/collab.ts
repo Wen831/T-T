@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': 'Tùy chọn',
   'collab.polls.delete': 'Xóa bỏ',
   'collab.polls.closedSection': 'Đã đóng',
+  'collab.tabs.links': 'Liên kết',
+  'collab.links.add': 'Thêm liên kết',
+  'collab.links.cancel': 'Hủy',
+  'collab.links.save': 'Lưu liên kết',
+  'collab.links.titlePlaceholder': 'Tiêu đề liên kết',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': 'Chưa có liên kết được chia sẻ',
+  'collab.links.pin': 'Ghim liên kết',
+  'collab.links.unpin': 'Bỏ ghim liên kết',
+  'collab.links.delete': 'Xóa liên kết',
 };
 export default collab;

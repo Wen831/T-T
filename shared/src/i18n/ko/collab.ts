@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': '옵션',
   'collab.polls.delete': '삭제',
   'collab.polls.closedSection': '종료됨',
+  'collab.tabs.links': '링크',
+  'collab.links.add': '링크 추가',
+  'collab.links.cancel': '취소',
+  'collab.links.save': '링크 저장',
+  'collab.links.titlePlaceholder': '링크 제목',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': '공유된 링크가 아직 없습니다',
+  'collab.links.pin': '링크 고정',
+  'collab.links.unpin': '링크 고정 해제',
+  'collab.links.delete': '링크 삭제',
 };
 export default collab;

@@ -82,5 +82,15 @@ const collab: TranslationStrings = {
   'collab.polls.options': '選択肢',
   'collab.polls.delete': '削除',
   'collab.polls.closedSection': '終了',
+  'collab.tabs.links': 'リンク',
+  'collab.links.add': 'リンクを追加',
+  'collab.links.cancel': 'キャンセル',
+  'collab.links.save': 'リンクを保存',
+  'collab.links.titlePlaceholder': 'リンクのタイトル',
+  'collab.links.urlPlaceholder': 'https://...',
+  'collab.links.empty': '共有リンクはまだありません',
+  'collab.links.pin': 'リンクを固定',
+  'collab.links.unpin': 'リンクの固定を解除',
+  'collab.links.delete': 'リンクを削除',
 };
 export default collab;

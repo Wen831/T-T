@@ -6,6 +6,7 @@ import { useAuthStore } from '../../store/authStore';
 
 vi.mock('./CollabChat', () => ({ default: () => <div data-testid="collab-chat">Chat</div> }));
 vi.mock('./CollabNotes', () => ({ default: () => <div data-testid="collab-notes">Notes</div> }));
+vi.mock('./CollabLinks', () => ({ default: () => <div data-testid="collab-links">Links</div> }));
 vi.mock('./CollabPolls', () => ({ default: () => <div data-testid="collab-polls">Polls</div> }));
 vi.mock('./WhatsNextWidget', () => ({ default: () => <div data-testid="whats-next">WhatsNext</div> }));
 vi.mock('../../api/websocket', () => ({
@@ -39,11 +40,12 @@ describe('CollabPanel', () => {
   });
 
   // FE-COMP-COLLABPANEL-001
-  it('desktop layout renders all four panels', () => {
+  it('desktop layout renders every panel, Links included', () => {
     setViewport(1280);
     render(<CollabPanel tripId={1} />);
     expect(screen.getByTestId('collab-chat')).toBeInTheDocument();
     expect(screen.getByTestId('collab-notes')).toBeInTheDocument();
+    expect(screen.getByTestId('collab-links')).toBeInTheDocument();
     expect(screen.getByTestId('collab-polls')).toBeInTheDocument();
     expect(screen.getByTestId('whats-next')).toBeInTheDocument();
   });
@@ -147,7 +149,10 @@ describe('CollabPanel', () => {
 // FE-W5CPN-001 to FE-W5CPN-013
 // The desktop branch picks a different layout for every combination of enabled
 // collab features, so each combination gets its own case.
-const allOff = { chat: false, notes: false, polls: false, whatsnext: false };
+// Every feature off, Links included: a missing `links` key means "on" (older
+// configs predate it), so leaving it out here would render the Links panel and
+// quietly turn this into a test of the merge rather than of the off state.
+const allOff = { chat: false, notes: false, links: false, polls: false, whatsnext: false };
 
 describe('CollabPanel feature combinations', () => {
   beforeEach(() => {
