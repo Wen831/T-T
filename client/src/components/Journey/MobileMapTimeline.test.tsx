@@ -134,18 +134,18 @@ describe('MobileMapTimeline', () => {
     expect(screen.getByText('Reichstag')).toBeInTheDocument();
   });
 
-  it('FE-COMP-JMAPTL-002: entries on the same day share a colour and count up', () => {
+  it('FE-COMP-JMAPTL-002: entries on the same day share a day colour', () => {
     const { container } = renderTimeline();
     const { cards } = carouselOf(container);
-    const badge = (card: HTMLElement) => card.querySelector('span[style]') as HTMLElement;
-
-    expect(badge(cards[0]).textContent).toBe('1');
-    expect(badge(cards[0])).toHaveStyle({ background: DAY_COLORS[0] });
-    // second day, first and second entry of that day
-    expect(badge(cards[1]).textContent).toBe('1');
-    expect(badge(cards[2]).textContent).toBe('2');
-    expect(badge(cards[1])).toHaveStyle({ background: DAY_COLORS[1] });
-    expect(badge(cards[2])).toHaveStyle({ background: DAY_COLORS[1] });
+    // The card carries its day as its own edge colour rather than a number
+    // (#2299): a numbered badge only answered "how many stops into this day am
+    // I", which is not a question anyone asks — the scrubber answers the real
+    // one. The ring is the card's box-shadow.
+    const card = (i: number) => cards[i].querySelector('button') as HTMLElement;
+    expect(card(0).style.boxShadow).toContain(DAY_COLORS[0]);
+    // Two entries on the second day share that day's colour.
+    expect(card(1).style.boxShadow).toContain(DAY_COLORS[1]);
+    expect(card(2).style.boxShadow).toContain(DAY_COLORS[1]);
   });
 
   it('FE-COMP-JMAPTL-003: the first entry starts out active and drives the map highlight', () => {
@@ -343,8 +343,10 @@ describe('MobileMapTimeline', () => {
 
   it('FE-COMP-JMAPTL-014: carouselBottom positions the strip above the tab bar', () => {
     const { container } = renderTimeline({ carouselBottom: '120px' });
-    const strip = container.querySelector('.z-40') as HTMLElement;
-    expect(strip.style.bottom).toBe('120px');
+    // The day scrubber also sits in a `.z-40` wrapper, so this targets the
+    // carousel by the thing it owns — the horizontal scroll container.
+    const carousel = container.querySelector('.overflow-x-auto')!.parentElement as HTMLElement;
+    expect(carousel.style.bottom).toBe('120px');
   });
 
   it('FE-COMP-JMAPTL-015: an empty journey shows only the map and the add button', () => {

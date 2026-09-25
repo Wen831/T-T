@@ -17,6 +17,7 @@ import { SystemNoticeHost } from './components/SystemNotices/SystemNoticeHost.js
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import { ToastContainer } from './components/shared/Toast';
 import { useInAppNotificationListener } from './hooks/useInAppNotificationListener.ts';
+import { useRoadtripPreferencesSync } from './hooks/useRoadtripPreferencesSync';
 import { TranslationProvider, useTranslation } from './i18n';
 import MobileShell from './mobile/MobileShell';
 import MRouteFallback from './mobile/components/MRouteFallback';
@@ -295,6 +296,9 @@ function RouteFallback() {
 }
 
 export default function App() {
+  // Applies another member's road-trip preference change to this client, the
+  // live-update half of what the offline queue replays on reconnect.
+  useRoadtripPreferencesSync();
   const {
     loadUser,
     isAuthenticated,

@@ -49,6 +49,17 @@ export interface JourneyEntry {
   // Switched off by hand: the stop stays in the journal but is left out of the
   // route, the distance and the countries that Studio prints.
   stats_excluded?: boolean;
+  /**
+   * Two-letter country the entry happened in, from the geocoder when the server
+   * could resolve one. The card stamps it as letters rather than a flag emoji:
+   * Windows has never shipped the flag glyphs, so an emoji there renders as the
+   * two letters anyway — and reads as broken rather than as a country.
+   */
+  country_code?: string | null;
+  /** Folded away in the timeline without being deleted. */
+  dismissed?: boolean;
+  /** The day-assignment this entry was generated from, when it was. */
+  source_assignment_id?: number | null;
   photos: JourneyPhoto[];
   created_at: number;
   updated_at: number;

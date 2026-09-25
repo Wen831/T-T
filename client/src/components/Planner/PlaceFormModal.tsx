@@ -2,6 +2,7 @@ import { AlertTriangle, ImageOff, Loader2, Paperclip, Plus, Search, Star, X } fr
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { mapsApi } from '../../api/client';
 import { recordPlacePick } from '../../api/placeShadow';
+import { useLocationBias } from '../../hooks/useLocationBias';
 import { useTranslation } from '../../i18n';
 import { useAddonStore } from '../../store/addonStore';
 import { useAuthStore } from '../../store/authStore';
@@ -286,36 +287,14 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     }
   }, [isOpen]);
 
-  // Derive location bias bounding box from the trip's existing places
+  // Where the user is planning right now, as a hint for the place search.
+  //
+  // This used to bias on every place in the trip, which measures worse than no
+  // hint at all: a box spanning a whole round trip has its centre between the
+  // cities and points at nothing, costing more rank-1 hits than it gains. The
+  // hook prefers the day being planned and drops a box wider than a metro area.
   const places = useTripStore((s) => s.places);
-  const locationBias = useMemo(() => {
-    const withCoords = (places || []).filter((p) => p.lat != null && p.lng != null);
-    if (withCoords.length === 0) return undefined;
-
-    let minLat = Infinity,
-      maxLat = -Infinity,
-      minLng = Infinity,
-      maxLng = -Infinity;
-    for (const p of withCoords) {
-      const lat = Number(p.lat),
-        lng = Number(p.lng);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-      if (lat < minLat) minLat = lat;
-      if (lat > maxLat) maxLat = lat;
-      if (lng < minLng) minLng = lng;
-      if (lng > maxLng) maxLng = lng;
-    }
-    if (!Number.isFinite(minLat)) return undefined;
-
-    // Skip bias if the bounding box is too large (~500 km diagonal)
-    const dlat = maxLat - minLat;
-    const dlng = maxLng - minLng;
-    const avgLatRad = ((minLat + maxLat) / 2) * (Math.PI / 180);
-    const diagKm = Math.sqrt((dlat * 111) ** 2 + (dlng * 111 * Math.cos(avgLatRad)) ** 2);
-    if (diagKm > 500) return undefined;
-
-    return { low: { lat: minLat, lng: minLng }, high: { lat: maxLat, lng: maxLng } };
-  }, [places]);
+  const { box: locationBias } = useLocationBias();
 
   // Autocomplete fetch — aborts any in-flight request before starting a new one
   const fetchSuggestions = useCallback(
@@ -479,7 +458,8 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
             pickedName: result.name || '',
             pickedLat: lat,
             pickedLng: lng,
-            pickedPlaceId: result.google_place_id || result.osm_id || (result.amap_id ? `amap:${result.amap_id}` : undefined),
+            pickedPlaceId:
+              result.google_place_id || result.osm_id || (result.amap_id ? `amap:${result.amap_id}` : undefined),
           });
         }
       }
@@ -488,7 +468,10 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     setMapsSearch('');
   };
 
-  const handleSelectSuggestion = async (suggestion: { placeId: string; mainText: string; secondaryText: string }, pick?: { mode: 'search' | 'autocomplete'; rank: number; count: number }) => {
+  const handleSelectSuggestion = async (
+    suggestion: { placeId: string; mainText: string; secondaryText: string },
+    pick?: { mode: 'search' | 'autocomplete'; rank: number; count: number }
+  ) => {
     setAcSuggestions([]);
     setAcHighlight(-1);
     const previousSearch = mapsSearch;
@@ -546,7 +529,11 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
         e.preventDefault();
         if (acHighlight >= 0) {
           // Read before the list is cleared: this is the rank the user saw.
-          handleSelectSuggestion(acSuggestions[acHighlight], { mode: 'autocomplete', rank: acHighlight, count: acSuggestions.length });
+          handleSelectSuggestion(acSuggestions[acHighlight], {
+            mode: 'autocomplete',
+            rank: acHighlight,
+            count: acSuggestions.length,
+          });
         } else {
           setAcSuggestions([]);
           handleMapsSearch();
@@ -950,7 +937,9 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
                     <button
                       key={s.placeId}
                       type="button"
-                      onMouseDown={() => handleSelectSuggestion(s, { mode: 'autocomplete', rank: idx, count: acSuggestions.length })}
+                      onMouseDown={() =>
+                        handleSelectSuggestion(s, { mode: 'autocomplete', rank: idx, count: acSuggestions.length })
+                      }
                       onMouseEnter={() => setAcHighlight(idx)}
                       className={`w-full border-b border-edge-faint px-3 py-2 text-left last:border-0 ${
                         idx === acHighlight ? 'bg-surface-tertiary' : 'hover:bg-surface-hover'
@@ -973,7 +962,9 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => handleSelectMapsResult(result, { mode: 'search', rank: idx, count: mapsResults.length })}
+                    onClick={() =>
+                      handleSelectMapsResult(result, { mode: 'search', rank: idx, count: mapsResults.length })
+                    }
                     className="flex w-full gap-2.5 border-b border-edge-faint px-3 py-2 text-left last:border-0 hover:bg-surface-hover"
                   >
                     <AmapResultThumb photo={result.photos?.[0]} name={result.name} />

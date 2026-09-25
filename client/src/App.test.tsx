@@ -24,6 +24,12 @@ vi.mock('./pages/SharedTripPage', () => ({ default: () => <div>SharedTrip</div> 
 vi.mock('./pages/InAppNotificationsPage.tsx', () => ({ default: () => <div>Notifications</div> }));
 
 // Prevent WebSocket side effects from the notification listener
+// The road-trip preference stream reaches every client through one hook mounted
+// here. Mocked so this file can assert App calls it, and so a test rendering App
+// does not need a websocket.
+const roadtripSync = vi.hoisted(() => vi.fn());
+vi.mock('./hooks/useRoadtripPreferencesSync', () => ({ useRoadtripPreferencesSync: roadtripSync }));
+
 vi.mock('./hooks/useInAppNotificationListener.ts', () => ({
   useInAppNotificationListener: vi.fn(),
 }));
@@ -623,5 +629,23 @@ describe('RootRedirect — preference not mirrored on this device', () => {
 
     await waitFor(() => expect(screen.getByText('Dashboard')).toBeInTheDocument());
     vi.useRealTimers();
+  });
+});
+
+/**
+ * The ported hooks have to be mounted by somebody. Each of these was a working,
+ * tested module with no caller at one point during the port — the same orphan
+ * shape that let ~90 roadtrip components pass their own tests while nothing
+ * rendered them. Asserting the mount is what makes the component tests mean
+ * something.
+ */
+describe('App — ported hooks are mounted', () => {
+  it('FE-APP-PORT-001: the road-trip preference stream is subscribed once at the root', async () => {
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
+    await waitFor(() => expect(roadtripSync).toHaveBeenCalled());
   });
 });

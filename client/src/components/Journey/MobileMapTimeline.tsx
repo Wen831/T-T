@@ -3,9 +3,11 @@ import { Plus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { JourneyEntry } from '../../store/journeyStore';
 import { DAY_COLORS } from './dayColors';
+import { journeyDays } from './journeyCard';
+import JourneyDayScrubber from './JourneyDayScrubber';
+import JourneyEntryCover from './JourneyEntryCover';
 import type { JourneyMapHandle } from './JourneyMap';
 import JourneyMap from './JourneyMap';
-import MobileEntryCard from './MobileEntryCard';
 
 interface MapEntry {
   id: string;
@@ -47,6 +49,8 @@ export default function MobileMapTimeline({
   const mapRef = useRef<JourneyMapHandle>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const scrubberDays = useMemo(() => journeyDays(entries), [entries]);
 
   const entryDayMeta = useMemo(() => {
     const uniqueDates = [
@@ -225,6 +229,22 @@ export default function MobileMapTimeline({
         cartoApiKey={cartoApiKey}
       />
 
+      {/* Day scrubber: the whole trip at a glance, and a way to jump by day rather
+          than dragging through every card. Hidden for a one-day journal, where it
+          would be a bar with a single segment and nothing to jump between. */}
+      {scrubberDays.length > 1 && (
+        <div className="fixed left-0 right-0 z-40 px-4" style={{ bottom: `calc(${carouselBottom} + 168px)` }}>
+          <JourneyDayScrubber
+            days={scrubberDays}
+            activeDate={entries[activeIndex]?.entry_date ?? null}
+            onPick={(date) => {
+              const first = entries.findIndex((e: any) => e.entry_date === date);
+              if (first >= 0) scrollCardIntoCenter(first);
+            }}
+          />
+        </div>
+      )}
+
       {/* Bottom carousel */}
       <div className="fixed left-0 right-0 z-40" style={{ touchAction: 'pan-x', bottom: carouselBottom }}>
         <div
@@ -247,13 +267,15 @@ export default function MobileMapTimeline({
               }}
               style={{ scrollSnapAlign: 'center' }}
             >
-              <MobileEntryCard
+              {/* The photo IS the card (#2299): title and place sit on the picture,
+                  and the day reads from the colour rather than a number. */}
+              <JourneyEntryCover
                 entry={entry}
-                dayLabel={entryDayMeta[i]?.dayLabel ?? i + 1}
                 dayColor={entryDayMeta[i]?.dayColor ?? DAY_COLORS[0]}
                 isActive={i === activeIndex}
                 onClick={() => handleCardTap(entry, i)}
-                publicPhotoUrl={publicPhotoUrl}
+                photoUrlFor={publicPhotoUrl}
+                tone="mobile"
               />
             </div>
           ))}

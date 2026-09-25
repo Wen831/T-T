@@ -192,15 +192,23 @@ describe('BackupPanel', () => {
     // Stub reload AFTER initial data load so we don't corrupt window.location during setup
     const reloadMock = vi.fn();
     vi.stubGlobal('location', { ...window.location, reload: reloadMock });
+    // Fake timers from here on, so the component's reload timer is advanced by
+    // this test instead of outliving it.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
 
     await user.click(screen.getAllByText('Restore')[0]);
     await waitFor(() => expect(screen.getByText('Restore Backup?')).toBeInTheDocument());
     await user.click(screen.getByText('Yes, restore'));
     await waitFor(() => expect(screen.getByText('Backup restored. Page will reload…')).toBeInTheDocument());
 
-    // Wait for the 1500ms reload timer to fire
-    await new Promise((resolve) => setTimeout(resolve, 1600));
+    // Advance the component's 1500ms reload timer rather than sleeping past it:
+    // a real timer left pending at the end of a test fires after jsdom has torn
+    // the environment down, which vitest reports as an unhandled error and which
+    // fails the whole run (it only shows up when the suite is busy enough for
+    // this file to finish last).
+    await vi.advanceTimersByTimeAsync(1600);
     expect(reloadMock).toHaveBeenCalled();
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   }, 20000);
 
