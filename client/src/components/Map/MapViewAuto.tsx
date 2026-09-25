@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
+import { hasWebGL } from '../../utils/webgl';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import { MapViewGLMapbox, MapViewGLMaplibre } from './glLazy';
 import { MapView } from './MapView';
@@ -19,8 +20,8 @@ export function MapViewAuto(props: any) {
   const token = useSettingsStore((s) => s.settings.mapbox_access_token);
   // Fall back to Leaflet when Mapbox is selected but no token is set,
   // so trip planner never shows an empty map due to a missing token.
-  const glProvider =
-    provider === 'maplibre-gl' ? 'maplibre-gl' : provider === 'mapbox-gl' && token ? 'mapbox-gl' : null;
+  const wantsGl = provider === 'maplibre-gl' || (provider === 'mapbox-gl' && !!token);
+  const glProvider = wantsGl && hasWebGL() ? (provider === 'maplibre-gl' ? 'maplibre-gl' : 'mapbox-gl') : null;
   // One chunk per engine: picking the binding here is what keeps mapbox-gl and
   // maplibre-gl out of each other's downloads.
   const MapViewGL = glProvider === 'maplibre-gl' ? MapViewGLMaplibre : MapViewGLMapbox;
