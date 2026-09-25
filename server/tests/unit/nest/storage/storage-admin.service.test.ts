@@ -6,13 +6,13 @@ import { DatabaseService } from '../../../../src/nest/database/database.service'
 import { StorageAdminService } from '../../../../src/nest/storage/storage-admin.service';
 import { StorageEventsService } from '../../../../src/nest/storage/storage-events.service';
 import { StorageJobsService } from '../../../../src/nest/storage/storage-jobs.service';
+import { SEED_CONFIG_PATH } from '../../../../src/nest/storage/storage-paths';
 import {
   StorageRegistryService,
   BACKENDS_KEY,
   CATEGORIES_KEY,
 } from '../../../../src/nest/storage/storage-registry.service';
 import { StorageStatsService } from '../../../../src/nest/storage/storage-stats.service';
-import { SEED_CONFIG_PATH } from '../../../../src/nest/storage/storage-paths';
 import { StorageService } from '../../../../src/nest/storage/storage.service';
 import { StorageConflictError } from '../../../../src/nest/storage/storage.types';
 import { Logger } from '@nestjs/common';

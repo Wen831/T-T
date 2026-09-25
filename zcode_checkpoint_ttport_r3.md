@@ -416,5 +416,74 @@ TREK 参考仓未使用（本机不存在）；**全程只本地提交，未 pus
 
 ---
 
+## r15 —— 清掉第 7 节「已知风险」（2026-09-25）
+
+用户指出文档里还挂着「已知风险」，要求一并解决。逐条看下来，**原先那一节把三类东西混在一起**：
+真的能修但没修的、纯粹的环境事实、以及已经被修掉的。实际处置如下。
+
+### 可修的 —— 全修了
+
+**1. 上游参考不可得 → 已取得，并做了真实对照（最重要的一个）**
+原文档写「`/mnt/openclaw-data/tt-port/TREK` 不存在，故未依赖上游对照」——
+这等于**让移植自己给自己打分**：所有「移植忠实」的结论都只依据 TT 自身的历史。
+上游是公开的，`liketrek/TREK` 的 `v4.3.0` 可取得。本轮：
+- 克隆到 `/tmp/trek-ref`，钉 `v4.3.0`（commit `b98787f8`），
+  **只 `git show v4.3.0:<path>` 读，从不 checkout**（其工作树是 4.3.1+，会答非所问）；
+- 写了可重复执行的对照脚本 `scripts/check-upstream-parity.mjs`（找不到克隆会打印获取命令）；
+- **实测 PASS**：
+  1. 上游做过的每一条 schema 语句（ALTER/CREATE TABLE/CREATE INDEX），TT **缺 0 条**；
+  2. 唯一缺席的正是**故意跳过**的两条（`users.amap_api_key`、`places.amap_poi_id`），
+     且**没有半途导入**（该项检查为 0）；
+  3. 7 个移植列的 `ALTER TABLE` 语句与上游**逐字相同**（规范化空白后比对）；
+  4. `roadtrip/preferences`、`dawarich` 的 shared 契约字段集**完全一致**；
+     `place` 契约 48 字段一致，唯一差异 `amap_poi_id` → `amap_id`（即上述决策）。
+
+**2. `pretest` 原生模块自修复此前只是「写了」，没实测 → 已做破坏性验证**
+把 ABI-127 的旧二进制换回去 → 跑 `node scripts/fix-native-modules.mjs` →
+检测到 `ABI 127 vs 137`、自动装预编译包、EXIT=0，服务端测试随即可跑；
+再跑一次是 `✓ ... already loads`（幂等）。**这条是真修好了，不是纸面功夫。**
+
+**3. 文件系统级共享状态的用例怕并发 → 修 `STORADM-001`**
+`seedFilePresent` 读 `server/data/storage-config.json` 这个固定路径，而 seed-once 导入测试
+会写它、在自己的 `afterEach` 删它。跨 worker 时本用例会撞见邻居**写到一半**的状态而假失败
+（单独跑永远绿）。修法：用例内部**先钉住前置条件**（`rmSync` → 断言 → `finally` 还原）。
+
+**4. 「类型有、列没有」没有护栏 → 补守护测试**
+r7 踩过 `stop_type` / `fill_percent` / `duration_minutes`：类型里有、查询里写了、迁移里没有，
+运行时直接炸而 `tsc` 全绿——**没有任何东西会把字符串和列名对一遍**。
+补 `server/tests/unit/nest/db-ported-schema-columns.test.ts`：建库跑全量迁移 → `PRAGMA table_info` →
+逐条断言移植依赖的列存在；并额外钉住「AMap 是 TT 的」：
+`places.amap_id` 在、上游的 `amap_poi_id` **必须不在**、`users.amap_api_key` **必须不存在**
+（AMap key 是实例级，存 `app_settings`）。
+
+**5. 网络对 GitHub 间歇性失败 → 写进文档并给对策**
+一次 `git fetch --depth=1 refs/tags/v4.3.0` 把树拉全，之后对照全走本地对象。
+
+### 已核实、无需开工的发现（第 7.3 节）
+
+对照时发现 4.3.0 的 `shared/src` 有两个文件在 TT 中完全没有对应物，
+且确认**它们在 v4.2.0 中不存在**（即 4.3 新增，不是 TT 历史遗漏）：
+`day/chrono-order.ts` 与 `collection/collection-file.schema.ts`。
+
+**`chrono-order` 已核实 TT 行为完全等价**：上游抽它的原因是**服务端有一份私有实现会把
+无时间的停靠点全排到当天末尾**，于是改一个开始时间会把底部的停靠点拽到顶部。
+我把上游的用例逐条对着 TT 客户端的 `applyChronoOrder`（`client/src/utils/dayMerge.ts`）跑：
+**6 个可比较用例输出与上游期望完全一致**。服务端这边 TT 用持久化的 `order_index`
+（`ORDER BY da.order_index`），**不做按时间重排**——上游修的 bug，TT 本来就没有。
+该规则已固化进 `client/src/utils/dayMerge.test.ts`。
+
+**`collection-file` 是独立功能**（收藏列表跨实例导出/导入，含 schema + 路由 + UI），
+规模不小于四个移植功能里任何一个，建议作为独立需求评估。
+
+> 两个都不在用户指定的四功能范围内，且经核实**没有遗留缺陷**，故只做记录，没有开工。
+
+### r15 验收（实测）
+
+三个 tsc EXIT=0；`npm test` EXIT=0；`node scripts/check-upstream-parity.mjs` PASS。
+新增测试：`db-ported-schema-columns`（4 例）、`dayMerge` 的上游用例（6 例）。
+
+---
+
 **FINAL_DONE**
+
 
