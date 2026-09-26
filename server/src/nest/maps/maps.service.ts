@@ -1962,14 +1962,30 @@ export class MapsService {
     lang?: string,
     sessionToken?: string,
   ): Promise<{ place: Record<string, unknown> | null }> {
-    // AMap id ("amap:B0FFH..."), as produced by amapSearchPlaces and handed
-    // straight back by the client's pick handler. There is no detail endpoint
-    // worth calling for it — the searched record already carried name, address
-    // and coordinates — so this answers with the coordinate stub the enrichment
-    // column treats like any other provider-less place. Without this branch an
-    // "amap:" id would fall into the Google branch and 400 against Google.
+    // AMap id ("amap:B0FFH..."), as produced by amapSearchPlaces and handed back
+    // by the client's pick handler.
+    //
+    // This used to answer `null` on the reasoning that the searched record
+    // already carried name, address and coordinates — true for the row the
+    // caller just clicked, and false for every other reader. The place-details
+    // column fetches by id alone and has none of that, so an AMap place showed
+    // an empty panel ("no information for this place") with the data one call
+    // away. `amapPlaceDetail` exists and answers with the same shape the search
+    // does, rating and opening hours included.
+    //
+    // The guard the old branch also served is kept: anything that goes wrong
+    // here returns null rather than falling through to Google, which would 400
+    // on an id it has never heard of.
     if (placeId.startsWith('amap:')) {
-      return { place: null };
+      try {
+        const detail = await amapPlaceDetail(this.database, placeId.slice('amap:'.length));
+        return { place: detail ? { ...detail } : null };
+      } catch (err) {
+        // A failed lookup is a miss, not an error: the caller renders the place
+        // from what it already has, and a retry would fail the same way.
+        console.error('[Maps] AMap detail lookup failed:', err instanceof Error ? err.message : err);
+        return { place: null };
+      }
     }
 
     // OSM details: placeId is "node:123456" or "way:123456" etc.

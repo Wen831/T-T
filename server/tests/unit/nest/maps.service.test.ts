@@ -1682,6 +1682,58 @@ describe('getPlaceDetails (fetch stubbed)', () => {
     expect((result.place as any).website).toBe('https://eiffel.com');
   });
 
+  // An AMap place used to answer `null` here on the reasoning that the searched
+  // row already carried name and address. True for the caller that just clicked
+  // it, false for every other reader — the place-details column fetches by id
+  // alone, so it showed "no information for this place" with the data one call
+  // away. This is the case that pins the fix.
+  it('MAPS-040c: an amap: id answers with the AMap detail, not an empty panel', async () => {
+    const { amapPlaceDetail } = await import('../../../src/nest/geo/amap.service');
+    const spy = vi.spyOn(await import('../../../src/nest/geo/amap.service'), 'amapPlaceDetail').mockResolvedValue({
+      name: '天安门',
+      address: '东长安街 · 北京市 · 东城区',
+      lat: 39.9075,
+      lng: 116.3972,
+      amap_id: 'B000A8UINH',
+      website: null,
+      phone: '010-63095630',
+      rating: 4.7,
+      rating_count: null,
+      photos: ['https://store.is.autonavi.com/showpic/x'],
+      open_time: '08:30-17:00',
+      business_area: '天安门地区',
+      source: 'amap',
+      amap_type: '风景名胜;风景名胜;寺庙道观',
+    } as Awaited<ReturnType<typeof amapPlaceDetail>>);
+
+    const result = await svc.getPlaceDetails(1, 'amap:B000A8UINH');
+
+    expect(spy).toHaveBeenCalledWith(expect.anything(), 'B000A8UINH');
+    expect((result.place as any)?.name).toBe('天安门');
+    // The rating and opening hours are the point: they are what the details
+    // column draws and what the old `null` threw away.
+    expect((result.place as any)?.rating).toBe(4.7);
+    expect((result.place as any)?.open_time).toBe('08:30-17:00');
+    spy.mockRestore();
+  });
+
+  it('MAPS-040d: an AMap lookup that fails is a miss, never a Google call', async () => {
+    const geo = await import('../../../src/nest/geo/amap.service');
+    const spy = vi.spyOn(geo, 'amapPlaceDetail').mockRejectedValue(new Error('amap down'));
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const result = await svc.getPlaceDetails(1, 'amap:BROKEN');
+
+    // Null, so the caller renders the place from what it already has.
+    expect(result.place).toBeNull();
+    // The old guard is kept: an id Google has never heard of would 400.
+    expect(fetchSpy).not.toHaveBeenCalled();
+    spy.mockRestore();
+    errorSpy.mockRestore();
+  });
+
   it('MAPS-040b: handles OSM placeId when Overpass returns no tags (element missing)', async () => {
     vi.stubGlobal(
       'fetch',
