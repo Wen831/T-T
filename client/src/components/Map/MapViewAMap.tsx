@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { applyTrackAmap, type TrailOverlayApi, type TrailMap } from './amapDawarichTrail';
 import { pluginsApi, type PluginMapLayer, type PluginMapMarker } from '../../api/client';
 import { useGeolocation } from '../../hooks/useGeolocation';
+import { useTranslation } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
 import type { RouteVia } from '../../types';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import { MapView } from './MapView';
 import { clusterAMapPoints, type AMapPlaceCluster } from './amapClusters';
+import { applyTrackAmap, type TrailMap, type TrailOverlayApi } from './amapDawarichTrail';
+import { applyHazardsAmap, type AmapHazardApi, type AmapHazardMap } from './amapHazards';
 import { ReservationAMapOverlay, attachLocationAMapOverlay } from './amapOverlays';
 import { gcj02ToWgs84, loadAmap, wgs84ToGcj02, type AMapMap, type AMapModule, type AMapOverlay } from './engines/amap';
+import { hazardPopup } from './hazardPopup';
+import { NIGHT_PAUSE_MIN_ZOOM, nightPauseMarker } from './nightPauseMarker';
 import { hasManualTrackColor, resolveTrackColor } from './trackColors';
 
 const TONES: Record<string, string> = { default: '#4F46E5', success: '#10b981', warn: '#f59e0b', danger: '#ef4444' };
@@ -33,13 +37,23 @@ function dwell(seconds: number) {
 }
 
 export function MapViewAMap(props: any) {
+  const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<AMapMap | null>(null);
   const amapRef = useRef<AMapModule | null>(null);
   const overlaysRef = useRef<AMapOverlay[]>([]);
   const trailRef = useRef<{ clear: () => void } | null>(null);
-  const trailPropsRef = useRef({ track: props.dawarichTrack ?? null, selectedDate: props.dawarichSelectedDate ?? null, hiddenDates: props.dawarichHiddenDates ?? null });
-  trailPropsRef.current = { track: props.dawarichTrack ?? null, selectedDate: props.dawarichSelectedDate ?? null, hiddenDates: props.dawarichHiddenDates ?? null };
+  const hazardRef = useRef<{ clear: () => void } | null>(null);
+  const trailPropsRef = useRef({
+    track: props.dawarichTrack ?? null,
+    selectedDate: props.dawarichSelectedDate ?? null,
+    hiddenDates: props.dawarichHiddenDates ?? null,
+  });
+  trailPropsRef.current = {
+    track: props.dawarichTrack ?? null,
+    selectedDate: props.dawarichSelectedDate ?? null,
+    hiddenDates: props.dawarichHiddenDates ?? null,
+  };
   const infoRef = useRef<any>(null);
   const reservationOverlayRef = useRef<ReservationAMapOverlay | null>(null);
   const locationOverlayRef = useRef<ReturnType<typeof attachLocationAMapOverlay> | null>(null);
@@ -163,6 +177,34 @@ export function MapViewAMap(props: any) {
     trailRef.current = applyTrackAmap(AMap, map, track, selectedDate, hiddenDates);
   }, [ready, props.dawarichTrack, props.dawarichSelectedDate, props.dawarichHiddenDates]);
 
+  // Weather and disaster notices, under the planned route: they are background
+  // about the road ahead, not something to click past to reach the plan. Empty
+  // unless the traveller turned the layer on, so nothing is drawn by default.
+  // TT's own twin of the Leaflet and GL layers — see docs/MAP-ENGINES.md.
+  useEffect(() => {
+    const map = mapRef.current as unknown as AmapHazardMap | null;
+    const AMap = amapRef.current as unknown as AmapHazardApi | null;
+    const hazards = props.hazards ?? [];
+    if (!map || !AMap || !ready || hazards.length === 0) {
+      hazardRef.current?.clear();
+      hazardRef.current = null;
+      return;
+    }
+    hazardRef.current?.clear();
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--warning').trim() || '#f59e0b';
+    hazardRef.current = applyHazardsAmap(
+      AMap,
+      map,
+      hazards,
+      // A fresh window per click: one shared window across a hundred notices
+      // would need telling which one it belongs to, and AMap does not close the
+      // previous one for us.
+      () => (AMap.InfoWindow ? new AMap.InfoWindow({ offset: [0, -8], isCustom: false }) : null),
+      (hazard) => hazardPopup(hazard, t('roadtrip.hazards.note'), t('roadtrip.hazards.point')),
+      color
+    );
+  }, [ready, props.hazards]);
+
   // Core place markers, POIs, via points, plugin markers and InfoWindow interactions.
   useEffect(() => {
     const map = mapRef.current;
@@ -181,6 +223,7 @@ export function MapViewAMap(props: any) {
         content: spec.content,
         draggable: !!spec.draggable,
         zIndex: spec.zIndex || 100,
+        ...(spec.visible === undefined ? {} : { visible: spec.visible }),
       });
       marker.setMap(map);
       marker.on?.('click', () => {
@@ -256,12 +299,22 @@ export function MapViewAMap(props: any) {
     for (const via of (props.routeVias || []) as RouteVia[]) {
       const c = point(via);
       if (!c) continue;
+      // A night stop is drawn as its own marker rather than a tone dot: it says
+      // which night and whether the car stands at a place or beside the road.
+      // The HTML is the same string the Leaflet and GL renderers mount, so all
+      // three agree on what the traveller sees. Below NIGHT_PAUSE_MIN_ZOOM it is
+      // left off — a label a few pixels wide over a continent is not readable,
+      // and the drive is then being read rather than planned.
+      const night = via.nightPause;
       const color = TONES[via.tone] || TONES.default;
       addMarker(
         {
           position: [c.lng, c.lat],
-          content: `<div style="width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid ${color}"></div>`,
-          zIndex: 700,
+          content: night
+            ? nightPauseMarker(via)
+            : `<div style="width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid ${color}"></div>`,
+          zIndex: night ? 800 : 700,
+          ...(night ? { visible: (mapZoom ?? 99) >= NIGHT_PAUSE_MIN_ZOOM } : {}),
         },
         () => {
           if (via.label || via.dwellSeconds != null) {

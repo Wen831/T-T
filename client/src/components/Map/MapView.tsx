@@ -31,6 +31,7 @@ import { MapLayerSwitcher } from './MapLayerSwitcher';
 import { PluginMapLayers } from './MapPluginLayers';
 import { PluginMapMarkers } from './MapPluginMarkers';
 import { makeMarkerDraggable } from './markerDrag';
+import { nightPauseMarker } from './nightPauseMarker';
 import PlaceHoverCard from './PlaceHoverCard';
 import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories';
 import ReservationOverlay from './ReservationOverlay';
@@ -67,6 +68,25 @@ const VIA_TONE_COLORS: Record<string, string> = {
   danger: '#ef4444',
 };
 const viaIconCache = new Map<string, L.DivIcon>();
+/**
+ * A night stop's marker: the pill with the moon, saying which night and whether
+ * the car stands at a place or beside the road. The same HTML the AMap and GL
+ * renderers mount, so all three agree on what the traveller sees.
+ */
+function nightPauseIcon(via: RouteVia): L.DivIcon {
+  const key = `night:${via.nightPause!.day}:${via.nightPause!.atPlace}`;
+  const cached = viaIconCache.get(key);
+  if (cached) return cached;
+  const icon = L.divIcon({
+    className: 'night-pause-marker',
+    html: nightPauseMarker(via),
+    iconSize: [0, 0],
+    iconAnchor: [0, 0],
+  });
+  viaIconCache.set(key, icon);
+  return icon;
+}
+
 function routeViaIcon(tone: string): L.DivIcon {
   const cached = viaIconCache.get(tone);
   if (cached) return cached;
@@ -1089,7 +1109,12 @@ export const MapView = memo(function MapView({
           {/* Charging stops / rest areas a plugin route places on the drawn day route.
           Host-vetted data (server-normalized), rendered as plain tone dots. */}
           {(routeVias as RouteVia[]).map((v, i) => (
-            <Marker key={`route-via-${i}`} position={[v.lat, v.lng]} icon={routeViaIcon(v.tone)} zIndexOffset={800}>
+            <Marker
+              key={`route-via-${i}`}
+              position={[v.lat, v.lng]}
+              icon={v.nightPause ? nightPauseIcon(v) : routeViaIcon(v.tone)}
+              zIndexOffset={v.nightPause ? 900 : 800}
+            >
               {(v.label || v.dwellSeconds != null) && (
                 <Tooltip direction="top" offset={[0, -8]}>
                   {v.label}
