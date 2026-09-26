@@ -54,6 +54,9 @@ function props(name: string): Record<string, AnyProp> {
 vi.mock('../components/Map/MapViewAuto', () => ({ MapViewAuto: stub('map', 'map-view') }));
 vi.mock('../components/Map/MapCompassPill', () => ({ MapCompassPill: stub('compass', 'compass-pill') }));
 vi.mock('../components/Map/PoiCategoryPill', () => ({ default: stub('poiPill', 'poi-pill') }));
+vi.mock('../components/Map/DawarichTrailPill', () => ({
+  DawarichTrailPill: stub('dawarichPill', 'dawarich-trail-pill'),
+}));
 vi.mock('../components/Map/usePoiExplore', () => ({
   usePoiExplore: () => ({
     active: [],
@@ -1652,5 +1655,37 @@ describe('TripPlannerPage — adding a service stop', () => {
     });
     // Otherwise the next plain "add place" would show the stop panel.
     expect(hookState.setServiceStopForm).toHaveBeenCalledWith(false);
+  });
+});
+
+/**
+ * The recorded-route overlay (#2279) is toggled from a pill on the map, so the
+ * page has to mount it — the hook alone draws nothing. It was left unmounted
+ * during the 4.3 port, which left the layer with no way to be switched on.
+ */
+describe('TripPlannerPage — Dawarich trail pill wiring (4.3 port)', () => {
+  it('FE-PAGE-TPW-080: the addon off means no pill to press', () => {
+    renderPage({ dawarichEnabled: false });
+    expect(screen.queryByTestId('dawarich-trail-pill')).toBeNull();
+  });
+
+  it('FE-PAGE-TPW-081: the addon on mounts the pill, wired to the hook state', () => {
+    renderPage({
+      dawarichEnabled: true,
+      dawarichTrailShown: true,
+      dawarichTrail: { track: null, status: 'empty', reload: vi.fn() },
+    });
+
+    expect(screen.getByTestId('dawarich-trail-pill')).toBeInTheDocument();
+    expect(props('dawarichPill').active).toBe(true);
+    expect(props('dawarichPill').status).toBe('empty');
+  });
+
+  it('FE-PAGE-TPW-082: pressing it toggles the hook rather than local state', () => {
+    renderPage({ dawarichEnabled: true });
+    act(() => {
+      (props('dawarichPill').onToggle as () => void)();
+    });
+    expect(hookState.toggleDawarichTrail).toHaveBeenCalled();
   });
 });

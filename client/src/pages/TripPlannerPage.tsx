@@ -1,6 +1,7 @@
 import React, { Suspense, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { MapCompassPill, type CompassMap } from '../components/Map/MapCompassPill';
+import { DawarichTrailPill } from '../components/Map/DawarichTrailPill';
 import { MapViewAuto as MapView } from '../components/Map/MapViewAuto';
 import AirTrailImportModal from '../components/Planner/AirTrailImportModal';
 import BookingImportModal from '../components/Planner/BookingImportModal';
@@ -793,6 +794,37 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
                   />
                 )}
                 {glMap && <MapCompassPill map={glMap} />}
+              </div>
+            )}
+
+            {/* Bottom-RIGHT. Not the top corridor between the panels, which is already
+                contested by the POI bar and the collapse tabs (#2247); and not the
+                bottom-left corner, where Leaflet's base-layer switcher sits at
+                z-index 1000 and would cover this. The right corner is free on both
+                renderers — the locate button that lives there is phone-only. */}
+            {dawarichEnabled && (
+              <div
+                className="hidden md:flex"
+                style={{
+                  position: 'absolute',
+                  bottom: 18,
+                  right: mapInsetRight + 14,
+                  zIndex: 26,
+                  pointerEvents: 'none',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  gap: 8,
+                }}
+              >
+                {/* Kept in road-trip mode, unlike the overview: the route that was
+                    actually driven is the thing you most want beside the planned
+                    one. It is drawn, never applied — correcting the plan from the
+                    recording is a different feature and deliberately not this one. */}
+                <DawarichTrailPill
+                  active={dawarichTrailShown}
+                  status={dawarichTrail.status}
+                  onToggle={toggleDawarichTrail}
+                />
               </div>
             )}
 

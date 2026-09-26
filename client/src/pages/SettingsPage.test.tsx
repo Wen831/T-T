@@ -151,3 +151,37 @@ describe('SettingsPage', () => {
     });
   });
 });
+
+/**
+ * The Integrations tab is the only place the Dawarich connection card lives, so
+ * its visibility has to include the Dawarich addon. Leaving it out of the gate
+ * hid the tab — and with it the card — on an instance whose only integration is
+ * Dawarich, which is exactly the install that needs the card most.
+ */
+describe('SettingsPage — the Integrations tab gate', () => {
+  // The page refetches /api/addons on mount and the store is written from that
+  // answer, so seeding the store alone is overwritten a tick later.
+  async function withAddons(addons: Array<{ id: string; name: string; type: string; icon: string; enabled: boolean }>) {
+    const { http, HttpResponse } = await import('msw');
+    const { server } = await import('../../tests/helpers/msw/server');
+    server.use(http.get('/api/addons', () => HttpResponse.json({ addons })));
+  }
+
+  it('FE-PAGE-SETTINGS-020: the Dawarich addon alone is enough to show the tab', async () => {
+    await withAddons([{ id: 'dawarich', name: 'Dawarich', type: 'integration', icon: '', enabled: true }]);
+
+    render(<SettingsPage />);
+
+    expect(await screen.findByRole('button', { name: /integrations/i })).toBeInTheDocument();
+  });
+
+  it('FE-PAGE-SETTINGS-021: with no integration addon at all the tab stays away', async () => {
+    await withAddons([]);
+
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /integrations/i })).not.toBeInTheDocument();
+    });
+  });
+});

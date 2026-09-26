@@ -20,7 +20,11 @@ export function useSettings() {
   const mcpEnabled = addonEnabled('mcp')
   const airtrailEnabled = addonEnabled('airtrail')
   const llmEnabled = addonEnabled('llm_parsing')
-  const hasIntegrations = memoriesEnabled || mcpEnabled || airtrailEnabled || llmEnabled
+  const dawarichEnabled = addonEnabled('dawarich')
+  // Dawarich belongs here: its connection card is rendered by IntegrationsTab,
+  // so leaving it out hid the whole tab — and with it the card — on an instance
+  // whose only integration is Dawarich.
+  const hasIntegrations = memoriesEnabled || mcpEnabled || airtrailEnabled || llmEnabled || dawarichEnabled
 
   const [appVersion, setAppVersion] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('display')
