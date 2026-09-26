@@ -208,6 +208,9 @@ function baseState(): HookState {
     setPrefillCoords: vi.fn(),
     editingAssignmentId: null,
     setEditingAssignmentId: vi.fn(),
+    // Leaving the place form also leaves service-stop mode.
+    setServiceStopForm: vi.fn(),
+    serviceStopMode: null,
     showTripForm: false,
     setShowTripForm: vi.fn(),
     showMembersModal: false,
@@ -309,11 +312,37 @@ function baseState(): HookState {
     toggleRoadtripMode: vi.fn(),
     roadtripActive: false,
     roadtripRoutes: { lines: [], segments: [], days: [], loading: false, totalStops: 0 },
-    roadtripCorridor: { visible: [], day: null, dayId: '', setDayId: vi.fn(), categories: [], toggleCategory: vi.fn(), widthKm: 5, setWidthKm: vi.fn(), search: vi.fn(), nameFilter: '', setNameFilter: vi.fn(), insertIndexFor: vi.fn() },
+    roadtripCorridor: {
+      visible: [],
+      day: null,
+      dayId: '',
+      setDayId: vi.fn(),
+      categories: [],
+      toggleCategory: vi.fn(),
+      widthKm: 5,
+      setWidthKm: vi.fn(),
+      search: vi.fn(),
+      nameFilter: '',
+      setNameFilter: vi.fn(),
+      insertIndexFor: vi.fn(),
+    },
     refuel: { openFor: null, loading: false, outcome: null, results: [], offered: [], ask: vi.fn(), close: vi.fn() },
     askRefuel: vi.fn(),
     acceptRefuel: vi.fn(),
-    followTrack: { dayId: null, open: vi.fn(), close: vi.fn(), tracks: [], busy: false, round: 0, error: null, outcome: null, apply: vi.fn(), clear: vi.fn(), viaCount: 0, available: false },
+    followTrack: {
+      dayId: null,
+      open: vi.fn(),
+      close: vi.fn(),
+      tracks: [],
+      busy: false,
+      round: 0,
+      error: null,
+      outcome: null,
+      apply: vi.fn(),
+      clear: vi.fn(),
+      viaCount: 0,
+      available: false,
+    },
     // The recorded-route overlay (#2279). Off and empty: the page reads
     // `dawarichTrail.track` unconditionally, so the fixture has to carry the
     // shape the hook returns even when the addon is not in play.
@@ -377,7 +406,11 @@ beforeEach(() => {
 
 describe('TripPlannerPage — roadtrip mode wiring (4.3 port)', () => {
   it('FE-PAGE-TPW-061: with the mode on, the drive rail replaces the day rail and the mode switch reads active', async () => {
-    renderPage({ roadtripMode: true, roadtripActive: true, enabledAddons: { packing: true, budget: true, documents: true, collab: true, roadtrip: true } as never });
+    renderPage({
+      roadtripMode: true,
+      roadtripActive: true,
+      enabledAddons: { packing: true, budget: true, documents: true, collab: true, roadtrip: true } as never,
+    });
 
     await screen.findByTestId('stub-rt-sidebar');
     expect(screen.getByTestId('stub-rt-mode-switch')).toHaveAttribute('data-active', 'true');
@@ -1589,5 +1622,32 @@ describe('TripPlannerPage — modals', () => {
     });
     expect(hookState.setDeletePlaceIds).toHaveBeenCalledWith(null);
     expect(hookState.confirmDeletePlaces).toHaveBeenCalled();
+  });
+});
+
+/**
+ * Service stops on the drive. A charger at a motorway junction is often missing
+ * from the road index, so the way to add one is through the ordinary place form
+ * with its typed-ahead search — with the category picker swapped for the kind of
+ * stop and its place on the route.
+ */
+describe('TripPlannerPage — adding a service stop', () => {
+  it('FE-PAGE-TPW-070: the form is given no stop mode for an ordinary place', () => {
+    renderPage();
+    expect(props('placeForm').serviceStop).toBeNull();
+  });
+
+  it('FE-PAGE-TPW-071: opening a manual stop hands the form that mode', () => {
+    renderPage({ serviceStopMode: { defaultKind: 'charging' } });
+    expect(props('placeForm').serviceStop).toEqual({ defaultKind: 'charging' });
+  });
+
+  it('FE-PAGE-TPW-072: closing the form leaves service-stop mode behind', () => {
+    renderPage();
+    act(() => {
+      props('placeForm').onClose();
+    });
+    // Otherwise the next plain "add place" would show the stop panel.
+    expect(hookState.setServiceStopForm).toHaveBeenCalledWith(false);
   });
 });

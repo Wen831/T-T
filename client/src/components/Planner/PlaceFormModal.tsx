@@ -1,3 +1,4 @@
+import type { RoadtripStopType } from '@trek/shared';
 import { AlertTriangle, ImageOff, Loader2, Paperclip, Plus, Search, Star, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { mapsApi } from '../../api/client';
@@ -14,6 +15,9 @@ import { getApiErrorMessage } from '../../utils/apiError';
 import { sourceLabelFor } from '../../utils/placeSource';
 import { PlacesSession } from '../../utils/placesSession';
 import CollectionPicker from '../Collections/CollectionPicker';
+import type { ServiceStopMode } from '../Roadtrip/manualStop';
+import ServiceStopSection from '../Roadtrip/ServiceStopSection';
+import { STOP_KIND_BY_KEY } from '../Roadtrip/stopKinds';
 import CustomSelect from '../shared/CustomSelect';
 import CustomTimePicker from '../shared/CustomTimePicker';
 import Modal from '../shared/Modal';
@@ -96,6 +100,12 @@ interface PlaceFormModalProps {
   /** Opens the Costs editor for this place's linked expense (#1298) — the same
    *  seam the booking and transport modals use. */
   onOpenExpense?: (req: BookingExpenseRequest) => void;
+  /**
+   * Set when the place is being added as a stop on a drive. Replaces the category
+   * picker with the kind of stop and where on the route it belongs — refuelling is
+   * not a taste, it is a fact about the place.
+   */
+  serviceStop?: ServiceStopMode | null;
 }
 
 /** Place create/edit form state: maps search + Google-URL resolve + autocomplete,
@@ -144,8 +154,14 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     dayAssignments = [],
     isMobile = false,
     onOpenExpense,
+    serviceStop = null,
   } = props;
   const [form, setForm] = useState(DEFAULT_FORM);
+
+  // Which leg of the drive the stop belongs on. Worked out from where the place
+  // IS, and only once it has been chosen: unlike a corridor hit, nothing here has
+  // coordinates until then.
+  const [serviceStopLeg, setServiceStopLeg] = useState('');
   const [mapsSearch, setMapsSearch] = useState('');
   // Initial provider follows the instance setting; read straight off the store
   // because the destructure below sits further down the hook body.
@@ -549,6 +565,19 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     }
   };
 
+  /**
+   * A kind chosen sets the usual dwell for it, so the common case needs no second
+   * decision. Only ever called for a kind that is not already on, so a dwell set by
+   * hand survives a second click on the same pill.
+   */
+  const handleStopKind = useCallback((kind: RoadtripStopType) => {
+    setForm((prev) => ({ ...prev, stop_type: kind, duration_minutes: STOP_KIND_BY_KEY[kind].defaultMinutes }));
+  }, []);
+
+  const handleStopMinutes = useCallback((minutes: number) => {
+    setForm((prev) => ({ ...prev, duration_minutes: minutes }));
+  }, []);
+
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim()) return;
     try {
@@ -695,6 +724,7 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     setShowNewCategory,
     isSaving,
     setIsSaving,
+
     pendingFiles,
     setPendingFiles,
     fileRef,
@@ -736,6 +766,11 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
     handleCreateExpense,
     handleEditExpense,
     handleRemoveExpense,
+    serviceStopLeg,
+    setServiceStopLeg,
+    handleStopKind,
+    handleStopMinutes,
+    serviceStop,
   };
 }
 
@@ -769,6 +804,11 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
     showNewCategory,
     setShowNewCategory,
     isSaving,
+    serviceStopLeg,
+    setServiceStopLeg,
+    handleStopKind,
+    handleStopMinutes,
+    serviceStop,
     setIsSaving,
     pendingFiles,
     setPendingFiles,
@@ -1111,65 +1151,85 @@ export default function PlaceFormModal(props: PlaceFormModalProps) {
             </div>
           </div>
 
-          {/* Category */}
-          <div>
-            <label className="mb-1 block text-sm font-medium text-content-secondary">{t('places.formCategory')}</label>
-            {!showNewCategory ? (
-              <div className="flex gap-2">
-                <CustomSelect
-                  value={form.category_id}
-                  onChange={(value) => handleChange('category_id', String(value))}
-                  placeholder={t('places.noCategory')}
-                  options={[
-                    { value: '', label: t('places.noCategory') },
-                    ...(categories || []).map((c) => ({
-                      // form.category_id is a string; CustomSelect matches options by
-                      // strict equality, so the option value must be a string too —
-                      // otherwise the chosen category never renders in the trigger.
-                      value: String(c.id),
-                      label: c.name,
-                    })),
-                  ]}
-                  style={{ flex: 1 }}
-                  size="sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowNewCategory(true)}
-                  aria-label={t('places.newCategory')}
-                  title={t('places.newCategory')}
-                  className="px-2 text-content-muted hover:text-content-secondary"
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder={t('places.categoryNamePlaceholder')}
-                  className="form-input"
-                  style={{ flex: 1 }}
-                />
-                <button
-                  type="button"
-                  onClick={handleCreateCategory}
-                  className="rounded-lg bg-accent px-3 text-sm text-accent-text hover:bg-accent-hover"
-                >
-                  OK
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowNewCategory(false)}
-                  className="px-2 text-sm text-content-muted"
-                >
-                  {t('common.cancel')}
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Category, or for a stop on a drive the kind of stop and where it
+              belongs. One or the other, never both: refuelling is not a taste, it
+              is a fact about the place, so it lives in `places.stop_type` and not
+              in the trip’s own editable category list. */}
+          {serviceStop ? (
+            <ServiceStopSection
+              mode={serviceStop}
+              stopType={form.stop_type ?? null}
+              onStopType={handleStopKind}
+              minutes={form.duration_minutes ?? 0}
+              onMinutes={handleStopMinutes}
+              leg={serviceStopLeg}
+              onLeg={setServiceStopLeg}
+              lat={form.lat ? Number.parseFloat(form.lat) : null}
+              lng={form.lng ? Number.parseFloat(form.lng) : null}
+            />
+          ) : (
+            <div>
+              {/* Category */}
+              <label className="mb-1 block text-sm font-medium text-content-secondary">
+                {t('places.formCategory')}
+              </label>
+              {!showNewCategory ? (
+                <div className="flex gap-2">
+                  <CustomSelect
+                    value={form.category_id}
+                    onChange={(value) => handleChange('category_id', String(value))}
+                    placeholder={t('places.noCategory')}
+                    options={[
+                      { value: '', label: t('places.noCategory') },
+                      ...(categories || []).map((c) => ({
+                        // form.category_id is a string; CustomSelect matches options by
+                        // strict equality, so the option value must be a string too —
+                        // otherwise the chosen category never renders in the trigger.
+                        value: String(c.id),
+                        label: c.name,
+                      })),
+                    ]}
+                    style={{ flex: 1 }}
+                    size="sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewCategory(true)}
+                    aria-label={t('places.newCategory')}
+                    title={t('places.newCategory')}
+                    className="px-2 text-content-muted hover:text-content-secondary"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder={t('places.categoryNamePlaceholder')}
+                    className="form-input"
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreateCategory}
+                    className="rounded-lg bg-accent px-3 text-sm text-accent-text hover:bg-accent-hover"
+                  >
+                    OK
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowNewCategory(false)}
+                    className="px-2 text-sm text-content-muted"
+                  >
+                    {t('common.cancel')}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Time is per day-assignment: only shown when a single assignment is in
             context (itinerary edit, or a single-assignment pool edit). Hidden when

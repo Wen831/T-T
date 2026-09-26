@@ -26,6 +26,7 @@ import { safeHexColor } from '../../utils/safeColor';
 import { resolveBasemap } from '../../utils/tileUrl';
 import { CATEGORY_ICON_MAP, getCategoryIcon } from '../shared/categoryIcons';
 import DawarichTrailLayer from './DawarichTrailLayer';
+import HazardLayers from './HazardLayers';
 import { MapLayerSwitcher } from './MapLayerSwitcher';
 import { PluginMapLayers } from './MapPluginLayers';
 import { PluginMapMarkers } from './MapPluginMarkers';
@@ -33,6 +34,7 @@ import { makeMarkerDraggable } from './markerDrag';
 import PlaceHoverCard from './PlaceHoverCard';
 import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories';
 import ReservationOverlay from './ReservationOverlay';
+import RoadtripViaMarkers from './RoadtripViaMarkers';
 import { hasManualTrackColor, resolveTrackColor } from './trackColors';
 import VectorBasemap from './VectorBasemap';
 
@@ -597,6 +599,11 @@ export const MapView = memo(function MapView({
   onPoiClick,
   onViewportChange,
   tripId,
+  hazards = [],
+  /** The traveller's own via handles for the drive, by day. */
+  roadtripVias,
+  onMoveVia,
+  onRemoveVia,
   routeVias = [],
   dawarichTrack = null,
   dawarichSelectedDate = null,
@@ -1067,6 +1074,16 @@ export const MapView = memo(function MapView({
             onEndpointClick={onReservationClick}
             roadRoutes={transportRoutes}
           />
+
+          {/* Weather and disaster notices along the route. Empty unless the
+              traveller turned the layer on. */}
+          {hazards.length > 0 && <HazardLayers hazards={hazards} />}
+
+          {/* The handles that shape the drive. After the route so they sit on top
+              of it. */}
+          {roadtripVias ? (
+            <RoadtripViaMarkers viasByDay={roadtripVias} onMoveVia={onMoveVia} onRemoveVia={onRemoveVia} />
+          ) : null}
 
           {poiMarkers}
           {/* Charging stops / rest areas a plugin route places on the drawn day route.

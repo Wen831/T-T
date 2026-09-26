@@ -33,6 +33,7 @@ import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories';
 import { ReservationMapboxOverlay } from './reservationsMapbox';
 import { hasManualTrackColor, resolveTrackColor } from './trackColors';
 import { useDawarichTrailGL } from './useDawarichTrailGL';
+import { useHazardLayerGL } from './useHazardLayerGL';
 
 function categoryIconSvg(iconName: string | null | undefined, size: number): string {
   const IconComponent = (iconName && CATEGORY_ICON_MAP[iconName]) || CATEGORY_ICON_MAP['MapPin'];
@@ -92,6 +93,7 @@ interface RouteSegment {
 // mouseleave never fires" case (#1404).
 const NO_PLACES: Place[] = [];
 const NO_ROUTE_VIAS: RouteVia[] = [];
+const NO_HAZARDS: import('@trek/shared').RoadtripHazard[] = [];
 const NO_ROUTE_SEGMENTS: RouteSegment[] = [];
 const NO_DAY_ORDER: Record<number, number[] | null> = {};
 const NO_RESERVATIONS: Reservation[] = [];
@@ -108,6 +110,8 @@ interface Props {
   tripId?: number | string;
   // Charging stops / rest areas a plugin route places on the drawn day route.
   routeVias?: RouteVia[];
+  /** Weather and disaster notices; empty unless the layer is on. */
+  hazards?: import('@trek/shared').RoadtripHazard[];
   dawarichTrack?: import('@trek/shared').DawarichTrack | null;
   dawarichSelectedDate?: string | null;
   dawarichHiddenDates?: ReadonlySet<string> | null;
@@ -448,6 +452,7 @@ export function MapViewGL({
   dayPlaces = NO_PLACES,
   tripId,
   routeVias = NO_ROUTE_VIAS,
+  hazards = NO_HAZARDS,
   dawarichTrack = null,
   dawarichSelectedDate = null,
   dawarichHiddenDates = null,
@@ -537,6 +542,16 @@ export function MapViewGL({
     dawarichSelectedDate,
     'trip-route-casing',
     dawarichHiddenDates
+  );
+
+  // Weather and disaster notices, under the planned route: they are background
+  // about the road ahead, not something to click past to reach the plan. The GL
+  // twin of the Leaflet <HazardLayers> (#1735).
+  useHazardLayerGL(
+    mapRef.current,
+    mapReady,
+    hazards,
+    () => new gl.Popup({ className: 'map-tooltip trek-hazard-popup', maxWidth: '320px' })
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<Map<number, PlacePin>>(new Map());

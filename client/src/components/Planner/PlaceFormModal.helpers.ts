@@ -1,3 +1,5 @@
+import type { RoadtripStopType } from '@trek/shared';
+
 export interface PlaceFormData {
   name: string;
   description: string;
@@ -10,6 +12,13 @@ export interface PlaceFormData {
   notes: string;
   transport_mode: string;
   website: string;
+  /**
+   * What kind of stop this is on a drive, and how long the traveller means to
+   * stay. Both optional and absent from DEFAULT_FORM: an ordinary place has
+   * neither, and every place that predates the road trip addon is ordinary.
+   */
+  stop_type?: RoadtripStopType | null;
+  duration_minutes?: number | null;
   // Populated from a maps-search pick (not part of the initial blank form).
   phone?: string;
   google_place_id?: string;
