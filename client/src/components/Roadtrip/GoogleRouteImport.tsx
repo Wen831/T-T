@@ -21,6 +21,9 @@ export default function GoogleRouteImport({ tripId, dayId }: { tripId: number; d
   const [busy, setBusy] = useState(false)
   const [failure, setFailure] = useState('')
   const [saved, setSaved] = useState(false)
+  // Which link grammar this dialog is reading. Chosen when it opens, because the
+  // two previews are different endpoints and the hint differs with them.
+  const [source, setSource] = useState<'google' | 'amap'>('google')
   const controller = useRef<AbortController | null>(null)
   const requestId = useRef('')
   const menu = useContextMenu()
@@ -30,7 +33,12 @@ export default function GoogleRouteImport({ tripId, dayId }: { tripId: number; d
     const abort = new AbortController()
     controller.current = abort
     setBusy(true); setFailure(''); setPreview(null)
-    try { const parsed = await googleRouteRepo.preview(url, abort.signal); if (!abort.signal.aborted) setPreview(parsed) }
+    try {
+      const parsed = source === 'amap'
+        ? await googleRouteRepo.previewAmap(url, abort.signal)
+        : await googleRouteRepo.preview(url, abort.signal)
+      if (!abort.signal.aborted) setPreview(parsed)
+    }
     catch (error) { if (!abort.signal.aborted) setFailure(getApiErrorMessage(error, t('common.error'))) }
     finally { if (!abort.signal.aborted) setBusy(false) }
   }
@@ -46,8 +54,8 @@ export default function GoogleRouteImport({ tripId, dayId }: { tripId: number; d
     } catch (error) { setFailure(getApiErrorMessage(error, t('common.error'))) }
     finally { setBusy(false) }
   }
-  const show = () => {
-    setUrl(''); setPreview(null); setFailure(''); setSaved(false)
+  const show = (from: 'google' | 'amap' = 'google') => {
+    setUrl(''); setPreview(null); setFailure(''); setSaved(false); setSource(from)
     setTarget(String(dayId ?? days[0]?.id ?? ''))
     requestId.current = generateUUID(); setOpen(true)
   }
@@ -55,15 +63,21 @@ export default function GoogleRouteImport({ tripId, dayId }: { tripId: number; d
   return <>
     <Tooltip label={t('roadtrip.import.title')}>
       <button type="button" aria-label={t('roadtrip.import.title')} className="shrink-0 rounded-lg p-2 text-content-muted hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-accent"
-        onClick={e => menu.open(e, [{ label: t('roadtrip.import.title'), icon: Link2, onClick: show }], true)}>
+        onClick={e => menu.open(e, [
+          { label: t('roadtrip.import.google'), icon: Link2, onClick: () => show('google') },
+          { label: t('roadtrip.import.amap'), icon: Link2, onClick: () => show('amap') },
+        ], true)}>
         <MoreHorizontal size={18} />
       </button>
     </Tooltip>
     <ContextMenu menu={menu.menu} onClose={menu.close} />
-    <Modal isOpen={open} onClose={() => { if (!busy) setOpen(false) }} title={t('roadtrip.import.title')} size="lg">
+    <Modal isOpen={open} onClose={() => { if (!busy) setOpen(false) }} title={source === 'amap' ? t('roadtrip.import.amap') : t('roadtrip.import.google')} size="lg">
       <div className="space-y-4">
-        <p className="text-caption text-content-muted">{t('roadtrip.import.note')}</p>
-        {!preview ? <input type="url" value={url} disabled={busy} onChange={e => setUrl(e.target.value)} aria-label="Google Maps URL" placeholder="https://maps.app.goo.gl/…"
+        <p className="text-caption text-content-muted">
+          {source === 'amap' ? t('roadtrip.import.amapHint') : t('roadtrip.import.note')}
+        </p>
+        {!preview ? <input type="url" value={url} disabled={busy} onChange={e => setUrl(e.target.value)} aria-label={source === 'amap' ? 'AMap route URL' : 'Google Maps URL'}
+          placeholder={source === 'amap' ? 'https://ditu.amap.com/dir?…' : 'https://maps.app.goo.gl/…'}
           className="w-full rounded-xl border border-edge bg-surface-input p-3 text-body text-content" /> : <>
           <CustomSelect value={target} onChange={value => { setTarget(String(value)); requestId.current = generateUUID() }}
             options={days.map(day => ({ value: String(day.id), label: day.title || `${t('roadtrip.import.day')} ${day.day_number}` }))} disabled={busy || saved} />

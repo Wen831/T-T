@@ -21,6 +21,11 @@ export class GoogleRouteController {
   @HttpCode(200)
   preview(@Body() input: PreviewDto) { return this.routes.preview(input.url); }
 
+  /** The AMap twin. Same request shape; the import route is shared. */
+  @Post('roadtrip/amap-preview')
+  @HttpCode(200)
+  previewAmap(@Body() input: PreviewDto) { return this.routes.previewAmap(input.url); }
+
   @Post('trips/:tripId/roadtrip/google-maps-import')
   @HttpCode(200)
   @UseGuards(TripAccessGuard)
