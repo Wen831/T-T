@@ -8,7 +8,7 @@ import MRtCorridorBar from './MRtCorridorBar'
 import MRtAlternativesBar from './MRtAlternativesBar'
 import { RtAutoRow, RtDryRow, RtLegRow, RtSpillRow, RtStopRow, type RowChrome } from './MRoadtripRows'
 import MBadge from '../../../components/MBadge'
-import MDancingTrek from '../../../components/MDancingTrek'
+import MDancingTT from '../../../components/MDancingTT'
 import { formatDurationShort } from '../../../../components/Roadtrip/roadtripModel'
 import { getNavigationTargets } from '../../../../components/Planner/placeNavigation'
 import { useSettingsStore } from '../../../../store/settingsStore'
@@ -372,7 +372,7 @@ function EmptyStage({ planner, loading }: { planner: MTripTabPanelProps['planner
   const { t } = planner
   return (
     <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-      <MDancingTrek scene="guide" className="mb-2" />
+      <MDancingTT scene="guide" className="mb-2" />
       <p className="text-[0.9375rem] font-semibold text-m-ink">
         {loading ? t('roadtrip.summary.partial') : t('roadtrip.empty.title')}
       </p>
@@ -395,7 +395,7 @@ function PickDay({ planner }: { planner: MTripTabPanelProps['planner'] }) {
   const { t } = planner
   return (
     <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-      <MDancingTrek scene="guide" className="mb-2" />
+      <MDancingTT scene="guide" className="mb-2" />
       <p className="text-[0.9375rem] font-semibold text-m-ink">{t('mobileTrip.rtNoDay')}</p>
       <p className="mt-1.5 max-w-[27ch] font-geist text-[0.78125rem] leading-[1.5] text-m-muted">
         {t('mobileTrip.rtNoDayHint')}

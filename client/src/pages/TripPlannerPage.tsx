@@ -555,6 +555,7 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
     setServiceStopForm,
     moveRoadtripVia,
     removeRoadtripVia,
+    addRoadtripVia,
   } = useTripPlanner();
 
   // The place inspector's booking strip opens the editor the booking belongs to.
@@ -719,6 +720,10 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
               onMarkerClick={handleMarkerClick}
               onMapClick={handleMapClick}
               onMapContextMenu={handleMapContextMenu}
+              // Clicking the route drops a via there, which is the only way the
+              // traveller's own handles are created. Gated on the same permission
+              // as moving them: without it the line stays inert.
+              onRouteClick={roadtripActive && can('day_edit', trip) ? addRoadtripVia : undefined}
               // No center/zoom: the map frames itself on the trip's places at mount, and
               // falls back to the world view when the trip has none.
               tileUrl={mapTileUrl}

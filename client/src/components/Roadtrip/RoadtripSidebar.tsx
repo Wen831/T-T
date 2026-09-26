@@ -6,7 +6,7 @@ import {
   ParkingSquare, Shuffle, Fuel, Clock, Spline, Ban, Plus, RotateCcw, X, BatteryCharging, Moon, Milestone,
   type LucideIcon,
 } from 'lucide-react'
-import MDancingTrek from '../../mobile/components/MDancingTrek'
+import MDancingTT from '../../mobile/components/MDancingTT'
 import type { RefuelSearch } from './useRefuelSearch'
 import { REFUEL_EMPTY_KEY, REFUEL_WORDS, refuelBandState, type RefuelCandidate } from './refuelSuggestion'
 import type { DryPoint } from './roadtripModel'
@@ -496,7 +496,7 @@ function RefuelBand({ dry, refuel, dayId, onAsk, onAccept }: {
           <div className="flex items-center gap-2">
             {/* Out of fuel is a thing that happens to the DRIVE, so the mascot is the one
                 with the vehicle, and it is not enjoying it. */}
-            <MDancingTrek scene="transport" mood="sad" size={26} />
+            <MDancingTT scene="transport" mood="sad" size={26} />
             <div className="min-w-0 flex-1">
               <div
                 className="truncate font-geist font-semibold uppercase tracking-[0.16em] text-danger"
@@ -1206,7 +1206,7 @@ function SpillBlock({ spill, children }: {
     >
       <div className="px-2 pb-1 pt-2">
         <div className="flex items-center gap-2 text-info">
-          <MDancingTrek scene="idle" mood="sleepy" size={26} />
+          <MDancingTT scene="idle" mood="sleepy" size={26} />
           <span
             className="min-w-0 flex-1 truncate font-geist font-semibold uppercase tracking-[0.16em]"
             style={{ fontSize: FS.label }}

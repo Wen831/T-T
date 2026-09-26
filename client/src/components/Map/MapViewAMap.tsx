@@ -426,6 +426,35 @@ export function MapViewAMap(props: any) {
       addLine(gcjPath(seg), { strokeColor: '#fff', strokeWeight: 9, strokeOpacity: 0.95, zIndex: 20 });
     for (const seg of route)
       addLine(gcjPath(seg), { strokeColor: '#2563eb', strokeWeight: 5, strokeOpacity: 0.85, zIndex: 21 });
+    // The route as a click target, while it can be reshaped. A transparent band
+    // rather than the drawn line: the line is 5-9px and a pointer is not that
+    // accurate, so aiming at the road was most of why putting a via there felt like
+    // it did not work. AMap reports GCJ-02 and TT stores WGS-84, so the handler
+    // converts back before handing the point on.
+    if (props.onRouteClick) {
+      for (const seg of route) {
+        const path = gcjPath(seg);
+        if (path.length < 2) continue;
+        const band = new AMap.Polyline({
+          path,
+          strokeColor: 'transparent',
+          strokeWeight: 26,
+          strokeOpacity: 0,
+          zIndex: 22,
+        });
+        band.setMap(map);
+        band.on?.('click', (event: any) => {
+          suppressMapClick();
+          const ll = event?.lnglat;
+          const lng = Number(ll?.getLng?.());
+          const lat = Number(ll?.getLat?.());
+          if (!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+          const wgs = gcj02ToWgs84(lng, lat);
+          props.onRouteClick?.(wgs.lat, wgs.lng);
+        });
+        lines.push(band);
+      }
+    }
     for (const place of places) {
       if (!place.route_geometry) continue;
       try {

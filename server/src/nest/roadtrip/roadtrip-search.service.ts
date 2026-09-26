@@ -18,6 +18,10 @@ export class RoadtripSearchService {
     const { bbox, lang } = input;
     const categories = [...new Set(input.categories)];
     const providers = pluginsEnabled() ? this.hooks.providersOf('searchProvider') : [];
+    // No provider is passed: `pois` then follows the instance's own setting and
+    // reaches AMap when that is what the user searches with. Overpass is
+    // unreachable from mainland China, so an AMap instance would otherwise find
+    // nothing along the route while hand-searching worked.
     const core = this.maps.pois(categories.join(','), bbox, lang);
     const tasks = providers.flatMap(pluginId => categories.map(async category => {
       const raw = await this.hooks.searchPlaces(pluginId, {
@@ -39,7 +43,9 @@ export class RoadtripSearchService {
     let clamped = false;
     settled.forEach((entry, index) => {
       if (entry.status === 'rejected') {
-        failedSources.add(index === 0 ? 'TREK' : `plugin:${providers[Math.floor((index - 1) / categories.length)]}`);
+        // The core source is this app itself, not a plugin, so it is named after
+        // the product rather than with a `plugin:` prefix.
+        failedSources.add(index === 0 ? 'TT' : `plugin:${providers[Math.floor((index - 1) / categories.length)]}`);
         return;
       }
       sources.add(entry.value.source);

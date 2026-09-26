@@ -624,6 +624,11 @@ export const MapView = memo(function MapView({
   roadtripVias,
   onMoveVia,
   onRemoveVia,
+  /**
+   * Clicking the route itself drops a new via at that point. Absent when the
+   * traveller may not reshape the drive, in which case the line stays inert.
+   */
+  onRouteClick,
   routeVias = [],
   dawarichTrack = null,
   dawarichSelectedDate = null,
@@ -1063,7 +1068,9 @@ export const MapView = memo(function MapView({
             hiddenDates={dawarichHiddenDates}
           />
 
-          {/* Apple-Maps style: darker-blue casing under a bright-blue core, rounded. */}
+          {/* Apple-Maps style: darker-blue casing under a bright-blue core, rounded.
+              The casing carries the click when the route can be reshaped: it is the
+              wider of the two, so it is the one a pointer actually lands on. */}
           {route &&
             route.length > 0 &&
             route.flatMap((seg, i) =>
@@ -1073,11 +1080,25 @@ export const MapView = memo(function MapView({
                       key={`${i}-casing`}
                       positions={seg}
                       pathOptions={{ color: '#0a5cc2', weight: 8, opacity: 1, lineCap: 'round', lineJoin: 'round' }}
+                      interactive={!!onRouteClick}
+                      eventHandlers={
+                        onRouteClick
+                          ? {
+                              click: (e: { latlng: { lat: number; lng: number }; originalEvent: MouseEvent }) => {
+                                // Stops the map's own click, which would otherwise open the
+                                // add-place menu underneath the new via.
+                                e.originalEvent.stopPropagation();
+                                onRouteClick(e.latlng.lat, e.latlng.lng);
+                              },
+                            }
+                          : undefined
+                      }
                     />,
                     <Polyline
                       key={`${i}-core`}
                       positions={seg}
                       pathOptions={{ color: '#0a84ff', weight: 5, opacity: 1, lineCap: 'round', lineJoin: 'round' }}
+                      interactive={false}
                     />,
                   ]
                 : []

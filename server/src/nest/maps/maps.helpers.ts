@@ -172,7 +172,70 @@ export interface OverpassPoi {
   phone: string | null;
   opening_hours: string | null;
   cuisine: string | null;
+  /** Brand name and its Wikidata id, when OSM carries them — the logo is looked up from the id. */
+  brand?: string | null;
+  brand_wikidata?: string | null;
+  /** What a charging station offers, when it is one and OSM says. */
+  charging?: ChargingInfo | null;
   source: 'openstreetmap' | 'amap';
+}
+
+/**
+ * The part of a charging station that decides whether it is any use to a particular car.
+ *
+ * Read out of tags the query has always returned and the projection has always thrown
+ * away: `out center tags` hands back the whole tag set, and only six keys of it were ever
+ * kept. So this costs no extra request — it is a wider read of an answer already in hand.
+ */
+export interface ChargingInfo {
+  /** One entry per socket family the station lists, with how many and how fast. */
+  sockets: { type: string; count: number | null; kw: number | null }[];
+  /** How many vehicles can charge at once, across all sockets. */
+  capacity: number | null;
+  /** true = costs money, false = free, null = OSM does not say. */
+  fee: boolean | null;
+}
+
+const SOCKET_FAMILIES = [
+  'type2', 'type2_combo', 'type2_cable', 'ccs', 'chademo', 'type1', 'type1_combo',
+  'schuko', 'tesla_supercharger', 'tesla_destination',
+] as const;
+
+/** Leading number out of a free-text value like "22 kW" or "50kw". */
+function leadingNumber(raw: string | undefined): number | null {
+  if (!raw) return null;
+  const n = Number.parseFloat(raw.replace(',', '.'));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/**
+ * OSM writes sockets as one key per family: `socket:type2=4` is the count, and
+ * `socket:type2:output=22 kW` the power. Both are free text in practice, so the count is
+ * only taken when it parses as a whole number and the power only when a number can be
+ * read out of it.
+ */
+export function readChargingInfo(tags: Record<string, string>): ChargingInfo | null {
+  const sockets: ChargingInfo['sockets'] = [];
+  for (const family of SOCKET_FAMILIES) {
+    const raw = tags[`socket:${family}`];
+    if (raw === undefined) continue;
+    const count = Number.parseInt(raw, 10);
+    sockets.push({
+      type: family,
+      count: Number.isInteger(count) && count > 0 ? count : null,
+      kw: leadingNumber(tags[`socket:${family}:output`]),
+    });
+  }
+  const capacity = Number.parseInt(tags.capacity ?? '', 10);
+  const fee = tags.fee === 'yes' ? true : tags.fee === 'no' ? false : null;
+  const info: ChargingInfo = {
+    sockets,
+    capacity: Number.isInteger(capacity) && capacity > 0 ? capacity : null,
+    fee,
+  };
+  // Nothing said is null rather than an empty shell, so the client can tell "no data"
+  // from "no sockets" without inspecting three fields.
+  return sockets.length || info.capacity !== null || fee !== null ? info : null;
 }
 
 // Each pill category → the OSM tag selectors it searches. Keys here are the
@@ -196,9 +259,36 @@ export const CATEGORY_OSM_FILTERS: Record<string, string[]> = {
   activity: ['tourism=theme_park', 'tourism=zoo', 'tourism=aquarium', 'leisure=water_park'],
   shopping: ['shop=mall', 'shop=department_store', 'amenity=marketplace'],
   supermarket: ['shop=supermarket', 'shop=convenience'],
+  // What a drive needs rather than what a city visit does (#1797). Separate from
+  // `activity`/`nature` on purpose: nobody browsing museums wants petrol stations in
+  // the same result set, and the road trip panel asks for these by name.
+  fuel: ['amenity=fuel'],
+  charging: ['amenity=charging_station'],
+  rest_area: ['highway=rest_area', 'highway=services'],
+  campsite: ['tourism=camp_site', 'tourism=caravan_site'],
 };
 
 export const POI_CATEGORY_KEYS = Object.keys(CATEGORY_OSM_FILTERS);
+
+/** How many categories one POI query may carry, so a caller can't fan out the mirrors. */
+export const MAX_POI_CATEGORIES = 8;
+
+/**
+ * Reads the `category` parameter, which is either one key or a comma-separated list.
+ *
+ * Asking for several kinds at once is one Overpass round-trip instead of one per kind —
+ * the road trip corridor searches four categories over a dozen boxes, and as separate
+ * requests that is four times the load on a shared mirror for the same answer.
+ */
+export function parsePoiCategories(raw: string): string[] {
+  const seen = new Set<string>();
+  for (const part of raw.split(',')) {
+    const key = part.trim();
+    if (key) seen.add(key);
+    if (seen.size >= MAX_POI_CATEGORIES) break;
+  }
+  return [...seen];
+}
 
 // Public Overpass mirrors, queried in PARALLEL (first valid response wins).
 // Reachability and load vary a lot by network/region — the canonical instance is

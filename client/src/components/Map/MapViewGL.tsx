@@ -110,6 +110,11 @@ interface Props {
   tripId?: number | string;
   // Charging stops / rest areas a plugin route places on the drawn day route.
   routeVias?: RouteVia[];
+  /**
+   * Clicking the route itself drops a new via at that point. Absent when the
+   * traveller may not reshape the drive, in which case the band is inert.
+   */
+  onRouteClick?: (lat: number, lng: number) => void;
   /** Weather and disaster notices; empty unless the layer is on. */
   hazards?: import('@trek/shared').RoadtripHazard[];
   dawarichTrack?: import('@trek/shared').DawarichTrack | null;
@@ -452,6 +457,7 @@ export function MapViewGL({
   dayPlaces = NO_PLACES,
   tripId,
   routeVias = NO_ROUTE_VIAS,
+  onRouteClick,
   hazards = NO_HAZARDS,
   dawarichTrack = null,
   dawarichSelectedDate = null,
@@ -598,6 +604,9 @@ export function MapViewGL({
   onClickRefs.current.marker = onMarkerClick;
   onClickRefs.current.map = onMapClick;
   onClickRefs.current.context = onMapContextMenu;
+  // Read inside the map's own click handler, which is registered once at setup.
+  const onRouteClickRef = useRef(onRouteClick);
+  onRouteClickRef.current = onRouteClick;
   const hoverDisabledRef = useRef(hoverDisabled);
   hoverDisabledRef.current = hoverDisabled;
   // Same gate as the Leaflet renderer: HTML5 drag is a pointer feature, and the
@@ -704,6 +713,16 @@ export function MapViewGL({
           type: 'line',
           source: 'trip-route',
           paint: { 'line-color': '#0a84ff', 'line-width': 5 },
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+        });
+        // An invisible band over the route, purely to be clicked. The drawn line is
+        // 5-8px and a pointer is not that accurate, so aiming at the road was most of
+        // why putting a via there felt like it did not work.
+        map.addLayer({
+          id: 'trip-route-hit',
+          type: 'line',
+          source: 'trip-route',
+          paint: { 'line-color': '#000000', 'line-opacity': 0, 'line-width': 26 },
           layout: { 'line-cap': 'round', 'line-join': 'round' },
         });
       }
@@ -957,6 +976,16 @@ export function MapViewGL({
         map.getLayer(GPX_HIT_LAYER_ID) &&
         typeof map.queryRenderedFeatures === 'function' &&
         map.queryRenderedFeatures(e.point, { layers: [GPX_HIT_LAYER_ID] }).length > 0
+      )
+        return;
+      // And for the drive itself while it can be reshaped: that click just put a via
+      // there, and it must not also drop a place on top of it (#1797).
+      if (
+        onRouteClickRef.current &&
+        typeof map.getLayer === 'function' &&
+        map.getLayer('trip-route-hit') &&
+        typeof map.queryRenderedFeatures === 'function' &&
+        map.queryRenderedFeatures(e.point, { layers: ['trip-route-hit'] }).length > 0
       )
         return;
       onClickRefs.current.map?.({ latlng: { lat: e.lngLat.lat, lng: e.lngLat.lng } });
@@ -1457,6 +1486,47 @@ export function MapViewGL({
       routeViaMarkersRef.current.push(m);
     }
   }, [routeVias, mapReady, glProvider]);
+
+  /**
+   * Reshaping the drive: a click on the route band drops a via there.
+   *
+   * `map.on(type, layerId, …)` is the one way to hit it, and it fires before the map's
+   * own click, so the handler can keep the add-place menu from opening underneath the via.
+   * The band is a separate invisible layer rather than the drawn line, because the line
+   * is 5-8px and a pointer is not that accurate.
+   */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady || !onRouteClick) return;
+    const onClick = (e: {
+      lngLat: { lat: number; lng: number };
+      originalEvent?: { target?: EventTarget | null };
+      preventDefault?: () => void;
+    }) => {
+      e.preventDefault?.();
+      // A layer handler only asks what is drawn under the point, not what element the
+      // click came through. A via handle sits on the band by definition, and a click on
+      // it must not read as a click on the road under it.
+      const target = e.originalEvent?.target;
+      if (target instanceof Element && target.closest('[data-via-handle], .mapboxgl-marker, .maplibregl-marker')) return;
+      onRouteClick(e.lngLat.lat, e.lngLat.lng);
+    };
+    const enter = () => {
+      map.getCanvas().style.cursor = 'copy';
+    };
+    const leave = () => {
+      map.getCanvas().style.cursor = '';
+    };
+    if (!map.getLayer?.('trip-route-hit')) return;
+    map.on('click', 'trip-route-hit', onClick as never);
+    map.on('mouseenter', 'trip-route-hit', enter);
+    map.on('mouseleave', 'trip-route-hit', leave);
+    return () => {
+      map.off('click', 'trip-route-hit', onClick as never);
+      map.off('mouseenter', 'trip-route-hit', enter);
+      map.off('mouseleave', 'trip-route-hit', leave);
+    };
+  }, [mapReady, onRouteClick, glProvider]);
 
   // Reconcile plugin markers (imperative, same lifecycle as the POI markers).
   useEffect(() => {

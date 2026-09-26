@@ -20,6 +20,8 @@ import {
   isGooglePlaceId,
   OSM_PLACE_ID,
   CATEGORY_OSM_FILTERS,
+  parsePoiCategories,
+  readChargingInfo,
   resolveOverpassEndpoints,
   resolveOverpassTimeoutMs,
   stripWikiMarkup,
@@ -542,6 +544,10 @@ const OVERPASS_TIMEOUT_MS = resolveOverpassTimeoutMs();
 // keeps the query cheap so the explore pill returns fast at ANY zoom level.
 const MAX_BBOX_SPAN_DEG = 0.5;
 
+// Ceiling on one POI answer, so a mixed search over several categories cannot return
+// an unbounded list. Matches the largest cap the client asks for with headroom.
+const POI_RESULT_CAP = 240;
+
 // Short-lived cache so panning back over / re-toggling the same area doesn't
 // re-hit Overpass. Keyed by category + rounded (post-clamp) bbox.
 const POI_CACHE = new Map<string, { at: number; value: PoiSearchResult }>();
@@ -711,13 +717,20 @@ export class MapsService {
 
   // POI search by category within a viewport bbox. AMap uses the instance's
   // Web-Service key; native/omitted keeps the existing Overpass path.
+  //
+  // An omitted provider follows the instance's own AMap switch, the same way
+  // `searchPlaces` and `details` already do. Without that, a caller with no
+  // provider to pass (the road-trip corridor) always landed on Overpass, which
+  // is unreachable from mainland China — so an AMap instance searched by hand
+  // but found nothing along a route.
   pois(
     category: string,
     bbox: { south: number; west: number; north: number; east: number },
     lang?: string,
     provider?: 'amap' | 'native',
   ) {
-    if (provider === 'amap' && getAmapKey(this.database)) {
+    const wantAmap = provider === 'amap' || (provider === undefined && isAmapSearchEnabled(this.database));
+    if (wantAmap && getAmapKey(this.database)) {
       return this.searchAmapPois(category, bbox, lang);
     }
     return this.searchOverpassPois(category, bbox, lang);
@@ -728,6 +741,8 @@ export class MapsService {
     bbox: { south: number; west: number; north: number; east: number },
     _lang?: string,
   ): Promise<PoiSearchResult> {
+    // The road categories are here because the corridor asks for them by name;
+    // without an entry every corridor search threw "Unknown POI category".
     const keywords: Record<string, string> = {
       restaurant: '餐厅',
       cafe: '咖啡馆',
@@ -737,9 +752,23 @@ export class MapsService {
       museum: '博物馆',
       nature: '公园',
       activity: '游乐场',
+      fuel: '加油站',
+      charging: '充电站',
+      rest_area: '服务区',
+      campsite: '露营地',
     };
-    const keyword = keywords[category];
-    if (!keyword) throw Object.assign(new Error('Unknown POI category'), { status: 400 });
+    // The corridor asks for several categories in one request. AMap's text search
+    // takes one keyword, so each category is its own call and the answers are
+    // merged — unlike Overpass, where one query can carry every selector. A
+    // category with no keyword is refused rather than silently dropped: the
+    // caller asked for it, and an empty result would read as "nothing there".
+    const wanted = parsePoiCategories(category);
+    if (!wanted.length) throw Object.assign(new Error('Unknown POI category'), { status: 400 });
+    const resolved = wanted.map((key) => {
+      const keyword = keywords[key];
+      if (!keyword) throw Object.assign(new Error('Unknown POI category'), { status: 400 });
+      return { key, keyword };
+    });
     const lat = (bbox.south + bbox.north) / 2;
     const lng = (bbox.west + bbox.east) / 2;
     // v5 place/around caps its radius at 50 km, so the viewport diagonal is
@@ -748,26 +777,42 @@ export class MapsService {
       Math.max(Math.hypot(bbox.north - bbox.south, bbox.east - bbox.west) * 55_500, 1000),
       50_000,
     );
-    const places = await amapSearchPlaces(this.database, keyword, { locationBias: { lat, lng, radius }, limit: 25 });
+    const answers = await Promise.all(
+      resolved.map(({ key, keyword }) =>
+        amapSearchPlaces(this.database, keyword, { locationBias: { lat, lng, radius }, limit: 25 }).then((places) =>
+          places.map((p) => ({ key, place: p }))
+        )
+      )
+    );
+    // Deduplicated by AMap id: one place can answer two keywords (a motorway
+    // services is both a rest area and a fuel stop), and the same id twice would
+    // draw two markers on one building.
+    const seen = new Set<string>();
+    const pois: OverpassPoi[] = [];
+    for (const { key, place } of answers.flat()) {
+      if (place.lat == null || place.lng == null) continue;
+      const id = place.amap_id || `${place.lat}:${place.lng}`;
+      if (seen.has(id)) continue;
+      seen.add(id);
+      pois.push({
+        osm_id: `amap:${id}`,
+        name: place.name,
+        lat: place.lat as number,
+        lng: place.lng as number,
+        category: key,
+        poi_type: place.amap_type || key,
+        address: place.address || null,
+        website: place.website,
+        phone: place.phone,
+        opening_hours: place.open_time,
+        cuisine: null,
+        source: 'amap' as const,
+      });
+    }
     return {
-      pois: places
-        .filter((p) => p.lat != null && p.lng != null)
-        .map((p) => ({
-          osm_id: `amap:${p.amap_id || `${p.lat}:${p.lng}`}`,
-          name: p.name,
-          lat: p.lat as number,
-          lng: p.lng as number,
-          category,
-          poi_type: p.amap_type || category,
-          address: p.address || null,
-          website: p.website,
-          phone: p.phone,
-          opening_hours: p.open_time,
-          cuisine: null,
-          source: 'amap' as const,
-        })),
+      pois,
       source: 'amap',
-      truncated: places.length >= 25,
+      truncated: pois.length >= 25 * resolved.length,
       clamped: false,
     };
   }
@@ -1117,8 +1162,20 @@ export class MapsService {
     lang?: string,
     limit = 60,
   ): Promise<PoiSearchResult> {
-    const filters = CATEGORY_OSM_FILTERS[category];
-    if (!filters) throw Object.assign(new Error('Unknown POI category'), { status: 400 });
+    // One or several categories in one query. Each OSM selector belongs to exactly one
+    // category, so a hit can still be labelled with the category it answered.
+    const categories = parsePoiCategories(category);
+    if (!categories.length) throw Object.assign(new Error('Unknown POI category'), { status: 400 });
+    const categoryOfFilter = new Map<string, string>();
+    for (const key of categories) {
+      const own = CATEGORY_OSM_FILTERS[key];
+      if (!own) throw Object.assign(new Error('Unknown POI category'), { status: 400 });
+      for (const f of own) categoryOfFilter.set(f, key);
+    }
+    const filters = [...categoryOfFilter.keys()];
+    // Each category gets its own share of the cap, or a mixed search would spend the
+    // whole budget on whichever kind happens to be densest.
+    const cap = Math.min(limit * categories.length, POI_RESULT_CAP);
 
     // Clamp an oversized viewport to a centred window so the query stays cheap and
     // returns fast at any zoom, instead of timing out / 502-ing on a huge area.
@@ -1145,7 +1202,7 @@ export class MapsService {
     const osmLang = toApiLang(lang).split('-')[0].toLowerCase();
 
     // Serve repeat pans/toggles of the same area straight from the cache.
-    const cacheKey = `${category}|${osmLang}|${south.toFixed(2)},${west.toFixed(2)},${north.toFixed(2)},${east.toFixed(2)}|${limit}`;
+    const cacheKey = `${[...categories].sort((a, b) => a.localeCompare(b)).join('+')}|${osmLang}|${south.toFixed(2)},${west.toFixed(2)},${north.toFixed(2)},${east.toFixed(2)}|${cap}`;
     const cached = POI_CACHE.get(cacheKey);
     if (cached && Date.now() - cached.at < POI_CACHE_TTL_MS) return cached.value;
     if (cached) POI_CACHE.delete(cacheKey); // expired — drop it before refetching
@@ -1160,14 +1217,18 @@ export class MapsService {
       .join('\n');
     // `out center tags <n>` returns ways/relations with a computed center and caps
     // the result count in one round-trip.
-    const query = `[out:json][timeout:20];\n(\n${selectors}\n);\nout center tags ${limit + 25};`;
+    const query = `[out:json][timeout:20];\n(\n${selectors}\n);\nout center tags ${cap + 25};`;
 
     const elements = await overpassFetch(query);
 
     const pois: OverpassPoi[] = [];
     for (const el of elements) {
       const tags = el.tags || {};
-      const name = tags[`name:${osmLang}`] || tags['int_name'] || tags.name || tags.brand || null;
+      // `operator` comes last but matters for the road categories: petrol stations,
+      // charging points and service areas are routinely mapped with an operator and no
+      // name, and dropping those would empty the road trip corridor over long stretches.
+      const name =
+        tags[`name:${osmLang}`] || tags['int_name'] || tags.name || tags.brand || tags.operator || null;
       if (!name) continue; // unnamed POIs aren't useful to add to a plan
       // A shut-down place is not somewhere to plan a visit (#1341). OSM usually
       // re-tags one with a `disused:`/`abandoned:` prefix, and those never match
@@ -1193,18 +1254,26 @@ export class MapsService {
         name,
         lat,
         lng,
-        category,
+        category: categoryOfFilter.get(matched) ?? categories[0],
         poi_type: matched,
         address: addr,
         website: tags.website || tags['contact:website'] || null,
         phone: tags.phone || tags['contact:phone'] || null,
         opening_hours: tags.opening_hours || null,
         cuisine: tags.cuisine || null,
+        brand: tags.brand || tags.operator || null,
+        // Only the plain Q-id form is passed on; anything else would be a lookup we
+        // would have to guess at.
+        brand_wikidata: /^Q[0-9]+$/.test(tags['brand:wikidata'] || '') ? tags['brand:wikidata'] : null,
+        // Only where it means something. Every POI carries `capacity` and `fee` for its
+        // own reasons — a restaurant's capacity is seats — so reading them as charging
+        // data anywhere else would be wrong on most of the map.
+        charging: categoryOfFilter.get(matched) === 'charging' ? readChargingInfo(tags) : null,
         source: 'openstreetmap',
       });
     }
-    const truncated = pois.length > limit;
-    const value: PoiSearchResult = { pois: pois.slice(0, limit), source: 'openstreetmap', truncated, clamped };
+    const truncated = pois.length > cap;
+    const value: PoiSearchResult = { pois: pois.slice(0, cap), source: 'openstreetmap', truncated, clamped };
     // FIFO eviction: a Map preserves insertion order, so the first key is the oldest.
     if (POI_CACHE.size >= POI_CACHE_MAX) POI_CACHE.delete(POI_CACHE.keys().next().value as string);
     POI_CACHE.set(cacheKey, { at: Date.now(), value });

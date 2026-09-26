@@ -1,6 +1,6 @@
 import { AlertTriangle, Bike, CarFront, Footprints, Fuel, Hourglass, Moon, Pin, Plus, RotateCcw, Shuffle, Sunrise, X, Zap } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
-import MDancingTrek from '../../../components/MDancingTrek'
+import MDancingTT from '../../../components/MDancingTT'
 import MIconBtn from '../../../components/MIconBtn'
 import { formatDurationShort, serviceColor } from '../../../../components/Roadtrip/roadtripModel'
 import { STOP_KIND_BY_KEY } from '../../../../components/Roadtrip/stopKinds'
@@ -346,7 +346,7 @@ export function RtDryRow({ intoLegKm, chrome, electric, onSearch, offline, refue
         >
           {/* Out of fuel is a thing that happens to the drive, so it is the mascot with
               the vehicle, and it is not enjoying it. */}
-          <MDancingTrek scene="transport" mood="sad" size={34} />
+          <MDancingTT scene="transport" mood="sad" size={34} />
         </span>
         <span className="min-w-0 flex-1">
           <span className="line-clamp-2 font-geist text-[0.625rem] font-bold uppercase leading-[1.35] tracking-[.09em] text-[color:var(--m-st-danger)]">

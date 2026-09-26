@@ -14,6 +14,8 @@ import { db } from '../../../src/db/database';
 import { DatabaseService } from '../../../src/nest/database/database.service';
 import { gcj02ToWgs84 } from '../../../src/nest/geo/gcj02';
 import {
+  CATEGORY_OSM_FILTERS,
+  readChargingInfo,
   parseOpeningHours,
   normalizeOpeningPeriods,
   normalizeSpecialDays,
@@ -3551,5 +3553,185 @@ describe('resolveGoogleMapsUrl — AMap short link hops', () => {
     const result = await svc.resolveGoogleMapsUrl(withPercent);
     expect(result.name).toBe('100% Coffee');
     expect(result.address).toBe('路1号');
+  });
+});
+
+/**
+ * The road-trip categories and multi-category search.
+ *
+ * Both were missing from the port: the four road categories had no OSM filter
+ * entry, so every corridor search threw "Unknown POI category" and reported the
+ * source as failed, and `category` was read as a single key while the corridor
+ * sends a comma-separated list. The visible symptom was an empty "along the
+ * route" panel with an error beside it.
+ */
+describe('road-trip POI categories (#1797)', () => {
+  const stubOverpass = (elements: unknown[]) =>
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({ elements }) }));
+  const bbox = (n: number) => ({ south: 40 + n / 100, west: 124, north: 41 + n / 100, east: 125 });
+
+  it('MAPS-ROAD-001: every category the corridor asks for is searchable', async () => {
+    // The corridor's own enum. A key missing here is a category whose search
+    // always throws, which reads to the user as "nothing on this stretch".
+    for (const key of ['fuel', 'charging', 'rest_area', 'campsite', 'restaurant', 'sights', 'hotel']) {
+      expect(CATEGORY_OSM_FILTERS[key], `${key} has no OSM filter`).toBeDefined();
+    }
+  });
+
+  it('MAPS-ROAD-002: the road categories carry the tags that find them', async () => {
+    expect(CATEGORY_OSM_FILTERS.fuel).toContain('amenity=fuel');
+    expect(CATEGORY_OSM_FILTERS.charging).toContain('amenity=charging_station');
+    expect(CATEGORY_OSM_FILTERS.rest_area).toContain('highway=rest_area');
+    expect(CATEGORY_OSM_FILTERS.campsite).toContain('tourism=camp_site');
+  });
+
+  it('MAPS-ROAD-003: a comma-separated list searches every category in one query', async () => {
+    const bodies: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((_url: string, init?: { body?: unknown }) => {
+        // Overpass takes the query as the POST body, not in the URL.
+        if (typeof init?.body === 'string') bodies.push(decodeURIComponent(init.body));
+        return Promise.resolve({ ok: true, json: async () => ({ elements: [] }) });
+      })
+    );
+
+    await svc.searchOverpassPois('fuel,charging', bbox(1), 'en');
+
+    // Both selectors reach Overpass in the one round-trip.
+    const query = bodies.join(' ');
+    expect(query).toContain('amenity');
+    expect(query).toContain('fuel');
+    expect(query).toContain('charging_station');
+  });
+
+  it('MAPS-ROAD-004: a hit is labelled with the category that actually matched', async () => {
+    stubOverpass([
+      { type: 'node', id: 1, lat: 40.5, lon: 124.5, tags: { name: 'Diesel Stop', amenity: 'fuel' } },
+      { type: 'node', id: 2, lat: 40.6, lon: 124.6, tags: { name: 'Fast Charge', amenity: 'charging_station' } },
+    ]);
+
+    const { pois } = await svc.searchOverpassPois('fuel,charging', bbox(2), 'en');
+
+    const byName = new Map(pois.map((p) => [p.name, p.category]));
+    expect(byName.get('Diesel Stop')).toBe('fuel');
+    expect(byName.get('Fast Charge')).toBe('charging');
+  });
+
+  it('MAPS-ROAD-005: an unknown category in the list is refused, not skipped', async () => {
+    stubOverpass([]);
+    // Silently dropping it would answer "nothing there" for a category nobody
+    // actually searched.
+    await expect(svc.searchOverpassPois('fuel,not_a_category', bbox(3), 'en')).rejects.toMatchObject({ status: 400 });
+  });
+
+  it('MAPS-ROAD-006: a petrol station named only by its operator is kept', async () => {
+    // Long stretches of road are mapped with an operator and no name; dropping
+    // those emptied the corridor exactly where it matters most.
+    stubOverpass([{ type: 'node', id: 3, lat: 40.7, lon: 124.7, tags: { operator: 'Shell', amenity: 'fuel' } }]);
+
+    const { pois } = await svc.searchOverpassPois('fuel', bbox(4), 'en');
+    expect(pois[0]?.name).toBe('Shell');
+  });
+
+  it('MAPS-ROAD-007: charging data is read only for a charging station', async () => {
+    stubOverpass([
+      {
+        type: 'node',
+        id: 4,
+        lat: 40.8,
+        lon: 124.8,
+        tags: { name: 'Charger', amenity: 'charging_station', 'socket:type2': '4', 'socket:type2:output': '22 kW', capacity: '4' },
+      },
+      // A restaurant's `capacity` is seats, not sockets — reading it as charging
+      // data would be wrong on most of the map.
+      { type: 'node', id: 5, lat: 40.9, lon: 124.9, tags: { name: 'Bistro', amenity: 'restaurant', capacity: '60' } },
+    ]);
+
+    const { pois } = await svc.searchOverpassPois('charging,restaurant', bbox(5), 'en');
+    const byName = new Map(pois.map((p) => [p.name, p]));
+    expect(byName.get('Charger')?.charging).toMatchObject({ capacity: 4 });
+    expect(byName.get('Charger')?.charging?.sockets).toEqual([{ type: 'type2', count: 4, kw: 22 }]);
+    expect(byName.get('Bistro')?.charging).toBeNull();
+  });
+});
+
+describe('readChargingInfo', () => {
+  it('MAPS-ROAD-008: nothing said is null rather than an empty shell', () => {
+    expect(readChargingInfo({})).toBeNull();
+    expect(readChargingInfo({ amenity: 'charging_station' })).toBeNull();
+  });
+
+  it('MAPS-ROAD-009: a free-text count or power that cannot be read is null, not NaN', () => {
+    const info = readChargingInfo({ 'socket:ccs': 'many', 'socket:ccs:output': 'fast' });
+    expect(info?.sockets).toEqual([{ type: 'ccs', count: null, kw: null }]);
+  });
+
+  it('MAPS-ROAD-010: fee is tri-state so "not said" stays distinct from "free"', () => {
+    // Paired with a socket, because fee alone is an empty shell and answers null.
+    const withSocket = (fee: string) => readChargingInfo({ 'socket:type2': '2', fee })?.fee;
+    expect(withSocket('yes')).toBe(true);
+    expect(withSocket('no')).toBe(false);
+    // A value OSM does not define is "not said", not "free".
+    expect(withSocket('sometimes')).toBeNull();
+  });
+});
+
+/**
+ * AMap POI search for the road categories.
+ *
+ * AMap's text search takes one keyword, so a multi-category corridor request is
+ * one call per category with the answers merged. Without this the corridor — which
+ * always sends a list — failed as a whole even though every single category worked.
+ */
+describe('searchAmapPois multi-category', () => {
+  const bbox = { south: 40, west: 124, north: 40.5, east: 124.5 };
+  const amapReply = (pois: unknown[]) => ({
+    ok: true,
+    json: async () => ({ status: '1', pois }),
+  });
+
+  it('MAPS-AMAP-020: each category is its own AMap call, and both answers are kept', async () => {
+    const keywords: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((url: string) => {
+        const u = decodeURIComponent(String(url));
+        if (u.includes('keywords=')) keywords.push(/keywords=([^&]*)/.exec(u)?.[1] ?? '');
+        if (u.includes('加油站'))
+          return Promise.resolve(amapReply([{ id: 'F1', name: 'Petrol', location: '124.4,40.4' }]));
+        if (u.includes('充电站'))
+          return Promise.resolve(amapReply([{ id: 'C1', name: 'Charger', location: '124.45,40.45' }]));
+        return Promise.resolve(amapReply([]));
+      })
+    );
+    mockInstanceGet.mockReturnValue({ value: 'amap-key' });
+
+    const { pois } = await svc.pois('fuel,charging', bbox, 'zh', 'amap');
+
+    expect(keywords.sort()).toEqual(['充电站', '加油站']);
+    const byName = new Map(pois.map((p) => [p.name, p.category]));
+    expect(byName.get('Petrol')).toBe('fuel');
+    expect(byName.get('Charger')).toBe('charging');
+  });
+
+  it('MAPS-AMAP-021: a place answering two keywords is returned once', async () => {
+    // A motorway services is both a rest area and a fuel stop; the same id twice
+    // would draw two markers on one building.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(amapReply([{ id: 'SAME', name: 'Services', location: '124.4,40.4' }]))
+    );
+    mockInstanceGet.mockReturnValue({ value: 'amap-key' });
+
+    const { pois } = await svc.pois('fuel,rest_area', bbox, 'zh', 'amap');
+    expect(pois).toHaveLength(1);
+  });
+
+  it('MAPS-AMAP-022: a category AMap has no keyword for is refused', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(amapReply([])));
+    mockInstanceGet.mockReturnValue({ value: 'amap-key' });
+
+    await expect(svc.pois('fuel,not_a_category', bbox, 'zh', 'amap')).rejects.toMatchObject({ status: 400 });
   });
 });
