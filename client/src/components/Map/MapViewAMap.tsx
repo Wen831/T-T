@@ -1,3 +1,4 @@
+import type { RoadtripVia } from '@trek/shared';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { pluginsApi, type PluginMapLayer, type PluginMapMarker } from '../../api/client';
 import { useGeolocation } from '../../hooks/useGeolocation';
@@ -10,6 +11,7 @@ import { clusterAMapPoints, type AMapPlaceCluster } from './amapClusters';
 import { applyTrackAmap, type TrailMap, type TrailOverlayApi } from './amapDawarichTrail';
 import { applyHazardsAmap, type AmapHazardApi, type AmapHazardMap } from './amapHazards';
 import { ReservationAMapOverlay, attachLocationAMapOverlay } from './amapOverlays';
+import { applyViasAmap, type AmapViaApi, type AmapViaMap } from './amapVias';
 import { gcj02ToWgs84, loadAmap, wgs84ToGcj02, type AMapMap, type AMapModule, type AMapOverlay } from './engines/amap';
 import { hazardPopup } from './hazardPopup';
 import { NIGHT_PAUSE_MIN_ZOOM, nightPauseMarker } from './nightPauseMarker';
@@ -44,6 +46,7 @@ export function MapViewAMap(props: any) {
   const overlaysRef = useRef<AMapOverlay[]>([]);
   const trailRef = useRef<{ clear: () => void } | null>(null);
   const hazardRef = useRef<{ clear: () => void } | null>(null);
+  const viaRef = useRef<{ clear: () => void } | null>(null);
   const trailPropsRef = useRef({
     track: props.dawarichTrack ?? null,
     selectedDate: props.dawarichSelectedDate ?? null,
@@ -204,6 +207,34 @@ export function MapViewAMap(props: any) {
       color
     );
   }, [ready, props.hazards]);
+
+  // The traveller's own handles, draggable and right-click removable. Drawn
+  // above the route's tone dots so a handle is what a click lands on. TT's own
+  // twin of the Leaflet markers — upstream has no AMap engine to port from.
+  useEffect(() => {
+    const map = mapRef.current as unknown as AmapViaMap | null;
+    const AMap = amapRef.current as unknown as AmapViaApi | null;
+    const byDay = props.roadtripVias as Record<number, RoadtripVia[]> | undefined;
+    const vias = byDay ? Object.values(byDay).flat() : [];
+    if (!map || !AMap || !ready || vias.length === 0) {
+      viaRef.current?.clear();
+      viaRef.current = null;
+      return;
+    }
+    viaRef.current?.clear();
+    viaRef.current = applyViasAmap(
+      AMap,
+      map,
+      vias,
+      {
+        // The contract is (dayId, id, lat, lng), and the module has already
+        // converted AMap's GCJ-02 reading back to WGS-84 for us.
+        onMove: props.onMoveVia,
+        onRemove: props.onRemoveVia,
+      },
+      mapZoom ?? Number(props.zoom ?? 5)
+    );
+  }, [ready, props.roadtripVias, props.onMoveVia, props.onRemoveVia, mapZoom]);
 
   // Core place markers, POIs, via points, plugin markers and InfoWindow interactions.
   useEffect(() => {

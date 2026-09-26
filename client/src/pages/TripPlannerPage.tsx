@@ -37,7 +37,6 @@ import type { ExpensePrefill } from '../components/Budget/CostsPanel';
 import Navbar from '../components/Layout/Navbar';
 import PoiCategoryPill from '../components/Map/PoiCategoryPill';
 import { usePoiExplore } from '../components/Map/usePoiExplore';
-import { useRoadtripHazards } from '../components/Map/useRoadtripHazards';
 import ApplyTemplateButton from '../components/Packing/ApplyTemplateButton';
 import type { BookingExpenseRequest } from '../components/Planner/BookingCostsSection.types';
 import TripWarningsBanner from '../components/Planner/TripWarningsBanner';
@@ -550,16 +549,12 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
     dawarichHiddenDates,
     roadtripMapVias,
     roadtripVias,
+    roadtripHazards,
     serviceStopMode,
     setServiceStopForm,
     moveRoadtripVia,
     removeRoadtripVia,
   } = useTripPlanner();
-
-  // Weather and disaster notices along the route (DWD/GDACS). Off by default:
-  // the preference is the traveller's, the feed only loads when it is on, and the
-  // hook owns the polling, the offline state and the trip scoping.
-  const roadtripHazards = useRoadtripHazards(tripId, roadtripMode);
 
   // The place inspector's booking strip opens the editor the booking belongs to.
   // Handed over as undefined when the right is missing, so the strip stays a

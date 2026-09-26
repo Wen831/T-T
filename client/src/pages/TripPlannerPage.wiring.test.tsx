@@ -211,6 +211,9 @@ function baseState(): HookState {
     // Leaving the place form also leaves service-stop mode.
     setServiceStopForm: vi.fn(),
     serviceStopMode: null,
+    // Read unconditionally by the map (`.feed?.hazards`), so the shape must exist
+    // even with the layer off.
+    roadtripHazards: { enabled: false, feed: null, status: 'loading' },
     showTripForm: false,
     setShowTripForm: vi.fn(),
     showMembersModal: false,

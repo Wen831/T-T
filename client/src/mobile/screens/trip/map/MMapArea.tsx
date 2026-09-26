@@ -45,7 +45,13 @@ export default function MMapArea({ planner, shell }: MMapAreaProps) {
         places={planner.mapPlaces}
         dayPlaces={planner.dayPlaces}
         route={planner.route}
-        routeVias={planner.routeVias}
+        // In drive mode the day's route carries the night stops and automatic
+        // handles; otherwise the ordinary daily route. Same rule as desktop.
+        routeVias={planner.roadtripActive ? planner.roadtripMapVias : planner.routeVias}
+        roadtripVias={planner.roadtripActive ? planner.roadtripVias.byDay : undefined}
+        onMoveVia={planner.roadtripActive ? planner.moveRoadtripVia : undefined}
+        onRemoveVia={planner.roadtripActive ? planner.removeRoadtripVia : undefined}
+        hazards={planner.roadtripHazards.feed?.hazards ?? []}
         showTransitRoutes={planner.transitRoutesShown}
         // The route toggle belongs to one day, so the map needs that day to know
         // which automated transports may ride it (#2019).

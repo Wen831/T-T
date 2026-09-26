@@ -78,7 +78,7 @@ TT 有三个地图渲染器，由设置项 `map_provider` **三选一**，互斥
 | 悬停卡 | ✅ | ✅ | ✅ |
 | 风险图层（DWD/GDACS） | ✅ | ✅ | ✅ `amapHazards.ts` |
 | 夜间停靠标记 | ✅ | ⬜ 待做 | ✅ |
-| 手动途径点手柄（可拖拽） | ✅ | ⬜ 缺 `attachPin` 等依赖 | ⬜ 待做（高德有原生拖拽） |
+| 手动途径点手柄（可拖拽） | ✅ | ⬜ 缺 `attachPin` 等依赖 | ✅ `amapVias.ts` |
 | 服务区停靠录入 | ✅（表单层，与引擎无关） | ✅ | ✅ |
 
 **已完成（本轮）**：
@@ -90,6 +90,14 @@ TT 有三个地图渲染器，由设置项 `map_provider` **三选一**，互斥
   Leaflet 包进 `divIcon`、GL 设 `innerHTML`、高德作 `content`。
   `MapViewAMap` 之前只把它当普通圆点画，现在有 `nightPause` 就用月亮标记，
   并按共享的 `NIGHT_PAUSE_MIN_ZOOM` 门限隐藏。
+
+- 途径点手柄的高德侧：`amapVias.ts` —— 拖拽用高德原生 `draggable` + `dragend`，
+  比 GL 那套手写手势判定短得多（上游在 GL 上要处理 pointercancel、`MOVED_ENOUGH`
+  阈值、五个 `preventDefault`）。**这里唯一的风险是坐标基准**：高德回报 GCJ-02，
+  TT 存 WGS-84，所以出（dragend → onMoveVia）转 `gcj02ToWgs84`、
+  入（via → marker position）转 `wgs84ToGcj02`。
+  测试**不 mock 转换函数**，并断言回写值「接近 WGS-84 且不接近 GCJ-02」——
+  转换写反、漏掉、或做了两次都会失败。
 
 **优先级判断**：高德的对齐收益 > GL。理由是高德是中国用户的默认选择，
 而 GL 手柄只是少数用户地图上的一个便利功能。因此顺序是
