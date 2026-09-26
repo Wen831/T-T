@@ -394,7 +394,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Poskytovat fotky do sekce Fotky',
   'admin.plugins.perm.hook:calendar-source': 'Poskytovat události do kalendáře',
   'admin.plugins.perm.hook:place-detail-provider': 'Přidávat další podrobnosti (recenze, hodnocení, odkazy) k místu',
-  'admin.plugins.perm.hook:search-provider': 'Odpovídá na hledání míst z vlastního indexu, vedle vlastních výsledků TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Odpovídá na hledání míst z vlastního indexu, vedle vlastních výsledků TREK',
   'admin.plugins.perm.hook:trip-warning-provider': 'Vyvolávat ověřovací upozornění u cesty (zobrazená v plánovači)',
   'admin.plugins.perm.hook:table-contributor': 'Přidávat sloupce a akce do zobrazení cesty (rezervace, místa, dny)',
   'admin.plugins.perm.hook:map-marker-provider': 'Přidávat značky na mapu cesty (např. zobrazit rezervace nebo POI)',
@@ -812,5 +813,37 @@ const admin: TranslationStrings = {
     'Ve výchozím nastavení používá AMap; každý vyhledávací formulář se může vrátit k nativním zdrojům TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Prepara aggiornamento',
+  'admin.update.prepareTitle': 'Prepara aggiornamento a {version}',
+  'admin.update.prepareIntro':
+    'Questa istanza non può aggiornarsi da sola: viene eseguita senza i privilegi necessari. Verificherà la versione, creerà un backup e ti darà il comando da eseguire sul server.',
+  'admin.update.prepareRun': 'Prepara',
+  'admin.update.preparing': 'Preparazione…',
+  'admin.update.prepareError': "Impossibile preparare l'aggiornamento",
+  'admin.update.backupDone': 'Backup creato: {filename}',
+  'admin.update.backupFailed': 'Non è stato possibile creare un backup ({error}). Continua solo se ne hai uno altrove.',
+  'admin.update.stepsTitle': 'Esegui sul server',
+  'admin.update.copy': 'Copia',
+  'admin.update.copied': 'Copiato',
+  'admin.update.releaseNotes': 'Note di rilascio',
+  'admin.update.afterTitle': 'Dopo',
+  'admin.update.afterText':
+    "Ricarica questa pagina quando la nuova versione è attiva. L'aggiornamento non tocca i tuoi dati.",
+  'admin.update.deploy.notDocker':
+    "Questa istanza non gira in Docker, quindi i passaggi dipendono da come l'hai installata.",
+  'admin.update.deploy.publishedImage': "Questa istanza segue l'immagine pubblicata.",
+  'admin.update.deploy.sourceBuild': 'Questa istanza è compilata da un checkout del codice sorgente.',
+  'admin.update.step.pull': 'Aggiorna il checkout',
+  'admin.update.step.pullNote':
+    "I tuoi commit sono qui, quindi è questo il passaggio che porta la nuova versione. L'immagine pubblicata non li ha.",
+  'admin.update.step.rebuild': 'Ricompila e riavvia',
+  'admin.update.step.rebuildNote': "Compila l'immagine dal checkout sopra, poi sostituisce il container in esecuzione.",
+  'admin.update.step.pullImageNote':
+    'Un segnaposto tra parentesi angolari significa che questo server non vede il nome della tua immagine: si trova nella shell che esegue compose, non nel container. Inserisci quello usato dal tuo file compose.',
+  'admin.update.step.composePull': "Scarica l'immagine indicata dal file compose",
+  'admin.update.step.composeUp': 'Ricrea il container',
+  'admin.update.step.reinstall': 'Riesegui il tuo metodo di installazione o aggiornamento',
+  'admin.update.step.reinstallNote':
+    "Per esempio, su Proxmox Community Scripts esegui l'aggiornamento dalla console LXC.",
 };
 export default admin;

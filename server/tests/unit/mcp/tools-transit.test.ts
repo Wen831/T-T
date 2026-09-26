@@ -168,7 +168,7 @@ describe('MCP transit tools', () => {
     // `from` is a tool-input place (name/lat/lng). A geocode result is a TransitPlace,
     // which also carries `type` and `area`; the stop search only reads the name back out,
     // so the fixture stays as it is instead of growing fields nothing here looks at.
-    geocodeMock.mockResolvedValue({ results: [from as TransitPlace] });
+    geocodeMock.mockResolvedValue({ results: [from as TransitPlace], provider: 'transitous' });
     planMock.mockResolvedValue({
       itineraries: [
         itinerary,
@@ -178,6 +178,7 @@ describe('MCP transit tools', () => {
           legs: itinerary.legs.map((leg, index) => (index === 0 ? { ...leg, from: { ...leg.from, lat: 35.5 } } : leg)),
         },
       ],
+      provider: 'transitous',
     });
     await withHarness(user.id, ['geo:read'], async (harness) => {
       const stops = parseToolResult(
@@ -495,7 +496,7 @@ describe('MCP transit tools', () => {
       ...itinerary,
       legs: itinerary.legs.map((leg) => (leg.mode === 'WALK' ? leg : { ...leg, mode: 'AIRPLANE' })),
     };
-    planMock.mockResolvedValue({ itineraries: [flying] });
+    planMock.mockResolvedValue({ itineraries: [flying], provider: 'transitous' });
 
     await withHarness(user.id, ['geo:read'], async (harness) => {
       const routes = parseToolResult(
@@ -522,7 +523,7 @@ describe('MCP transit tools', () => {
   it('reports how many provider itineraries failed validation', async () => {
     const { user } = createUser(testDb);
     const walkOnly = { ...itinerary, legs: [itinerary.legs[0]] };
-    planMock.mockResolvedValue({ itineraries: [itinerary, walkOnly] });
+    planMock.mockResolvedValue({ itineraries: [itinerary, walkOnly], provider: 'transitous' });
 
     await withHarness(user.id, ['geo:read'], async (harness) => {
       const routes = parseToolResult(

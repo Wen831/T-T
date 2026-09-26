@@ -220,40 +220,99 @@ describe('AdminUserModals', () => {
     await waitFor(() => expect(admin.toast.error).toHaveBeenCalledWith('Error'));
   });
 
-  it('FE-ADMMOD-015: the update popup shows the docker recipe by default', () => {
+  it('FE-ADMMOD-015: opening the popup prepares nothing until asked', () => {
     renderModals({ showUpdateModal: true, updateInfo: buildUpdateInfo() });
 
     expect(screen.getByText('How to Update')).toBeInTheDocument();
     expect(screen.getByText('v3.4.1 → v3.5.0')).toBeInTheDocument();
-    expect(screen.getByText(/docker pull ghcr.io\/bhxnms\/tt-planner:latest/)).toBeInTheDocument();
-  });
-
-  it('FE-ADMMOD-016: a non-docker install links to the wiki instead', () => {
-    renderModals({ showUpdateModal: true, updateInfo: buildUpdateInfo({ is_docker: false }) });
-
+    // No backup is written and no command is shown until the operator asks: the
+    // dialog has to be free to open.
+    expect(screen.getByRole('button', { name: /^prepare$/i })).toBeInTheDocument();
     expect(screen.queryByText(/docker pull/)).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /open the update guide/i })).toHaveAttribute(
-      'href',
-      'https://github.com/bhxnms/T-T/wiki/Updating'
-    );
   });
 
-  it('FE-ADMMOD-017: the release link only renders when a release_url is known', () => {
-    const { unmount } = render(
-      <Harness admin={buildAdminHook({ showUpdateModal: true, updateInfo: buildUpdateInfo() })} />
+  it('FE-ADMMOD-016: preparing shows the command, the backup result and the deployment', async () => {
+    server.use(
+      http.post('/api/admin/update-prepare', () =>
+        HttpResponse.json({
+          ready: true,
+          current: '3.4.1',
+          latest: '3.5.0',
+          deployment: 'docker-image',
+          deployment_reason: 'publishedImage',
+          backup: { created: true, filename: 'backup-x.zip', error: null },
+          steps: [
+            { labelKey: 'admin.update.step.pull', command: 'docker pull ghcr.io/example/tt:3.5.0', noteKey: null },
+          ],
+        })
+      )
     );
-    expect(screen.queryByRole('link', { name: /view on github/i })).not.toBeInTheDocument();
-    unmount();
+    renderModals({ showUpdateModal: true, updateInfo: buildUpdateInfo() });
 
-    render(
-      <Harness
-        admin={buildAdminHook({
-          showUpdateModal: true,
-          updateInfo: buildUpdateInfo({ release_url: 'https://example.test/rel' }),
-        })}
-      />
+    fireEvent.click(screen.getByRole('button', { name: /^prepare$/i }));
+
+    // The command a person is meant to paste, verbatim.
+    expect(await screen.findByText('docker pull ghcr.io/example/tt:3.5.0')).toBeInTheDocument();
+    // The backup says what it did, rather than implying it worked.
+    expect(screen.getByText(/backup-x\.zip/)).toBeInTheDocument();
+    expect(screen.getByText(/follows the published image/i)).toBeInTheDocument();
+  });
+
+  it('FE-ADMMOD-017: a failed backup is said out loud, not hidden behind a green tick', async () => {
+    server.use(
+      http.post('/api/admin/update-prepare', () =>
+        HttpResponse.json({
+          ready: true,
+          current: '3.4.1',
+          latest: '3.5.0',
+          deployment: 'docker-image',
+          deployment_reason: 'publishedImage',
+          backup: { created: false, filename: null, error: 'disk full' },
+          steps: [{ labelKey: 'admin.update.step.pull', command: 'docker pull x:3.5.0', noteKey: null }],
+        })
+      )
     );
-    expect(screen.getByRole('link', { name: /view on github/i })).toHaveAttribute('href', 'https://example.test/rel');
+    renderModals({ showUpdateModal: true, updateInfo: buildUpdateInfo() });
+
+    fireEvent.click(screen.getByRole('button', { name: /^prepare$/i }));
+
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent(/disk full/);
+    // The command is still offered: an operator who has a backup elsewhere may
+    // still want it.
+    expect(screen.getByText('docker pull x:3.5.0')).toBeInTheDocument();
+  });
+
+  it('FE-ADMMOD-017b: a preparation that fails reports it and offers to try again', async () => {
+    server.use(http.post('/api/admin/update-prepare', () => HttpResponse.json({ error: 'nope' }, { status: 500 })));
+    renderModals({ showUpdateModal: true, updateInfo: buildUpdateInfo() });
+
+    fireEvent.click(screen.getByRole('button', { name: /^prepare$/i }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/could not prepare/i);
+    // Still offered, so the operator is not stuck with a dead dialog.
+    expect(screen.getByRole('button', { name: /^prepare$/i })).toBeInTheDocument();
+  });
+
+  it('FE-ADMMOD-017c: the prepare button is offered only while there is nothing prepared', async () => {
+    server.use(
+      http.post('/api/admin/update-prepare', () =>
+        HttpResponse.json({
+          ready: true,
+          current: '3.4.1',
+          latest: '3.5.0',
+          deployment: 'docker-source',
+          deployment_reason: 'sourceBuild',
+          backup: { created: true, filename: 'b.zip', error: null },
+          steps: [{ labelKey: 'admin.update.step.pull', command: 'git pull', noteKey: null }],
+        })
+      )
+    );
+    renderModals({ showUpdateModal: true, updateInfo: buildUpdateInfo() });
+
+    fireEvent.click(screen.getByRole('button', { name: /^prepare$/i }));
+    await screen.findByText('git pull');
+    expect(screen.queryByRole('button', { name: /^prepare$/i })).not.toBeInTheDocument();
   });
 
   it('FE-ADMMOD-018: the update popup closes from the Close button', () => {

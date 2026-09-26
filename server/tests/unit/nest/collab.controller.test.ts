@@ -284,7 +284,9 @@ describe('CollabController (parity with the legacy /api/trips/:tripId/collab rou
       // a rejected promise — and `files` being undefined is what marks the request
       // as JSON rather than multipart, which is what keeps the old wording.
       expect(
-        await thrownAsync(() => new CollabController(svc(), storageStub).createMessage(user, '5', { text: '   ' })),
+        await thrownAsync(() =>
+          new CollabController(svc(), storageStub).createMessage(user, '5', { text: '   ' }, undefined),
+        ),
       ).toEqual({
         status: 400,
         body: { error: 'Message text is required' },
@@ -294,7 +296,7 @@ describe('CollabController (parity with the legacy /api/trips/:tripId/collab rou
           new CollabController(
             svc({ createMessage: vi.fn().mockReturnValue({ error: 'reply_not_found' }) } as Partial<CollabService>),
             storageStub,
-          ).createMessage(user, '5', { text: 'hi', reply_to: 99 }),
+          ).createMessage(user, '5', { text: 'hi', reply_to: 99 }, undefined),
         ),
       ).toEqual({ status: 400, body: { error: 'Reply target message not found' } });
       const broadcast = vi.fn();

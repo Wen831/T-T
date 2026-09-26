@@ -96,8 +96,13 @@ const ALLOWED_DESTRUCTIVE: Record<string, string> = {
   'DROP TABLE schema_version': 'Add surrogate id PK to schema_version. Rebuild, version row copied.',
   'DROP TABLE roadtrip_day_boundaries':
     'Migration 241 (4.3 port): relax the day_number CHECK from BETWEEN 1 AND 366 to >= 1. Rebuild, rows copied first.',
+  // One entry per signature, and two migrations share this one: the 4.3 port's
+  // Guangdong data fix (#210) and the earlier Atlas geoBoundaries swap (#1119).
+  // Both are bounded single-row deletes after an UPDATE OR IGNORE hit the
+  // UNIQUE(user_id, region_code) key, which is why they read the same to this
+  // scanner; the reasons are kept together rather than one being dropped.
   'DELETE FROM visited_regions':
-    'Migration 210 (4.3 port): Guangdong data fix — removes the mistyped rows the UPDATE OR IGNORE could not rename (unique key collision). Bounded by the CN-GUANGZHOUPROVINCE key.',
+    'Migration 210 (4.3 port): Guangdong data fix — removes the mistyped rows the UPDATE OR IGNORE could not rename (unique key collision). Bounded by the CN-GUANGZHOUPROVINCE key. Atlas geoBoundaries swap (#1119) uses the same statement for the same reason: after re-coding a manually-marked region, drop the one leftover row whose collision skipped the update.',
   'DELETE FROM hidden_regions':
     'Migration 210 (4.3 port): Guangdong data fix — stale tombstones keyed to the mistyped code would otherwise resurrect a region the user hid. Bounded by the same key.',
 
@@ -135,8 +140,6 @@ const ALLOWED_DESTRUCTIVE: Record<string, string> = {
     "Migration 121: DELETE ... WHERE title IN ('Gallery','[Trip Photos]') — remove synthetic wrapper entries replaced by the gallery model.",
   'DELETE FROM place_regions':
     'Atlas enclave fix: DELETE ... WHERE place_id IN (places inside specific enclave boxes) — invalidate stale region cache; re-resolved on next request.',
-  'DELETE FROM visited_regions':
-    'Atlas geoBoundaries swap (#1119): DELETE ... WHERE id = ? — after UPDATE OR IGNORE re-codes a manually-marked region to its current code, drop only the single leftover row whose UNIQUE(user_id, region_code) collision caused the update to be skipped (a duplicate of a region the user already has).',
   'DELETE FROM reservation_day_positions':
     'DELETE ... WHERE the row joins a reservation and a day sitting on different trips. The table has no trip_id and its two foreign keys only require the ids to exist, so a pair that never belonged together was storable; the writer scopes to the trip now and this clears what earlier builds allowed. Bounded by the join — a row whose reservation and day agree on their trip is untouched.',
 };

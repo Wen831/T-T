@@ -18,7 +18,9 @@ import { PluginsRuntimeModule } from '../plugins/plugins-runtime.module';
 import { SchedulingModule } from '../scheduling/scheduling.module';
 import { SettingsModule } from '../settings/settings.module';
 import { TokensModule } from '../tokens/tokens.module';
+import { BackupModule } from '../backup/backup.module';
 import { AdminController } from './admin.controller';
+import { UpdatePrepService } from './update-prep.service';
 import { AdminService } from './admin.service';
 import { DemoResetJob } from './demo-reset.job';
 import { VersionCheckJob } from './version-check.job';
@@ -37,10 +39,11 @@ import { Module } from '@nestjs/common';
     PermissionsModule,
     TokensModule,
     OauthModule,
+    BackupModule,
     SchedulingModule,
     KitineraryExtractorModule,
   ],
   controllers: [AdminController],
-  providers: [AdminService, VersionCheckJob, DemoResetJob],
+  providers: [AdminService, VersionCheckJob, DemoResetJob, UpdatePrepService],
 })
 export class AdminModule {}

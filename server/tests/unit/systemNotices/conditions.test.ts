@@ -23,7 +23,9 @@ const baseCtx = {
   // noTrips joined the context when the 'noTrips' condition kind landed. 1 keeps
   // every case below reading as it did: the condition is `noTrips === 0`, so a
   // user WITH trips leaves it false and the other kinds decide on their own.
-  user: { login_count: 5, first_seen_version: '1.0.0', role: 'user', noTrips: 1 },
+  // `id` and `must_change_password` are part of the context because the notice
+  // conditions read them; the values keep every case below reading as it did.
+  user: { id: 1, login_count: 5, first_seen_version: '1.0.0', role: 'user', noTrips: 1, must_change_password: 0 },
   currentAppVersion: '2.0.0',
   now: new Date('2026-06-01T00:00:00Z'),
   // Threaded in by the caller since the addons.bridge import left this module;

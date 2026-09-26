@@ -1,18 +1,10 @@
-import {
-  AlertTriangle,
-  ArrowUpCircle,
-  CheckCircle,
-  ExternalLink,
-  Eye,
-  EyeOff,
-  Fingerprint,
-  RefreshCw,
-} from 'lucide-react';
+import { AlertTriangle, ArrowUpCircle, Eye, EyeOff, Fingerprint, RefreshCw } from 'lucide-react';
 import React from 'react';
 import { adminApi } from '../../api/client';
 import CustomSelect from '../../components/shared/CustomSelect';
 import Modal from '../../components/shared/Modal';
 import type { TranslationFn } from '../../types';
+import type { UpdatePreparation } from './adminModel';
 import type { useAdmin } from './useAdmin';
 
 interface AdminUserModalsProps {
@@ -46,6 +38,36 @@ export default function AdminUserModals({ admin, t }: AdminUserModalsProps): Rea
     handleSaveUser,
   } = admin;
   const [showCreatePw, setShowCreatePw] = React.useState(false);
+  // The prepared update: null until asked for, so opening the dialog costs
+  // nothing and no backup is written until the operator asks for one.
+  const [prep, setPrep] = React.useState<UpdatePreparation | null>(null);
+  const [prepBusy, setPrepBusy] = React.useState(false);
+  const [prepError, setPrepError] = React.useState(false);
+  const [copiedStep, setCopiedStep] = React.useState<number | null>(null);
+
+  const runPrep = async (): Promise<void> => {
+    setPrepBusy(true);
+    setPrepError(false);
+    try {
+      setPrep(await adminApi.prepareUpdate());
+    } catch {
+      setPrepError(true);
+    } finally {
+      setPrepBusy(false);
+    }
+  };
+
+  const copyStep = (index: number, command: string): void => {
+    // Clipboard access can be refused (insecure origin, denied permission); the
+    // command is on screen either way, so a failure needs no alarm.
+    void navigator.clipboard
+      ?.writeText(command)
+      .then(() => {
+        setCopiedStep(index);
+        window.setTimeout(() => setCopiedStep(null), 2000);
+      })
+      .catch(() => {});
+  };
   const [showEditPw, setShowEditPw] = React.useState(false);
 
   return (
@@ -297,100 +319,140 @@ export default function AdminUserModals({ admin, t }: AdminUserModalsProps): Rea
             </div>
 
             <div style={{ padding: '20px 24px' }}>
-              <p
-                className="text-gray-700 dark:text-gray-300"
-                style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', lineHeight: 1.6, margin: 0 }}
-              >
-                {(updateInfo?.is_docker === false
-                  ? t('admin.update.nonDockerText')
-                  : t('admin.update.dockerText')
-                ).replace('{version}', `v${updateInfo?.latest ?? ''}`)}
-              </p>
-
-              {updateInfo?.is_docker === false ? (
-                <a
-                  href="https://github.com/bhxnms/T-T/wiki/Updating"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    marginTop: 14,
-                    padding: '12px 14px',
-                    borderRadius: 10,
-                    fontSize: 'calc(13px * var(--fs-scale-body, 1))',
-                    lineHeight: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textDecoration: 'none',
-                  }}
-                  className="border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
-                >
-                  <ExternalLink className="h-4 w-4 flex-shrink-0" />
-                  <span className="font-semibold underline">{t('admin.update.wikiLink')}</span>
-                </a>
-              ) : (
-                <div
-                  style={{
-                    marginTop: 14,
-                    padding: '12px 14px',
-                    borderRadius: 10,
-                    fontSize: 'calc(12px * var(--fs-scale-body, 1))',
-                    lineHeight: 1.8,
-                    fontFamily: 'monospace',
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-all',
-                  }}
-                  className="border border-gray-700 bg-gray-900 text-gray-100 dark:bg-gray-950"
-                >
-                  {`docker pull ghcr.io/bhxnms/tt-planner:latest\ndocker compose pull\ndocker compose up -d`}
-                </div>
+              {/* Prepare first, then hand over the command.
+                  Nothing here performs the update: this process runs without the
+                  privileges that would need, so the last step belongs to whoever
+                  holds the server. */}
+              {!prep && (
+                <>
+                  <p
+                    className="text-gray-700 dark:text-gray-300"
+                    style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', lineHeight: 1.6, margin: 0 }}
+                  >
+                    {t('admin.update.prepareIntro')}
+                  </p>
+                  {prepError && (
+                    <p className="text-red-600 dark:text-red-400" style={{ marginTop: 10, fontSize: 13 }} role="alert">
+                      {t('admin.update.prepareError')}
+                    </p>
+                  )}
+                </>
               )}
 
-              <div
-                style={{
-                  marginTop: 10,
-                  padding: '10px 12px',
-                  borderRadius: 10,
-                  fontSize: 'calc(12px * var(--fs-scale-body, 1))',
-                  lineHeight: 1.5,
-                }}
-                className="border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
-              >
-                <div className="flex items-start gap-2">
-                  <CheckCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
-                  <span>{t('admin.update.dataInfo')}</span>
-                </div>
-              </div>
+              {prep?.ready && (
+                <>
+                  <p
+                    className="text-gray-700 dark:text-gray-300"
+                    style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', lineHeight: 1.6, margin: 0 }}
+                  >
+                    {t(`admin.update.deploy.${prep.deployment_reason ?? 'publishedImage'}`)}
+                  </p>
 
-              {updateInfo?.release_url && (
-                <div
-                  style={{
-                    marginTop: 10,
-                    padding: '10px 12px',
-                    borderRadius: 10,
-                    fontSize: 'calc(12px * var(--fs-scale-body, 1))',
-                    lineHeight: 1.5,
-                  }}
-                  className="border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                >
-                  <div className="flex items-start gap-2">
-                    <ExternalLink className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
-                    <span>
-                      <a
-                        href={updateInfo.release_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold underline"
-                      >
-                        {t('admin.update.button')}
-                      </a>
-                    </span>
+                  {/* Whether a backup was actually written is stated plainly:
+                      a failure here must not read as "backed up". */}
+                  <div
+                    style={{ marginTop: 12, padding: '10px 12px', borderRadius: 10, fontSize: 12 }}
+                    className={
+                      prep.backup?.created
+                        ? 'border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+                        : 'border border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200'
+                    }
+                    role={prep.backup?.created ? undefined : 'alert'}
+                  >
+                    {prep.backup?.created
+                      ? t('admin.update.backupDone').replace('{filename}', prep.backup.filename ?? '')
+                      : t('admin.update.backupFailed').replace('{error}', prep.backup?.error ?? '')}
                   </div>
-                </div>
+
+                  <h4 style={{ marginTop: 18, marginBottom: 8, fontSize: 13, fontWeight: 600 }}>
+                    {t('admin.update.stepsTitle')}
+                  </h4>
+                  <ol style={{ margin: 0, paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {(prep.steps ?? []).map((step, i) => (
+                      <li key={i} style={{ fontSize: 12.5, lineHeight: 1.5 }}>
+                        <div className="text-gray-700 dark:text-gray-300" style={{ fontWeight: 600 }}>
+                          {t(step.labelKey)}
+                        </div>
+                        {step.command && (
+                          <div style={{ display: 'flex', alignItems: 'stretch', gap: 6, marginTop: 6 }}>
+                            <code
+                              style={{
+                                flex: 1,
+                                padding: '8px 10px',
+                                borderRadius: 8,
+                                fontFamily: 'monospace',
+                                fontSize: 12,
+                                wordBreak: 'break-all',
+                              }}
+                              className="border border-gray-700 bg-gray-900 text-gray-100 dark:bg-gray-950"
+                            >
+                              {step.command}
+                            </code>
+                            <button
+                              type="button"
+                              onClick={() => copyStep(i, step.command!)}
+                              aria-label={t('admin.update.copy')}
+                              className="border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800"
+                              style={{ padding: '0 10px', borderRadius: 8, fontSize: 11, cursor: 'pointer' }}
+                            >
+                              {copiedStep === i ? t('admin.update.copied') : t('admin.update.copy')}
+                            </button>
+                          </div>
+                        )}
+                        {step.noteKey && (
+                          <div className="text-gray-500 dark:text-gray-400" style={{ marginTop: 4, fontSize: 11.5 }}>
+                            {t(step.noteKey)}
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+
+                  <h4 style={{ marginTop: 18, marginBottom: 6, fontSize: 13, fontWeight: 600 }}>
+                    {t('admin.update.afterTitle')}
+                  </h4>
+                  <p
+                    className="text-gray-700 dark:text-gray-300"
+                    style={{ fontSize: 12.5, lineHeight: 1.6, margin: 0 }}
+                  >
+                    {t('admin.update.afterText')}
+                  </p>
+
+                  {prep.release_url && (
+                    <a
+                      href={prep.release_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400"
+                      style={{ display: 'inline-block', marginTop: 12, fontSize: 12.5, fontWeight: 600 }}
+                    >
+                      {t('admin.update.releaseNotes')}
+                    </a>
+                  )}
+                </>
               )}
             </div>
 
-            <div style={{ padding: '0 24px 20px', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ padding: '0 24px 20px', display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              {!prep?.ready && (
+                <button
+                  type="button"
+                  onClick={() => void runPrep()}
+                  disabled={prepBusy}
+                  className="bg-slate-900 text-white hover:bg-slate-700 disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-gray-200"
+                  style={{
+                    padding: '9px 20px',
+                    borderRadius: 10,
+                    fontSize: 'calc(13px * var(--fs-scale-body, 1))',
+                    fontWeight: 600,
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  {prepBusy ? t('admin.update.preparing') : t('admin.update.prepareRun')}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setShowUpdateModal(false)}

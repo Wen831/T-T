@@ -114,7 +114,11 @@ describe('StorageAdminService.state', () => {
     // observed mid-write. Pin the precondition rather than depend on the
     // neighbours' timing — the assertion below is about the state the service
     // *reports*, not about what the rest of the run happens to leave on disk.
-    const hadSeed = fs.existsSync(SEED_CONFIG_PATH);
+    // Read the bytes, not just whether it existed: restoring an empty file here
+    // would leave a zero-byte seed behind, and a zero-byte seed is not "no seed"
+    // to the registry — it is an invalid one, which fails every later e2e that
+    // boots storage.
+    const priorSeed = fs.existsSync(SEED_CONFIG_PATH) ? fs.readFileSync(SEED_CONFIG_PATH) : null;
     fs.rmSync(SEED_CONFIG_PATH, { force: true });
     try {
       const state = service.state();
@@ -128,7 +132,7 @@ describe('StorageAdminService.state', () => {
       expect(state.health).toEqual({ replicaFailures: [] });
     } finally {
       // Never leave the tree dirtier than it was found.
-      if (hadSeed) fs.writeFileSync(SEED_CONFIG_PATH, '');
+      if (priorSeed !== null) fs.writeFileSync(SEED_CONFIG_PATH, priorSeed);
     }
   });
 

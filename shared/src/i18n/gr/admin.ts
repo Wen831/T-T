@@ -449,7 +449,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Παροχή συμβάντων στο ημερολόγιο',
   'admin.plugins.perm.hook:place-detail-provider':
     'Συνεισφορά επιπλέον λεπτομερειών (κριτικές, βαθμολογίες, σύνδεσμοι) σε ένα μέρος',
-  'admin.plugins.perm.hook:search-provider': 'Απαντά σε αναζητήσεις τόπων από το δικό του ευρετήριο, δίπλα στα αποτελέσματα του TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Απαντά σε αναζητήσεις τόπων από το δικό του ευρετήριο, δίπλα στα αποτελέσματα του TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Εμφάνιση προειδοποιήσεων επικύρωσης σε ένα ταξίδι (εμφανίζονται στον σχεδιαστή)',
   'admin.plugins.perm.hook:table-contributor':
@@ -842,5 +843,37 @@ const admin: TranslationStrings = {
     'Χρησιμοποιεί AMap από προεπιλογή· κάθε φόρμα αναζήτησης μπορεί να επιστρέψει στις εγγενείς πηγές TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': '更新の準備',
+  'admin.update.prepareTitle': '{version} への更新を準備',
+  'admin.update.prepareIntro':
+    'このインスタンスは自身を更新できません。必要な権限なしで動作しているためです。リリースを確認し、バックアップを作成し、サーバーで実行するコマンドを表示します。',
+  'admin.update.prepareRun': '準備',
+  'admin.update.preparing': '準備中…',
+  'admin.update.prepareError': '更新を準備できませんでした',
+  'admin.update.backupDone': 'バックアップを作成しました: {filename}',
+  'admin.update.backupFailed':
+    'バックアップを作成できませんでした（{error}）。別の場所にない場合のみ続行してください。',
+  'admin.update.stepsTitle': 'サーバーで実行',
+  'admin.update.copy': 'コピー',
+  'admin.update.copied': 'コピーしました',
+  'admin.update.releaseNotes': 'リリースノート',
+  'admin.update.afterTitle': 'その後',
+  'admin.update.afterText':
+    '新しいバージョンが起動したら、このページを再読み込みしてください。更新自体はデータに触れません。',
+  'admin.update.deploy.notDocker':
+    'このインスタンスは Docker で動作していないため、手順はインストール方法によって異なります。',
+  'admin.update.deploy.publishedImage': 'このインスタンスは公開イメージに追随します。',
+  'admin.update.deploy.sourceBuild': 'このインスタンスはソースのチェックアウトからビルドされています。',
+  'admin.update.step.pull': 'チェックアウトを更新',
+  'admin.update.step.pullNote':
+    'ここにあなた自身のコミットがあります。新しい版をもたらすのはこの手順です。公開イメージには含まれません。',
+  'admin.update.step.rebuild': '再ビルドして再起動',
+  'admin.update.step.rebuildNote': '上記のチェックアウトからイメージをビルドし、実行中のコンテナを置き換えます。',
+  'admin.update.step.pullImageNote':
+    '山括弧のプレースホルダーは、このサーバーがイメージ名を認識できないことを意味します。これは compose を実行するシェル側にあり、コンテナ内にはありません。compose ファイルの名前を記入してください。',
+  'admin.update.step.composePull': 'compose ファイルが参照するイメージを取得',
+  'admin.update.step.composeUp': 'コンテナを再作成',
+  'admin.update.step.reinstall': 'インストールまたは更新の手順を再実行してください',
+  'admin.update.step.reinstallNote': 'たとえば Proxmox Community Scripts では、LXC コンソールから更新を実行します。',
 };
 export default admin;

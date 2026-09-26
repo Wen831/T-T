@@ -751,6 +751,18 @@ const admin: TranslationStrings = {
   'admin.update.button': 'View on GitHub',
   'admin.update.checkNow': 'Check again',
   'admin.update.checkError': 'Could not check for updates',
+  /*
+   * The `admin.update.install` family below is UNUSED, and is kept rather than
+   * deleted for one reason: it describes an application that updates itself and
+   * restarts, which is not what this one does. This instance runs without the
+   * privileges that would need (see UpdatePrepService), so the UI offers
+   * `admin.update.prepare*` instead and hands the operator a command.
+   *
+   * Deleting it means touching twenty-two locale files to remove text that costs
+   * nothing; keeping it means whoever eventually ships a self-updating build
+   * finds the copy already written. If that never happens, this note is the
+   * answer to "is this string dead?".
+   */
   'admin.update.install': 'Install Update',
   'admin.update.confirmTitle': 'Install Update?',
   'admin.update.confirmText':
@@ -801,5 +813,36 @@ const admin: TranslationStrings = {
   'admin.invite.tripNone': 'No trip',
   'admin.invite.tripHint': 'The new user is automatically added to this trip when they register via the link.',
   'admin.invite.boundTo': 'adds to {trip}',
+  'admin.update.prepare': 'Prepare update',
+  'admin.update.prepareTitle': 'Prepare update to {version}',
+  'admin.update.prepareIntro':
+    'This cannot update itself: the application runs without the privileges that would need. It will verify the release, take a backup, and give you the command to run on the server.',
+  'admin.update.prepareRun': 'Prepare',
+  'admin.update.preparing': 'Preparing…',
+  'admin.update.prepareError': 'Could not prepare the update',
+  'admin.update.backupDone': 'Backup created: {filename}',
+  'admin.update.backupFailed': 'No backup could be taken ({error}). Continue only if you have one elsewhere.',
+  'admin.update.stepsTitle': 'Run these on the server',
+  'admin.update.copy': 'Copy',
+  'admin.update.copied': 'Copied',
+  'admin.update.releaseNotes': 'Release notes',
+  'admin.update.afterTitle': 'Afterwards',
+  'admin.update.afterText':
+    'Reload this page once the new version is running. Your data is untouched by the update itself.',
+  'admin.update.deploy.notDocker':
+    'This instance is not running in Docker, so the steps depend on how you installed it.',
+  'admin.update.deploy.publishedImage': 'This instance follows the published image.',
+  'admin.update.deploy.sourceBuild': 'This instance is built from a source checkout.',
+  'admin.update.step.pull': 'Update the checkout',
+  'admin.update.step.pullNote':
+    'Your own commits are here, so this is the step that brings the new version in. The published image has none of them.',
+  'admin.update.step.rebuild': 'Rebuild and restart',
+  'admin.update.step.rebuildNote': 'Builds the image from the checkout above, then replaces the running container.',
+  'admin.update.step.pullImageNote':
+    'A placeholder in angle brackets means this server cannot see your image name — it lives in the shell that runs compose, not in the container. Fill in what your compose file uses.',
+  'admin.update.step.composePull': 'Fetch the image referenced by the compose file',
+  'admin.update.step.composeUp': 'Recreate the container',
+  'admin.update.step.reinstall': 'Re-run your install or update method',
+  'admin.update.step.reinstallNote': 'For example, on Proxmox Community Scripts run the update from the LXC console.',
 };
 export default admin;

@@ -1,6 +1,7 @@
 import type { AddonsService } from '../../../src/nest/addons/addons.service';
 import { AdminController } from '../../../src/nest/admin/admin.controller';
 import type { AdminService } from '../../../src/nest/admin/admin.service';
+import type { UpdatePrepService } from '../../../src/nest/admin/update-prep.service';
 import type { AuditService } from '../../../src/nest/audit/audit.service';
 import type { RegistrationInvitesService } from '../../../src/nest/auth/registration-invites.service';
 import { KitineraryExtractorService } from '../../../src/nest/booking-import/kitinerary-extractor.service';
@@ -58,6 +59,15 @@ const addonsStub = () =>
 
 // The MCP-token routes read TokenService now, not AdminService. Stubbed via a
 // fourth, optional argument so every existing call site stays as it was.
+/**
+ * The constructor's arguments, in the order the class declares them.
+ *
+ * Spelled out as a tuple so that adding a parameter to `AdminController` fails
+ * HERE, at compile time, rather than silently shifting every argument after it.
+ * Not hypothetical: adding one in the middle once made twenty-five tests fail
+ * across unrelated features, because this helper passes positionally and a
+ * shifted stub is still a valid object.
+ */
 const adminCtl = (
   s: AdminService,
   rt?: PluginRuntimeService,
@@ -66,8 +76,9 @@ const adminCtl = (
   invites: Partial<RegistrationInvitesService> = {},
   oauth: Partial<OauthService> = {},
   kitinerary: Partial<KitineraryExtractorService> = {},
-) =>
-  new AdminController(
+  updatePrep: Partial<UpdatePrepService> = {},
+) => {
+  const args: ConstructorParameters<typeof AdminController> = [
     s,
     addons,
     rt as unknown as PluginRuntimeService,
@@ -77,7 +88,10 @@ const adminCtl = (
     invites as RegistrationInvitesService,
     oauth as OauthService,
     kitinerary as KitineraryExtractorService,
-  );
+    updatePrep as UpdatePrepService,
+  ];
+  return new AdminController(...args);
+};
 // #2261 — the extractor's version is what tells a stale binary from a provider
 // nobody wrote a script for; both come back empty otherwise.
 describe('AdminController system-info', () => {

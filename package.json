@@ -21,6 +21,7 @@
     "check:upstream": "node scripts/check-upstream-parity.mjs",
     "pretest": "node scripts/fix-native-modules.mjs",
     "test": "npm run test --workspace=shared && npm run test --workspace=server && npm run test --workspace=client",
+    "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc -p server/tsconfig.tests.json --noEmit && tsc --noEmit -p client/tsconfig.json", 
     "test:cov": "npm run test:coverage --workspace=shared && npm run test:coverage --workspace=server && npm run test:coverage --workspace=client && npm run test:coverage --prefix plugin-sdk",
     "test:e2e": "npm run test:e2e --workspace=server",
     "lint": "npm run lint --workspace=shared && npm run lint --workspace=server && npm run lint --workspace=client",

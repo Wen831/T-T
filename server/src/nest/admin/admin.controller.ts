@@ -29,6 +29,7 @@ import {
   AdminTestNotificationDto,
 } from './admin.dto';
 import { AdminService } from './admin.service';
+import { UpdatePrepService } from './update-prep.service';
 import {
   Body,
   Controller,
@@ -51,10 +52,7 @@ import type { Request } from 'express';
 function ok<T>(result: T): Exclude<T, { error: string }> {
   if (result && typeof result === 'object' && 'error' in (result as Record<string, unknown>)) {
     const r = result as unknown as { error: string; code?: string; status?: number };
-    throw new HttpException(
-      { error: r.error, ...(r.code ? { code: r.code } : {}) },
-      r.status ?? 400,
-    );
+    throw new HttpException({ error: r.error, ...(r.code ? { code: r.code } : {}) }, r.status ?? 400);
   }
   return result as Exclude<T, { error: string }>;
 }
@@ -88,6 +86,10 @@ export class AdminController {
     private readonly invites: RegistrationInvitesService,
     private readonly oauth: OauthService,
     private readonly kitinerary: KitineraryExtractorService,
+    // Appended rather than inserted: the tests build this controller
+    // positionally, so a new argument in the middle silently shifts every one
+    // after it and the failure looks like a dozen unrelated features breaking.
+    private readonly updatePrep: UpdatePrepService,
   ) {}
 
   // ── Users ──
@@ -224,6 +226,24 @@ export class AdminController {
   @Get('version-check')
   async versionCheck() {
     return this.admin.checkVersion();
+  }
+
+  /**
+   * Prepare an update: verify the release, take a backup, and answer with the
+   * exact command to run on the host.
+   *
+   * A POST because it has a side effect — it writes a backup archive — and a
+   * GET that fills the disk is the kind of thing a crawler or a prefetch finds
+   * on its own. It never runs the update: this process has no Docker socket and
+   * no privileges, by design (see UpdatePrepService).
+   */
+  @Post('update-prepare')
+  @HttpCode(200)
+  async updatePrepare() {
+    // The version is resolved here rather than taken from the body, so the
+    // browser cannot ask for instructions for a release that does not exist.
+    const version = await this.admin.checkVersion();
+    return this.updatePrep.prepare(version);
   }
 
   /**

@@ -398,7 +398,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Evenementen aanleveren voor de kalender',
   'admin.plugins.perm.hook:place-detail-provider':
     'Extra details (reviews, beoordelingen, links) aan een plek toevoegen',
-  'admin.plugins.perm.hook:search-provider': 'Beantwoordt plaatszoekopdrachten vanuit zijn eigen index, naast de resultaten van TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Beantwoordt plaatszoekopdrachten vanuit zijn eigen index, naast de resultaten van TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Validatiewaarschuwingen tonen bij een reis (zichtbaar in de planner)',
   'admin.plugins.perm.hook:table-contributor':
@@ -826,5 +827,38 @@ const admin: TranslationStrings = {
   'admin.amapSearch.subtitle': 'Gebruikt standaard AMap; elk zoekformulier kan terug naar de native TREK-bronnen.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Προετοιμασία ενημέρωσης',
+  'admin.update.prepareTitle': 'Προετοιμασία ενημέρωσης σε {version}',
+  'admin.update.prepareIntro':
+    'Αυτή η εγκατάσταση δεν μπορεί να ενημερωθεί μόνη της: εκτελείται χωρίς τα απαραίτητα δικαιώματα. Θα επαληθεύσει την έκδοση, θα δημιουργήσει αντίγραφο ασφαλείας και θα σας δώσει την εντολή για τον διακομιστή.',
+  'admin.update.prepareRun': 'Προετοιμασία',
+  'admin.update.preparing': 'Προετοιμασία…',
+  'admin.update.prepareError': 'Δεν ήταν δυνατή η προετοιμασία της ενημέρωσης',
+  'admin.update.backupDone': 'Δημιουργήθηκε αντίγραφο ασφαλείας: {filename}',
+  'admin.update.backupFailed': 'Δεν ήταν δυνατή η δημιουργία αντιγράφου ({error}). Συνεχίστε μόνο αν έχετε ένα αλλού.',
+  'admin.update.stepsTitle': 'Εκτελέστε τα στον διακομιστή',
+  'admin.update.copy': 'Αντιγραφή',
+  'admin.update.copied': 'Αντιγράφηκε',
+  'admin.update.releaseNotes': 'Σημειώσεις έκδοσης',
+  'admin.update.afterTitle': 'Έπειτα',
+  'admin.update.afterText':
+    'Επαναφορτώστε αυτή τη σελίδα μόλις εκτελεστεί η νέα έκδοση. Η ενημέρωση δεν αγγίζει τα δεδομένα σας.',
+  'admin.update.deploy.notDocker':
+    'Αυτή η εγκατάσταση δεν εκτελείται σε Docker, επομένως τα βήματα εξαρτώνται από τον τρόπο εγκατάστασης.',
+  'admin.update.deploy.publishedImage': 'Αυτή η εγκατάσταση ακολουθεί τη δημοσιευμένη εικόνα.',
+  'admin.update.deploy.sourceBuild': 'Αυτή η εγκατάσταση έχει μεταγλωττιστεί από πηγαίο κώδικα.',
+  'admin.update.step.pull': 'Ενημέρωση του checkout',
+  'admin.update.step.pullNote':
+    'Τα δικά σας commits είναι εδώ, άρα αυτό το βήμα φέρνει τη νέα έκδοση. Η δημοσιευμένη εικόνα δεν τα περιέχει.',
+  'admin.update.step.rebuild': 'Επαναμεταγλώττιση και επανεκκίνηση',
+  'admin.update.step.rebuildNote':
+    'Μεταγλωττίζει την εικόνα από το παραπάνω checkout και αντικαθιστά το ενεργό container.',
+  'admin.update.step.pullImageNote':
+    'Ένα σύμβολο σε γωνιακές αγκύλες σημαίνει ότι ο διακομιστής δεν βλέπει το όνομα της εικόνας σας — βρίσκεται στο κέλυφος που εκτελεί το compose, όχι στο container. Συμπληρώστε ό,τι χρησιμοποιεί το compose αρχείο σας.',
+  'admin.update.step.composePull': 'Λήψη της εικόνας που αναφέρει το compose αρχείο',
+  'admin.update.step.composeUp': 'Επαναδημιουργία του container',
+  'admin.update.step.reinstall': 'Εκτελέστε ξανά τη μέθοδο εγκατάστασης ή ενημέρωσης',
+  'admin.update.step.reinstallNote':
+    'Για παράδειγμα, στο Proxmox Community Scripts εκτελέστε την ενημέρωση από την κονσόλα LXC.',
 };
 export default admin;

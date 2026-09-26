@@ -398,7 +398,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Предоставлять фотографии для «Воспоминаний»',
   'admin.plugins.perm.hook:calendar-source': 'Предоставлять события для календаря',
   'admin.plugins.perm.hook:place-detail-provider': 'Добавлять дополнительные сведения (отзывы, оценки, ссылки) к месту',
-  'admin.plugins.perm.hook:search-provider': 'Отвечает на поиск мест из собственного индекса, рядом с результатами TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Отвечает на поиск мест из собственного индекса, рядом с результатами TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Выдавать предупреждения проверки для поездки (отображаются в планировщике)',
   'admin.plugins.perm.hook:table-contributor':
@@ -827,5 +828,36 @@ const admin: TranslationStrings = {
     'По умолчанию используется AMap; в каждой форме поиска можно вернуться к нативным источникам TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Siapkan pembaruan',
+  'admin.update.prepareTitle': 'Siapkan pembaruan ke {version}',
+  'admin.update.prepareIntro':
+    'Instans ini tidak dapat memperbarui dirinya sendiri: ia berjalan tanpa hak istimewa yang diperlukan. Ia akan memverifikasi rilis, membuat cadangan, dan memberi Anda perintah untuk dijalankan di server.',
+  'admin.update.prepareRun': 'Siapkan',
+  'admin.update.preparing': 'Menyiapkan…',
+  'admin.update.prepareError': 'Tidak dapat menyiapkan pembaruan',
+  'admin.update.backupDone': 'Cadangan dibuat: {filename}',
+  'admin.update.backupFailed': 'Cadangan tidak dapat dibuat ({error}). Lanjutkan hanya jika Anda punya di tempat lain.',
+  'admin.update.stepsTitle': 'Jalankan di server',
+  'admin.update.copy': 'Salin',
+  'admin.update.copied': 'Disalin',
+  'admin.update.releaseNotes': 'Catatan rilis',
+  'admin.update.afterTitle': 'Setelahnya',
+  'admin.update.afterText':
+    'Muat ulang halaman ini setelah versi baru berjalan. Pembaruan itu sendiri tidak menyentuh data Anda.',
+  'admin.update.deploy.notDocker':
+    'Instans ini tidak berjalan di Docker, jadi langkahnya bergantung pada cara Anda memasangnya.',
+  'admin.update.deploy.publishedImage': 'Instans ini mengikuti image yang diterbitkan.',
+  'admin.update.deploy.sourceBuild': 'Instans ini dibangun dari checkout sumber.',
+  'admin.update.step.pull': 'Perbarui checkout',
+  'admin.update.step.pullNote':
+    'Commit Anda sendiri ada di sini, jadi langkah inilah yang membawa versi baru. Image yang diterbitkan tidak memilikinya.',
+  'admin.update.step.rebuild': 'Bangun ulang dan mulai ulang',
+  'admin.update.step.rebuildNote': 'Membangun image dari checkout di atas, lalu mengganti kontainer yang berjalan.',
+  'admin.update.step.pullImageNote':
+    'Placeholder dalam kurung siku berarti server ini tidak dapat melihat nama image Anda — nama itu ada di shell yang menjalankan compose, bukan di dalam kontainer. Isikan yang dipakai berkas compose Anda.',
+  'admin.update.step.composePull': 'Ambil image yang dirujuk berkas compose',
+  'admin.update.step.composeUp': 'Buat ulang kontainer',
+  'admin.update.step.reinstall': 'Jalankan lagi metode pemasangan atau pembaruan Anda',
+  'admin.update.step.reinstallNote': 'Misalnya, di Proxmox Community Scripts jalankan pembaruan dari konsol LXC.',
 };
 export default admin;

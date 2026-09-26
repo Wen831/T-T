@@ -400,7 +400,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Fournir des photos à Photos',
   'admin.plugins.perm.hook:calendar-source': 'Fournir des événements au calendrier',
   'admin.plugins.perm.hook:place-detail-provider': 'Ajouter des détails supplémentaires (avis, notes, liens) à un lieu',
-  'admin.plugins.perm.hook:search-provider': 'Répondre aux recherches de lieux depuis son propre index, à côté des résultats de TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Répondre aux recherches de lieux depuis son propre index, à côté des résultats de TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Émettre des avertissements de validation sur un voyage (affichés dans le planificateur)',
   'admin.plugins.perm.hook:table-contributor':
@@ -834,5 +835,33 @@ const admin: TranslationStrings = {
     'Utilise AMap par défaut ; chaque formulaire de recherche peut revenir aux sources natives TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': '准备更新',
+  'admin.update.prepareTitle': '准备更新到 {version}',
+  'admin.update.prepareIntro':
+    '此实例无法自行更新：它以不具备所需权限的方式运行。它会校验版本、创建备份，并给出在服务器上执行的命令。',
+  'admin.update.prepareRun': '准备',
+  'admin.update.preparing': '准备中…',
+  'admin.update.prepareError': '无法准备更新',
+  'admin.update.backupDone': '已创建备份：{filename}',
+  'admin.update.backupFailed': '无法创建备份（{error}）。仅当你在别处已有备份时才继续。',
+  'admin.update.stepsTitle': '在服务器上执行',
+  'admin.update.copy': '复制',
+  'admin.update.copied': '已复制',
+  'admin.update.releaseNotes': '发行说明',
+  'admin.update.afterTitle': '之后',
+  'admin.update.afterText': '新版本运行后请重新加载本页。更新本身不会改动你的数据。',
+  'admin.update.deploy.notDocker': '此实例不在 Docker 中运行，步骤取决于你的安装方式。',
+  'admin.update.deploy.publishedImage': '此实例跟随已发布的镜像。',
+  'admin.update.deploy.sourceBuild': '此实例从源码检出构建。',
+  'admin.update.step.pull': '更新源码检出',
+  'admin.update.step.pullNote': '你自己的提交在这里，所以这一步才带来新版本。已发布的镜像里没有它们。',
+  'admin.update.step.rebuild': '重新构建并重启',
+  'admin.update.step.rebuildNote': '从上面更新后的源码构建镜像，然后替换正在运行的容器。',
+  'admin.update.step.pullImageNote':
+    '尖括号里的占位符表示本服务器看不到你的镜像名——它在执行 compose 的 shell 里，不在容器内。请填入你的 compose 文件所用的名称。',
+  'admin.update.step.composePull': '拉取 compose 文件引用的镜像',
+  'admin.update.step.composeUp': '重建容器',
+  'admin.update.step.reinstall': '重新运行你的安装或更新方式',
+  'admin.update.step.reinstallNote': '例如在 Proxmox Community Scripts 上，从 LXC 控制台执行更新。',
 };
 export default admin;

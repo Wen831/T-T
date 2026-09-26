@@ -396,7 +396,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'Надавати фотографії для Спогадів',
   'admin.plugins.perm.hook:calendar-source': 'Надавати події для календаря',
   'admin.plugins.perm.hook:place-detail-provider': 'Додавати додаткові деталі (відгуки, оцінки, посилання) до місця',
-  'admin.plugins.perm.hook:search-provider': 'Відповідає на пошук місць із власного індексу, поруч із результатами TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Відповідає на пошук місць із власного індексу, поруч із результатами TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Створювати попередження перевірки для подорожі (показуються в планувальнику)',
   'admin.plugins.perm.hook:table-contributor': 'Додавати стовпці та дії до подань подорожі (бронювання, місця, дні)',
@@ -823,5 +824,35 @@ const admin: TranslationStrings = {
     'Типово використовується AMap; кожна форма пошуку може повернутися до нативних джерел TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Förbered uppdatering',
+  'admin.update.prepareTitle': 'Förbered uppdatering till {version}',
+  'admin.update.prepareIntro':
+    'Den här instansen kan inte uppdatera sig själv: den körs utan de behörigheter som krävs. Den verifierar versionen, tar en säkerhetskopia och ger dig kommandot att köra på servern.',
+  'admin.update.prepareRun': 'Förbered',
+  'admin.update.preparing': 'Förbereder…',
+  'admin.update.prepareError': 'Kunde inte förbereda uppdateringen',
+  'admin.update.backupDone': 'Säkerhetskopia skapad: {filename}',
+  'admin.update.backupFailed': 'Ingen säkerhetskopia kunde tas ({error}). Fortsätt bara om du har en någon annanstans.',
+  'admin.update.stepsTitle': 'Kör dessa på servern',
+  'admin.update.copy': 'Kopiera',
+  'admin.update.copied': 'Kopierat',
+  'admin.update.releaseNotes': 'Versionsinformation',
+  'admin.update.afterTitle': 'Efteråt',
+  'admin.update.afterText': 'Ladda om sidan när den nya versionen körs. Själva uppdateringen rör inte dina data.',
+  'admin.update.deploy.notDocker': 'Den här instansen körs inte i Docker, så stegen beror på hur du installerade den.',
+  'admin.update.deploy.publishedImage': 'Den här instansen följer den publicerade imagen.',
+  'admin.update.deploy.sourceBuild': 'Den här instansen är byggd från en källkodscheckout.',
+  'admin.update.step.pull': 'Uppdatera utcheckningen',
+  'admin.update.step.pullNote':
+    'Dina egna commits finns här, så det är detta steg som hämtar den nya versionen. Den publicerade imagen har dem inte.',
+  'admin.update.step.rebuild': 'Bygg om och starta om',
+  'admin.update.step.rebuildNote': 'Bygger imagen från utcheckningen ovan och ersätter den körande containern.',
+  'admin.update.step.pullImageNote':
+    'En platshållare i vinkelparenteser betyder att den här servern inte kan se ditt image-namn — det finns i skalet som kör compose, inte i containern. Fyll i vad din compose-fil använder.',
+  'admin.update.step.composePull': 'Hämta imagen som compose-filen anger',
+  'admin.update.step.composeUp': 'Återskapa containern',
+  'admin.update.step.reinstall': 'Kör om din installations- eller uppdateringsmetod',
+  'admin.update.step.reinstallNote':
+    'Till exempel: på Proxmox Community Scripts kör du uppdateringen från LXC-konsolen.',
 };
 export default admin;

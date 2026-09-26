@@ -391,7 +391,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Fornecer eventos para o calendário',
   'admin.plugins.perm.hook:place-detail-provider':
     'Contribuir com detalhes extras (avaliações, notas, links) para um local',
-  'admin.plugins.perm.hook:search-provider': 'Responder a buscas de locais a partir do próprio índice, ao lado dos resultados do TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Responder a buscas de locais a partir do próprio índice, ao lado dos resultados do TREK',
   'admin.plugins.perm.hook:trip-warning-provider': 'Emitir avisos de validação em uma viagem (exibidos no planejador)',
   'admin.plugins.perm.hook:table-contributor':
     'Adicionar colunas e ações às visualizações da viagem (reservas, locais, dias)',
@@ -817,5 +818,38 @@ const admin: TranslationStrings = {
   'admin.amapSearch.subtitle': 'Usa AMap por padrão; cada formulário de busca pode voltar às fontes nativas do TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Preparar actualización',
+  'admin.update.prepareTitle': 'Preparar actualización a {version}',
+  'admin.update.prepareIntro':
+    'Esta instancia no puede actualizarse sola: se ejecuta sin los privilegios necesarios. Verificará la versión, creará una copia de seguridad y le dará el comando para el servidor.',
+  'admin.update.prepareRun': 'Preparar',
+  'admin.update.preparing': 'Preparando…',
+  'admin.update.prepareError': 'No se pudo preparar la actualización',
+  'admin.update.backupDone': 'Copia creada: {filename}',
+  'admin.update.backupFailed': 'No se pudo crear ninguna copia ({error}). Continúe solo si tiene otra en otro lugar.',
+  'admin.update.stepsTitle': 'Ejecute esto en el servidor',
+  'admin.update.copy': 'Copiar',
+  'admin.update.copied': 'Copiado',
+  'admin.update.releaseNotes': 'Notas de la versión',
+  'admin.update.afterTitle': 'Después',
+  'admin.update.afterText':
+    'Recargue esta página cuando la nueva versión esté en marcha. La actualización no toca sus datos.',
+  'admin.update.deploy.notDocker':
+    'Esta instancia no se ejecuta en Docker, así que los pasos dependen de cómo la instaló.',
+  'admin.update.deploy.publishedImage': 'Esta instancia sigue la imagen publicada.',
+  'admin.update.deploy.sourceBuild': 'Esta instancia se compila desde un checkout del código fuente.',
+  'admin.update.step.pull': 'Actualizar el repositorio',
+  'admin.update.step.pullNote':
+    'Aquí están sus propios commits, así que este paso es el que trae la nueva versión. La imagen publicada no los tiene.',
+  'admin.update.step.rebuild': 'Recompilar y reiniciar',
+  'admin.update.step.rebuildNote':
+    'Compila la imagen desde el repositorio anterior y reemplaza el contenedor en ejecución.',
+  'admin.update.step.pullImageNote':
+    'Un marcador entre ángulos significa que este servidor no puede ver el nombre de su imagen: está en el shell que ejecuta compose, no en el contenedor. Escriba el que use su archivo compose.',
+  'admin.update.step.composePull': 'Obtener la imagen indicada por el archivo compose',
+  'admin.update.step.composeUp': 'Recrear el contenedor',
+  'admin.update.step.reinstall': 'Vuelva a ejecutar su método de instalación o actualización',
+  'admin.update.step.reinstallNote':
+    'Por ejemplo, en Proxmox Community Scripts ejecute la actualización desde la consola LXC.',
 };
 export default admin;

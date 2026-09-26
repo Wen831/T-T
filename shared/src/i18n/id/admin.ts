@@ -446,7 +446,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Menyediakan acara untuk kalender',
   'admin.plugins.perm.hook:place-detail-provider':
     'Menyumbangkan detail tambahan (ulasan, peringkat, tautan) untuk suatu tempat',
-  'admin.plugins.perm.hook:search-provider': 'Menjawab penelusuran tempat dari indeksnya sendiri, di samping hasil TREK sendiri',
+  'admin.plugins.perm.hook:search-provider':
+    'Menjawab penelusuran tempat dari indeksnya sendiri, di samping hasil TREK sendiri',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Munculkan peringatan validasi pada perjalanan (ditampilkan di perencana)',
   'admin.plugins.perm.hook:table-contributor':
@@ -829,5 +830,34 @@ const admin: TranslationStrings = {
     'Menggunakan AMap secara bawaan; setiap formulir pencarian dapat beralih kembali ke sumber native TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'تجهيز التحديث',
+  'admin.update.prepareTitle': 'تجهيز التحديث إلى {version}',
+  'admin.update.prepareIntro':
+    'لا يمكن لهذا المثيل تحديث نفسه: فهو يعمل دون الصلاحيات اللازمة. سيتحقق من الإصدار وينشئ نسخة احتياطية ويمنحك الأمر لتشغيله على الخادم.',
+  'admin.update.prepareRun': 'تجهيز',
+  'admin.update.preparing': 'جارٍ التجهيز…',
+  'admin.update.prepareError': 'تعذّر تجهيز التحديث',
+  'admin.update.backupDone': 'تم إنشاء نسخة احتياطية: {filename}',
+  'admin.update.backupFailed': 'تعذّر إنشاء نسخة احتياطية ({error}). تابع فقط إن كانت لديك نسخة في مكان آخر.',
+  'admin.update.stepsTitle': 'نفّذ هذه على الخادم',
+  'admin.update.copy': 'نسخ',
+  'admin.update.copied': 'تم النسخ',
+  'admin.update.releaseNotes': 'ملاحظات الإصدار',
+  'admin.update.afterTitle': 'بعد ذلك',
+  'admin.update.afterText': 'أعد تحميل هذه الصفحة بعد تشغيل الإصدار الجديد. التحديث نفسه لا يمسّ بياناتك.',
+  'admin.update.deploy.notDocker': 'هذا المثيل لا يعمل داخل Docker، لذا تعتمد الخطوات على طريقة تثبيتك.',
+  'admin.update.deploy.publishedImage': 'هذا المثيل يتبع الصورة المنشورة.',
+  'admin.update.deploy.sourceBuild': 'هذا المثيل مبني من نسخة مصدرية.',
+  'admin.update.step.pull': 'تحديث النسخة المصدرية',
+  'admin.update.step.pullNote':
+    'التزاماتك الخاصة هنا، لذا هذه الخطوة هي التي تجلب الإصدار الجديد. الصورة المنشورة لا تحتوي عليها.',
+  'admin.update.step.rebuild': 'إعادة البناء وإعادة التشغيل',
+  'admin.update.step.rebuildNote': 'يبني الصورة من النسخة المصدرية أعلاه ثم يستبدل الحاوية العاملة.',
+  'admin.update.step.pullImageNote':
+    'العنصر النائب بين قوسين يعني أن هذا الخادم لا يرى اسم صورتك — فهو موجود في الصدفة التي تشغّل compose وليس داخل الحاوية. اكتب ما يستخدمه ملف compose لديك.',
+  'admin.update.step.composePull': 'جلب الصورة التي يشير إليها ملف compose',
+  'admin.update.step.composeUp': 'إعادة إنشاء الحاوية',
+  'admin.update.step.reinstall': 'أعد تشغيل طريقة التثبيت أو التحديث',
+  'admin.update.step.reinstallNote': 'على سبيل المثال، في Proxmox Community Scripts شغّل التحديث من وحدة تحكم LXC.',
 };
 export default admin;

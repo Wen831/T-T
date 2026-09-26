@@ -398,7 +398,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Fornire eventi al calendario',
   'admin.plugins.perm.hook:place-detail-provider':
     'Fornire dettagli aggiuntivi (recensioni, valutazioni, link) a un luogo',
-  'admin.plugins.perm.hook:search-provider': 'Rispondere alle ricerche di luoghi dal proprio indice, accanto ai risultati di TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Rispondere alle ricerche di luoghi dal proprio indice, accanto ai risultati di TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Segnala avvisi di validazione su un viaggio (mostrati nel pianificatore)',
   'admin.plugins.perm.hook:table-contributor':
@@ -829,5 +830,37 @@ const admin: TranslationStrings = {
     'Usa AMap per impostazione predefinita; ogni modulo di ricerca può tornare alle fonti native TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Preparar atualização',
+  'admin.update.prepareTitle': 'Preparar atualização para {version}',
+  'admin.update.prepareIntro':
+    'Esta instância não pode se atualizar sozinha: ela roda sem os privilégios necessários. Ela verificará a versão, criará um backup e dará o comando para executar no servidor.',
+  'admin.update.prepareRun': 'Preparar',
+  'admin.update.preparing': 'Preparando…',
+  'admin.update.prepareError': 'Não foi possível preparar a atualização',
+  'admin.update.backupDone': 'Backup criado: {filename}',
+  'admin.update.backupFailed': 'Não foi possível criar backup ({error}). Continue apenas se tiver um em outro lugar.',
+  'admin.update.stepsTitle': 'Execute no servidor',
+  'admin.update.copy': 'Copiar',
+  'admin.update.copied': 'Copiado',
+  'admin.update.releaseNotes': 'Notas da versão',
+  'admin.update.afterTitle': 'Depois',
+  'admin.update.afterText':
+    'Recarregue esta página quando a nova versão estiver rodando. A atualização em si não altera seus dados.',
+  'admin.update.deploy.notDocker':
+    'Esta instância não roda em Docker, então os passos dependem de como você a instalou.',
+  'admin.update.deploy.publishedImage': 'Esta instância segue a imagem publicada.',
+  'admin.update.deploy.sourceBuild': 'Esta instância é compilada a partir de um checkout do código-fonte.',
+  'admin.update.step.pull': 'Atualizar o checkout',
+  'admin.update.step.pullNote':
+    'Seus próprios commits estão aqui, então este é o passo que traz a nova versão. A imagem publicada não os tem.',
+  'admin.update.step.rebuild': 'Recompilar e reiniciar',
+  'admin.update.step.rebuildNote': 'Compila a imagem do checkout acima e substitui o contêiner em execução.',
+  'admin.update.step.pullImageNote':
+    'Um espaço reservado entre colchetes angulares significa que este servidor não vê o nome da sua imagem — ele está no shell que executa o compose, não no contêiner. Preencha com o que seu arquivo compose usa.',
+  'admin.update.step.composePull': 'Buscar a imagem referenciada pelo arquivo compose',
+  'admin.update.step.composeUp': 'Recriar o contêiner',
+  'admin.update.step.reinstall': 'Execute novamente seu método de instalação ou atualização',
+  'admin.update.step.reinstallNote':
+    'Por exemplo, no Proxmox Community Scripts execute a atualização pelo console LXC.',
 };
 export default admin;

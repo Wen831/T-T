@@ -754,5 +754,36 @@ const admin: TranslationStrings = {
   'admin.invite.tripNone': '不选择行程',
   'admin.invite.tripHint': '新用户通过链接注册时会自动加入此行程。',
   'admin.invite.boundTo': '加入 {trip}',
+  'admin.update.prepare': 'Підготувати оновлення',
+  'admin.update.prepareTitle': 'Підготувати оновлення до {version}',
+  'admin.update.prepareIntro':
+    'Цей примірник не може оновити себе сам: він працює без потрібних для цього прав. Він перевірить реліз, створить резервну копію та надасть команду для сервера.',
+  'admin.update.prepareRun': 'Підготувати',
+  'admin.update.preparing': 'Підготовка…',
+  'admin.update.prepareError': 'Не вдалося підготувати оновлення',
+  'admin.update.backupDone': 'Резервну копію створено: {filename}',
+  'admin.update.backupFailed':
+    'Не вдалося створити резервну копію ({error}). Продовжуйте, лише якщо вона у вас є в іншому місці.',
+  'admin.update.stepsTitle': 'Виконайте на сервері',
+  'admin.update.copy': 'Копіювати',
+  'admin.update.copied': 'Скопійовано',
+  'admin.update.releaseNotes': 'Примітки до випуску',
+  'admin.update.afterTitle': 'Після',
+  'admin.update.afterText':
+    'Перезавантажте цю сторінку, коли нова версія працюватиме. Саме оновлення не зачіпає ваші дані.',
+  'admin.update.deploy.notDocker': 'Цей примірник працює не в Docker, тож кроки залежать від способу встановлення.',
+  'admin.update.deploy.publishedImage': 'Цей примірник використовує опублікований образ.',
+  'admin.update.deploy.sourceBuild': 'Цей примірник зібрано з вихідного коду.',
+  'admin.update.step.pull': 'Оновити вихідний код',
+  'admin.update.step.pullNote':
+    'Тут ваші власні коміти, тож саме цей крок приносить нову версію. В опублікованому образі їх немає.',
+  'admin.update.step.rebuild': 'Перезібрати та перезапустити',
+  'admin.update.step.rebuildNote': 'Збирає образ з оновленого коду та замінює робочий контейнер.',
+  'admin.update.step.pullImageNote':
+    'Заповнювач у кутових дужках означає, що сервер не бачить назви вашого образу — вона в оболонці, що запускає compose, а не в контейнері. Впишіть те, що вказано у вашому compose-файлі.',
+  'admin.update.step.composePull': 'Отримати образ, вказаний у compose-файлі',
+  'admin.update.step.composeUp': 'Перестворити контейнер',
+  'admin.update.step.reinstall': 'Повторно запустіть спосіб встановлення чи оновлення',
+  'admin.update.step.reinstallNote': 'Наприклад, у Proxmox Community Scripts запустіть оновлення з консолі LXC.',
 };
 export default admin;

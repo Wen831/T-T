@@ -735,9 +735,13 @@ describe('AdminPage', () => {
 
       fireEvent.click(screen.getByRole('button', { name: /how to update/i }));
 
+      // The dialog opens with the explanation and the Prepare button; the
+      // commands appear only once the operator asks for them, because preparing
+      // writes a backup.
       await waitFor(() => {
-        expect(screen.getByText(/docker compose pull/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /^prepare$/i })).toBeInTheDocument();
       });
+      expect(screen.queryByText(/docker compose pull/i)).not.toBeInTheDocument();
     });
   });
 
@@ -957,13 +961,13 @@ describe('AdminPage', () => {
       await waitFor(() => expect(screen.getByText(/update available/i)).toBeInTheDocument());
 
       fireEvent.click(screen.getByRole('button', { name: /how to update/i }));
-      await waitFor(() => expect(screen.getByText(/docker compose pull/i)).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByRole('button', { name: /^prepare$/i })).toBeInTheDocument());
 
       // Click the Close button to dismiss the modal
       fireEvent.click(screen.getByRole('button', { name: /close/i }));
 
       await waitFor(() => {
-        expect(screen.queryByText(/docker compose pull/i)).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /^prepare$/i })).not.toBeInTheDocument();
       });
     });
   });

@@ -820,5 +820,37 @@ const admin: TranslationStrings = {
   'admin.amapSearch.title': '',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Pulihkan kemas kini',
+  'admin.update.prepareTitle': 'Sediakan kemas kini ke {version}',
+  'admin.update.prepareIntro':
+    'Contoh ini tidak boleh mengemas kini dirinya sendiri: ia berjalan tanpa keistimewaan yang diperlukan. Ia akan mengesahkan keluaran, membuat sandaran dan memberikan arahan untuk dijalankan pada pelayan.',
+  'admin.update.prepareRun': 'Sediakan',
+  'admin.update.preparing': 'Menyediakan…',
+  'admin.update.prepareError': 'Tidak dapat menyediakan kemas kini',
+  'admin.update.backupDone': 'Sandaran dibuat: {filename}',
+  'admin.update.backupFailed': 'Sandaran tidak dapat dibuat ({error}). Teruskan hanya jika anda ada di tempat lain.',
+  'admin.update.stepsTitle': 'Jalankan pada pelayan',
+  'admin.update.copy': 'Salin',
+  'admin.update.copied': 'Disalin',
+  'admin.update.releaseNotes': 'Nota keluaran',
+  'admin.update.afterTitle': 'Selepas itu',
+  'admin.update.afterText':
+    'Muat semula halaman ini apabila versi baharu berjalan. Kemas kini itu sendiri tidak menyentuh data anda.',
+  'admin.update.deploy.notDocker':
+    'Contoh ini tidak berjalan dalam Docker, jadi langkahnya bergantung pada cara anda memasangnya.',
+  'admin.update.deploy.publishedImage': 'Contoh ini mengikut imej yang diterbitkan.',
+  'admin.update.deploy.sourceBuild': 'Contoh ini dibina daripada sumber.',
+  'admin.update.step.pull': 'Kemas kini checkout',
+  'admin.update.step.pullNote':
+    'Commit anda sendiri ada di sini, jadi langkah inilah yang membawa versi baharu. Imej yang diterbitkan tiada.',
+  'admin.update.step.rebuild': 'Bina semula dan mulakan semula',
+  'admin.update.step.rebuildNote':
+    'Membina imej daripada checkout di atas, kemudian menggantikan kontena yang berjalan.',
+  'admin.update.step.pullImageNote':
+    'Ruang letak dalam kurungan sudut bermaksud pelayan ini tidak nampak nama imej anda — ia berada dalam shell yang menjalankan compose, bukan dalam kontena. Isikan apa yang digunakan oleh fail compose anda.',
+  'admin.update.step.composePull': 'Ambil imej yang dirujuk oleh fail compose',
+  'admin.update.step.composeUp': 'Cipta semula kontena',
+  'admin.update.step.reinstall': 'Jalankan semula kaedah pemasangan atau kemas kini anda',
+  'admin.update.step.reinstallNote': 'Contohnya, pada Proxmox Community Scripts jalankan kemas kini dari konsol LXC.',
 };
 export default admin;

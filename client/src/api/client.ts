@@ -867,6 +867,12 @@ export const adminApi = {
     }
   },
   checkVersion: () => apiClient.get('/admin/version-check').then((r) => r.data),
+  /**
+   * Prepare an update: verify the release, take a backup, and return the command
+   * to run on the host. A POST because it writes a backup archive — and it never
+   * performs the update, which this process has no privileges for.
+   */
+  prepareUpdate: () => apiClient.post('/admin/update-prepare').then((r) => r.data),
   getBagTracking: () => apiClient.get('/admin/bag-tracking').then((r) => r.data),
   updateBagTracking: (enabled: boolean) => apiClient.put('/admin/bag-tracking', { enabled }).then((r) => r.data),
   getPlacesPhotos: () => apiClient.get('/admin/places-photos').then((r) => r.data),

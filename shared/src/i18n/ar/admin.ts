@@ -799,5 +799,38 @@ const admin: TranslationStrings = {
   'admin.amapSearch.subtitle': 'يستخدم AMap افتراضيًا؛ يمكن لكل نموذج بحث العودة إلى مصادر TREK الأصلية.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Update vorbereiten',
+  'admin.update.prepareTitle': 'Update auf {version} vorbereiten',
+  'admin.update.prepareIntro':
+    'Diese Instanz kann sich nicht selbst aktualisieren: Ihr fehlen die dafür nötigen Rechte. Sie prüft das Release, erstellt ein Backup und gibt Ihnen den Befehl für den Server.',
+  'admin.update.prepareRun': 'Vorbereiten',
+  'admin.update.preparing': 'Wird vorbereitet…',
+  'admin.update.prepareError': 'Update konnte nicht vorbereitet werden',
+  'admin.update.backupDone': 'Backup erstellt: {filename}',
+  'admin.update.backupFailed':
+    'Es konnte kein Backup erstellt werden ({error}). Fahren Sie nur fort, wenn Sie anderweitig eines haben.',
+  'admin.update.stepsTitle': 'Auf dem Server ausführen',
+  'admin.update.copy': 'Kopieren',
+  'admin.update.copied': 'Kopiert',
+  'admin.update.releaseNotes': 'Versionshinweise',
+  'admin.update.afterTitle': 'Danach',
+  'admin.update.afterText':
+    'Laden Sie diese Seite neu, sobald die neue Version läuft. Das Update selbst berührt Ihre Daten nicht.',
+  'admin.update.deploy.notDocker':
+    'Diese Instanz läuft nicht in Docker; die Schritte hängen von Ihrer Installationsart ab.',
+  'admin.update.deploy.publishedImage': 'Diese Instanz folgt dem veröffentlichten Image.',
+  'admin.update.deploy.sourceBuild': 'Diese Instanz wird aus einem Quellcode-Checkout gebaut.',
+  'admin.update.step.pull': 'Checkout aktualisieren',
+  'admin.update.step.pullNote':
+    'Hier liegen Ihre eigenen Commits, daher bringt dieser Schritt die neue Version. Das veröffentlichte Image enthält sie nicht.',
+  'admin.update.step.rebuild': 'Neu bauen und neu starten',
+  'admin.update.step.rebuildNote': 'Baut das Image aus dem obigen Checkout und ersetzt den laufenden Container.',
+  'admin.update.step.pullImageNote':
+    'Ein Platzhalter in spitzen Klammern bedeutet, dass dieser Server Ihren Image-Namen nicht kennt — er steht in der Shell, die compose ausführt, nicht im Container. Tragen Sie ein, was Ihre Compose-Datei verwendet.',
+  'admin.update.step.composePull': 'Das vom Compose-File referenzierte Image holen',
+  'admin.update.step.composeUp': 'Container neu erstellen',
+  'admin.update.step.reinstall': 'Ihre Installations- oder Update-Methode erneut ausführen',
+  'admin.update.step.reinstallNote':
+    'Zum Beispiel bei Proxmox Community Scripts das Update aus der LXC-Konsole ausführen.',
 };
 export default admin;

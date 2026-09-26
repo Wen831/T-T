@@ -834,5 +834,37 @@ const admin: TranslationStrings = {
   'admin.amapSearch.subtitle': 'Domyślnie używa AMap; każde pole wyszukiwania może wrócić do natywnych źródeł TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Frissítés előkészítése',
+  'admin.update.prepareTitle': 'Frissítés előkészítése erre: {version}',
+  'admin.update.prepareIntro':
+    'Ez a példány nem tudja magát frissíteni: a szükséges jogosultságok nélkül fut. Ellenőrzi a kiadást, biztonsági mentést készít, és megadja a szerveren futtatandó parancsot.',
+  'admin.update.prepareRun': 'Előkészítés',
+  'admin.update.preparing': 'Előkészítés…',
+  'admin.update.prepareError': 'Nem sikerült előkészíteni a frissítést',
+  'admin.update.backupDone': 'Biztonsági mentés elkészült: {filename}',
+  'admin.update.backupFailed':
+    'Nem sikerült biztonsági mentést készíteni ({error}). Csak akkor folytassa, ha máshol van ilyen.',
+  'admin.update.stepsTitle': 'Futtassa a szerveren',
+  'admin.update.copy': 'Másolás',
+  'admin.update.copied': 'Másolva',
+  'admin.update.releaseNotes': 'Kiadási megjegyzések',
+  'admin.update.afterTitle': 'Utána',
+  'admin.update.afterText':
+    'Töltse újra ezt az oldalt, amint az új verzió fut. Maga a frissítés nem érinti az adatait.',
+  'admin.update.deploy.notDocker': 'Ez a példány nem Dockerben fut, így a lépések a telepítés módjától függenek.',
+  'admin.update.deploy.publishedImage': 'Ez a példány a közzétett image-et követi.',
+  'admin.update.deploy.sourceBuild': 'Ez a példány forráskódból épül.',
+  'admin.update.step.pull': 'A checkout frissítése',
+  'admin.update.step.pullNote':
+    'A saját commitjai itt vannak, tehát ez a lépés hozza az új verziót. A közzétett image nem tartalmazza őket.',
+  'admin.update.step.rebuild': 'Újraépítés és újraindítás',
+  'admin.update.step.rebuildNote': 'Az image-et a fenti checkoutból építi, majd lecseréli a futó konténert.',
+  'admin.update.step.pullImageNote':
+    'A csúcsos zárójeles helyőrző azt jelenti, hogy ez a szerver nem látja az image nevét — az a compose-t futtató shellben van, nem a konténerben. Írja be, amit a compose fájlja használ.',
+  'admin.update.step.composePull': 'A compose fájl által hivatkozott image letöltése',
+  'admin.update.step.composeUp': 'A konténer újralétrehozása',
+  'admin.update.step.reinstall': 'Futtassa újra a telepítési vagy frissítési módot',
+  'admin.update.step.reinstallNote':
+    'Például a Proxmox Community Scripts esetén az LXC konzolból futtassa a frissítést.',
 };
 export default admin;

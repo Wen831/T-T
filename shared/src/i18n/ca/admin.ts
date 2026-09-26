@@ -733,5 +733,38 @@ const admin: TranslationStrings = {
   'admin.amapSearch.title': '',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Préparer la mise à jour',
+  'admin.update.prepareTitle': 'Préparer la mise à jour vers {version}',
+  'admin.update.prepareIntro':
+    "Cette instance ne peut pas se mettre à jour elle-même : elle s'exécute sans les privilèges nécessaires. Elle vérifiera la version, créera une sauvegarde et vous donnera la commande à exécuter sur le serveur.",
+  'admin.update.prepareRun': 'Préparer',
+  'admin.update.preparing': 'Préparation…',
+  'admin.update.prepareError': 'Impossible de préparer la mise à jour',
+  'admin.update.backupDone': 'Sauvegarde créée : {filename}',
+  'admin.update.backupFailed':
+    "Aucune sauvegarde n'a pu être créée ({error}). Continuez uniquement si vous en avez une ailleurs.",
+  'admin.update.stepsTitle': 'À exécuter sur le serveur',
+  'admin.update.copy': 'Copier',
+  'admin.update.copied': 'Copié',
+  'admin.update.releaseNotes': 'Notes de version',
+  'admin.update.afterTitle': 'Ensuite',
+  'admin.update.afterText':
+    'Rechargez cette page une fois la nouvelle version démarrée. La mise à jour ne touche pas à vos données.',
+  'admin.update.deploy.notDocker':
+    "Cette instance ne s'exécute pas dans Docker ; les étapes dépendent de votre méthode d'installation.",
+  'admin.update.deploy.publishedImage': "Cette instance suit l'image publiée.",
+  'admin.update.deploy.sourceBuild': 'Cette instance est construite depuis un dépôt de sources.',
+  'admin.update.step.pull': 'Mettre à jour le dépôt',
+  'admin.update.step.pullNote':
+    "Vos propres commits sont ici : c'est cette étape qui apporte la nouvelle version. L'image publiée ne les contient pas.",
+  'admin.update.step.rebuild': 'Reconstruire et redémarrer',
+  'admin.update.step.rebuildNote': "Construit l'image depuis le dépôt ci-dessus, puis remplace le conteneur en cours.",
+  'admin.update.step.pullImageNote':
+    'Un espace réservé entre chevrons signifie que ce serveur ne voit pas le nom de votre image : il est dans le shell qui lance compose, pas dans le conteneur. Indiquez celui de votre fichier compose.',
+  'admin.update.step.composePull': "Récupérer l'image référencée par le fichier compose",
+  'admin.update.step.composeUp': 'Recréer le conteneur',
+  'admin.update.step.reinstall': "Relancez votre méthode d'installation ou de mise à jour",
+  'admin.update.step.reinstallNote':
+    'Par exemple, sur Proxmox Community Scripts, lancez la mise à jour depuis la console LXC.',
 };
 export default admin;

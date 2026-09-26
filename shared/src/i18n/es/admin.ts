@@ -400,7 +400,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Proporcionar eventos al calendario',
   'admin.plugins.perm.hook:place-detail-provider':
     'Aportar detalles adicionales (reseñas, valoraciones, enlaces) a un lugar',
-  'admin.plugins.perm.hook:search-provider': 'Responder a las búsquedas de lugares desde su propio índice, junto a los resultados de TREK',
+  'admin.plugins.perm.hook:search-provider':
+    'Responder a las búsquedas de lugares desde su propio índice, junto a los resultados de TREK',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Generar advertencias de validación en un viaje (mostradas en el planificador)',
   'admin.plugins.perm.hook:table-contributor':
@@ -836,5 +837,36 @@ const admin: TranslationStrings = {
     'Usa AMap por defecto; cada formulario de búsqueda puede volver a las fuentes nativas de TREK.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Подготовить обновление',
+  'admin.update.prepareTitle': 'Подготовить обновление до {version}',
+  'admin.update.prepareIntro':
+    'Этот экземпляр не может обновиться сам: он работает без нужных для этого прав. Он проверит релиз, создаст резервную копию и выдаст команду для сервера.',
+  'admin.update.prepareRun': 'Подготовить',
+  'admin.update.preparing': 'Подготовка…',
+  'admin.update.prepareError': 'Не удалось подготовить обновление',
+  'admin.update.backupDone': 'Резервная копия создана: {filename}',
+  'admin.update.backupFailed':
+    'Не удалось создать резервную копию ({error}). Продолжайте, только если она у вас есть в другом месте.',
+  'admin.update.stepsTitle': 'Выполните на сервере',
+  'admin.update.copy': 'Копировать',
+  'admin.update.copied': 'Скопировано',
+  'admin.update.releaseNotes': 'Примечания к выпуску',
+  'admin.update.afterTitle': 'После',
+  'admin.update.afterText':
+    'Перезагрузите эту страницу, когда новая версия запустится. Само обновление данные не затрагивает.',
+  'admin.update.deploy.notDocker': 'Этот экземпляр работает не в Docker, поэтому шаги зависят от способа установки.',
+  'admin.update.deploy.publishedImage': 'Этот экземпляр использует опубликованный образ.',
+  'admin.update.deploy.sourceBuild': 'Этот экземпляр собран из исходного кода.',
+  'admin.update.step.pull': 'Обновить исходники',
+  'admin.update.step.pullNote':
+    'Здесь ваши собственные коммиты, поэтому именно этот шаг приносит новую версию. В опубликованном образе их нет.',
+  'admin.update.step.rebuild': 'Пересобрать и перезапустить',
+  'admin.update.step.rebuildNote': 'Собирает образ из обновлённых исходников и заменяет работающий контейнер.',
+  'admin.update.step.pullImageNote':
+    'Заполнитель в угловых скобках означает, что сервер не видит имя вашего образа: оно находится в оболочке, запускающей compose, а не в контейнере. Впишите то, что указано в вашем compose-файле.',
+  'admin.update.step.composePull': 'Забрать образ, указанный в compose-файле',
+  'admin.update.step.composeUp': 'Пересоздать контейнер',
+  'admin.update.step.reinstall': 'Повторно запустите способ установки или обновления',
+  'admin.update.step.reinstallNote': 'Например, в Proxmox Community Scripts запустите обновление из консоли LXC.',
 };
 export default admin;

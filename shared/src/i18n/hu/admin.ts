@@ -402,7 +402,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Események biztosítása a naptárhoz',
   'admin.plugins.perm.hook:place-detail-provider':
     'További részletek (értékelések, minősítések, hivatkozások) hozzáadása egy helyhez',
-  'admin.plugins.perm.hook:search-provider': 'Saját indexéből válaszol a helykeresésekre, a TREK saját találatai mellett',
+  'admin.plugins.perm.hook:search-provider':
+    'Saját indexéből válaszol a helykeresésekre, a TREK saját találatai mellett',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Ellenőrzési figyelmeztetések megjelenítése egy utazáson (a tervezőben látható)',
   'admin.plugins.perm.hook:table-contributor':
@@ -834,5 +835,35 @@ const admin: TranslationStrings = {
     'Alapértelmezetten AMap-ot használ; minden helykereső mező visszaválthat a TREK natív forrásaira.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': '업데이트 준비',
+  'admin.update.prepareTitle': '{version}(으)로 업데이트 준비',
+  'admin.update.prepareIntro':
+    '이 인스턴스는 스스로 업데이트할 수 없습니다. 필요한 권한 없이 실행되기 때문입니다. 릴리스를 확인하고 백업을 만든 뒤 서버에서 실행할 명령을 알려드립니다.',
+  'admin.update.prepareRun': '준비',
+  'admin.update.preparing': '준비 중…',
+  'admin.update.prepareError': '업데이트를 준비할 수 없습니다',
+  'admin.update.backupDone': '백업 생성됨: {filename}',
+  'admin.update.backupFailed': '백업을 만들 수 없습니다({error}). 다른 곳에 백업이 있을 때만 계속하세요.',
+  'admin.update.stepsTitle': '서버에서 실행',
+  'admin.update.copy': '복사',
+  'admin.update.copied': '복사됨',
+  'admin.update.releaseNotes': '릴리스 노트',
+  'admin.update.afterTitle': '이후',
+  'admin.update.afterText':
+    '새 버전이 실행되면 이 페이지를 새로고침하세요. 업데이트 자체는 데이터를 건드리지 않습니다.',
+  'admin.update.deploy.notDocker': '이 인스턴스는 Docker에서 실행되지 않으므로 설치 방식에 따라 단계가 달라집니다.',
+  'admin.update.deploy.publishedImage': '이 인스턴스는 공개 이미지를 따릅니다.',
+  'admin.update.deploy.sourceBuild': '이 인스턴스는 소스 체크아웃에서 빌드됩니다.',
+  'admin.update.step.pull': '체크아웃 업데이트',
+  'admin.update.step.pullNote':
+    '여기에 본인의 커밋이 있으므로 이 단계가 새 버전을 가져옵니다. 공개 이미지에는 없습니다.',
+  'admin.update.step.rebuild': '다시 빌드하고 재시작',
+  'admin.update.step.rebuildNote': '위 체크아웃에서 이미지를 빌드한 뒤 실행 중인 컨테이너를 교체합니다.',
+  'admin.update.step.pullImageNote':
+    '꺾쇠괄호 안의 자리표시자는 이 서버가 이미지 이름을 볼 수 없다는 뜻입니다. 그 이름은 compose를 실행하는 셸에 있고 컨테이너 안에는 없습니다. compose 파일에 쓰인 이름을 채우세요.',
+  'admin.update.step.composePull': 'compose 파일이 참조하는 이미지 가져오기',
+  'admin.update.step.composeUp': '컨테이너 다시 만들기',
+  'admin.update.step.reinstall': '설치 또는 업데이트 방식을 다시 실행하세요',
+  'admin.update.step.reinstallNote': '예를 들어 Proxmox Community Scripts에서는 LXC 콘솔에서 업데이트를 실행하세요.',
 };
 export default admin;

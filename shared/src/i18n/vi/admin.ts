@@ -761,5 +761,35 @@ const admin: TranslationStrings = {
   'admin.amapSearch.title': '',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Güncellemeyi hazırla',
+  'admin.update.prepareTitle': '{version} sürümüne güncellemeyi hazırla',
+  'admin.update.prepareIntro':
+    'Bu örnek kendini güncelleyemez: gereken yetkiler olmadan çalışır. Sürümü doğrular, yedek alır ve sunucuda çalıştıracağınız komutu verir.',
+  'admin.update.prepareRun': 'Hazırla',
+  'admin.update.preparing': 'Hazırlanıyor…',
+  'admin.update.prepareError': 'Güncelleme hazırlanamadı',
+  'admin.update.backupDone': 'Yedek oluşturuldu: {filename}',
+  'admin.update.backupFailed': 'Yedek alınamadı ({error}). Yalnızca başka bir yerde varsa devam edin.',
+  'admin.update.stepsTitle': 'Bunları sunucuda çalıştırın',
+  'admin.update.copy': 'Kopyala',
+  'admin.update.copied': 'Kopyalandı',
+  'admin.update.releaseNotes': 'Sürüm notları',
+  'admin.update.afterTitle': 'Sonrasında',
+  'admin.update.afterText':
+    'Yeni sürüm çalışmaya başlayınca bu sayfayı yenileyin. Güncellemenin kendisi verilerinize dokunmaz.',
+  'admin.update.deploy.notDocker': 'Bu örnek Docker içinde çalışmıyor, bu yüzden adımlar kurulum şeklinize bağlıdır.',
+  'admin.update.deploy.publishedImage': 'Bu örnek yayımlanan imajı takip eder.',
+  'admin.update.deploy.sourceBuild': 'Bu örnek kaynak kodundan derlenir.',
+  'admin.update.step.pull': "Checkout'u güncelle",
+  'admin.update.step.pullNote':
+    "Kendi commit'leriniz burada, bu yüzden yeni sürümü getiren adım budur. Yayımlanan imajda onlar yok.",
+  'admin.update.step.rebuild': 'Yeniden derle ve başlat',
+  'admin.update.step.rebuildNote': "Yukarıdaki checkout'tan imajı derler, sonra çalışan konteyneri değiştirir.",
+  'admin.update.step.pullImageNote':
+    "Açılı parantez içindeki yer tutucu, bu sunucunun imaj adınızı göremediği anlamına gelir — o ad compose'u çalıştıran kabukta, konteynerde değil. Compose dosyanızın kullandığını yazın.",
+  'admin.update.step.composePull': 'Compose dosyasının belirttiği imajı çek',
+  'admin.update.step.composeUp': 'Konteyneri yeniden oluştur',
+  'admin.update.step.reinstall': 'Kurulum veya güncelleme yönteminizi yeniden çalıştırın',
+  'admin.update.step.reinstallNote': "Örneğin, Proxmox Community Scripts'te güncellemeyi LXC konsolundan çalıştırın.",
 };
 export default admin;

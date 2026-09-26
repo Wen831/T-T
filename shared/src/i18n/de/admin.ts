@@ -397,7 +397,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Termine für den Kalender bereitstellen',
   'admin.plugins.perm.hook:place-detail-provider':
     'Zusatzdetails (Bewertungen, Ratings, Links) zu einem Ort beisteuern',
-  'admin.plugins.perm.hook:search-provider': 'Beantwortet Ortssuchen aus dem eigenen Index, neben TREKs eigenen Ergebnissen',
+  'admin.plugins.perm.hook:search-provider':
+    'Beantwortet Ortssuchen aus dem eigenen Index, neben TREKs eigenen Ergebnissen',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Validierungswarnungen zu einer Reise ausgeben (im Planer angezeigt)',
   'admin.plugins.perm.hook:table-contributor':
@@ -827,5 +828,38 @@ const admin: TranslationStrings = {
     'AMap wird standardmäßig verwendet; jedes Ortssuchformular kann zurück zu den nativen TREK-Quellen wechseln.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Update voorbereiden',
+  'admin.update.prepareTitle': 'Update naar {version} voorbereiden',
+  'admin.update.prepareIntro':
+    'Deze instantie kan zichzelf niet bijwerken: hij draait zonder de daarvoor benodigde rechten. Hij verifieert de release, maakt een back-up en geeft u het commando voor de server.',
+  'admin.update.prepareRun': 'Voorbereiden',
+  'admin.update.preparing': 'Voorbereiden…',
+  'admin.update.prepareError': 'Update kon niet worden voorbereid',
+  'admin.update.backupDone': 'Back-up gemaakt: {filename}',
+  'admin.update.backupFailed':
+    'Er kon geen back-up worden gemaakt ({error}). Ga alleen verder als u er elders een heeft.',
+  'admin.update.stepsTitle': 'Voer dit uit op de server',
+  'admin.update.copy': 'Kopiëren',
+  'admin.update.copied': 'Gekopieerd',
+  'admin.update.releaseNotes': 'Release-opmerkingen',
+  'admin.update.afterTitle': 'Daarna',
+  'admin.update.afterText':
+    'Herlaad deze pagina zodra de nieuwe versie draait. De update zelf raakt uw gegevens niet aan.',
+  'admin.update.deploy.notDocker':
+    'Deze instantie draait niet in Docker; de stappen hangen af van hoe u het hebt geïnstalleerd.',
+  'admin.update.deploy.publishedImage': 'Deze instantie volgt de gepubliceerde image.',
+  'admin.update.deploy.sourceBuild': 'Deze instantie is gebouwd uit een source-checkout.',
+  'admin.update.step.pull': 'Checkout bijwerken',
+  'admin.update.step.pullNote':
+    'Uw eigen commits staan hier, dus deze stap brengt de nieuwe versie binnen. De gepubliceerde image heeft ze niet.',
+  'admin.update.step.rebuild': 'Opnieuw bouwen en herstarten',
+  'admin.update.step.rebuildNote': 'Bouwt de image uit de checkout hierboven en vervangt de draaiende container.',
+  'admin.update.step.pullImageNote':
+    'Een plaatsaanduiding tussen punthaken betekent dat deze server uw image-naam niet kan zien: die staat in de shell die compose uitvoert, niet in de container. Vul in wat uw compose-bestand gebruikt.',
+  'admin.update.step.composePull': 'De image ophalen die het compose-bestand noemt',
+  'admin.update.step.composeUp': 'Container opnieuw aanmaken',
+  'admin.update.step.reinstall': 'Voer uw installatie- of updatemethode opnieuw uit',
+  'admin.update.step.reinstallNote':
+    'Bijvoorbeeld: voer op Proxmox Community Scripts de update uit vanuit de LXC-console.',
 };
 export default admin;

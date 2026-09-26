@@ -42,5 +42,8 @@ export function buildBackupUploadOptions(storage: StorageService): MulterOptions
   ],
   controllers: [BackupController],
   providers: [BackupService, AutoBackupJob],
+  // Exported so the admin domain can take the backup an update is about to make
+  // worth having, without a second copy of the archive logic.
+  exports: [BackupService],
 })
 export class BackupModule {}

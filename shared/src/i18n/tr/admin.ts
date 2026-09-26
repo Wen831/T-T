@@ -443,7 +443,8 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Takvime etkinlik sağlar',
   'admin.plugins.perm.hook:place-detail-provider':
     'Bir yere ek ayrıntılar (yorumlar, puanlar, bağlantılar) katkıda bulunur',
-  'admin.plugins.perm.hook:search-provider': "Yer aramalarını kendi dizininden, TREK'in kendi sonuçlarının yanında yanıtlar",
+  'admin.plugins.perm.hook:search-provider':
+    "Yer aramalarını kendi dizininden, TREK'in kendi sonuçlarının yanında yanıtlar",
   'admin.plugins.perm.hook:trip-warning-provider': 'Bir gezide doğrulama uyarıları oluşturur (planlayıcıda gösterilir)',
   'admin.plugins.perm.hook:table-contributor':
     'Seyahat görünümlerine sütunlar ve eylemler ekler (rezervasyonlar, yerler, günler)',
@@ -831,5 +832,34 @@ const admin: TranslationStrings = {
     'Varsayılan olarak AMap kullanılır; her yer arama formu TREK yerel kaynaklarına dönebilir.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
+  'admin.update.prepare': 'Przygotuj aktualizację',
+  'admin.update.prepareTitle': 'Przygotuj aktualizację do {version}',
+  'admin.update.prepareIntro':
+    'Ta instancja nie może zaktualizować się sama: działa bez wymaganych uprawnień. Zweryfikuje wydanie, utworzy kopię zapasową i poda polecenie do uruchomienia na serwerze.',
+  'admin.update.prepareRun': 'Przygotuj',
+  'admin.update.preparing': 'Przygotowywanie…',
+  'admin.update.prepareError': 'Nie udało się przygotować aktualizacji',
+  'admin.update.backupDone': 'Utworzono kopię zapasową: {filename}',
+  'admin.update.backupFailed': 'Nie udało się utworzyć kopii ({error}). Kontynuuj tylko, jeśli masz ją gdzie indziej.',
+  'admin.update.stepsTitle': 'Uruchom na serwerze',
+  'admin.update.copy': 'Kopiuj',
+  'admin.update.copied': 'Skopiowano',
+  'admin.update.releaseNotes': 'Informacje o wydaniu',
+  'admin.update.afterTitle': 'Następnie',
+  'admin.update.afterText': 'Odśwież tę stronę, gdy nowa wersja będzie działać. Sama aktualizacja nie narusza danych.',
+  'admin.update.deploy.notDocker': 'Ta instancja nie działa w Dockerze, więc kroki zależą od sposobu instalacji.',
+  'admin.update.deploy.publishedImage': 'Ta instancja korzysta z opublikowanego obrazu.',
+  'admin.update.deploy.sourceBuild': 'Ta instancja jest budowana ze źródeł.',
+  'admin.update.step.pull': 'Zaktualizuj repozytorium',
+  'admin.update.step.pullNote':
+    'Twoje własne commity są tutaj, więc to ten krok wnosi nową wersję. Opublikowany obraz ich nie ma.',
+  'admin.update.step.rebuild': 'Przebuduj i uruchom ponownie',
+  'admin.update.step.rebuildNote': 'Buduje obraz z powyższego repo i zastępuje działający kontener.',
+  'admin.update.step.pullImageNote':
+    'Symbol zastępczy w nawiasach kątowych oznacza, że ten serwer nie widzi nazwy Twojego obrazu — znajduje się ona w powłoce uruchamiającej compose, a nie w kontenerze. Wpisz to, czego używa Twój plik compose.',
+  'admin.update.step.composePull': 'Pobierz obraz wskazany w pliku compose',
+  'admin.update.step.composeUp': 'Odtwórz kontener',
+  'admin.update.step.reinstall': 'Uruch ponownie metodę instalacji lub aktualizacji',
+  'admin.update.step.reinstallNote': 'Na przykład w Proxmox Community Scripts uruchom aktualizację z konsoli LXC.',
 };
 export default admin;
