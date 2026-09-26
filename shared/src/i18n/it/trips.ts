@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'I promemoria dei viaggi sono disabilitati. Abilitali in Admin > Impostazioni > Notifiche.',
   'trips.importTrekTab': 'Importa da TREK',
   'trips.importTrekIntro':
-    'Carica un backup TREK (.zip) e scegli i viaggi da copiare in TT — giorni, luoghi, prenotazioni, budget e foto arrivano con loro.',
+    'Carica un backup TT (.zip) e scegli i viaggi da copiare in TT — giorni, luoghi, prenotazioni, budget e foto arrivano con loro.',
   'trips.importTrekPick': 'Scegli backup TREK (.zip)',
   'trips.importTrekScanning': 'Lettura del backup…',
   'trips.importTrekImport': 'Importa i viaggi selezionati',

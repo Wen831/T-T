@@ -90,7 +90,7 @@ describe('FilesController (parity with the legacy /api/trips/:tripId/files route
       vi.mocked(isDemoEmail).mockReturnValue(true);
       expect(await rejected(fc(fsvc()).upload(user, '5', file, {}))).toEqual({
         status: 403,
-        body: { error: 'Uploads are disabled in demo mode. Self-host TREK for full functionality.' },
+        body: { error: 'Uploads are disabled in demo mode. Self-host TT for full functionality.' },
       });
     });
     it('403 without file_upload, 400 without a file, else commits + creates + broadcasts', async () => {

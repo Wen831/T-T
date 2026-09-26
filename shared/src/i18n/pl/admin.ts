@@ -321,7 +321,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'Repozytorium źródłowe',
   'admin.plugins.reportIssue': 'Zgłoś problem',
   'admin.plugins.homepage': 'Strona główna',
-  'admin.plugins.requiresTrek': 'Wymaga TREK {version}+',
+  'admin.plugins.requiresTrek': 'Wymaga TT {version}+',
   'admin.plugins.reviewedOn': 'Zweryfikowano {date}',
   'admin.plugins.perm.db:own': 'Przechowywanie własnych danych w izolowanej bazie danych',
   'admin.plugins.perm.db:read:trips': 'Odczyt podróży, do których działający użytkownik ma dostęp',
@@ -394,7 +394,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Dostarczanie wydarzeń do kalendarza',
   'admin.plugins.perm.hook:place-detail-provider':
     'Dodawanie dodatkowych szczegółów (recenzji, ocen, linków) do miejsca',
-  'admin.plugins.perm.hook:search-provider': 'Odpowiada na wyszukiwania miejsc z własnego indeksu, obok wyników TREK',
+  'admin.plugins.perm.hook:search-provider': 'Odpowiada na wyszukiwania miejsc z własnego indeksu, obok wyników TT',
   'admin.plugins.perm.hook:trip-warning-provider':
     'Zgłaszanie ostrzeżeń walidacyjnych dla podróży (widocznych w planerze)',
   'admin.plugins.perm.hook:table-contributor': 'Dodawanie kolumn i akcji do widoków podróży (rezerwacje, miejsca, dni)',
@@ -414,7 +414,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'Publikowanie narzędzi, które asystent AI może uruchomić w Twoim imieniu (działa z uprawnieniami nadanymi tutaj wtyczce, nie z własnymi)',
   'admin.plugins.perm.geolocation:read':
-    'Odczytywanie Twojej aktualnej lokalizacji, gdy otwarty jest któryś z jego widoków (TREK odczytuje ją z uprawnieniem do lokalizacji tej witryny, a nie z własnym uprawnieniem wtyczki)',
+    'Odczytywanie Twojej aktualnej lokalizacji, gdy otwarty jest któryś z jego widoków (TT odczytuje ją z uprawnieniem do lokalizacji tej witryny, a nie z własnym uprawnieniem wtyczki)',
   'admin.plugins.perm.hook:pdf-section-provider': 'Dołączanie sekcji tekstowych do eksportu PDF podróży',
   'admin.plugins.perm.hook:atlas-layer-provider':
     'Wyróżnianie krajów na mapie świata Atlasu (np. listy życzeń lub ostrzeżenia dla podróżnych)',
@@ -444,26 +444,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateKeptOff':
     'Aktualizacja zainstalowana — pozostaje wyłączona, dopóki nie zatwierdzisz nowych uprawnień',
   'admin.plugins.reviewedMeaning':
-    '„Zweryfikowana” oznacza, że opiekun TREK przeskanował tę wtyczkę pod kątem złośliwego oprogramowania w każdej wersji — nie pod kątem jakości ani tego, czy działa. To nie jest gwarancja, że wtyczka jest nieszkodliwa.',
+    '„Zweryfikowana” oznacza, że opiekun TT przeskanował tę wtyczkę pod kątem złośliwego oprogramowania w każdej wersji — nie pod kątem jakości ani tego, czy działa. To nie jest gwarancja, że wtyczka jest nieszkodliwa.',
   'admin.plugins.security.title': 'Jak wtyczki są izolowane — i jakie są tego granice',
   'admin.plugins.security.isolationTitle': 'Każda wtyczka działa w izolacji',
   'admin.plugins.security.isolationBody':
-    'Wtyczka działa jako własny, odizolowany proces, który może odczytywać wyłącznie swoje własne pliki. Nie może odczytać Twojej bazy danych, sekretu logowania ani klucza szyfrującego, nie może uruchamiać innych programów ani nigdzie zapisywać plików. Jej interfejs działa w zamkniętej ramce przeglądarki, która nie może odczytać Twojego pliku cookie sesji ani ingerować w otaczającą ją stronę TREK.',
+    'Wtyczka działa jako własny, odizolowany proces, który może odczytywać wyłącznie swoje własne pliki. Nie może odczytać Twojej bazy danych, sekretu logowania ani klucza szyfrującego, nie może uruchamiać innych programów ani nigdzie zapisywać plików. Jej interfejs działa w zamkniętej ramce przeglądarki, która nie może odczytać Twojego pliku cookie sesji ani ingerować w otaczającą ją stronę TT.',
   'admin.plugins.security.permsTitle': 'Co oznaczają uprawnienia',
   'admin.plugins.security.permsBody':
-    'Uprawnienia pokazywane przed instalacją to twarda granica, którą TREK egzekwuje w trakcie działania wtyczki — dosłownie nie może ona zrobić niczego, czego nie ma na liście. Mówią one jednak, co wtyczka może robić, a nie co faktycznie robi. Wtyczka, która może odczytywać Twoje podróże i łączyć się z serwerem, może wysłać Twoje podróże na ten serwer, dlatego czytaj uprawnienia i hosty wychodzące, a nie tylko opis.',
+    'Uprawnienia pokazywane przed instalacją to twarda granica, którą TT egzekwuje w trakcie działania wtyczki — dosłownie nie może ona zrobić niczego, czego nie ma na liście. Mówią one jednak, co wtyczka może robić, a nie co faktycznie robi. Wtyczka, która może odczytywać Twoje podróże i łączyć się z serwerem, może wysłać Twoje podróże na ten serwer, dlatego czytaj uprawnienia i hosty wychodzące, a nie tylko opis.',
   'admin.plugins.security.limitsTitle': 'Czego nie możemy obiecać',
   'admin.plugins.security.limitsBody':
-    'Izolacja to silna granica programowa, ale nie absolutna. Wtyczka działa dokładnie z tymi uprawnieniami, które zatwierdzisz, więc w ich ramach może zachowywać się inaczej, niż sugeruje jej opis, i może wysyłać dane, do których ma zgodny z uprawnieniami dostęp, do zadeklarowanych przez siebie hostów. TREK nie odczytuje ani nie ocenia tego, co faktycznie robi kod wtyczki.',
+    'Izolacja to silna granica programowa, ale nie absolutna. Wtyczka działa dokładnie z tymi uprawnieniami, które zatwierdzisz, więc w ich ramach może zachowywać się inaczej, niż sugeruje jej opis, i może wysyłać dane, do których ma zgodny z uprawnieniami dostęp, do zadeklarowanych przez siebie hostów. TT nie odczytuje ani nie ocenia tego, co faktycznie robi kod wtyczki.',
   'admin.plugins.security.worstTitle': 'Najgorszy scenariusz',
   'admin.plugins.security.worstBody':
     'Wroga wtyczka, którą włączysz, może nadużyć danych i połączeń, które jej przyznałeś — na przykład ujawnić podróże, które może odczytywać. Nie może wykraść haseł, sfałszować logowania administratora, uruchamiać poleceń na Twoim serwerze ani sięgać po dane, których jej nie przyznałeś. Szkody pozostają w granicach tego, co zatwierdziłeś, a wyłączenie wtyczki je zatrzymuje.',
   'admin.plugins.security.reviewedTitle': 'Co oznacza „Zweryfikowana”',
   'admin.plugins.security.reviewedBody':
-    'Zweryfikowana wtyczka została ręcznie przeskanowana pod kątem złośliwego oprogramowania przez opiekuna TREK w każdej wersji — sprawdzona pod kątem wrogiego kodu, a nie tego, czy działa dobrze. To nie jest obietnica, że wtyczka jest nieszkodliwa.',
+    'Zweryfikowana wtyczka została ręcznie przeskanowana pod kątem złośliwego oprogramowania przez opiekuna TT w każdej wersji — sprawdzona pod kątem wrogiego kodu, a nie tego, czy działa dobrze. To nie jest obietnica, że wtyczka jest nieszkodliwa.',
   'admin.plugins.security.signedTitle': 'Co oznacza „Podpisana”',
   'admin.plugins.security.signedBody':
-    'Suma kontrolna, którą TREK weryfikuje przy każdej instalacji, dowodzi, że pliki są dokładnie tym, za co ręczy rejestr. Podpis dowodzi czegoś innego: że pochodzą od autora i zostały podpisane kluczem, który ma tylko on. Podpisana wtyczka ma jedno i drugie. Wtyczka bez podpisu nie jest niebezpieczna — po prostu niesie o jedną gwarancję mniej, a większość wtyczek w rejestrze jest dziś niepodpisana.',
+    'Suma kontrolna, którą TT weryfikuje przy każdej instalacji, dowodzi, że pliki są dokładnie tym, za co ręczy rejestr. Podpis dowodzi czegoś innego: że pochodzą od autora i zostały podpisane kluczem, który ma tylko on. Podpisana wtyczka ma jedno i drugie. Wtyczka bez podpisu nie jest niebezpieczna — po prostu niesie o jedną gwarancję mniej, a większość wtyczek w rejestrze jest dziś niepodpisana.',
   'admin.plugins.signed': 'Podpisana',
   'admin.plugins.signedHint': 'Zweryfikowana kluczem podpisującym autora w chwili instalacji',
   'admin.plugins.unsigned': 'Niepodpisana',
@@ -478,20 +478,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     'Pliki nie zgadzają się z podpisem autora. Nie są tym, co autor podpisał — albo uległy uszkodzeniu, albo zostały zmodyfikowane. Tego nie można pominąć.',
   'admin.plugins.sig.missingBody':
-    'Ta wtyczka była podpisana, gdy ją instalowałeś, ale nowa wersja nie zawiera żadnego podpisu. TREK nie przyjmie po cichu takiego kroku wstecz. Tego nie można pominąć.',
+    'Ta wtyczka była podpisana, gdy ją instalowałeś, ale nowa wersja nie zawiera żadnego podpisu. TT nie przyjmie po cichu takiego kroku wstecz. Tego nie można pominąć.',
   'admin.plugins.sig.incompleteBody':
     'Wpis w rejestrze jest podpisany połowicznie: deklaruje klucz autora, ale wersja nie ma podpisu (albo odwrotnie). To błąd po stronie wtyczki. Tego nie można pominąć.',
   'admin.plugins.sig.pinnedKey': 'Klucz, którym podpisano ją przy instalacji',
   'admin.plugins.sig.newKey': 'Klucz, który proponuje teraz',
   'admin.plugins.sig.confirmOutOfBand':
-    'TREK nie odróżni prawidłowej wymiany klucza od przejęcia wtyczki — stąd wyglądają identycznie. Zanim zaakceptujesz nowy klucz, potwierdź go u autora kanałem, któremu już ufasz. Gdy to zrobisz, wtyczka zostanie zaktualizowana, a nowy klucz zapamiętany.',
+    'TT nie odróżni prawidłowej wymiany klucza od przejęcia wtyczki — stąd wyglądają identycznie. Zanim zaakceptujesz nowy klucz, potwierdź go u autora kanałem, któremu już ufasz. Gdy to zrobisz, wtyczka zostanie zaktualizowana, a nowy klucz zapamiętany.',
   'admin.plugins.sig.retrustConfirm': 'Zaufaj nowemu kluczowi i zaktualizuj',
   'admin.plugins.sig.cancel': 'Nie ufaj mu',
   'admin.plugins.sig.consentUnsigned':
     'Nic nie wiąże tej wersji z jej autorem — pliki zgadzają się z rejestrem, ale nie niosą podpisu autora.',
   'admin.plugins.security.trustTitle': 'Podsumowanie',
   'admin.plugins.security.trustBody':
-    'Instalacja wtyczki jest jak instalacja dowolnej aplikacji innych firm: dodawaj tylko kod od autorów, którym ufasz, a w razie wątpliwości najpierw samodzielnie go sprawdź. TREK nie ponosi żadnej odpowiedzialności za wtyczki innych firm.',
+    'Instalacja wtyczki jest jak instalacja dowolnej aplikacji innych firm: dodawaj tylko kod od autorów, którym ufasz, a w razie wątpliwości najpierw samodzielnie go sprawdź. TT nie ponosi żadnej odpowiedzialności za wtyczki innych firm.',
   'admin.plugins.runtimeOn': 'Środowisko włączone',
   'admin.plugins.tabDiscover': 'Odkrywaj',
   'admin.plugins.searchPlaceholder': 'Szukaj wtyczek…',
@@ -580,15 +580,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': 'Zainstaluj mimo to',
   'admin.plugins.rangeBypass.pill': 'Kontrola wersji wyłączona',
   'admin.plugins.rangeBypass.pillHint':
-    'Ustawiono TREK_PLUGINS_IGNORE_TREK_RANGE — wtyczki mogą być instalowane i uruchamiane poza wersjami TREK zadeklarowanymi przez ich autorów',
-  'admin.plugins.rangeBypass.title': 'Poza obsługiwanymi wersjami TREK',
-  'admin.plugins.rangeBypass.noticeTitle': 'Zainstalowano poza obsługiwanymi wersjami TREK',
+    'Ustawiono TREK_PLUGINS_IGNORE_TREK_RANGE — wtyczki mogą być instalowane i uruchamiane poza wersjami TT zadeklarowanymi przez ich autorów',
+  'admin.plugins.rangeBypass.title': 'Poza obsługiwanymi wersjami TT',
+  'admin.plugins.rangeBypass.noticeTitle': 'Zainstalowano poza obsługiwanymi wersjami TT',
   'admin.plugins.rangeBypass.body':
-    '„{name}” deklaruje obsługę TREK {range}, a ten serwer działa na {host}. TREK przepuszcza ją tylko dlatego, że ustawiono TREK_PLUGINS_IGNORE_TREK_RANGE. Autor nie zaktualizował zakresu wersji wtyczki dla tego TREK, więc nie ma gwarancji, że zadziała — a w rzadkich przypadkach niedopasowana wtyczka może uszkodzić dane TREK. Kontynuuj tylko, jeśli akceptujesz to ryzyko.',
+    '„{name}” deklaruje obsługę TT {range}, a ten serwer działa na {host}. TT przepuszcza ją tylko dlatego, że ustawiono TREK_PLUGINS_IGNORE_TREK_RANGE. Autor nie zaktualizował zakresu wersji wtyczki dla tego TT, więc nie ma gwarancji, że zadziała — a w rzadkich przypadkach niedopasowana wtyczka może uszkodzić dane TT. Kontynuuj tylko, jeśli akceptujesz to ryzyko.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '„{name}” nie deklaruje, które wersje TREK obsługuje; ten serwer działa na {host}. TREK przepuszcza ją tylko dlatego, że ustawiono TREK_PLUGINS_IGNORE_TREK_RANGE. Nic nie wskazuje, że autor testował ją na tym TREK, więc nie ma gwarancji, że zadziała — a w rzadkich przypadkach niedopasowana wtyczka może uszkodzić dane TREK. Kontynuuj tylko, jeśli akceptujesz to ryzyko.',
-  'admin.plugins.dep.trekBypassed': 'Poza swoim zakresem TREK ({range}) — kontrola wersji wyłączona',
-  'admin.plugins.dep.trekBypassedUnknown': 'Nie deklaruje zakresu TREK — kontrola wersji wyłączona',
+    '„{name}” nie deklaruje, które wersje TT obsługuje; ten serwer działa na {host}. TT przepuszcza ją tylko dlatego, że ustawiono TREK_PLUGINS_IGNORE_TREK_RANGE. Nic nie wskazuje, że autor testował ją na tym TT, więc nie ma gwarancji, że zadziała — a w rzadkich przypadkach niedopasowana wtyczka może uszkodzić dane TT. Kontynuuj tylko, jeśli akceptujesz to ryzyko.',
+  'admin.plugins.dep.trekBypassed': 'Poza swoim zakresem TT ({range}) — kontrola wersji wyłączona',
+  'admin.plugins.dep.trekBypassedUnknown': 'Nie deklaruje zakresu TT — kontrola wersji wyłączona',
   'admin.plugins.incompatible': 'Niezgodny',
   'admin.plugins.accessTitle': 'Do czego ma dostęp',
   'admin.plugins.connectsTitle': 'Łączy się z',
@@ -600,7 +600,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': 'Zweryfikowano',
   'admin.plugins.downloads': 'Pobrania',
   'admin.addons.title': 'Dodatki',
-  'admin.addons.subtitle': 'Włączaj lub wyłączaj funkcje, aby dostosować swoje doświadczenie w TREK.',
+  'admin.addons.subtitle': 'Włączaj lub wyłączaj funkcje, aby dostosować swoje doświadczenie w TT.',
   'admin.addons.catalog.packing.name': 'Listy',
   'admin.addons.catalog.packing.description': 'Listy pakowania i zadania do wykonania dla Twoich podróży',
   'admin.addons.catalog.budget.name': 'Koszty',
@@ -641,7 +641,7 @@ const admin: TranslationStrings = {
   'admin.weather.title': 'Dane pogodowe',
   'admin.weather.badge': 'Od 24 marca 2026',
   'admin.weather.description':
-    'TT nadal korzysta z weather API od TREK — darmowego, otwartoźródłowego serwisu bez klucza API.',
+    'TT nadal korzysta z weather API od TT — darmowego, otwartoźródłowego serwisu bez klucza API.',
   'admin.weather.forecast': '16-dniowa prognoza',
   'admin.weather.forecastDesc': 'Wcześniej 5 dni (OpenWeatherMap)',
   'admin.weather.climate': 'Historyczne dane klimatyczne',
@@ -700,14 +700,14 @@ const admin: TranslationStrings = {
   'admin.github.loading': 'Ładowanie...',
   'admin.github.error': 'Nie udało się załadować wydań',
   'admin.github.by': 'przez',
-  'admin.github.support': 'Pomóż mi rozwijać TREK',
+  'admin.github.support': 'Pomóż mi rozwijać TT',
   'admin.update.available': 'Dostępna aktualizacja',
-  'admin.update.text': 'Dostępna jest wersja TREK {version}. Używasz {current}.',
+  'admin.update.text': 'Dostępna jest wersja TT {version}. Używasz {current}.',
   'admin.update.button': 'Zobacz na GitHubie',
   'admin.update.install': 'Zainstaluj aktualizację',
   'admin.update.confirmTitle': 'Zainstalować aktualizację?',
   'admin.update.confirmText':
-    'TREK zostanie zaktualizowany z {current} do {version}. Serwer zostanie automatycznie zrestartowany po zakończeniu.',
+    'TT zostanie zaktualizowany z {current} do {version}. Serwer zostanie automatycznie zrestartowany po zakończeniu.',
   'admin.update.dataInfo':
     'Wszystkie twoje dane (podróże, użytkownicy, klucze API, przesłane pliki, urlopy, Atlas, budżety) zostaną zachowane.',
   'admin.update.warning': 'Aplikacja będzie niedostępna przez krótki czas podczas restartu.',
@@ -719,9 +719,9 @@ const admin: TranslationStrings = {
   'admin.update.backupLink': 'Zrób kopię zapasową',
   'admin.update.howTo': 'Jak zaktualizować',
   'admin.update.dockerText':
-    'Twoja instancja TREK działa w Dockerze. Aby zaktualizować do {version}, uruchom następujące polecenia na swoim serwerze:',
+    'Twoja instancja TT działa w Dockerze. Aby zaktualizować do {version}, uruchom następujące polecenia na swoim serwerze:',
   'admin.update.nonDockerText':
-    'Ta instancja TREK nie działa w Dockerze. Aby zaktualizować do {version}, uruchom ponownie metodę instalacji lub aktualizacji, której użyłeś — na przykład w Proxmox Community Scripts uruchom aktualizację z konsoli LXC:',
+    'Ta instancja TT nie działa w Dockerze. Aby zaktualizować do {version}, uruchom ponownie metodę instalacji lub aktualizacji, której użyłeś — na przykład w Proxmox Community Scripts uruchom aktualizację z konsoli LXC:',
   'admin.update.wikiLink': 'Otwórz przewodnik aktualizacji',
   'admin.update.reloadHint': 'Proszę odświeżyć stronę za kilka sekund.',
   'admin.notifications.title': 'Powiadomienia',
@@ -831,7 +831,7 @@ const admin: TranslationStrings = {
   'admin.amapKeyHint':
     'Do wyszukiwania miejsc w Chinach i tras z uwzględnieniem ruchu. Uzyskaj klucz usługi na lbs.amap.com.',
   'admin.amapSearch.title': 'Użyj AMap do wyszukiwania miejsc',
-  'admin.amapSearch.subtitle': 'Domyślnie używa AMap; każde pole wyszukiwania może wrócić do natywnych źródeł TREK.',
+  'admin.amapSearch.subtitle': 'Domyślnie używa AMap; każde pole wyszukiwania może wrócić do natywnych źródeł TT.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
   'admin.update.prepare': 'Frissítés előkészítése',

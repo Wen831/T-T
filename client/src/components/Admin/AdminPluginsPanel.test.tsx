@@ -1879,7 +1879,7 @@ describe('AdminPluginsPanel — Discover cards and the detail modal', () => {
     fireEvent.click(await screen.findByText('Gotify'));
 
     expect(await screen.findByText('Needs no special access.')).toBeInTheDocument();
-    expect(screen.getByText('TREK 3.2.0+')).toBeInTheDocument();
+    expect(screen.getByText('TT 3.2.0+')).toBeInTheDocument();
     expect(screen.queryByText('Connects to')).not.toBeInTheDocument();
     expect(screen.queryByText('Setup')).not.toBeInTheDocument();
   });
@@ -3082,9 +3082,9 @@ describe('AdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RANG
     expect(btn).toBeEnabled();
     fireEvent.click(btn);
 
-    const dialog = await screen.findByRole('dialog', { name: /outside its supported trek versions/i });
+    const dialog = await screen.findByRole('dialog', { name: /outside its supported tt versions/i });
     expect(within(dialog).getByText(/no guarantee/i)).toBeInTheDocument();
-    expect(within(dialog).getByText(/corrupt trek data/i)).toBeInTheDocument();
+    expect(within(dialog).getByText(/corrupt tt data/i)).toBeInTheDocument();
     expect(posted).toBeNull(); // nothing sent until the admin accepts the risk
 
     fireEvent.click(within(dialog).getByRole('button', { name: /^install anyway$/i }));
@@ -3104,10 +3104,10 @@ describe('AdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RANG
     fireEvent.click(await screen.findByText('Discover'));
     fireEvent.click(await screen.findByRole('button', { name: /^install anyway$/i }));
 
-    const dialog = await screen.findByRole('dialog', { name: /outside its supported trek versions/i });
+    const dialog = await screen.findByRole('dialog', { name: /outside its supported tt versions/i });
     fireEvent.click(within(dialog).getByRole('button', { name: /cancel/i }));
     await waitFor(() =>
-      expect(screen.queryByRole('dialog', { name: /outside its supported trek versions/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('dialog', { name: /outside its supported tt versions/i })).not.toBeInTheDocument()
     );
     expect(posted).toBe(false);
   });
@@ -3132,7 +3132,7 @@ describe('AdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RANG
       new File(['zip'], 'plugin.zip', { type: 'application/zip' })
     );
 
-    const dialog = await screen.findByRole('dialog', { name: /installed outside its supported trek versions/i });
+    const dialog = await screen.findByRole('dialog', { name: /installed outside its supported tt versions/i });
     expect(within(dialog).getByText(/no guarantee/i)).toBeInTheDocument();
     expect(within(dialog).getByText(/trek-new/)).toBeInTheDocument();
   });
@@ -3150,6 +3150,6 @@ describe('AdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RANG
       null
     );
     render(<AdminPluginsPanel />);
-    expect(await screen.findByText(/outside its trek range \(>=3\.2\.0 <4\.0\.0\)/i)).toBeInTheDocument();
+    expect(await screen.findByText(/outside its tt range \(>=3\.2\.0 <4\.0\.0\)/i)).toBeInTheDocument();
   });
 });

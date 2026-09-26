@@ -326,7 +326,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'Zdrojový repozitář',
   'admin.plugins.reportIssue': 'Nahlásit problém',
   'admin.plugins.homepage': 'Domovská stránka',
-  'admin.plugins.requiresTrek': 'Vyžaduje TREK {version}+',
+  'admin.plugins.requiresTrek': 'Vyžaduje TT {version}+',
   'admin.plugins.reviewedOn': 'Zkontrolováno {date}',
   'admin.plugins.perm.db:own': 'Ukládat vlastní data v izolované databázi',
   'admin.plugins.perm.db:read:trips': 'Číst cesty, ke kterým má aktuální uživatel přístup',
@@ -395,7 +395,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:calendar-source': 'Poskytovat události do kalendáře',
   'admin.plugins.perm.hook:place-detail-provider': 'Přidávat další podrobnosti (recenze, hodnocení, odkazy) k místu',
   'admin.plugins.perm.hook:search-provider':
-    'Odpovídá na hledání míst z vlastního indexu, vedle vlastních výsledků TREK',
+    'Odpovídá na hledání míst z vlastního indexu, vedle vlastních výsledků TT',
   'admin.plugins.perm.hook:trip-warning-provider': 'Vyvolávat ověřovací upozornění u cesty (zobrazená v plánovači)',
   'admin.plugins.perm.hook:table-contributor': 'Přidávat sloupce a akce do zobrazení cesty (rezervace, místa, dny)',
   'admin.plugins.perm.hook:map-marker-provider': 'Přidávat značky na mapu cesty (např. zobrazit rezervace nebo POI)',
@@ -412,7 +412,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'Zveřejňovat nástroje, které může AI asistent spustit vaším jménem (jedná s oprávněními, která zde pluginu udělíte, ne se svými)',
   'admin.plugins.perm.geolocation:read':
-    'Zjišťovat vaši aktuální polohu, dokud je otevřené některé z jeho zobrazení (TREK ji čte pod oprávněním k poloze pro tento web, ne pod vlastním oprávněním doplňku)',
+    'Zjišťovat vaši aktuální polohu, dokud je otevřené některé z jeho zobrazení (TT ji čte pod oprávněním k poloze pro tento web, ne pod vlastním oprávněním doplňku)',
   'admin.plugins.perm.hook:pdf-section-provider': 'Připojovat textové sekce k PDF exportu cesty',
   'admin.plugins.perm.hook:atlas-layer-provider':
     'Zvýrazňovat země na mapě světa v Atlasu (např. seznamy přání nebo cestovní upozornění)',
@@ -438,26 +438,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateLater': 'Zatím ponechat vypnuté',
   'admin.plugins.updateKeptOff': 'Aktualizace nainstalována — zůstává vypnutá, dokud neschválíte nová oprávnění',
   'admin.plugins.reviewedMeaning':
-    '„Zkontrolováno“ znamená, že správce TREK prověřil tento plugin na škodlivý kód u každé verze — nikoli jeho kvalitu ani to, zda funguje. Není to záruka, že je plugin neškodný.',
+    '„Zkontrolováno“ znamená, že správce TT prověřil tento plugin na škodlivý kód u každé verze — nikoli jeho kvalitu ani to, zda funguje. Není to záruka, že je plugin neškodný.',
   'admin.plugins.security.title': 'Jak jsou pluginy izolovány — a kde jsou hranice',
   'admin.plugins.security.isolationTitle': 'Každý plugin běží v izolaci',
   'admin.plugins.security.isolationBody':
-    'Plugin běží jako vlastní uzamčený proces, který může číst pouze své vlastní soubory. Nemůže číst vaši databázi, váš přihlašovací tajný klíč ani váš šifrovací klíč, nemůže spouštět jiné programy a nemůže nikam zapisovat soubory. Jeho rozhraní běží v uzavřeném rámci prohlížeče, který nemůže číst vaši session cookie ani zasahovat do okolní stránky TREK.',
+    'Plugin běží jako vlastní uzamčený proces, který může číst pouze své vlastní soubory. Nemůže číst vaši databázi, váš přihlašovací tajný klíč ani váš šifrovací klíč, nemůže spouštět jiné programy a nemůže nikam zapisovat soubory. Jeho rozhraní běží v uzavřeném rámci prohlížeče, který nemůže číst vaši session cookie ani zasahovat do okolní stránky TT.',
   'admin.plugins.security.permsTitle': 'Co oprávnění znamenají',
   'admin.plugins.security.permsBody':
-    'Oprávnění zobrazená před instalací jsou pevný limit, který TREK vynucuje po celou dobu běhu pluginu — plugin doslova nemůže udělat nic, co není na seznamu. Říkají vám ale, co plugin může dělat, nikoli co skutečně dělá. Plugin, který smí číst vaše cesty a spojit se se serverem, může vaše cesty tomuto serveru odeslat, proto si přečtěte oprávnění i odchozí hostitele, nejen popis.',
+    'Oprávnění zobrazená před instalací jsou pevný limit, který TT vynucuje po celou dobu běhu pluginu — plugin doslova nemůže udělat nic, co není na seznamu. Říkají vám ale, co plugin může dělat, nikoli co skutečně dělá. Plugin, který smí číst vaše cesty a spojit se se serverem, může vaše cesty tomuto serveru odeslat, proto si přečtěte oprávnění i odchozí hostitele, nejen popis.',
   'admin.plugins.security.limitsTitle': 'Co nemůžeme slíbit',
   'admin.plugins.security.limitsBody':
-    'Izolace je silná softwarová hranice, nikoli absolutní. Plugin jedná přesně s těmi právy, která schválíte, takže v jejich rámci se může chovat jinak, než naznačuje jeho popis, a může odeslat data, která oprávněně drží, hostitelům, které deklaroval. TREK nečte ani neposuzuje, co kód pluginu ve skutečnosti dělá.',
+    'Izolace je silná softwarová hranice, nikoli absolutní. Plugin jedná přesně s těmi právy, která schválíte, takže v jejich rámci se může chovat jinak, než naznačuje jeho popis, a může odeslat data, která oprávněně drží, hostitelům, které deklaroval. TT nečte ani neposuzuje, co kód pluginu ve skutečnosti dělá.',
   'admin.plugins.security.worstTitle': 'Nejhorší případ',
   'admin.plugins.security.worstBody':
     'Škodlivý plugin, který zapnete, může zneužít data a připojení, jež jste mu udělili — například vynést cesty, které smí číst. Nemůže krást hesla, padělat přihlášení administrátora, spouštět příkazy na vašem serveru ani se dostat k datům, která jste neudělili. Škoda zůstává v rámci toho, co jste schválili, a vypnutí pluginu ji zastaví.',
   'admin.plugins.security.reviewedTitle': 'Co znamená „Zkontrolováno“',
   'admin.plugins.security.reviewedBody':
-    'Zkontrolovaný plugin ručně prověřil správce TREK na škodlivý kód u každé verze — kontroloval nepřátelský kód, nikoli to, zda dobře funguje. Není to slib, že je plugin neškodný.',
+    'Zkontrolovaný plugin ručně prověřil správce TT na škodlivý kód u každé verze — kontroloval nepřátelský kód, nikoli to, zda dobře funguje. Není to slib, že je plugin neškodný.',
   'admin.plugins.security.signedTitle': 'Co znamená „Podepsáno“',
   'admin.plugins.security.signedBody':
-    'Kontrolní součet, který TREK ověřuje při každé instalaci, dokazuje, že soubory jsou přesně tím, za co se registr zaručuje. Podpis dokazuje něco jiného: že pocházejí od autora a jsou podepsané klíčem, který drží jen on. Podepsaný plugin má obojí. Nepodepsaný není nebezpečný — nese jen o jednu záruku méně a většina pluginů v registru dnes podepsaná není.',
+    'Kontrolní součet, který TT ověřuje při každé instalaci, dokazuje, že soubory jsou přesně tím, za co se registr zaručuje. Podpis dokazuje něco jiného: že pocházejí od autora a jsou podepsané klíčem, který drží jen on. Podepsaný plugin má obojí. Nepodepsaný není nebezpečný — nese jen o jednu záruku méně a většina pluginů v registru dnes podepsaná není.',
   'admin.plugins.signed': 'Podepsáno',
   'admin.plugins.signedHint': 'Při instalaci ověřeno proti podpisovému klíči autora',
   'admin.plugins.unsigned': 'Nepodepsáno',
@@ -472,20 +472,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     'Soubory neodpovídají podpisu autora. Nejsou tím, co autor podepsal — buď se poškodily, nebo do nich někdo zasáhl. Toto nelze obejít.',
   'admin.plugins.sig.missingBody':
-    'Tento plugin byl při instalaci podepsaný, ale nová verze žádný podpis nepřináší. TREK takové zhoršení tiše nepřijme. Toto nelze obejít.',
+    'Tento plugin byl při instalaci podepsaný, ale nová verze žádný podpis nepřináší. TT takové zhoršení tiše nepřijme. Toto nelze obejít.',
   'admin.plugins.sig.incompleteBody':
     'Záznam v registru je podepsaný jen napůl: uvádí klíč autora, ale verze nenese žádný podpis (nebo naopak). To je chyba na straně pluginu. Toto nelze obejít.',
   'admin.plugins.sig.pinnedKey': 'Klíč, se kterým byl nainstalován',
   'admin.plugins.sig.newKey': 'Klíč, který nabízí nyní',
   'admin.plugins.sig.confirmOutOfBand':
-    'TREK nedokáže odlišit legitimní výměnu klíče od převzetí pluginu — odsud vypadají obě stejně. Než nový klíč přijmete, ověřte si ho u autora kanálem, kterému už důvěřujete. Jakmile to uděláte, plugin se aktualizuje a nový klíč si TREK zapamatuje.',
+    'TT nedokáže odlišit legitimní výměnu klíče od převzetí pluginu — odsud vypadají obě stejně. Než nový klíč přijmete, ověřte si ho u autora kanálem, kterému už důvěřujete. Jakmile to uděláte, plugin se aktualizuje a nový klíč si TT zapamatuje.',
   'admin.plugins.sig.retrustConfirm': 'Důvěřovat novému klíči a aktualizovat',
   'admin.plugins.sig.cancel': 'Nedůvěřovat',
   'admin.plugins.sig.consentUnsigned':
     'Tuto verzi nic nespojuje s jejím autorem — soubory odpovídají registru, ale nenesou podpis autora.',
   'admin.plugins.security.trustTitle': 'Závěrem',
   'admin.plugins.security.trustBody':
-    'Instalace pluginu je jako instalace jakékoli aplikace třetí strany: přidávejte pouze kód od autorů, kterým důvěřujete, a v případě pochybností si jej nejprve sami prohlédněte. TREK nenese žádnou odpovědnost za pluginy třetích stran.',
+    'Instalace pluginu je jako instalace jakékoli aplikace třetí strany: přidávejte pouze kód od autorů, kterým důvěřujete, a v případě pochybností si jej nejprve sami prohlédněte. TT nenese žádnou odpovědnost za pluginy třetích stran.',
   'admin.plugins.runtimeOn': 'Běhové prostředí běží',
   'admin.plugins.tabDiscover': 'Objevit',
   'admin.plugins.searchPlaceholder': 'Hledat pluginy…',
@@ -575,14 +575,14 @@ const admin: TranslationStrings = {
   'admin.plugins.rangeBypass.pill': 'Kontroly verzí vypnuty',
   'admin.plugins.rangeBypass.pillHint':
     'Je nastaveno TREK_PLUGINS_IGNORE_TREK_RANGE — pluginy se mohou instalovat a spouštět mimo verze TREKu, které jejich autoři deklarovali',
-  'admin.plugins.rangeBypass.title': 'Mimo podporované verze TREKu',
-  'admin.plugins.rangeBypass.noticeTitle': 'Nainstalováno mimo podporované verze TREKu',
+  'admin.plugins.rangeBypass.title': 'Mimo podporované verze TTu',
+  'admin.plugins.rangeBypass.noticeTitle': 'Nainstalováno mimo podporované verze TTu',
   'admin.plugins.rangeBypass.body':
-    '„{name}“ deklaruje podporu TREKu {range} a tento server běží na {host}. TREK ho propouští jen proto, že je nastaveno TREK_PLUGINS_IGNORE_TREK_RANGE. Autor neaktualizoval rozsah verzí pluginu pro tento TREK, takže není zaručeno, že bude fungovat — a ve vzácných případech může nekompatibilní plugin poškodit data TREKu. Pokračujte jen tehdy, pokud toto riziko přijímáte.',
+    '„{name}“ deklaruje podporu TREKu {range} a tento server běží na {host}. TT ho propouští jen proto, že je nastaveno TREK_PLUGINS_IGNORE_TREK_RANGE. Autor neaktualizoval rozsah verzí pluginu pro tento TT, takže není zaručeno, že bude fungovat — a ve vzácných případech může nekompatibilní plugin poškodit data TTu. Pokračujte jen tehdy, pokud toto riziko přijímáte.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '„{name}“ neuvádí, které verze TREKu podporuje; tento server běží na {host}. TREK ho propouští jen proto, že je nastaveno TREK_PLUGINS_IGNORE_TREK_RANGE. Nic nenasvědčuje tomu, že ho autor na tomto TREKu testoval, takže není zaručeno, že bude fungovat — a ve vzácných případech může nekompatibilní plugin poškodit data TREKu. Pokračujte jen tehdy, pokud toto riziko přijímáte.',
-  'admin.plugins.dep.trekBypassed': 'Mimo svůj rozsah TREKu ({range}) — kontroly verzí vypnuty',
-  'admin.plugins.dep.trekBypassedUnknown': 'Neuvádí žádný rozsah TREKu — kontroly verzí vypnuty',
+    '„{name}“ neuvádí, které verze TREKu podporuje; tento server běží na {host}. TT ho propouští jen proto, že je nastaveno TREK_PLUGINS_IGNORE_TREK_RANGE. Nic nenasvědčuje tomu, že ho autor na tomto TTu testoval, takže není zaručeno, že bude fungovat — a ve vzácných případech může nekompatibilní plugin poškodit data TTu. Pokračujte jen tehdy, pokud toto riziko přijímáte.',
+  'admin.plugins.dep.trekBypassed': 'Mimo svůj rozsah TTu ({range}) — kontroly verzí vypnuty',
+  'admin.plugins.dep.trekBypassedUnknown': 'Neuvádí žádný rozsah TTu — kontroly verzí vypnuty',
   'admin.plugins.incompatible': 'Nekompatibilní',
   'admin.plugins.accessTitle': 'K čemu má přístup',
   'admin.plugins.connectsTitle': 'Připojuje se k',
@@ -594,7 +594,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': 'Zkontrolováno',
   'admin.plugins.downloads': 'Stažení',
   'admin.addons.title': 'Doplňky',
-  'admin.addons.subtitle': 'Zapněte nebo vypněte funkce a přizpůsobte si TREK.',
+  'admin.addons.subtitle': 'Zapněte nebo vypněte funkce a přizpůsobte si TT.',
   'admin.addons.catalog.memories.name': 'Fotky (Immich)',
   'admin.addons.catalog.memories.description': 'Sdílejte cestovní fotky přes vaši instanci Immich',
   'admin.addons.catalog.packing.name': 'Seznamy',
@@ -682,10 +682,10 @@ const admin: TranslationStrings = {
   'admin.github.loading': 'Načítání...',
   'admin.github.error': 'Nepodařilo se načíst verze',
   'admin.github.by': 'od',
-  'admin.github.support': 'Pomáhá udržovat vývoj TREK',
+  'admin.github.support': 'Pomáhá udržovat vývoj TT',
   'admin.weather.title': 'Data o počasí',
   'admin.weather.badge': 'Od 24. března 2026',
-  'admin.weather.description': 'TT nadále používá weather API z TREK — bezplatnou open-source službu bez API klíče.',
+  'admin.weather.description': 'TT nadále používá weather API z TT — bezplatnou open-source službu bez API klíče.',
   'admin.weather.forecast': 'Předpověď na 16 dní',
   'admin.weather.forecastDesc': 'Dříve 5 dní (OpenWeatherMap)',
   'admin.weather.climate': 'Historická klimatická data',
@@ -694,12 +694,12 @@ const admin: TranslationStrings = {
   'admin.weather.requestsDesc': 'Zdarma, bez nutnosti klíče',
   'admin.weather.locationHint': 'Počasí se určuje podle prvního místa se souřadnicemi v daném dni.',
   'admin.update.available': 'Dostupná aktualizace',
-  'admin.update.text': 'TREK {version} je k dispozici. Aktuálně používáte verzi {current}.',
+  'admin.update.text': 'TT {version} je k dispozici. Aktuálně používáte verzi {current}.',
   'admin.update.button': 'Zobrazit na GitHubu',
   'admin.update.install': 'Instalovat aktualizaci',
   'admin.update.confirmTitle': 'Instalovat aktualizaci?',
   'admin.update.confirmText':
-    'TREK bude aktualizován z verze {current} na {version}. Server se poté automaticky restartuje.',
+    'TT bude aktualizován z verze {current} na {version}. Server se poté automaticky restartuje.',
   'admin.update.dataInfo': 'Všechna vaše data (cesty, uživatelé, API klíče, soubory) budou zachována.',
   'admin.update.warning': 'Aplikace bude během restartu krátce nedostupná.',
   'admin.update.confirm': 'Aktualizovat nyní',
@@ -710,9 +710,9 @@ const admin: TranslationStrings = {
   'admin.update.backupLink': 'Přejít na zálohování',
   'admin.update.howTo': 'Jak aktualizovat',
   'admin.update.dockerText':
-    'Váš TREK běží v Dockeru. Pro aktualizaci na verzi {version} spusťte na svém serveru tyto příkazy:',
+    'Váš TT běží v Dockeru. Pro aktualizaci na verzi {version} spusťte na svém serveru tyto příkazy:',
   'admin.update.nonDockerText':
-    'Tato instance TREK neběží v Dockeru. Pro aktualizaci na verzi {version} znovu spusťte instalační nebo aktualizační metodu, kterou jste použili — například u Proxmox Community Scripts spusťte aktualizaci z konzole LXC:',
+    'Tato instance TT neběží v Dockeru. Pro aktualizaci na verzi {version} znovu spusťte instalační nebo aktualizační metodu, kterou jste použili — například u Proxmox Community Scripts spusťte aktualizaci z konzole LXC:',
   'admin.update.wikiLink': 'Otevřít průvodce aktualizací',
   'admin.update.reloadHint': 'Prosím obnovte stránku za několik sekund.',
   'admin.tabs.permissions': 'Oprávnění',
@@ -810,7 +810,7 @@ const admin: TranslationStrings = {
     'Pro vyhledávání míst v Číně a trasy s ohledem na provoz. Získejte klíč webové služby na lbs.amap.com.',
   'admin.amapSearch.title': 'Použít AMap pro vyhledávání míst',
   'admin.amapSearch.subtitle':
-    'Ve výchozím nastavení používá AMap; každý vyhledávací formulář se může vrátit k nativním zdrojům TREK.',
+    'Ve výchozím nastavení používá AMap; každý vyhledávací formulář se může vrátit k nativním zdrojům TT.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
   'admin.update.prepare': 'Prepara aggiornamento',

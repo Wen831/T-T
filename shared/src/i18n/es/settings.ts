@@ -38,7 +38,7 @@ const settings: TranslationStrings = {
   'settings.mapCartoKeyHint': 'Los mapas base de CARTO muestran una marca de agua sin clave. Gratuita y sin cuenta, en',
   'settings.mapCartoKeyLink': 'clave de API de mapas base de carto.com',
   'settings.mapCartoKeyMissing':
-    'Esta plantilla es un mapa base de CARTO. Sin clave, CARTO estampa "API KEY REQUIRED" en cada tesela. Hasta que introduzcas una, TREK muestra el mapa base predeterminado.',
+    'Esta plantilla es un mapa base de CARTO. Sin clave, CARTO estampa "API KEY REQUIRED" en cada tesela. Hasta que introduzcas una, TT muestra el mapa base predeterminado.',
   'settings.mapStyle': 'Estilo de mapa',
   'settings.mapStylePlaceholder': 'Seleccionar un estilo de Mapbox',
   'settings.mapStyleHint': 'Preset o tu propia URL mapbox://styles/USER/ID',
@@ -190,13 +190,13 @@ const settings: TranslationStrings = {
   'settings.about.featureRequestHint': 'Sugiere una nueva función',
   'settings.about.wikiHint': 'Documentación y guías',
   'settings.about.descriptionManaged':
-    'TREK helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
+    'TT helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'TREK is open source, licensed AGPL-3.0',
   'settings.about.supporters.badge': 'Patrocinadores Mensuales',
-  'settings.about.supporters.title': 'Compañía de viaje para TREK',
+  'settings.about.supporters.title': 'Compañía de viaje para TT',
   'settings.about.supporters.subtitle':
-    'Mientras planeas tu próxima ruta, estas personas ayudan a planear el futuro de TREK. Su aporte mensual va directo al desarrollo y a las horas reales invertidas — para que TREK siga siendo Open Source.',
+    'Mientras planeas tu próxima ruta, estas personas ayudan a planear el futuro de TT. Su aporte mensual va directo al desarrollo y a las horas reales invertidas — para que TT siga siendo Open Source.',
   'settings.about.supporters.since': 'patrocinador desde {date}',
   'settings.about.supporters.tierEmpty': 'Sé el primero',
   'settings.about.supporter.tier.noReturnTicket': 'No Return Ticket',
@@ -205,7 +205,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Budget Traveller',
   'settings.about.supporter.tier.hostelBunkmate': 'Hostel Bunkmate',
   'settings.about.description':
-    'TREK es un planificador de viajes autoalojado que te ayuda a organizar tus viajes desde la primera idea hasta el último recuerdo. Planificación diaria, presupuesto, listas de equipaje, fotos y mucho más — todo en un solo lugar, en tu propio servidor.',
+    'TT es un planificador de viajes autoalojado que te ayuda a organizar tus viajes desde la primera idea hasta el último recuerdo. Planificación diaria, presupuesto, listas de equipaje, fotos y mucho más — todo en un solo lugar, en tu propio servidor.',
   'settings.about.madeWith': 'Hecho con',
   'settings.about.madeBy': 'por una creciente comunidad de código abierto.',
   'settings.username': 'Usuario',
@@ -354,7 +354,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': 'Actívalo solo para una instancia de confianza en tu propia red.',
   'settings.airtrail.writeBack': 'Escribir cambios de vuelta en AirTrail',
   'settings.airtrail.writeBackHint':
-    'Desactivado por defecto: AirTrail es la fuente de referencia y TREK solo lee de él. Actívalo para enviar a AirTrail los cambios hechos en TREK.',
+    'Desactivado por defecto: AirTrail es la fuente de referencia y TT solo lee de él. Actívalo para enviar a AirTrail los cambios hechos en TT.',
   'settings.airtrail.connected': 'Conectado',
   'settings.airtrail.notConnected': 'No conectado',
   'settings.airtrail.toast.saved': 'Conexión con AirTrail guardada',
@@ -466,7 +466,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': 'Panel',
   'settings.startPageActiveTrip': 'Viaje activo',
   'settings.startPageHint':
-    'TREK abre directamente el viaje que está en curso o el siguiente que empieza. Es el mismo viaje que destaca el panel.',
+    'TT abre directamente el viaje que está en curso o el siguiente que empieza. Es el mismo viaje que destaca el panel.',
   'settings.startTripTab': 'Pestaña de inicio',
   'settings.startTripTabHint':
     'La pestaña con la que se abre el viaje. Si pertenece a un complemento desactivado, se abre la vista de plan.',

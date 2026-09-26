@@ -26,7 +26,7 @@ const notif: TranslationStrings = {
   'notif.packing_tagged.title': '持ち物の割り当て',
   'notif.packing_tagged.text': '{actor}が「{trip}」の{category}をあなたに割り当てました',
   'notif.version_available.title': '新しいバージョンがあります',
-  'notif.version_available.text': 'TREK {version}が利用可能です',
+  'notif.version_available.text': 'TT {version}が利用可能です',
   'notif.replica_failure.title': 'ストレージレプリカの障害',
   'notif.replica_failure.text': "レプリカ '{backend}' への書き込みに失敗しました：{op} / {key} — {error}",
   'notif.replica_failure.textSuppressed':

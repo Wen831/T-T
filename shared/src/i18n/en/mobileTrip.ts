@@ -59,7 +59,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'The map is showing the whole trip. Tap a day above to see its drive.',
   'mobileTrip.rtNoneAhead': 'Nothing on the road ahead. Try the whole stage.',
   'mobileTrip.rtNoneOnStage': 'Nothing of that kind along this stage.',
-  'mobileTrip.rtPlanOnDesktop': 'Planning happens on the desktop. TREK works out the drive once a day has two places.',
+  'mobileTrip.rtPlanOnDesktop': 'Planning happens on the desktop. TT works out the drive once a day has two places.',
   'mobileTrip.rtReach': 'How far',
   'mobileTrip.rtReachAhead': '{distance} ahead',
   'mobileTrip.rtSearchOffline': 'Needs a connection: the search reads the route ahead.',

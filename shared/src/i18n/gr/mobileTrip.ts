@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'Τίποτα στον δρόμο μπροστά σας. Δοκιμάστε όλο το σκέλος.',
   'mobileTrip.rtNoneOnStage': 'Τίποτα τέτοιο κατά μήκος αυτού του σκέλους.',
   'mobileTrip.rtPlanOnDesktop':
-    'Ο σχεδιασμός γίνεται στον υπολογιστή. Το TREK υπολογίζει τη διαδρομή μόλις μια ημέρα έχει δύο μέρη.',
+    'Ο σχεδιασμός γίνεται στον υπολογιστή. Το TT υπολογίζει τη διαδρομή μόλις μια ημέρα έχει δύο μέρη.',
   'mobileTrip.rtReach': 'Πόσο μακριά',
   'mobileTrip.rtReachAhead': '{distance} μπροστά',
   'mobileTrip.rtSearchOffline': 'Χρειάζεται σύνδεση: η αναζήτηση διαβάζει τη διαδρομή που ακολουθεί.',

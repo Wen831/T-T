@@ -29,7 +29,7 @@ export default function TrekMark({
         viewBox={pill ? '1524.6 76.2 1138.0 285.8' : '1524.6 76.2 656 285.8'}
         fill="currentColor"
         role="img"
-        aria-label="TREK Places API"
+        aria-label="TT"
       >
         <defs>
           <g />

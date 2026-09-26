@@ -58,7 +58,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': '지도에 전체 여행이 표시됩니다. 위에서 날짜를 눌러 해당 일정을 확인하세요.',
   'mobileTrip.rtNoneAhead': '앞쪽 도로에는 아무것도 없습니다. 구간 전체로 찾아보세요.',
   'mobileTrip.rtNoneOnStage': '이 구간에는 그런 곳이 없습니다.',
-  'mobileTrip.rtPlanOnDesktop': '계획은 데스크톱에서 세웁니다. 하루에 장소가 두 곳 생기면 TREK이 주행을 계산합니다.',
+  'mobileTrip.rtPlanOnDesktop': '계획은 데스크톱에서 세웁니다. 하루에 장소가 두 곳 생기면 TT이 주행을 계산합니다.',
   'mobileTrip.rtReach': '어디까지',
   'mobileTrip.rtReachAhead': '앞으로 {distance}',
   'mobileTrip.rtSearchOffline': '연결이 필요합니다: 이 검색은 앞으로 갈 경로를 읽습니다.',

@@ -58,7 +58,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': '地図には旅程全体が表示されています。上の日をタップするとその日の行程が見られます。',
   'mobileTrip.rtNoneAhead': 'この先の道沿いには何もありません。区間全体で試してください。',
   'mobileTrip.rtNoneOnStage': 'この区間沿いにはそうした場所はありません。',
-  'mobileTrip.rtPlanOnDesktop': '計画はデスクトップで行います。1日に場所が2か所そろうと、TREKが走行を計算します。',
+  'mobileTrip.rtPlanOnDesktop': '計画はデスクトップで行います。1日に場所が2か所そろうと、TTが走行を計算します。',
   'mobileTrip.rtReach': 'どこまで',
   'mobileTrip.rtReachAhead': 'この先 {distance}',
   'mobileTrip.rtSearchOffline': '接続が必要です：この検索は先のルートを読み取ります。',

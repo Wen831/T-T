@@ -958,7 +958,7 @@ describe('plugin-API version gating', () => {
       .catch((e) => e);
     expect(err).toBeInstanceOf(PluginDependencyError);
     expect(err).toMatchObject({ code: 'API_VERSION_INCOMPATIBLE' });
-    expect(err.message).toBe('plugin requires plugin-API v2; this TREK supports v1');
+    expect(err.message).toBe('plugin requires plugin-API v2; this TT supports v1');
     cleanup('future-api');
   });
 

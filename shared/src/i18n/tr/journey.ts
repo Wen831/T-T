@@ -218,7 +218,7 @@ const journey: TranslationStrings = {
   'journey.public.sharedVia': 'Şununla paylaşıldı:',
   'journey.public.madeWith': 'İle yapıldı',
   'journey.pdf.journeyBook': 'Journey Kitabı',
-  'journey.pdf.madeWith': 'TREK ile Yapıldı',
+  'journey.pdf.madeWith': 'TT ile Yapıldı',
   'journey.pdf.day': 'Gün',
   'journey.pdf.theEnd': 'Son',
   'journey.pdf.saveAsPdf': 'PDF olarak Kaydet',
@@ -247,7 +247,7 @@ const journey: TranslationStrings = {
   'journey.editor.externalPhotosUnavailable': 'No connected photo providers are available.', // en-fallback
   'journey.editor.externalPhotosPartialFailed': '{failed} photo groups failed — save again to retry', // en-fallback
   'journey.picker.day': 'This day', // en-fallback
-  'journey.studio.title': 'TREK Studio', // en-fallback
+  'journey.studio.title': 'TT Studio', // en-fallback
   'journey.studio.open': 'Studio', // en-fallback
   'journey.studio.openAria': 'Open the photo book studio', // en-fallback
   'journey.studio.backToJourney': 'Back to the journey', // en-fallback
@@ -291,7 +291,7 @@ const journey: TranslationStrings = {
     'Bu çift sayfanın tasarımını fotoğraflar olmadan dosyaya kaydeder; paylaşmak ya da yeniden kullanmak için',
   'journey.studio.importSpread': 'İçe aktar',
   'journey.studio.importSpreadHint': 'İndirilmiş bir tasarım dosyasından çift sayfa ekler',
-  'journey.studio.importSpreadFailed': 'Bu dosya bir TREK Studio çift sayfası değil',
+  'journey.studio.importSpreadFailed': 'Bu dosya bir TT Studio çift sayfası değil',
   'journey.studio.desktopOnly': 'Studio needs a bigger screen', // en-fallback
   'journey.studio.desktopOnlyHint':
     'Kitap tasarlamak yer ister, bu yüzden Studio yalnızca masaüstünde var; PDF oluşturmak da öyle. Yolculuğunun geri kalanı burada her zamanki gibi çalışıyor.', // en-fallback

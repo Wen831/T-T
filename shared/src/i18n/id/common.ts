@@ -71,7 +71,7 @@ const common: TranslationStrings = {
   'common.errorRetry': 'Coba lagi',
   'common.errorReload': 'Muat ulang halaman',
   'common.errorUpdateTitle': 'Versi baru tersedia',
-  'common.errorUpdateBody': 'TREK diperbarui saat tab ini terbuka. Muat ulang untuk mendapatkan versi baru.',
+  'common.errorUpdateBody': 'TT diperbarui saat tab ini terbuka. Muat ulang untuk mendapatkan versi baru.',
   'common.errorPluginTitle': 'Plugin ini tidak dapat ditampilkan',
   'common.errorOccurred': 'Terjadi kesalahan',
   'common.remove': 'Hapus',

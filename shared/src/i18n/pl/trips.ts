@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': 'Przypomnienia o podróżach są wyłączone.',
   'trips.importTrekTab': 'Importuj z TREK',
   'trips.importTrekIntro':
-    'Prześlij kopię zapasową TREK (.zip) i wybierz podróże do skopiowania do TT — dni, miejsca, rezerwacje, budżet i zdjęcia przyjadą z nimi.',
+    'Prześlij kopię zapasową TT (.zip) i wybierz podróże do skopiowania do TT — dni, miejsca, rezerwacje, budżet i zdjęcia przyjadą z nimi.',
   'trips.importTrekPick': 'Wybierz kopię zapasową TREK (.zip)',
   'trips.importTrekScanning': 'Odczytywanie kopii…',
   'trips.importTrekImport': 'Importuj wybrane podróże',

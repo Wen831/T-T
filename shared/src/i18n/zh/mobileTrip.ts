@@ -57,7 +57,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': '地图显示的是整个行程。点按上方的日期查看当天路线。',
   'mobileTrip.rtNoneAhead': '前方路上没有找到。试试整段。',
   'mobileTrip.rtNoneOnStage': '本段沿途没有这类地点。',
-  'mobileTrip.rtPlanOnDesktop': '规划在桌面端进行。一天里有了两个地点，TREK 就会算出这段车程。',
+  'mobileTrip.rtPlanOnDesktop': '规划在桌面端进行。一天里有了两个地点，TT 就会算出这段车程。',
   'mobileTrip.rtReach': '找多远',
   'mobileTrip.rtReachAhead': '前方 {distance}',
   'mobileTrip.rtSearchOffline': '需要联网：搜索会读取前方的路线。',

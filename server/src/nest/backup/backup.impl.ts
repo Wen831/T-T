@@ -469,7 +469,7 @@ export async function restoreFromZip(storage: StorageService, zipPath: string): 
           fs.rmSync(extractDir, { recursive: true, force: true });
           return {
             success: false,
-            error: `Uploaded database is missing required table: ${table}. This does not appear to be a TREK backup.`,
+            error: `Uploaded database is missing required table: ${table}. This does not appear to be a TT backup.`,
             status: 400,
           };
         }

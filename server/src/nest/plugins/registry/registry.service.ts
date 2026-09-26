@@ -401,7 +401,7 @@ export class PluginRegistryService {
       if (!ver) throw new RegistryError(`version ${opts.version} not found for ${entry.id}`);
       if (!installable(ver, normalizedHost())) {
         throw new RegistryError(
-          `${entry.id} ${ver.version} requires TREK ${trekRequirement(ver)} — this is TREK ${hostVersion()}`,
+          `${entry.id} ${ver.version} requires TREK ${trekRequirement(ver)} — this is TT ${hostVersion()}`,
           'TREK_VERSION_INCOMPATIBLE',
         );
       }
@@ -414,14 +414,14 @@ export class PluginRegistryService {
     const latest = entry.versions[0];
     if (latest && !opts?.constraint) {
       throw new RegistryError(
-        `${entry.id} ${latest.version} requires TREK ${trekRequirement(latest)} — this is TREK ${hostVersion()}`,
+        `${entry.id} ${latest.version} requires TREK ${trekRequirement(latest)} — this is TT ${hostVersion()}`,
         'TREK_VERSION_INCOMPATIBLE',
       );
     }
     throw new RegistryError(
       opts?.constraint
-        ? `no version of ${entry.id} satisfies "${opts.constraint}" and TREK ${hostVersion()}`
-        : `no version of ${entry.id} is compatible with TREK ${hostVersion()}`,
+        ? `no version of ${entry.id} satisfies "${opts.constraint}" and TT ${hostVersion()}`
+        : `no version of ${entry.id} is compatible with TT ${hostVersion()}`,
       'TREK_VERSION_INCOMPATIBLE',
     );
   }
@@ -803,7 +803,7 @@ export function assertHostCompatible(range: string | null, id: string): TrekRang
     warnRangeBypass(id, bypass);
     return bypass;
   }
-  throw new RegistryError(`${id} requires TREK ${range} — this is TREK ${hostVersion()}`, 'TREK_VERSION_INCOMPATIBLE');
+  throw new RegistryError(`${id} requires TREK ${range} — this is TT ${hostVersion()}`, 'TREK_VERSION_INCOMPATIBLE');
 }
 
 /**

@@ -315,7 +315,7 @@ describe('exportICS', () => {
 
     expect(ics).toContain('SUMMARY:CDG → JFK');
     // Departure endpoint zone drives DTSTART, arrival zone drives DTEND, so the
-    // subscriber sees TREK's zones instead of their own (#1453).
+    // subscriber sees TT's zones instead of their own (#1453).
     expect(ics).toContain('DTSTART;TZID=Europe/Paris:20250602T090000');
     expect(ics).toContain('DTEND;TZID=America/New_York:20250602T120000');
     expect(ics).not.toContain('DTSTART:20250602T090000');
@@ -723,7 +723,7 @@ describe('exportICS', () => {
 
     const { ics, filename } = svc.exportICS(trip.id);
 
-    expect(ics).toContain('X-WR-CALNAME:TREK Trip');
+    expect(ics).toContain('X-WR-CALNAME:TT Trip');
     expect(ics).toContain('SUMMARY:Trip');
     expect(filename).toBe('trek-trip.ics');
   });
@@ -1848,7 +1848,7 @@ describe('serialised output', () => {
     expect(ics).toMatchInlineSnapshot(`
       "BEGIN:VCALENDAR
       VERSION:2.0
-      PRODID:-//TREK//Travel Planner//EN
+      PRODID:-//TT//Travel Planner//EN
       CALSCALE:GREGORIAN
       METHOD:PUBLISH
       X-WR-CALNAME:Golden Trip

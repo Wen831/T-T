@@ -10,7 +10,7 @@ const login: TranslationStrings = {
   'login.signingIn': 'Accesso in corso…',
   'login.signIn': 'Accedi',
   'login.createAdmin': 'Crea Account Amministratore',
-  'login.createAdminHint': 'Imposta il primo account amministratore per TREK.',
+  'login.createAdminHint': 'Imposta il primo account amministratore per TT.',
   'login.setNewPassword': 'Imposta nuova password',
   'login.setNewPasswordHint': 'Devi cambiare la password prima di continuare.',
   'login.createAccount': 'Crea Account',
@@ -70,7 +70,7 @@ const login: TranslationStrings = {
   'login.passkey.failed': 'Accesso con passkey non riuscito. Riprova.',
   'login.insecureCookie.title': "Login won't stick over HTTP",
   'login.insecureCookie.body':
-    'You’re connecting over plain HTTP, so your browser drops TREK’s secure session cookie — the next request fails with "Access token required". Fix: use HTTPS, or for a home-lab set COOKIE_SECURE=false.',
+    'You’re connecting over plain HTTP, so your browser drops TT’s secure session cookie — the next request fails with "Access token required". Fix: use HTTPS, or for a home-lab set COOKIE_SECURE=false.',
   'login.insecureCookie.link': 'Open the Troubleshooting guide',
   'login.bootstrap.title': "First deployment administrator account",
   'login.bootstrap.email': "Email",

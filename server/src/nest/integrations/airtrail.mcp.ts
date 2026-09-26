@@ -87,7 +87,7 @@ export class AirtrailMcp {
           `Maximum flights to return, oldest departure first (default ${DEFAULT_FLIGHT_LIMIT}, max ${MAX_FLIGHT_LIMIT})`,
         ),
     },
-    // Reads a remote AirTrail instance, not TREK's own database.
+    // Reads a remote AirTrail instance, not TT's own database.
     annotations: TOOL_ANNOTATIONS_OPEN_WORLD_READONLY,
     // The flights are candidate bookings and the import writes reservations, so
     // the pair rides one group. There is no airtrail scope, and settings:read

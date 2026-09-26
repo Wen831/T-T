@@ -23,7 +23,7 @@ const docsync: TranslationStrings = {
   'docsync.onConflict.trek_wins': 'Ponechat kopii z TREKu',
   'docsync.onConflict.provider_wins': 'Ponechat kopii z úložiště',
   'docsync.webhookHint':
-    'Vložte tuto URL k poskytovateli, aby změny přicházely okamžitě. Bez toho se TREK ptá v pravidelných intervalech.',
+    'Vložte tuto URL k poskytovateli, aby změny přicházely okamžitě. Bez toho se TT ptá v pravidelných intervalech.',
 
   // Pole formuláře připojení. Klíče odpovídají sloupci `label` v tabulce
   // document_provider_fields, která ukládá příponu klíče, ne text.
@@ -46,7 +46,7 @@ const docsync: TranslationStrings = {
   'docsync.hintNextcloudLogin': 'Vaše přihlašovací jméno v Nextcloudu, ne e-mailová adresa.',
   'docsync.hintNextcloudAppPassword': 'Nastavení, Zabezpečení, Vytvořit nové heslo aplikace. Nikdy heslo k účtu.',
   'docsync.hintOpenCloudToken': 'Vytváří se v OpenCloudu pod tokeny aplikací.',
-  'docsync.hintBasePath': 'Kde TREK hledá složky cest. Výchozí je /TREK.',
+  'docsync.hintBasePath': 'Kde TT hledá složky cest. Výchozí je /TREK.',
   'docsync.hintSynologyUrl': 'Uveďte i port, například https://nas.example.com:5001',
   'docsync.hintSynologyUser': 'Nejlépe vyhrazený účet DSM s přístupem jen k této sdílené složce.',
   'docsync.hintSynologyOtp': 'Potřeba jen jednou, pokud účet používá dvoufaktorové ověření.',
@@ -85,7 +85,7 @@ const docsync: TranslationStrings = {
   'docsync.error.forbidden': 'Tento účet k tomu nemá oprávnění.',
   'docsync.error.not_found': 'U poskytovatele nenalezeno.',
   'docsync.error.scope_missing': 'Připojená složka už neexistuje.',
-  'docsync.error.rate_limited': 'Poskytovatel omezuje počet požadavků. TREK to zkusí znovu později.',
+  'docsync.error.rate_limited': 'Poskytovatel omezuje počet požadavků. TT to zkusí znovu později.',
   'docsync.error.too_large': 'Soubor je větší, než poskytovatel přijímá.',
   'docsync.error.unsupported_type': 'Poskytovatel tento typ souboru nepřijímá.',
   'docsync.error.quota_exceeded': 'Poskytovateli došlo místo.',
@@ -106,7 +106,7 @@ const docsync: TranslationStrings = {
 
   'docsync.empty.title': 'Zatím nic nepřipojeno',
   'docsync.empty.hintOwner':
-    'Vyberte úložiště vlevo. TREK si vždy nechává vlastní kopii, takže se nic neztratí, ani když úložiště zmizí.',
+    'Vyberte úložiště vlevo. TT si vždy nechává vlastní kopii, takže se nic neztratí, ani když úložiště zmizí.',
   'docsync.empty.hintMember': 'Nastavuje to vlastník cesty. Dokumenty tak jako tak zůstávají v TREKu.',
 
   // Jak každý produkt věci ukládá. Zobrazuje se ještě před připojením, protože
@@ -118,7 +118,7 @@ const docsync: TranslationStrings = {
   'docsync.model.synologydrive': 'Ukládá do složky na NAS',
 
   // ── Pruh toku ──────────────────────────────────────────────────────────────
-  'docsync.flow.trek': 'TREK',
+  'docsync.flow.trek': 'TT',
   'docsync.flow.toProvider': 'Do úložiště',
   'docsync.flow.toTrek': 'Z úložiště',
   'docsync.flow.documents': 'dokumentů',
@@ -147,17 +147,17 @@ const docsync: TranslationStrings = {
   'docsync.connect.testing': 'Navazuje se spojení',
   'docsync.connect.okAs': 'Spojení navázáno, přihlášeno jako {account}',
   'docsync.connect.insecureHint': 'Pro instanci ve vlastní síti s vlastnoručně podepsaným certifikátem.',
-  'docsync.connect.about.paperless': 'TREK ukládá tuto cestu pod vlastním štítkem a zbytku vašeho archivu se nedotkne.',
-  'docsync.connect.about.papra': 'Vyberte organizaci, do které cesta patří. TREK ji v ní uloží pod vlastním štítkem.',
+  'docsync.connect.about.paperless': 'TT ukládá tuto cestu pod vlastním štítkem a zbytku vašeho archivu se nedotkne.',
+  'docsync.connect.about.papra': 'Vyberte organizaci, do které cesta patří. TT ji v ní uloží pod vlastním štítkem.',
   'docsync.connect.about.nextcloud':
     'Použijte heslo aplikace, ne heslo k účtu: funguje i s dvoufaktorovým ověřením a dá se zrušit samostatně.',
-  'docsync.connect.about.opencloud': 'TREK dostane pro tuto cestu vlastní prostor, oddělený od všeho ostatního.',
+  'docsync.connect.about.opencloud': 'TT dostane pro tuto cestu vlastní prostor, oddělený od všeho ostatního.',
   'docsync.connect.about.synologydrive':
     'Nejlépe účet DSM, který dosáhne jen na sdílenou složku určenou pro tuto cestu.',
 
   // ── Výběr umístění ─────────────────────────────────────────────────────────
   'docsync.scope.title': 'Kam v {provider} tuto cestu uložit?',
-  'docsync.scope.intro': 'Synchronizuje se jen to, co je uvnitř. Zbytek vašeho úložiště zůstane mimo TREK.',
+  'docsync.scope.intro': 'Synchronizuje se jen to, co je uvnitř. Zbytek vašeho úložiště zůstane mimo TT.',
   'docsync.scope.createTitle': 'Vytvořit nové',
   'docsync.scope.createAction': 'Vytvořit',
   'docsync.scope.pickTitle': 'Nebo použijte existující',

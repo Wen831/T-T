@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'Los recordatorios de viaje están desactivados. Actívalos en Admin > Configuración > Notificaciones.',
   'trips.importTrekTab': 'Importar de TREK',
   'trips.importTrekIntro':
-    'Sube una copia de seguridad de TREK (.zip) y elige los viajes a copiar a TT — días, lugares, reservas, presupuesto y fotos vienen incluidos.',
+    'Sube una copia de seguridad de TT (.zip) y elige los viajes a copiar a TT — días, lugares, reservas, presupuesto y fotos vienen incluidos.',
   'trips.importTrekPick': 'Elegir copia de TREK (.zip)',
   'trips.importTrekScanning': 'Leyendo copia…',
   'trips.importTrekImport': 'Importar viajes seleccionados',

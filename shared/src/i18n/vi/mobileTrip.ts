@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'Không có gì trên đường phía trước. Thử cả chặng xem sao.',
   'mobileTrip.rtNoneOnStage': 'Không có gì thuộc loại đó dọc chặng này.',
   'mobileTrip.rtPlanOnDesktop':
-    'Việc lên kế hoạch diễn ra trên máy tính. TREK tính chặng lái xe ngay khi một ngày có hai địa điểm.',
+    'Việc lên kế hoạch diễn ra trên máy tính. TT tính chặng lái xe ngay khi một ngày có hai địa điểm.',
   'mobileTrip.rtReach': 'Xa đến đâu',
   'mobileTrip.rtReachAhead': '{distance} phía trước',
   'mobileTrip.rtSearchOffline': 'Cần có kết nối: việc tìm kiếm đọc lộ trình phía trước.',

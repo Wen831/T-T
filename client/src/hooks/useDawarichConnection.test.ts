@@ -126,7 +126,7 @@ const EN = {
   synced: (count: number) => `${count} new stays found`,
   syncError: 'Could not read Dawarich',
   syncRunning: 'A check is already running',
-  unreachable: 'TREK could not reach that address.',
+  unreachable: 'TT could not reach that address.',
   unauthorized: 'Dawarich rejected the API key.',
   unknown: 'Something went wrong talking to Dawarich.',
 };

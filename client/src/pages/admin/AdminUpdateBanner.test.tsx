@@ -24,7 +24,7 @@ describe('AdminUpdateBanner', () => {
   it('FE-ADMBAN-002: interpolates latest and current version into the text', () => {
     render(<Harness updateInfo={buildUpdateInfo()} onHowTo={() => {}} />);
 
-    expect(screen.getByText('TREK v3.5.0 is available. You are running v3.4.1.')).toBeInTheDocument();
+    expect(screen.getByText('TT v3.5.0 is available. You are running v3.4.1.')).toBeInTheDocument();
   });
 
   it('FE-ADMBAN-003: hides the GitHub link when release_url is missing', () => {

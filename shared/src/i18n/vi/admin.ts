@@ -383,7 +383,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'Kho mã nguồn',
   'admin.plugins.reportIssue': 'Báo cáo sự cố',
   'admin.plugins.homepage': 'Trang chủ',
-  'admin.plugins.requiresTrek': 'Yêu cầu TREK {version}+',
+  'admin.plugins.requiresTrek': 'Yêu cầu TT {version}+',
   'admin.plugins.reviewedOn': 'Đã kiểm duyệt {date}',
   'admin.plugins.perm.db:own': 'Lưu trữ dữ liệu riêng trong một cơ sở dữ liệu cách ly',
   'admin.plugins.perm.db:read:trips': 'Đọc các chuyến đi mà người dùng hiện tại có quyền truy cập',
@@ -415,7 +415,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'Xuất bản các công cụ mà trợ lý AI có thể chạy thay bạn (nó hoạt động với quyền bạn cấp cho tiện ích tại đây, không phải quyền của trợ lý)',
   'admin.plugins.perm.geolocation:read':
-    'Hỏi vị trí trực tiếp của bạn khi một trong các chế độ xem của nó đang mở (TREK đọc vị trí bằng quyền vị trí của trang này, không phải quyền riêng của plugin)',
+    'Hỏi vị trí trực tiếp của bạn khi một trong các chế độ xem của nó đang mở (TT đọc vị trí bằng quyền vị trí của trang này, không phải quyền riêng của plugin)',
   'admin.plugins.perm.hook:pdf-section-provider': 'Thêm các phần văn bản vào bản xuất PDF của chuyến đi',
   'admin.plugins.perm.hook:atlas-layer-provider':
     'Làm nổi bật các quốc gia trên bản đồ thế giới Atlas (vd. danh sách mong muốn hoặc cảnh báo du lịch)',
@@ -443,26 +443,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateLater': 'Tạm thời để tắt',
   'admin.plugins.updateKeptOff': 'Đã cài đặt bản cập nhật — vẫn tắt cho đến khi bạn phê duyệt các quyền mới',
   'admin.plugins.reviewedMeaning':
-    '"Đã kiểm duyệt" nghĩa là một người bảo trì TREK đã quét plugin này để tìm mã độc trên mỗi phiên bản — không phải về chất lượng hay việc nó có hoạt động hay không. Đây không phải là bảo đảm rằng plugin vô hại.',
+    '"Đã kiểm duyệt" nghĩa là một người bảo trì TT đã quét plugin này để tìm mã độc trên mỗi phiên bản — không phải về chất lượng hay việc nó có hoạt động hay không. Đây không phải là bảo đảm rằng plugin vô hại.',
   'admin.plugins.security.title': 'Cách plugin được cô lập — và những giới hạn',
   'admin.plugins.security.isolationTitle': 'Mọi plugin đều chạy trong hộp cách ly',
   'admin.plugins.security.isolationBody':
-    'Plugin chạy như một tiến trình bị khóa riêng, chỉ có thể đọc các tệp của chính nó. Nó không thể đọc cơ sở dữ liệu, khóa bí mật đăng nhập hay khóa mã hóa của bạn, không thể khởi chạy chương trình khác và không thể ghi tệp ở bất kỳ đâu. Giao diện của nó chạy trong một khung trình duyệt được niêm phong, không thể đọc cookie phiên của bạn hay tác động đến trang TREK xung quanh.',
+    'Plugin chạy như một tiến trình bị khóa riêng, chỉ có thể đọc các tệp của chính nó. Nó không thể đọc cơ sở dữ liệu, khóa bí mật đăng nhập hay khóa mã hóa của bạn, không thể khởi chạy chương trình khác và không thể ghi tệp ở bất kỳ đâu. Giao diện của nó chạy trong một khung trình duyệt được niêm phong, không thể đọc cookie phiên của bạn hay tác động đến trang TT xung quanh.',
   'admin.plugins.security.permsTitle': 'Các quyền có ý nghĩa gì',
   'admin.plugins.security.permsBody':
-    'Các quyền hiển thị trước khi bạn cài đặt là một giới hạn cứng mà TREK thực thi trong khi plugin chạy — nó thực sự không thể làm bất cứ điều gì không có trong danh sách. Nhưng chúng cho bạn biết một plugin có thể làm gì, chứ không phải nó thực sự làm gì. Một plugin được phép đọc các chuyến đi của bạn và kết nối tới một máy chủ có thể gửi các chuyến đi của bạn đến máy chủ đó, vì vậy hãy đọc các quyền và các máy chủ ra ngoài, chứ không chỉ phần mô tả.',
+    'Các quyền hiển thị trước khi bạn cài đặt là một giới hạn cứng mà TT thực thi trong khi plugin chạy — nó thực sự không thể làm bất cứ điều gì không có trong danh sách. Nhưng chúng cho bạn biết một plugin có thể làm gì, chứ không phải nó thực sự làm gì. Một plugin được phép đọc các chuyến đi của bạn và kết nối tới một máy chủ có thể gửi các chuyến đi của bạn đến máy chủ đó, vì vậy hãy đọc các quyền và các máy chủ ra ngoài, chứ không chỉ phần mô tả.',
   'admin.plugins.security.limitsTitle': 'Những điều chúng tôi không thể hứa',
   'admin.plugins.security.limitsBody':
-    'Sự cô lập là một ranh giới phần mềm mạnh mẽ, chứ không tuyệt đối. Một plugin hoạt động với đúng các quyền mà bạn phê duyệt, vì vậy trong phạm vi các quyền đó nó có thể hành xử khác với mô tả của nó, và nó có thể gửi dữ liệu mà nó nắm giữ hợp lệ đến các máy chủ mà nó đã khai báo. TREK không đọc hay đánh giá những gì mã của một plugin thực sự làm.',
+    'Sự cô lập là một ranh giới phần mềm mạnh mẽ, chứ không tuyệt đối. Một plugin hoạt động với đúng các quyền mà bạn phê duyệt, vì vậy trong phạm vi các quyền đó nó có thể hành xử khác với mô tả của nó, và nó có thể gửi dữ liệu mà nó nắm giữ hợp lệ đến các máy chủ mà nó đã khai báo. TT không đọc hay đánh giá những gì mã của một plugin thực sự làm.',
   'admin.plugins.security.worstTitle': 'Trường hợp xấu nhất',
   'admin.plugins.security.worstBody':
     'Một plugin độc hại mà bạn bật lên có thể lạm dụng dữ liệu và các kết nối mà bạn đã cấp cho nó — ví dụ, làm rò rỉ các chuyến đi mà nó được phép đọc. Nó không thể đánh cắp mật khẩu, giả mạo đăng nhập quản trị viên, chạy lệnh trên máy chủ của bạn hay truy cập dữ liệu mà bạn không cấp. Thiệt hại chỉ nằm trong phạm vi những gì bạn đã phê duyệt, và việc tắt plugin sẽ dừng nó lại.',
   'admin.plugins.security.reviewedTitle': '"Đã kiểm duyệt" nghĩa là gì',
   'admin.plugins.security.reviewedBody':
-    'Một plugin đã kiểm duyệt đã được người bảo trì TREK quét thủ công để tìm mã độc trên mỗi phiên bản — được kiểm tra về mã độc hại, chứ không phải về việc nó có hoạt động tốt hay không. Đây không phải là lời hứa rằng plugin vô hại.',
+    'Một plugin đã kiểm duyệt đã được người bảo trì TT quét thủ công để tìm mã độc trên mỗi phiên bản — được kiểm tra về mã độc hại, chứ không phải về việc nó có hoạt động tốt hay không. Đây không phải là lời hứa rằng plugin vô hại.',
   'admin.plugins.security.signedTitle': '"Đã ký" nghĩa là gì',
   'admin.plugins.security.signedBody':
-    'Giá trị kiểm tra (checksum) mà TREK xác minh ở mỗi lần cài đặt chứng minh rằng các tệp đúng là những gì kho đăng ký bảo chứng. Chữ ký chứng minh một điều khác: rằng chúng đến từ tác giả, được ký bằng một khóa chỉ mình họ nắm giữ. Một plugin đã ký có cả hai. Một plugin chưa ký không phải là không an toàn — nó chỉ mang ít hơn một bảo đảm, và hiện nay phần lớn plugin trong kho đăng ký đều chưa ký.',
+    'Giá trị kiểm tra (checksum) mà TT xác minh ở mỗi lần cài đặt chứng minh rằng các tệp đúng là những gì kho đăng ký bảo chứng. Chữ ký chứng minh một điều khác: rằng chúng đến từ tác giả, được ký bằng một khóa chỉ mình họ nắm giữ. Một plugin đã ký có cả hai. Một plugin chưa ký không phải là không an toàn — nó chỉ mang ít hơn một bảo đảm, và hiện nay phần lớn plugin trong kho đăng ký đều chưa ký.',
   'admin.plugins.signed': 'Đã ký',
   'admin.plugins.signedHint': 'Đã được xác minh với khóa ký của tác giả khi cài đặt',
   'admin.plugins.unsigned': 'Chưa ký',
@@ -477,20 +477,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     'Các tệp không khớp với chữ ký của tác giả. Chúng không phải là những gì tác giả đã ký — hoặc chúng bị hỏng, hoặc chúng đã bị can thiệp. Không thể bỏ qua điều này.',
   'admin.plugins.sig.missingBody':
-    'Plugin này đã được ký khi bạn cài đặt, nhưng phiên bản mới không kèm chữ ký nào. TREK sẽ không lặng lẽ chấp nhận bước lùi đó. Không thể bỏ qua điều này.',
+    'Plugin này đã được ký khi bạn cài đặt, nhưng phiên bản mới không kèm chữ ký nào. TT sẽ không lặng lẽ chấp nhận bước lùi đó. Không thể bỏ qua điều này.',
   'admin.plugins.sig.incompleteBody':
     'Mục trong kho đăng ký chỉ được ký một nửa: nó khai báo khóa của tác giả nhưng phiên bản lại không có chữ ký (hoặc ngược lại). Đó là một sai sót từ phía plugin. Không thể bỏ qua điều này.',
   'admin.plugins.sig.pinnedKey': 'Khóa đã dùng khi cài đặt',
   'admin.plugins.sig.newKey': 'Khóa nó đang đưa ra hiện giờ',
   'admin.plugins.sig.confirmOutOfBand':
-    'TREK không thể phân biệt một lần xoay khóa hợp lệ với một vụ chiếm quyền — nhìn từ đây, cả hai giống hệt nhau. Hãy xác nhận khóa mới với tác giả qua một kênh mà bạn đã tin tưởng trước khi chấp nhận nó. Khi bạn chấp nhận, plugin sẽ được cập nhật và khóa mới sẽ được ghi nhớ.',
+    'TT không thể phân biệt một lần xoay khóa hợp lệ với một vụ chiếm quyền — nhìn từ đây, cả hai giống hệt nhau. Hãy xác nhận khóa mới với tác giả qua một kênh mà bạn đã tin tưởng trước khi chấp nhận nó. Khi bạn chấp nhận, plugin sẽ được cập nhật và khóa mới sẽ được ghi nhớ.',
   'admin.plugins.sig.retrustConfirm': 'Tin cậy khóa mới & cập nhật',
   'admin.plugins.sig.cancel': 'Không tin cậy',
   'admin.plugins.sig.consentUnsigned':
     'Không có gì gắn phiên bản này với tác giả của nó — các tệp khớp với kho đăng ký, nhưng chúng không mang chữ ký của tác giả.',
   'admin.plugins.security.trustTitle': 'Điểm mấu chốt',
   'admin.plugins.security.trustBody':
-    'Cài đặt một plugin cũng giống như cài đặt bất kỳ ứng dụng bên thứ ba nào: chỉ cài đặt mã từ những tác giả bạn tin tưởng, và khi còn nghi ngờ, hãy tự kiểm tra nó trước. TREK không chịu trách nhiệm về các plugin của bên thứ ba.',
+    'Cài đặt một plugin cũng giống như cài đặt bất kỳ ứng dụng bên thứ ba nào: chỉ cài đặt mã từ những tác giả bạn tin tưởng, và khi còn nghi ngờ, hãy tự kiểm tra nó trước. TT không chịu trách nhiệm về các plugin của bên thứ ba.',
   'admin.plugins.runtimeOn': 'Runtime đang bật',
   'admin.plugins.tabDiscover': 'Khám phá',
   'admin.plugins.searchPlaceholder': 'Tìm kiếm plugin…',
@@ -579,15 +579,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': 'Vẫn cài đặt',
   'admin.plugins.rangeBypass.pill': 'Đã tắt kiểm tra phiên bản',
   'admin.plugins.rangeBypass.pillHint':
-    'TREK_PLUGINS_IGNORE_TREK_RANGE đã được đặt — plugin có thể được cài đặt và chạy ngoài các phiên bản TREK mà tác giả đã khai báo',
-  'admin.plugins.rangeBypass.title': 'Ngoài các phiên bản TREK được hỗ trợ',
-  'admin.plugins.rangeBypass.noticeTitle': 'Đã cài đặt ngoài các phiên bản TREK được hỗ trợ',
+    'TREK_PLUGINS_IGNORE_TREK_RANGE đã được đặt — plugin có thể được cài đặt và chạy ngoài các phiên bản TT mà tác giả đã khai báo',
+  'admin.plugins.rangeBypass.title': 'Ngoài các phiên bản TT được hỗ trợ',
+  'admin.plugins.rangeBypass.noticeTitle': 'Đã cài đặt ngoài các phiên bản TT được hỗ trợ',
   'admin.plugins.rangeBypass.body':
-    '“{name}” khai báo hỗ trợ TREK {range}, còn máy chủ này đang chạy {host}. TREK chỉ cho phép vì TREK_PLUGINS_IGNORE_TREK_RANGE đã được đặt. Tác giả chưa cập nhật phạm vi phiên bản của plugin cho TREK này, nên không có gì đảm bảo nó hoạt động — và trong một số ít trường hợp, plugin không tương thích có thể làm hỏng dữ liệu TREK. Chỉ tiếp tục nếu bạn chấp nhận rủi ro đó.',
+    '“{name}” khai báo hỗ trợ TT {range}, còn máy chủ này đang chạy {host}. TT chỉ cho phép vì TREK_PLUGINS_IGNORE_TREK_RANGE đã được đặt. Tác giả chưa cập nhật phạm vi phiên bản của plugin cho TT này, nên không có gì đảm bảo nó hoạt động — và trong một số ít trường hợp, plugin không tương thích có thể làm hỏng dữ liệu TT. Chỉ tiếp tục nếu bạn chấp nhận rủi ro đó.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '“{name}” không khai báo hỗ trợ phiên bản TREK nào; máy chủ này đang chạy {host}. TREK chỉ cho phép vì TREK_PLUGINS_IGNORE_TREK_RANGE đã được đặt. Không có dấu hiệu nào cho thấy tác giả đã thử nghiệm trên TREK này, nên không có gì đảm bảo nó hoạt động — và trong một số ít trường hợp, plugin không tương thích có thể làm hỏng dữ liệu TREK. Chỉ tiếp tục nếu bạn chấp nhận rủi ro đó.',
-  'admin.plugins.dep.trekBypassed': 'Ngoài phạm vi TREK của nó ({range}) — đã tắt kiểm tra phiên bản',
-  'admin.plugins.dep.trekBypassedUnknown': 'Không khai báo phạm vi TREK — đã tắt kiểm tra phiên bản',
+    '“{name}” không khai báo hỗ trợ phiên bản TT nào; máy chủ này đang chạy {host}. TT chỉ cho phép vì TREK_PLUGINS_IGNORE_TREK_RANGE đã được đặt. Không có dấu hiệu nào cho thấy tác giả đã thử nghiệm trên TT này, nên không có gì đảm bảo nó hoạt động — và trong một số ít trường hợp, plugin không tương thích có thể làm hỏng dữ liệu TT. Chỉ tiếp tục nếu bạn chấp nhận rủi ro đó.',
+  'admin.plugins.dep.trekBypassed': 'Ngoài phạm vi TT của nó ({range}) — đã tắt kiểm tra phiên bản',
+  'admin.plugins.dep.trekBypassedUnknown': 'Không khai báo phạm vi TT — đã tắt kiểm tra phiên bản',
   'admin.plugins.incompatible': 'Không tương thích',
   'admin.plugins.accessTitle': 'Những gì có thể truy cập',
   'admin.plugins.connectsTitle': 'Kết nối tới',
@@ -599,7 +599,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': 'Đã kiểm duyệt vào',
   'admin.plugins.downloads': 'Lượt tải',
   'admin.addons.title': 'Tiện ích bổ sung',
-  'admin.addons.subtitle': 'Bật hoặc tắt các tính năng để tùy chỉnh trải nghiệm TREK của bạn.',
+  'admin.addons.subtitle': 'Bật hoặc tắt các tính năng để tùy chỉnh trải nghiệm TT của bạn.',
   'admin.addons.catalog.packing.name': 'Danh sách',
   'admin.addons.catalog.packing.description': 'Danh sách đóng gói và nhiệm vụ cần làm cho chuyến đi của bạn',
   'admin.addons.catalog.budget.name': 'Chi phí',
@@ -640,7 +640,7 @@ const admin: TranslationStrings = {
   'admin.weather.title': 'Dữ liệu thời tiết',
   'admin.weather.badge': 'Kể từ ngày 24 tháng 3 năm 2026',
   'admin.weather.description':
-    'TT tiếp tục sử dụng weather API của TREK — dịch vụ nguồn mở, miễn phí, không cần khóa API.',
+    'TT tiếp tục sử dụng weather API của TT — dịch vụ nguồn mở, miễn phí, không cần khóa API.',
   'admin.weather.forecast': 'dự báo 16 ngày',
   'admin.weather.forecastDesc': 'Trước đây 5 ngày (OpenWeatherMap)',
   'admin.weather.climate': 'Dữ liệu khí hậu lịch sử',
@@ -699,14 +699,14 @@ const admin: TranslationStrings = {
   'admin.github.loading': 'Đang tải...',
   'admin.github.error': 'Không tải được bản phát hành',
   'admin.github.by': 'qua',
-  'admin.github.support': 'Giúp tôi tiếp tục xây dựng TREK',
+  'admin.github.support': 'Giúp tôi tiếp tục xây dựng TT',
   'admin.update.available': 'Đã có bản cập nhật',
-  'admin.update.text': 'TREK {version} có sẵn. Bạn đang chạy {current}.',
+  'admin.update.text': 'TT {version} có sẵn. Bạn đang chạy {current}.',
   'admin.update.button': 'Xem trên GitHub',
   'admin.update.install': 'Cài đặt bản cập nhật',
   'admin.update.confirmTitle': 'Cài đặt bản cập nhật?',
   'admin.update.confirmText':
-    'TREK sẽ được cập nhật từ {current} lên {version}. Máy chủ sẽ tự động khởi động lại sau đó.',
+    'TT sẽ được cập nhật từ {current} lên {version}. Máy chủ sẽ tự động khởi động lại sau đó.',
   'admin.update.dataInfo':
     'Tất cả dữ liệu của bạn (chuyến đi, người dùng, khóa API, nội dung tải lên, Vacay, Atlas, ngân sách) sẽ được giữ nguyên.',
   'admin.update.warning': 'Ứng dụng sẽ không khả dụng trong thời gian ngắn khi khởi động lại.',
@@ -718,9 +718,9 @@ const admin: TranslationStrings = {
   'admin.update.backupLink': 'Đi tới Sao lưu',
   'admin.update.howTo': 'Cách cập nhật',
   'admin.update.dockerText':
-    'Phiên bản TREK của bạn chạy trong Docker. Để cập nhật lên {version}, hãy chạy các lệnh sau trên máy chủ của bạn:',
+    'Phiên bản TT của bạn chạy trong Docker. Để cập nhật lên {version}, hãy chạy các lệnh sau trên máy chủ của bạn:',
   'admin.update.nonDockerText':
-    'Phiên bản TREK này không chạy trong Docker. Để cập nhật lên {version}, hãy chạy lại phương pháp cài đặt hoặc cập nhật mà bạn đã sử dụng — ví dụ: trên Proxmox Community Script chạy bản cập nhật từ bảng điều khiển LXC:',
+    'Phiên bản TT này không chạy trong Docker. Để cập nhật lên {version}, hãy chạy lại phương pháp cài đặt hoặc cập nhật mà bạn đã sử dụng — ví dụ: trên Proxmox Community Script chạy bản cập nhật từ bảng điều khiển LXC:',
   'admin.update.wikiLink': 'Mở hướng dẫn cập nhật',
   'admin.update.reloadHint': 'Vui lòng tải lại trang sau vài giây.',
   'admin.tabs.permissions': 'Quyền',

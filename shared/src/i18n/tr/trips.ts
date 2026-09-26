@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': 'Seyahat hatırlatıcıları kapalı. Yönetici > Ayarlar > Bildirimler bölümünden açın.',
   'trips.importTrekTab': "TREK'den içe aktar",
   'trips.importTrekIntro':
-    "Bir TREK yedeği (.zip) yükleyin ve TT'ye kopyalanacak gezileri seçin — günler, yerler, rezervasyonlar, bütçe ve fotoğraflar birlikte gelir.",
+    "Bir TT yedeği (.zip) yükleyin ve TT'ye kopyalanacak gezileri seçin — günler, yerler, rezervasyonlar, bütçe ve fotoğraflar birlikte gelir.",
   'trips.importTrekPick': 'TREK yedeği (.zip) seç',
   'trips.importTrekScanning': 'Yedek okunuyor…',
   'trips.importTrekImport': 'Seçilen gezileri içe aktar',

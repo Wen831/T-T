@@ -39,7 +39,7 @@ const settings: TranslationStrings = {
     'CARTO 배경 지도는 키가 없으면 워터마크가 표시됩니다. 무료이며 계정도 필요 없습니다. 출처',
   'settings.mapCartoKeyLink': 'carto.com 배경 지도 API 키',
   'settings.mapCartoKeyMissing':
-    '이 템플릿은 CARTO 배경 지도입니다. 키가 없으면 CARTO가 모든 타일에 "API KEY REQUIRED"를 새깁니다. 키를 입력하기 전까지 TREK은 기본 배경 지도를 표시합니다.',
+    '이 템플릿은 CARTO 배경 지도입니다. 키가 없으면 CARTO가 모든 타일에 "API KEY REQUIRED"를 새깁니다. 키를 입력하기 전까지 TT은 기본 배경 지도를 표시합니다.',
   'settings.mapStyle': '지도 스타일',
   'settings.mapStylePlaceholder': 'Mapbox 스타일 선택',
   'settings.mapStyleHint': '프리셋 또는 mapbox://styles/USER/ID URL 직접 입력',
@@ -218,13 +218,13 @@ const settings: TranslationStrings = {
   'settings.about.featureRequestHint': '새로운 기능을 제안하세요',
   'settings.about.wikiHint': '문서 및 가이드',
   'settings.about.descriptionManaged':
-    'TREK helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
+    'TT helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'TREK is open source, licensed AGPL-3.0',
   'settings.about.supporters.badge': '월간 후원자',
-  'settings.about.supporters.title': 'TREK의 여행 동반자',
+  'settings.about.supporters.title': 'TT의 여행 동반자',
   'settings.about.supporters.subtitle':
-    '다음 여정을 계획하는 동안, 이분들이 TREK의 미래를 함께 만들어가고 있습니다. 월간 후원금은 개발과 실제 작업 시간에 직접 사용되어 TREK이 오픈 소스로 유지될 수 있게 합니다.',
+    '다음 여정을 계획하는 동안, 이분들이 TT의 미래를 함께 만들어가고 있습니다. 월간 후원금은 개발과 실제 작업 시간에 직접 사용되어 TT이 오픈 소스로 유지될 수 있게 합니다.',
   'settings.about.supporters.since': '{date}부터 후원자',
   'settings.about.supporters.tierEmpty': '첫 번째 후원자가 되어보세요',
   'settings.about.supporter.tier.noReturnTicket': '편도 티켓',
@@ -233,7 +233,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': '알뜰 여행자',
   'settings.about.supporter.tier.hostelBunkmate': '호스텔 룸메이트',
   'settings.about.description':
-    'TREK은 첫 아이디어부터 마지막 추억까지 여행을 체계적으로 관리하는 자체 호스팅 여행 플래너입니다. 일별 계획, 예산, 짐 목록, 사진 등 모든 것이 하나의 서버에 담겨 있습니다.',
+    'TT은 첫 아이디어부터 마지막 추억까지 여행을 체계적으로 관리하는 자체 호스팅 여행 플래너입니다. 일별 계획, 예산, 짐 목록, 사진 등 모든 것이 하나의 서버에 담겨 있습니다.',
   'settings.about.madeWith': '으로 만들어졌습니다',
   'settings.about.madeBy': '성장하는 오픈 소스 커뮤니티와 함께',
   'settings.username': '사용자 이름',
@@ -343,7 +343,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': '자체 네트워크의 신뢰할 수 있는 인스턴스에서만 활성화하세요.',
   'settings.airtrail.writeBack': '변경 사항을 AirTrail에 다시 기록',
   'settings.airtrail.writeBackHint':
-    '기본적으로 꺼져 있음: AirTrail이 신뢰할 수 있는 원본이며 TREK은 읽기만 합니다. TREK에서 변경한 내용을 AirTrail로 다시 보내려면 켜세요.',
+    '기본적으로 꺼져 있음: AirTrail이 신뢰할 수 있는 원본이며 TT은 읽기만 합니다. TT에서 변경한 내용을 AirTrail로 다시 보내려면 켜세요.',
   'settings.airtrail.connected': '연결됨',
   'settings.airtrail.notConnected': '연결되지 않음',
   'settings.airtrail.toast.saved': 'AirTrail 연결이 저장되었습니다',
@@ -454,7 +454,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': '대시보드',
   'settings.startPageActiveTrip': '진행 중인 여행',
   'settings.startPageHint':
-    'TREK을 열면 지금 진행 중인 여행, 없으면 다음에 시작하는 여행으로 바로 이동합니다. 대시보드가 강조하는 여행과 같습니다.',
+    'TT을 열면 지금 진행 중인 여행, 없으면 다음에 시작하는 여행으로 바로 이동합니다. 대시보드가 강조하는 여행과 같습니다.',
   'settings.startTripTab': '시작 탭',
   'settings.startTripTabHint': '여행이 열릴 탭입니다. 꺼 둔 애드온의 탭이면 대신 계획이 열립니다.',
 

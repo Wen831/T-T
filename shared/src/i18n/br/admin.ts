@@ -325,7 +325,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'Repositório de origem',
   'admin.plugins.reportIssue': 'Relatar um problema',
   'admin.plugins.homepage': 'Página inicial',
-  'admin.plugins.requiresTrek': 'Requer TREK {version}+',
+  'admin.plugins.requiresTrek': 'Requer TT {version}+',
   'admin.plugins.reviewedOn': 'Revisado em {date}',
   'admin.plugins.perm.db:own': 'Armazenar seus próprios dados em um banco de dados isolado',
   'admin.plugins.perm.db:read:trips': 'Ler viagens às quais o usuário atual tem acesso',
@@ -392,7 +392,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:place-detail-provider':
     'Contribuir com detalhes extras (avaliações, notas, links) para um local',
   'admin.plugins.perm.hook:search-provider':
-    'Responder a buscas de locais a partir do próprio índice, ao lado dos resultados do TREK',
+    'Responder a buscas de locais a partir do próprio índice, ao lado dos resultados do TT',
   'admin.plugins.perm.hook:trip-warning-provider': 'Emitir avisos de validação em uma viagem (exibidos no planejador)',
   'admin.plugins.perm.hook:table-contributor':
     'Adicionar colunas e ações às visualizações da viagem (reservas, locais, dias)',
@@ -412,7 +412,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'Publicar ferramentas que um assistente de IA pode executar em seu nome (ele age com o acesso que você concede ao plugin aqui, não com o dele)',
   'admin.plugins.perm.geolocation:read':
-    'Consultar sua localização em tempo real enquanto uma das visualizações dele estiver aberta (o TREK a lê com a permissão de localização deste site, não com uma permissão própria do plugin)',
+    'Consultar sua localização em tempo real enquanto uma das visualizações dele estiver aberta (o TT a lê com a permissão de localização deste site, não com uma permissão própria do plugin)',
   'admin.plugins.perm.hook:pdf-section-provider': 'Anexar seções de texto à exportação em PDF da viagem',
   'admin.plugins.perm.hook:atlas-layer-provider':
     'Destacar países no mapa-múndi do Atlas (ex. listas de desejos ou avisos de viagem)',
@@ -441,26 +441,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateLater': 'Manter desativado por enquanto',
   'admin.plugins.updateKeptOff': 'Atualização instalada — desativada até você aprovar as novas permissões',
   'admin.plugins.reviewedMeaning':
-    '"Revisado" significa que um mantenedor do TREK verificou este plugin em busca de malware em cada versão — não quanto à qualidade ou se ele funciona. Não é garantia de que um plugin seja inofensivo.',
+    '"Revisado" significa que um mantenedor do TT verificou este plugin em busca de malware em cada versão — não quanto à qualidade ou se ele funciona. Não é garantia de que um plugin seja inofensivo.',
   'admin.plugins.security.title': 'Como os plugins são isolados — e os limites',
   'admin.plugins.security.isolationTitle': 'Todo plugin roda isolado',
   'admin.plugins.security.isolationBody':
-    'Um plugin roda como seu próprio processo restrito, que só consegue ler os próprios arquivos. Ele não pode ler seu banco de dados, seu segredo de login ou sua chave de criptografia, não pode iniciar outros programas e não pode gravar arquivos em lugar nenhum. Sua interface roda em um frame de navegador isolado, que não consegue ler o cookie da sua sessão nem interferir na página do TREK ao redor.',
+    'Um plugin roda como seu próprio processo restrito, que só consegue ler os próprios arquivos. Ele não pode ler seu banco de dados, seu segredo de login ou sua chave de criptografia, não pode iniciar outros programas e não pode gravar arquivos em lugar nenhum. Sua interface roda em um frame de navegador isolado, que não consegue ler o cookie da sua sessão nem interferir na página do TT ao redor.',
   'admin.plugins.security.permsTitle': 'O que as permissões significam',
   'admin.plugins.security.permsBody':
-    'As permissões exibidas antes da instalação são um limite rígido que o TREK impõe enquanto o plugin roda — ele literalmente não consegue fazer nada que não esteja na lista. Mas elas dizem o que um plugin pode fazer, não o que ele de fato faz. Um plugin autorizado a ler suas viagens e a acessar um servidor pode enviar suas viagens para esse servidor, então leia as permissões e os hosts de saída, não apenas a descrição.',
+    'As permissões exibidas antes da instalação são um limite rígido que o TT impõe enquanto o plugin roda — ele literalmente não consegue fazer nada que não esteja na lista. Mas elas dizem o que um plugin pode fazer, não o que ele de fato faz. Um plugin autorizado a ler suas viagens e a acessar um servidor pode enviar suas viagens para esse servidor, então leia as permissões e os hosts de saída, não apenas a descrição.',
   'admin.plugins.security.limitsTitle': 'O que não podemos garantir',
   'admin.plugins.security.limitsBody':
-    'O isolamento é uma barreira de software forte, mas não absoluta. Um plugin age exatamente com as permissões que você aprova, então, dentro dessas permissões, ele pode se comportar de forma diferente do que a descrição sugere e pode enviar dados que legitimamente possui aos hosts que declarou. O TREK não lê nem julga o que o código de um plugin de fato faz.',
+    'O isolamento é uma barreira de software forte, mas não absoluta. Um plugin age exatamente com as permissões que você aprova, então, dentro dessas permissões, ele pode se comportar de forma diferente do que a descrição sugere e pode enviar dados que legitimamente possui aos hosts que declarou. O TT não lê nem julga o que o código de um plugin de fato faz.',
   'admin.plugins.security.worstTitle': 'O pior cenário',
   'admin.plugins.security.worstBody':
     'Um plugin hostil que você ativa pode fazer mau uso dos dados e das conexões que você concedeu a ele — por exemplo, vazar as viagens que ele tem permissão para ler. Ele não pode roubar senhas, forjar um login de admin, executar comandos no seu servidor nem acessar dados que você não concedeu. O dano fica restrito ao que você aprovou, e desativar o plugin o interrompe.',
   'admin.plugins.security.reviewedTitle': 'O que significa "Revisado"',
   'admin.plugins.security.reviewedBody':
-    'Um plugin revisado foi verificado manualmente em busca de malware por um mantenedor do TREK em cada versão — checado quanto a código malicioso, não quanto a funcionar bem. Não é uma promessa de que o plugin seja inofensivo.',
+    'Um plugin revisado foi verificado manualmente em busca de malware por um mantenedor do TT em cada versão — checado quanto a código malicioso, não quanto a funcionar bem. Não é uma promessa de que o plugin seja inofensivo.',
   'admin.plugins.security.signedTitle': 'O que significa "Assinado"',
   'admin.plugins.security.signedBody':
-    'A soma de verificação que o TREK confere em toda instalação prova que os arquivos são exatamente aqueles pelos quais o registro responde. Uma assinatura prova algo diferente: que eles vieram do autor, assinados com uma chave que só ele possui. Um plugin assinado tem as duas coisas. Um plugin sem assinatura não é inseguro — ele apenas carrega uma garantia a menos, e hoje a maioria dos plugins do registro não é assinada.',
+    'A soma de verificação que o TT confere em toda instalação prova que os arquivos são exatamente aqueles pelos quais o registro responde. Uma assinatura prova algo diferente: que eles vieram do autor, assinados com uma chave que só ele possui. Um plugin assinado tem as duas coisas. Um plugin sem assinatura não é inseguro — ele apenas carrega uma garantia a menos, e hoje a maioria dos plugins do registro não é assinada.',
   'admin.plugins.signed': 'Assinado',
   'admin.plugins.signedHint': 'Verificado contra a chave de assinatura do autor no momento da instalação',
   'admin.plugins.unsigned': 'Sem assinatura',
@@ -475,20 +475,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     'Os arquivos não correspondem à assinatura do autor. Eles não são o que o autor assinou — ou foram corrompidos, ou foram adulterados. Isso não pode ser ignorado.',
   'admin.plugins.sig.missingBody':
-    'Este plugin estava assinado quando você o instalou, mas a nova versão não traz assinatura alguma. O TREK não vai aceitar essa perda em silêncio. Isso não pode ser ignorado.',
+    'Este plugin estava assinado quando você o instalou, mas a nova versão não traz assinatura alguma. O TT não vai aceitar essa perda em silêncio. Isso não pode ser ignorado.',
   'admin.plugins.sig.incompleteBody':
     'A entrada no registro está assinada pela metade: ela declara uma chave do autor, mas a versão não traz assinatura (ou o contrário). Isso é um erro do lado do plugin. Isso não pode ser ignorado.',
   'admin.plugins.sig.pinnedKey': 'Chave com que foi instalado',
   'admin.plugins.sig.newKey': 'Chave que ele está oferecendo agora',
   'admin.plugins.sig.confirmOutOfBand':
-    'O TREK não consegue distinguir uma troca legítima de chave de um sequestro do plugin — daqui, as duas coisas são idênticas. Confirme a nova chave com o autor por um canal em que você já confia antes de aceitá-la. Assim que aceitar, o plugin é atualizado e a nova chave passa a ser lembrada.',
+    'O TT não consegue distinguir uma troca legítima de chave de um sequestro do plugin — daqui, as duas coisas são idênticas. Confirme a nova chave com o autor por um canal em que você já confia antes de aceitá-la. Assim que aceitar, o plugin é atualizado e a nova chave passa a ser lembrada.',
   'admin.plugins.sig.retrustConfirm': 'Confiar na nova chave e atualizar',
   'admin.plugins.sig.cancel': 'Não confiar',
   'admin.plugins.sig.consentUnsigned':
     'Nada liga esta versão ao seu autor — os arquivos correspondem ao registro, mas não trazem assinatura do autor.',
   'admin.plugins.security.trustTitle': 'Em resumo',
   'admin.plugins.security.trustBody':
-    'Instalar um plugin é como instalar qualquer app de terceiros: adicione apenas código de autores em quem você confia e, em caso de dúvida, inspecione-o você mesmo antes. O TREK não assume nenhuma responsabilidade por plugins de terceiros.',
+    'Instalar um plugin é como instalar qualquer app de terceiros: adicione apenas código de autores em quem você confia e, em caso de dúvida, inspecione-o você mesmo antes. O TT não assume nenhuma responsabilidade por plugins de terceiros.',
   'admin.plugins.runtimeOn': 'Runtime ativo',
   'admin.plugins.tabDiscover': 'Descobrir',
   'admin.plugins.searchPlaceholder': 'Buscar plugins…',
@@ -577,15 +577,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': 'Instalar mesmo assim',
   'admin.plugins.rangeBypass.pill': 'Verificações de versão desligadas',
   'admin.plugins.rangeBypass.pillHint':
-    'TREK_PLUGINS_IGNORE_TREK_RANGE está definido — plugins podem ser instalados e executados fora das versões do TREK declaradas por seus autores',
-  'admin.plugins.rangeBypass.title': 'Fora das versões do TREK suportadas',
-  'admin.plugins.rangeBypass.noticeTitle': 'Instalado fora das versões do TREK suportadas',
+    'TREK_PLUGINS_IGNORE_TREK_RANGE está definido — plugins podem ser instalados e executados fora das versões do TT declaradas por seus autores',
+  'admin.plugins.rangeBypass.title': 'Fora das versões do TT suportadas',
+  'admin.plugins.rangeBypass.noticeTitle': 'Instalado fora das versões do TT suportadas',
   'admin.plugins.rangeBypass.body':
-    '“{name}” declara suporte ao TREK {range}, e este servidor executa {host}. O TREK só o deixa passar porque TREK_PLUGINS_IGNORE_TREK_RANGE está definido. O autor não atualizou o intervalo de versões do plugin para este TREK, então não há garantia de que funcione — e, em casos raros, um plugin incompatível pode corromper os dados do TREK. Continue apenas se aceitar esse risco.',
+    '“{name}” declara suporte ao TT {range}, e este servidor executa {host}. O TT só o deixa passar porque TREK_PLUGINS_IGNORE_TREK_RANGE está definido. O autor não atualizou o intervalo de versões do plugin para este TT, então não há garantia de que funcione — e, em casos raros, um plugin incompatível pode corromper os dados do TT. Continue apenas se aceitar esse risco.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '“{name}” não declara quais versões do TREK suporta; este servidor executa {host}. O TREK só o deixa passar porque TREK_PLUGINS_IGNORE_TREK_RANGE está definido. Nada indica que o autor o tenha testado neste TREK, então não há garantia de que funcione — e, em casos raros, um plugin incompatível pode corromper os dados do TREK. Continue apenas se aceitar esse risco.',
-  'admin.plugins.dep.trekBypassed': 'Fora do seu intervalo TREK ({range}) — verificações de versão desligadas',
-  'admin.plugins.dep.trekBypassedUnknown': 'Não declara nenhum intervalo TREK — verificações de versão desligadas',
+    '“{name}” não declara quais versões do TT suporta; este servidor executa {host}. O TT só o deixa passar porque TREK_PLUGINS_IGNORE_TREK_RANGE está definido. Nada indica que o autor o tenha testado neste TT, então não há garantia de que funcione — e, em casos raros, um plugin incompatível pode corromper os dados do TT. Continue apenas se aceitar esse risco.',
+  'admin.plugins.dep.trekBypassed': 'Fora do seu intervalo TT ({range}) — verificações de versão desligadas',
+  'admin.plugins.dep.trekBypassedUnknown': 'Não declara nenhum intervalo TT — verificações de versão desligadas',
   'admin.plugins.incompatible': 'Incompatível',
   'admin.plugins.accessTitle': 'O que ele pode acessar',
   'admin.plugins.connectsTitle': 'Conecta-se a',
@@ -597,7 +597,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': 'Revisado em',
   'admin.plugins.downloads': 'Downloads',
   'admin.addons.title': 'Complementos',
-  'admin.addons.subtitle': 'Ative ou desative recursos para personalizar sua experiência no TREK.',
+  'admin.addons.subtitle': 'Ative ou desative recursos para personalizar sua experiência no TT.',
   'admin.addons.catalog.memories.name': 'Memórias',
   'admin.addons.catalog.memories.description': 'Álbuns de fotos compartilhados em cada viagem',
   'admin.addons.catalog.packing.name': 'Listas',
@@ -638,7 +638,7 @@ const admin: TranslationStrings = {
   'admin.weather.title': 'Dados meteorológicos',
   'admin.weather.badge': 'Desde 24 de março de 2026',
   'admin.weather.description':
-    'O TT continua a usar a API de clima do TREK — um serviço gratuito e de código aberto, sem chave de API.',
+    'O TT continua a usar a API de clima do TT — um serviço gratuito e de código aberto, sem chave de API.',
   'admin.weather.forecast': 'Previsão de 16 dias',
   'admin.weather.forecastDesc': 'Antes eram 5 dias (OpenWeatherMap)',
   'admin.weather.climate': 'Dados climáticos históricos',
@@ -670,14 +670,14 @@ const admin: TranslationStrings = {
   'admin.github.loading': 'Carregando...',
   'admin.github.error': 'Falha ao carregar versões',
   'admin.github.by': 'por',
-  'admin.github.support': 'Ajuda a continuar desenvolvendo o TREK',
+  'admin.github.support': 'Ajuda a continuar desenvolvendo o TT',
   'admin.update.available': 'Atualização disponível',
-  'admin.update.text': 'O TREK {version} está disponível. Você está na {current}.',
+  'admin.update.text': 'O TT {version} está disponível. Você está na {current}.',
   'admin.update.button': 'Ver no GitHub',
   'admin.update.install': 'Instalar atualização',
   'admin.update.confirmTitle': 'Instalar atualização?',
   'admin.update.confirmText':
-    'O TREK será atualizado de {current} para {version}. O servidor reiniciará automaticamente em seguida.',
+    'O TT será atualizado de {current} para {version}. O servidor reiniciará automaticamente em seguida.',
   'admin.update.dataInfo':
     'Todos os seus dados (viagens, usuários, chaves de API, envios, Vacay, Atlas, orçamentos) serão preservados.',
   'admin.update.warning': 'O app ficará brevemente indisponível durante o reinício.',
@@ -688,9 +688,9 @@ const admin: TranslationStrings = {
   'admin.update.backupHint': 'Recomendamos criar um backup antes de atualizar.',
   'admin.update.backupLink': 'Ir para Backup',
   'admin.update.howTo': 'Como atualizar',
-  'admin.update.dockerText': 'Sua instância TREK roda no Docker. Para atualizar para {version}, execute no servidor:',
+  'admin.update.dockerText': 'Sua instância TT roda no Docker. Para atualizar para {version}, execute no servidor:',
   'admin.update.nonDockerText':
-    'Esta instância do TREK não está rodando no Docker. Para atualizar para {version}, execute novamente o método de instalação ou atualização que você usou — por exemplo, no Proxmox Community Scripts, execute a atualização a partir do console do LXC:',
+    'Esta instância do TT não está rodando no Docker. Para atualizar para {version}, execute novamente o método de instalação ou atualização que você usou — por exemplo, no Proxmox Community Scripts, execute a atualização a partir do console do LXC:',
   'admin.update.wikiLink': 'Abrir o guia de atualização',
   'admin.update.reloadHint': 'Recarregue a página em alguns segundos.',
   'admin.tabs.permissions': 'Permissões',
@@ -815,7 +815,7 @@ const admin: TranslationStrings = {
   'admin.amapKeyHint':
     'Para busca de lugares na China e rotas com trânsito. Obtenha uma chave de serviço web em lbs.amap.com.',
   'admin.amapSearch.title': 'Usar AMap para busca de lugares',
-  'admin.amapSearch.subtitle': 'Usa AMap por padrão; cada formulário de busca pode voltar às fontes nativas do TREK.',
+  'admin.amapSearch.subtitle': 'Usa AMap por padrão; cada formulário de busca pode voltar às fontes nativas do TT.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
   'admin.update.prepare': 'Preparar actualización',

@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'На дороге впереди ничего нет. Попробуйте весь этап.',
   'mobileTrip.rtNoneOnStage': 'На этом этапе ничего такого нет.',
   'mobileTrip.rtPlanOnDesktop':
-    'Планирование происходит на компьютере. TREK рассчитает маршрут, как только в дне окажется два места.',
+    'Планирование происходит на компьютере. TT рассчитает маршрут, как только в дне окажется два места.',
   'mobileTrip.rtReach': 'Насколько далеко',
   'mobileTrip.rtReachAhead': '{distance} впереди',
   'mobileTrip.rtSearchOffline': 'Нужна сеть: поиск считывает маршрут впереди.',

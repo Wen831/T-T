@@ -345,7 +345,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'مستودع المصدر',
   'admin.plugins.reportIssue': 'الإبلاغ عن مشكلة',
   'admin.plugins.homepage': 'الصفحة الرئيسية',
-  'admin.plugins.requiresTrek': 'يتطلب TREK {version}+',
+  'admin.plugins.requiresTrek': 'يتطلب TT {version}+',
   'admin.plugins.reviewedOn': 'تمت المراجعة {date}',
   'admin.plugins.perm.db:own': 'تخزين بياناتها الخاصة في قاعدة بيانات معزولة',
   'admin.plugins.perm.db:read:trips': 'قراءة الرحلات التي يمكن للمستخدم الحالي الوصول إليها',
@@ -408,7 +408,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.hook:photo-provider': 'توفير الصور لميزة الذكريات',
   'admin.plugins.perm.hook:calendar-source': 'توفير الأحداث للتقويم',
   'admin.plugins.perm.hook:place-detail-provider': 'المساهمة بتفاصيل إضافية (مراجعات، تقييمات، روابط) لمكان ما',
-  'admin.plugins.perm.hook:search-provider': 'يستجيب لعمليات البحث عن الأماكن من فهرسه الخاص، إلى جانب نتائج TREK',
+  'admin.plugins.perm.hook:search-provider': 'يستجيب لعمليات البحث عن الأماكن من فهرسه الخاص، إلى جانب نتائج TT',
   'admin.plugins.perm.hook:trip-warning-provider': 'إظهار تحذيرات التحقق على الرحلة (تظهر في المخطط)',
   'admin.plugins.perm.hook:table-contributor': 'إضافة أعمدة وإجراءات إلى عروض الرحلة (الحجوزات، الأماكن، الأيام)',
   'admin.plugins.perm.hook:map-marker-provider': 'إضافة علامات إلى خريطة الرحلة (مثل عرض الحجوزات أو نقاط الاهتمام)',
@@ -424,7 +424,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'نشر أدوات يمكن لمساعد ذكاء اصطناعي تشغيلها نيابة عنك (يعمل بالصلاحيات التي تمنحها للإضافة هنا، وليس بصلاحياته هو)',
   'admin.plugins.perm.geolocation:read':
-    'الاستعلام عن موقعك المباشر ما دامت إحدى واجهاته مفتوحة (يقرأه TREK بإذن الموقع الممنوح لهذا الموقع الإلكتروني، لا بإذن خاص بالإضافة)',
+    'الاستعلام عن موقعك المباشر ما دامت إحدى واجهاته مفتوحة (يقرأه TT بإذن الموقع الممنوح لهذا الموقع الإلكتروني، لا بإذن خاص بالإضافة)',
   'admin.plugins.perm.hook:pdf-section-provider': 'إضافة أقسام نصية إلى تصدير PDF للرحلة',
   'admin.plugins.perm.hook:atlas-layer-provider':
     'إبراز دول على خريطة أطلس العالمية (مثل قوائم الأمنيات أو تحذيرات السفر)',
@@ -450,26 +450,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateLater': 'إبقاؤه متوقفًا الآن',
   'admin.plugins.updateKeptOff': 'تم تثبيت التحديث — يبقى متوقفًا حتى توافق على الأذونات الجديدة',
   'admin.plugins.reviewedMeaning':
-    '"تمت مراجعتها" تعني أن أحد القائمين على TREK فحص هذه الإضافة بحثًا عن البرمجيات الخبيثة في كل إصدار — وليس من حيث الجودة أو ما إذا كانت تعمل. وهي ليست ضمانًا بأن الإضافة غير ضارة.',
+    '"تمت مراجعتها" تعني أن أحد القائمين على TT فحص هذه الإضافة بحثًا عن البرمجيات الخبيثة في كل إصدار — وليس من حيث الجودة أو ما إذا كانت تعمل. وهي ليست ضمانًا بأن الإضافة غير ضارة.',
   'admin.plugins.security.title': 'كيف يتم احتواء الإضافات — وحدود ذلك',
   'admin.plugins.security.isolationTitle': 'كل إضافة تعمل في بيئة معزولة',
   'admin.plugins.security.isolationBody':
-    'تعمل الإضافة كعملية معزولة خاصة بها لا يمكنها قراءة سوى ملفاتها الخاصة. لا يمكنها قراءة قاعدة بياناتك أو سر تسجيل دخولك أو مفتاح التشفير الخاص بك، ولا يمكنها تشغيل برامج أخرى، ولا يمكنها كتابة ملفات في أي مكان. تعمل واجهتها داخل إطار متصفح محكم لا يمكنه قراءة ملف تعريف ارتباط جلستك أو المساس بصفحة TREK المحيطة به.',
+    'تعمل الإضافة كعملية معزولة خاصة بها لا يمكنها قراءة سوى ملفاتها الخاصة. لا يمكنها قراءة قاعدة بياناتك أو سر تسجيل دخولك أو مفتاح التشفير الخاص بك، ولا يمكنها تشغيل برامج أخرى، ولا يمكنها كتابة ملفات في أي مكان. تعمل واجهتها داخل إطار متصفح محكم لا يمكنه قراءة ملف تعريف ارتباط جلستك أو المساس بصفحة TT المحيطة به.',
   'admin.plugins.security.permsTitle': 'ماذا تعني الأذونات',
   'admin.plugins.security.permsBody':
-    'الأذونات المعروضة قبل التثبيت هي حد صارم يفرضه TREK أثناء تشغيل الإضافة — فهي لا تستطيع فعليًا القيام بأي شيء ليس على القائمة. لكنها تخبرك بما يمكن للإضافة فعله، لا بما تفعله بالفعل. الإضافة المسموح لها بقراءة رحلاتك والوصول إلى خادم يمكنها إرسال رحلاتك إلى ذلك الخادم، لذا اقرأ الأذونات والمضيفات الصادرة، وليس الوصف فقط.',
+    'الأذونات المعروضة قبل التثبيت هي حد صارم يفرضه TT أثناء تشغيل الإضافة — فهي لا تستطيع فعليًا القيام بأي شيء ليس على القائمة. لكنها تخبرك بما يمكن للإضافة فعله، لا بما تفعله بالفعل. الإضافة المسموح لها بقراءة رحلاتك والوصول إلى خادم يمكنها إرسال رحلاتك إلى ذلك الخادم، لذا اقرأ الأذونات والمضيفات الصادرة، وليس الوصف فقط.',
   'admin.plugins.security.limitsTitle': 'ما لا يمكننا ضمانه',
   'admin.plugins.security.limitsBody':
-    'العزل هو حدّ برمجي قوي، لكنه ليس مطلقًا. تعمل الإضافة بالأذونات التي توافق عليها تمامًا، لذا يمكنها ضمن تلك الأذونات أن تتصرف بشكل مختلف عمّا يوحي به وصفها، ويمكنها إرسال البيانات التي تملكها بشكل مشروع إلى المضيفات التي أعلنتها. لا يقرأ TREK ولا يحكم على ما تفعله شيفرة الإضافة فعليًا.',
+    'العزل هو حدّ برمجي قوي، لكنه ليس مطلقًا. تعمل الإضافة بالأذونات التي توافق عليها تمامًا، لذا يمكنها ضمن تلك الأذونات أن تتصرف بشكل مختلف عمّا يوحي به وصفها، ويمكنها إرسال البيانات التي تملكها بشكل مشروع إلى المضيفات التي أعلنتها. لا يقرأ TT ولا يحكم على ما تفعله شيفرة الإضافة فعليًا.',
   'admin.plugins.security.worstTitle': 'أسوأ الحالات',
   'admin.plugins.security.worstBody':
     'الإضافة الضارة التي تُفعّلها يمكنها إساءة استخدام البيانات والاتصالات التي منحتها إياها — على سبيل المثال، تسريب الرحلات المسموح لها بقراءتها. لا يمكنها سرقة كلمات المرور، أو تزوير تسجيل دخول مسؤول، أو تنفيذ أوامر على خادمك، أو الوصول إلى بيانات لم تمنحها. يبقى الضرر ضمن ما وافقت عليه، وإيقاف الإضافة يوقفه.',
   'admin.plugins.security.reviewedTitle': 'ماذا تعني "تمت مراجعتها"',
   'admin.plugins.security.reviewedBody':
-    'الإضافة التي تمت مراجعتها فُحصت يدويًا بحثًا عن البرمجيات الخبيثة بواسطة أحد القائمين على TREK في كل إصدار — جرى فحصها بحثًا عن شيفرة ضارة، لا لمعرفة ما إذا كانت تعمل جيدًا. وهي ليست وعدًا بأن الإضافة غير ضارة.',
+    'الإضافة التي تمت مراجعتها فُحصت يدويًا بحثًا عن البرمجيات الخبيثة بواسطة أحد القائمين على TT في كل إصدار — جرى فحصها بحثًا عن شيفرة ضارة، لا لمعرفة ما إذا كانت تعمل جيدًا. وهي ليست وعدًا بأن الإضافة غير ضارة.',
   'admin.plugins.security.signedTitle': 'ماذا تعني "موقّعة"',
   'admin.plugins.security.signedBody':
-    'المجموع الاختباري الذي يتحقق منه TREK عند كل تثبيت يثبت أن الملفات هي بالضبط ما يضمنه السجل. أما التوقيع فيثبت شيئًا مختلفًا: أنها جاءت من المؤلف، موقّعة بمفتاح لا يملكه سواه. الإضافة الموقّعة تجمع الاثنين معًا. وغير الموقّعة ليست غير آمنة — إنها ببساطة تحمل ضمانًا واحدًا أقل، ومعظم الإضافات في السجل غير موقّعة اليوم.',
+    'المجموع الاختباري الذي يتحقق منه TT عند كل تثبيت يثبت أن الملفات هي بالضبط ما يضمنه السجل. أما التوقيع فيثبت شيئًا مختلفًا: أنها جاءت من المؤلف، موقّعة بمفتاح لا يملكه سواه. الإضافة الموقّعة تجمع الاثنين معًا. وغير الموقّعة ليست غير آمنة — إنها ببساطة تحمل ضمانًا واحدًا أقل، ومعظم الإضافات في السجل غير موقّعة اليوم.',
   'admin.plugins.signed': 'موقّعة',
   'admin.plugins.signedHint': 'جرى التحقق منها مقابل مفتاح توقيع المؤلف عند تثبيتها',
   'admin.plugins.unsigned': 'غير موقّعة',
@@ -484,20 +484,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     'الملفات لا تطابق توقيع المؤلف. إنها ليست ما وقّعه المؤلف — فإما أنها تلفت، وإما أنه جرى العبث بها. لا يمكن تجاوز ذلك.',
   'admin.plugins.sig.missingBody':
-    'كانت هذه الإضافة موقّعة عند تثبيتها، لكن الإصدار الجديد لا يحمل أي توقيع. لن يقبل TREK هذا التراجع بصمت. لا يمكن تجاوز ذلك.',
+    'كانت هذه الإضافة موقّعة عند تثبيتها، لكن الإصدار الجديد لا يحمل أي توقيع. لن يقبل TT هذا التراجع بصمت. لا يمكن تجاوز ذلك.',
   'admin.plugins.sig.incompleteBody':
     'مدخل السجل موقّع نصف توقيع: يعلن عن مفتاح للمؤلف لكن الإصدار لا يحمل توقيعًا (أو العكس). هذا خطأ من جانب الإضافة. لا يمكن تجاوز ذلك.',
   'admin.plugins.sig.pinnedKey': 'المفتاح الذي ثُبّتت به',
   'admin.plugins.sig.newKey': 'المفتاح الذي تقدّمه الآن',
   'admin.plugins.sig.confirmOutOfBand':
-    'لا يستطيع TREK التمييز بين تبديل مشروع للمفتاح وبين استيلاء على الإضافة — يبدو الأمران متطابقين من هنا. تحقّق من المفتاح الجديد مع المؤلف عبر قناة تثق بها أصلًا قبل قبوله. وحين تفعل، يتم تحديث الإضافة ويُحفظ المفتاح الجديد.',
+    'لا يستطيع TT التمييز بين تبديل مشروع للمفتاح وبين استيلاء على الإضافة — يبدو الأمران متطابقين من هنا. تحقّق من المفتاح الجديد مع المؤلف عبر قناة تثق بها أصلًا قبل قبوله. وحين تفعل، يتم تحديث الإضافة ويُحفظ المفتاح الجديد.',
   'admin.plugins.sig.retrustConfirm': 'الوثوق بالمفتاح الجديد والتحديث',
   'admin.plugins.sig.cancel': 'عدم الوثوق به',
   'admin.plugins.sig.consentUnsigned':
     'لا شيء يربط هذا الإصدار بمؤلفه — الملفات تطابق السجل، لكنها لا تحمل توقيع المؤلف.',
   'admin.plugins.security.trustTitle': 'الخلاصة',
   'admin.plugins.security.trustBody':
-    'تثبيت إضافة يشبه تثبيت أي تطبيق من جهة خارجية: لا تُضِف سوى شيفرة من مطورين تثق بهم، وعند الشك، افحصها بنفسك أولًا. لا يتحمل TREK أي مسؤولية عن إضافات الجهات الخارجية.',
+    'تثبيت إضافة يشبه تثبيت أي تطبيق من جهة خارجية: لا تُضِف سوى شيفرة من مطورين تثق بهم، وعند الشك، افحصها بنفسك أولًا. لا يتحمل TT أي مسؤولية عن إضافات الجهات الخارجية.',
   'admin.plugins.runtimeOn': 'بيئة التشغيل مفعّلة',
   'admin.plugins.tabDiscover': 'اكتشاف',
   'admin.plugins.searchPlaceholder': 'ابحث عن الإضافات…',
@@ -586,15 +586,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': 'التثبيت على أي حال',
   'admin.plugins.rangeBypass.pill': 'فحوصات الإصدار متوقفة',
   'admin.plugins.rangeBypass.pillHint':
-    'تم ضبط TREK_PLUGINS_IGNORE_TREK_RANGE — يمكن تثبيت الإضافات وتشغيلها خارج إصدارات TREK التي أعلنها مطوروها',
-  'admin.plugins.rangeBypass.title': 'خارج إصدارات TREK المدعومة',
-  'admin.plugins.rangeBypass.noticeTitle': 'تم التثبيت خارج إصدارات TREK المدعومة',
+    'تم ضبط TREK_PLUGINS_IGNORE_TREK_RANGE — يمكن تثبيت الإضافات وتشغيلها خارج إصدارات TT التي أعلنها مطوروها',
+  'admin.plugins.rangeBypass.title': 'خارج إصدارات TT المدعومة',
+  'admin.plugins.rangeBypass.noticeTitle': 'تم التثبيت خارج إصدارات TT المدعومة',
   'admin.plugins.rangeBypass.body':
-    'تعلن «{name}» دعم TREK {range}، بينما يعمل هذا الخادم بالإصدار {host}. يسمح TREK بذلك فقط لأن TREK_PLUGINS_IGNORE_TREK_RANGE مضبوط. لم يحدّث المطوّر نطاق إصدارات الإضافة لهذا الإصدار من TREK، لذا لا يوجد ضمان أنها ستعمل — وفي حالات نادرة قد تُتلف إضافة غير متوافقة بيانات TREK. تابع فقط إذا كنت تقبل هذه المخاطرة.',
+    'تعلن «{name}» دعم TT {range}، بينما يعمل هذا الخادم بالإصدار {host}. يسمح TT بذلك فقط لأن TREK_PLUGINS_IGNORE_TREK_RANGE مضبوط. لم يحدّث المطوّر نطاق إصدارات الإضافة لهذا الإصدار من TT، لذا لا يوجد ضمان أنها ستعمل — وفي حالات نادرة قد تُتلف إضافة غير متوافقة بيانات TT. تابع فقط إذا كنت تقبل هذه المخاطرة.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    'لا تعلن «{name}» أي إصدارات TREK تدعمها؛ يعمل هذا الخادم بالإصدار {host}. يسمح TREK بذلك فقط لأن TREK_PLUGINS_IGNORE_TREK_RANGE مضبوط. لا شيء يدل على أن المطوّر اختبرها على هذا الإصدار من TREK، لذا لا يوجد ضمان أنها ستعمل — وفي حالات نادرة قد تُتلف إضافة غير متوافقة بيانات TREK. تابع فقط إذا كنت تقبل هذه المخاطرة.',
-  'admin.plugins.dep.trekBypassed': 'خارج نطاق TREK الخاص بها ({range}) — فحوصات الإصدار متوقفة',
-  'admin.plugins.dep.trekBypassedUnknown': 'لا تعلن أي نطاق TREK — فحوصات الإصدار متوقفة',
+    'لا تعلن «{name}» أي إصدارات TT تدعمها؛ يعمل هذا الخادم بالإصدار {host}. يسمح TT بذلك فقط لأن TREK_PLUGINS_IGNORE_TREK_RANGE مضبوط. لا شيء يدل على أن المطوّر اختبرها على هذا الإصدار من TT، لذا لا يوجد ضمان أنها ستعمل — وفي حالات نادرة قد تُتلف إضافة غير متوافقة بيانات TT. تابع فقط إذا كنت تقبل هذه المخاطرة.',
+  'admin.plugins.dep.trekBypassed': 'خارج نطاق TT الخاص بها ({range}) — فحوصات الإصدار متوقفة',
+  'admin.plugins.dep.trekBypassedUnknown': 'لا تعلن أي نطاق TT — فحوصات الإصدار متوقفة',
   'admin.plugins.incompatible': 'غير متوافق',
   'admin.plugins.accessTitle': 'ما الذي يمكنها الوصول إليه',
   'admin.plugins.connectsTitle': 'يتصل بـ',
@@ -606,7 +606,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': 'تمت المراجعة',
   'admin.plugins.downloads': 'التنزيلات',
   'admin.addons.title': 'الإضافات',
-  'admin.addons.subtitle': 'فعّل أو عطّل الميزات لتخصيص تجربة TREK.',
+  'admin.addons.subtitle': 'فعّل أو عطّل الميزات لتخصيص تجربة TT.',
   'admin.addons.catalog.packing.name': 'القوائم',
   'admin.addons.catalog.packing.description': 'قوائم التعبئة والمهام لرحلاتك',
   'admin.addons.catalog.budget.name': 'التكاليف',
@@ -646,7 +646,7 @@ const admin: TranslationStrings = {
   'admin.weather.title': 'بيانات الطقس',
   'admin.weather.badge': 'منذ 24 مارس 2026',
   'admin.weather.description':
-    'يستمر TT في استخدام واجهة برمجة تطبيقات الطقس الخاصة بـ TREK — وهي خدمة مجانية ومفتوحة المصدر لا تتطلب مفتاح API.',
+    'يستمر TT في استخدام واجهة برمجة تطبيقات الطقس الخاصة بـ TT — وهي خدمة مجانية ومفتوحة المصدر لا تتطلب مفتاح API.',
   'admin.weather.forecast': 'توقعات 16 يومًا',
   'admin.weather.forecastDesc': 'سابقًا 5 أيام (OpenWeatherMap)',
   'admin.weather.climate': 'بيانات المناخ التاريخية',
@@ -702,13 +702,13 @@ const admin: TranslationStrings = {
   'admin.github.loading': 'جارٍ التحميل...',
   'admin.github.error': 'فشل تحميل الإصدارات',
   'admin.github.by': 'بواسطة',
-  'admin.github.support': 'يساعدني في تطوير TREK',
+  'admin.github.support': 'يساعدني في تطوير TT',
   'admin.update.available': 'يتوفر تحديث',
-  'admin.update.text': 'TREK {version} متوفر. أنت تستخدم {current}.',
+  'admin.update.text': 'TT {version} متوفر. أنت تستخدم {current}.',
   'admin.update.button': 'عرض على GitHub',
   'admin.update.install': 'تثبيت التحديث',
   'admin.update.confirmTitle': 'تثبيت التحديث؟',
-  'admin.update.confirmText': 'سيتم تحديث TREK من {current} إلى {version}. سيُعاد تشغيل الخادم تلقائيًا بعد ذلك.',
+  'admin.update.confirmText': 'سيتم تحديث TT من {current} إلى {version}. سيُعاد تشغيل الخادم تلقائيًا بعد ذلك.',
   'admin.update.dataInfo':
     'جميع بياناتك (الرحلات، المستخدمون، مفاتيح API، المرفوعات، الإجازة، الأطلس، الميزانيات) ستبقى محفوظة.',
   'admin.update.warning': 'سيكون التطبيق غير متاح لفترة وجيزة أثناء إعادة التشغيل.',
@@ -719,34 +719,34 @@ const admin: TranslationStrings = {
   'admin.update.backupHint': 'نوصي بإنشاء نسخة احتياطية قبل التحديث.',
   'admin.update.backupLink': 'الذهاب إلى النسخ الاحتياطي',
   'admin.update.howTo': 'كيفية التحديث',
-  'admin.update.dockerText': 'يعمل TREK الخاص بك في Docker. للتحديث إلى {version}، نفّذ الأوامر التالية على الخادم:',
+  'admin.update.dockerText': 'يعمل TT الخاص بك في Docker. للتحديث إلى {version}، نفّذ الأوامر التالية على الخادم:',
   'admin.update.nonDockerText':
-    'لا يعمل TREK هذا في Docker. للتحديث إلى {version}، أعد تشغيل طريقة التثبيت أو التحديث التي استخدمتها — على سبيل المثال، في Proxmox Community Scripts نفّذ التحديث من وحدة تحكم LXC:',
+    'لا يعمل TT هذا في Docker. للتحديث إلى {version}، أعد تشغيل طريقة التثبيت أو التحديث التي استخدمتها — على سبيل المثال، في Proxmox Community Scripts نفّذ التحديث من وحدة تحكم LXC:',
   'admin.update.wikiLink': 'فتح دليل التحديث',
   'admin.update.reloadHint': 'يرجى إعادة تحميل الصفحة بعد بضع ثوانٍ.',
   'admin.tabs.permissions': 'الصلاحيات',
-  'admin.notifications.webhook': 'Webhook', // en-fallback
-  'admin.notifications.ntfy': 'Ntfy', // en-fallback
-  'admin.notifications.emailPanel.title': 'Email (SMTP)', // en-fallback
-  'admin.notifications.webhookPanel.title': 'Webhook', // en-fallback
-  'admin.notifications.inappPanel.title': 'In-App', // en-fallback
-  'admin.notifications.adminNtfyPanel.serverPlaceholder': 'https://ntfy.sh', // en-fallback
-  'admin.notifications.adminNtfyPanel.topicPlaceholder': 'trek-admin-alerts', // en-fallback
-  'admin.authMethods': 'Authentication Methods', // en-fallback
-  'admin.passwordLogin': 'Password Login', // en-fallback
-  'admin.passwordLoginHint': 'Allow users to sign in with email and password', // en-fallback
-  'admin.passwordRegistration': 'Password Registration', // en-fallback
-  'admin.passwordRegistrationHint': 'Allow new users to register with email and password', // en-fallback
-  'admin.oidcLogin': 'SSO Login', // en-fallback
-  'admin.oidcLoginHint': 'Allow users to sign in with SSO', // en-fallback
-  'admin.oidcRegistration': 'SSO Auto-Provisioning', // en-fallback
-  'admin.oidcRegistrationHint': 'Automatically create accounts for new SSO users', // en-fallback
+  'admin.notifications.webhook': 'Webhook', // en-fallback,
+  'admin.notifications.ntfy': 'Ntfy', // en-fallback,
+  'admin.notifications.emailPanel.title': 'Email (SMTP)', // en-fallback,
+  'admin.notifications.webhookPanel.title': 'Webhook', // en-fallback,
+  'admin.notifications.inappPanel.title': 'In-App', // en-fallback,
+  'admin.notifications.adminNtfyPanel.serverPlaceholder': 'https://ntfy.sh', // en-fallback,
+  'admin.notifications.adminNtfyPanel.topicPlaceholder': 'trek-admin-alerts', // en-fallback,
+  'admin.authMethods': 'Authentication Methods', // en-fallback,
+  'admin.passwordLogin': 'Password Login', // en-fallback,
+  'admin.passwordLoginHint': 'Allow users to sign in with email and password', // en-fallback,
+  'admin.passwordRegistration': 'Password Registration', // en-fallback,
+  'admin.passwordRegistrationHint': 'Allow new users to register with email and password', // en-fallback,
+  'admin.oidcLogin': 'SSO Login', // en-fallback,
+  'admin.oidcLoginHint': 'Allow users to sign in with SSO', // en-fallback,
+  'admin.oidcRegistration': 'SSO Auto-Provisioning', // en-fallback,
+  'admin.oidcRegistrationHint': 'Automatically create accounts for new SSO users', // en-fallback,
   'admin.envOverrideHint':
     'Password login settings are controlled by the OIDC_ONLY environment variable and cannot be changed here.', // en-fallback
-  'admin.lockoutWarning': 'At least one login method must remain enabled', // en-fallback
-  'admin.addons.catalog.mcp.name': 'MCP', // en-fallback
-  'admin.tabs.github': 'GitHub', // en-fallback
-  'admin.addons.catalog.journey.name': 'Journey', // en-fallback
+  'admin.lockoutWarning': 'At least one login method must remain enabled', // en-fallback,
+  'admin.addons.catalog.mcp.name': 'MCP', // en-fallback,
+  'admin.tabs.github': 'GitHub', // en-fallback,
+  'admin.addons.catalog.journey.name': 'Journey', // en-fallback,
   'admin.addons.catalog.journey.description':
     'Trip tracking & travel journal with check-ins, photos, and daily stories', // en-fallback
   'admin.addons.catalog.collections.name': 'المجموعات',
@@ -796,7 +796,7 @@ const admin: TranslationStrings = {
   'admin.amapKeyHint':
     'للبحث عن الأماكن في الصين والتوجيه المراعي لحركة المرور. احصل على مفتاح خدمة ويب من lbs.amap.com.',
   'admin.amapSearch.title': 'استخدام AMap للبحث عن الأماكن',
-  'admin.amapSearch.subtitle': 'يستخدم AMap افتراضيًا؛ يمكن لكل نموذج بحث العودة إلى مصادر TREK الأصلية.',
+  'admin.amapSearch.subtitle': 'يستخدم AMap افتراضيًا؛ يمكن لكل نموذج بحث العودة إلى مصادر TT الأصلية.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
   'admin.update.prepare': 'Update vorbereiten',

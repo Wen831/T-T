@@ -105,7 +105,7 @@ const places: TranslationStrings = {
   'places.details.nothing': 'この場所の情報は見つかりませんでした。',
   'places.details.noKeyTitle': 'さらに詳しい情報を表示できます',
   'places.details.noKeyHint':
-    'Google API キーがない場合、このインスタンスは自由に使えるソースのみを利用します。評価・営業時間・写真のために、TREK の管理者にキーの追加を依頼してください。',
+    'Google API キーがない場合、このインスタンスは自由に使えるソースのみを利用します。評価・営業時間・写真のために、TT の管理者にキーの追加を依頼してください。',
   'places.details.aboutBrand': 'チェーンについて',
   'places.details.aboutBrandNote': 'この店舗ではなくチェーン全体の説明です。',
   'places.details.fact.rating': '評価',
@@ -135,7 +135,7 @@ const places: TranslationStrings = {
   'places.imageRemoveError': '画像を削除できませんでした',
   'places.searchProvider': '検索:',
   'places.searchProviderAmap': 'AMap',
-  'places.searchProviderNative': 'TREK',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;

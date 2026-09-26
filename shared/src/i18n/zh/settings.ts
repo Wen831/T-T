@@ -38,7 +38,7 @@ const settings: TranslationStrings = {
   'settings.mapCartoKeyHint': '没有密钥时 CARTO 底图会显示水印。免费且无需账户，来自',
   'settings.mapCartoKeyLink': 'carto.com 底图 API 密钥',
   'settings.mapCartoKeyMissing':
-    '此模板是 CARTO 底图。没有密钥时，CARTO 会在每个瓦片上打上 "API KEY REQUIRED"。 在输入密钥之前，TREK 会显示默认底图。',
+    '此模板是 CARTO 底图。没有密钥时，CARTO 会在每个瓦片上打上 "API KEY REQUIRED"。 在输入密钥之前，TT 会显示默认底图。',
   'settings.mapStyle': '地图样式',
   'settings.mapStylePlaceholder': '选择 Mapbox 样式',
   'settings.mapStyleHint': '预设或您自己的 mapbox://styles/USER/ID URL',
@@ -183,9 +183,9 @@ const settings: TranslationStrings = {
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'Tourism-Team 是基于 TREK 改造的个人 fork，采用 AGPL-3.0 许可',
   'settings.about.supporters.badge': '月度支持者',
-  'settings.about.supporters.title': '与 TREK 同行的伙伴',
+  'settings.about.supporters.title': '与 TT 同行的伙伴',
   'settings.about.supporters.subtitle':
-    '当你在规划下一段路线时，这些人也在一起规划 TREK 的未来。他们每月的支持直接用于开发与真实投入的时间——让 TREK 保持开源。',
+    '当你在规划下一段路线时，这些人也在一起规划 TT 的未来。他们每月的支持直接用于开发与真实投入的时间——让 TT 保持开源。',
   'settings.about.supporters.since': '{date} 起的支持者',
   'settings.about.supporters.tierEmpty': '成为第一个',
   'settings.about.supporter.tier.noReturnTicket': 'No Return Ticket',
@@ -194,7 +194,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Budget Traveller',
   'settings.about.supporter.tier.hostelBunkmate': 'Hostel Bunkmate',
   'settings.about.description':
-    'Tourism-Team 是一款基于 TREK 的个人旅行规划 fork，帮助你从最初的想法到最后的回忆，全程组织旅行。日程规划、预算、行李清单、照片等——一切尽在一处，在你自己的服务器上。',
+    'Tourism-Team 是一款基于 TT 的个人旅行规划 fork，帮助你从最初的想法到最后的回忆，全程组织旅行。日程规划、预算、行李清单、照片等——一切尽在一处，在你自己的服务器上。',
   'settings.about.madeWith': '用',
   'settings.about.madeBy': '由不断壮大的开源社区打造。',
   'settings.username': '用户名',
@@ -328,7 +328,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': '仅对您自己网络中受信任的实例启用。',
   'settings.airtrail.writeBack': '将更改写回 AirTrail',
   'settings.airtrail.writeBackHint':
-    '默认关闭：AirTrail 是数据来源，TREK 仅从中读取。开启后会将在 TREK 中所做的修改写回 AirTrail。',
+    '默认关闭：AirTrail 是数据来源，TT 仅从中读取。开启后会将在 TT 中所做的修改写回 AirTrail。',
   'settings.airtrail.connected': '已连接',
   'settings.airtrail.notConnected': '未连接',
   'settings.airtrail.toast.saved': 'AirTrail 连接已保存',
@@ -434,7 +434,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': '仪表盘',
   'settings.startPageActiveTrip': '进行中的旅行',
   'settings.startPageHint':
-    'TREK 会直接打开正在进行的旅行，没有则打开最近要开始的那次。与仪表盘突出显示的是同一次旅行。',
+    'TT 会直接打开正在进行的旅行，没有则打开最近要开始的那次。与仪表盘突出显示的是同一次旅行。',
   'settings.startTripTab': '启动标签页',
   'settings.startTripTabHint': '旅行打开时所在的标签页。如果该标签页属于已关闭的插件，则改为打开计划视图。',
 

@@ -207,7 +207,7 @@ describe('GET /oauth/authorize — SDK authorizationHandler over trekOAuthProvid
     const loc = new URL(res.headers.location);
     expect(`${loc.origin}${loc.pathname}`).toBe('https://client.example.com/cb');
     expect(loc.searchParams.get('error')).toBe('invalid_target');
-    expect(loc.searchParams.get('error_description')).toBe('Requested resource must be the TREK MCP endpoint');
+    expect(loc.searchParams.get('error_description')).toBe('Requested resource must be the TT MCP endpoint');
     expect(loc.searchParams.get('state')).toBe('xyz');
   });
 

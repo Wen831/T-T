@@ -86,7 +86,7 @@ describe('OAuthAuthorizePage', () => {
     );
     render(<OAuthAuthorizePage />);
     await screen.findByText('Sign in to continue');
-    expect(screen.getByText('Sign in to TREK')).toBeInTheDocument();
+    expect(screen.getByText('Sign in to TT')).toBeInTheDocument();
   });
 
   it('FE-PAGE-OAUTH-005: shows client name in login_required state', async () => {

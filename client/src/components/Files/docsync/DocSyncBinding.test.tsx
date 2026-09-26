@@ -85,7 +85,7 @@ const openSettings = () => fireEvent.click(screen.getByRole('button', { name: 'S
 
 const rowFor = (label: string) => screen.getByText(label).closest('div') as HTMLElement
 
-const UNLINK_QUESTION = 'Documents stay in TREK and at the store. Only the pairing between them goes.'
+const UNLINK_QUESTION = 'Documents stay in TT and at the store. Only the pairing between them goes.'
 
 /** The confirmation the disconnect button opens; it renders in a portal. */
 const unlinkDialog = () => within(screen.getByText(UNLINK_QUESTION).closest('.trek-modal-enter') as HTMLElement)

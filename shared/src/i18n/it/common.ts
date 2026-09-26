@@ -72,7 +72,7 @@ const common: TranslationStrings = {
   'common.errorReload': 'Ricarica la pagina',
   'common.errorUpdateTitle': 'È disponibile una nuova versione',
   'common.errorUpdateBody':
-    'TREK è stato aggiornato mentre questa scheda era aperta. Ricarica per ottenere la nuova versione.',
+    'TT è stato aggiornato mentre questa scheda era aperta. Ricarica per ottenere la nuova versione.',
   'common.errorPluginTitle': 'Impossibile mostrare questo plugin',
   'common.errorOccurred': 'Qualcosa è andato storto',
   'common.remove': 'Rimuovi',

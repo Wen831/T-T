@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': '여행 리마인더가 비활성화되어 있습니다. 관리자 > 설정 > 알림에서 활성화하세요.',
   'trips.importTrekTab': 'TREK에서 가져오기',
   'trips.importTrekIntro':
-    'TREK 백업(.zip)을 업로드하고 TT로 복사할 여행을 선택하세요 — 일정, 장소, 예약, 예산, 사진이 함께 가져와집니다.',
+    'TT 백업(.zip)을 업로드하고 TT로 복사할 여행을 선택하세요 — 일정, 장소, 예약, 예산, 사진이 함께 가져와집니다.',
   'trips.importTrekPick': 'TREK 백업(.zip) 선택',
   'trips.importTrekScanning': '백업 읽는 중…',
   'trips.importTrekImport': '선택한 여행 가져오기',

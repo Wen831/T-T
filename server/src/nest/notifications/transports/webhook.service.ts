@@ -23,7 +23,7 @@ export function buildWebhookBody(
           description: payload.body,
           url: payload.link,
           color: 0x3b82f6,
-          footer: { text: payload.tripName ? `Trip: ${payload.tripName}` : 'TREK' },
+          footer: { text: payload.tripName ? `Trip: ${payload.tripName}` : 'TT' },
           timestamp: new Date().toISOString(),
         },
       ],
@@ -32,13 +32,13 @@ export function buildWebhookBody(
 
   if (isSlack) {
     const trip = payload.tripName ? `  •  _${payload.tripName}_` : '';
-    const link = payload.link ? `\n<${payload.link}|Open in TREK>` : '';
+    const link = payload.link ? `\n<${payload.link}|Open in TT>` : '';
     return JSON.stringify({
       text: `*${payload.title}*\n${payload.body}${trip}${link}`,
     });
   }
 
-  return JSON.stringify({ ...payload, timestamp: new Date().toISOString(), source: 'TREK' });
+  return JSON.stringify({ ...payload, timestamp: new Date().toISOString(), source: 'TT' });
 }
 
 /** Outgoing webhooks: the per-user and the admin-global URL, and the POST itself. */

@@ -168,7 +168,7 @@ const admin: TranslationStrings = {
   'admin.packingTemplates.saveError': 'Error en desar',
   'admin.tabs.addons': 'Complements',
   'admin.addons.title': 'Complements',
-  'admin.addons.subtitle': 'Activa o desactiva funcions per personalitzar la teva experiència a TREK.',
+  'admin.addons.subtitle': 'Activa o desactiva funcions per personalitzar la teva experiència a TT.',
   'admin.addons.subtitleBefore': 'Activa o desactiva funcions per personalitzar la teva experiència a ',
   'admin.addons.subtitleAfter': '.',
   'admin.addons.catalog.naver_list_import.name': 'Naver List Import',
@@ -193,7 +193,7 @@ const admin: TranslationStrings = {
   'admin.weather.title': 'Dades meteorològiques',
   'admin.weather.badge': 'Des del 24 de març de 2026',
   'admin.weather.description':
-    "TT continua a utilitzar l'API meteorològica de TREK: un servei gratuït i de codi obert, sense clau API.",
+    "TT continua a utilitzar l'API meteorològica de TT: un servei gratuït i de codi obert, sense clau API.",
   'admin.weather.forecast': 'Pronòstic de 16 dies',
   'admin.weather.forecastDesc': 'Abans eren 5 dies (OpenWeatherMap)',
   'admin.weather.climate': 'Dades climàtiques històriques',
@@ -250,16 +250,16 @@ const admin: TranslationStrings = {
   'admin.github.hideDetails': 'Amagar detalls',
   'admin.github.loadMore': 'Carregar més',
   'admin.github.loading': 'Carregant...',
-  'admin.github.support': 'Ajuda a continuar desenvolupant TREK',
+  'admin.github.support': 'Ajuda a continuar desenvolupant TT',
   'admin.github.error': "No s'han pogut carregar les versions",
   'admin.github.by': 'per',
   'admin.update.available': 'Actualització disponible',
-  'admin.update.text': 'TREK {version} està disponible. Estàs utilitzant {current}.',
+  'admin.update.text': 'TT {version} està disponible. Estàs utilitzant {current}.',
   'admin.update.button': 'Veure a GitHub',
   'admin.update.install': 'Instal·lar actualització',
   'admin.update.confirmTitle': "Vols instal·lar l'actualització?",
   'admin.update.confirmText':
-    "TREK s'actualitzarà de {current} a {version}. Després, el servidor es reiniciarà automàticament.",
+    "TT s'actualitzarà de {current} a {version}. Després, el servidor es reiniciarà automàticament.",
   'admin.update.dataInfo':
     'Totes les teves dades (viatges, usuaris, claus API, pujades, Vacay, Atlas, pressupostos) es conservaran.',
   'admin.update.warning': "L'aplicació estarà breument no disponible durant el reinici.",
@@ -271,10 +271,10 @@ const admin: TranslationStrings = {
   'admin.update.backupLink': 'Anar a Còpia de seguretat',
   'admin.update.howTo': 'Com actualitzar',
   'admin.update.dockerText':
-    "La teva instància de TREK s'executa en Docker. Per actualitzar a {version}, executa les següents ordres al teu servidor:",
+    "La teva instància de TT s'executa en Docker. Per actualitzar a {version}, executa les següents ordres al teu servidor:",
   'admin.update.reloadHint': 'Recarrega la pàgina en uns segons.',
   'admin.update.nonDockerText':
-    "Aquesta instància de TREK no s'executa amb Docker. Per actualitzar a {version}, torna a executar el mètode d'instal·lació o actualització que vas fer servir — per exemple, a Proxmox Community Scripts executa l'actualització des de la consola LXC:",
+    "Aquesta instància de TT no s'executa amb Docker. Per actualitzar a {version}, torna a executar el mètode d'instal·lació o actualització que vas fer servir — per exemple, a Proxmox Community Scripts executa l'actualització des de la consola LXC:",
   'admin.update.wikiLink': "Obre la guia d\\'actualització",
   'admin.addons.catalog.memories.name': 'Fotos (Immich)',
   'admin.addons.catalog.memories.description': "Comparteix fotos de viatge a través de la teva instància d'Immich",
@@ -545,7 +545,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'Repositori de codi',
   'admin.plugins.reportIssue': "Informar d'un problema",
   'admin.plugins.homepage': 'Lloc web',
-  'admin.plugins.requiresTrek': 'Requereix TREK {version}+',
+  'admin.plugins.requiresTrek': 'Requereix TT {version}+',
   'admin.plugins.reviewedOn': 'Verificat el {date}',
   'admin.plugins.perm.hook:map-layer-provider': 'Dibuixar rutes, corredors i zones al mapa del viatge',
   'admin.plugins.perm.hook:route-provider':
@@ -561,7 +561,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     "Publicar eines que un assistent d'IA pot executar en nom teu (actua amb els permisos que concedeixes aquí al connector, no amb els seus)",
   'admin.plugins.perm.geolocation:read':
-    "Consultar la teva ubicació en temps real mentre una de les seves vistes és oberta (el TREK la llegeix amb el permís d'ubicació d'aquest lloc, no amb un permís propi del connector)",
+    "Consultar la teva ubicació en temps real mentre una de les seves vistes és oberta (el TT la llegeix amb el permís d'ubicació d'aquest lloc, no amb un permís propi del connector)",
   'admin.plugins.updateConsentTitle': 'Aquesta actualització necessita permisos nous',
   'admin.plugins.updateConsentBody':
     "{name} v{version} demana permisos que encara no has concedit. La versió nova està instal·lada, però roman desactivada fins que l'aprovis.",
@@ -571,26 +571,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateLater': 'Deixar-lo desactivat de moment',
   'admin.plugins.updateKeptOff': 'Actualització instal·lada — es deixa desactivada fins que aprovis els permisos nous',
   'admin.plugins.reviewedMeaning':
-    '"Verificat" significa que un mantenidor de TREK ha analitzat aquest connector a la recerca de programari maliciós en cada versió, no la seva qualitat ni si funciona. No és cap garantia que un connector sigui inofensiu.',
+    '"Verificat" significa que un mantenidor de TT ha analitzat aquest connector a la recerca de programari maliciós en cada versió, no la seva qualitat ni si funciona. No és cap garantia que un connector sigui inofensiu.',
   'admin.plugins.security.title': 'Com es contenen els connectors — i els límits',
   'admin.plugins.security.isolationTitle': "Cada connector s'executa aïllat",
   'admin.plugins.security.isolationBody':
-    "Un connector s'executa com el seu propi procés blindat que només pot llegir els seus propis fitxers. No pot llegir la teva base de dades, el teu secret d'inici de sessió ni la teva clau de xifratge, no pot iniciar altres programes i no pot escriure fitxers enlloc. La seva interfície s'executa en un marc de navegador segellat que no pot llegir la teva galeta de sessió ni tocar la pàgina de TREK que l'envolta.",
+    "Un connector s'executa com el seu propi procés blindat que només pot llegir els seus propis fitxers. No pot llegir la teva base de dades, el teu secret d'inici de sessió ni la teva clau de xifratge, no pot iniciar altres programes i no pot escriure fitxers enlloc. La seva interfície s'executa en un marc de navegador segellat que no pot llegir la teva galeta de sessió ni tocar la pàgina de TT que l'envolta.",
   'admin.plugins.security.permsTitle': 'Què signifiquen els permisos',
   'admin.plugins.security.permsBody':
-    "Els permisos que es mostren abans d'instal·lar són un límit estricte que TREK aplica mentre el connector s'executa: literalment no pot fer res que no sigui a la llista. Però t'indiquen el que un connector pot fer, no el que fa realment. Un connector amb permís per llegir els teus viatges i connectar-se a un servidor pot enviar els teus viatges a aquest servidor, així que llegeix els permisos i els amfitrions de sortida, no només la descripció.",
+    "Els permisos que es mostren abans d'instal·lar són un límit estricte que TT aplica mentre el connector s'executa: literalment no pot fer res que no sigui a la llista. Però t'indiquen el que un connector pot fer, no el que fa realment. Un connector amb permís per llegir els teus viatges i connectar-se a un servidor pot enviar els teus viatges a aquest servidor, així que llegeix els permisos i els amfitrions de sortida, no només la descripció.",
   'admin.plugins.security.limitsTitle': 'El que no podem prometre',
   'admin.plugins.security.limitsBody':
-    "L'aïllament és una frontera de programari sòlida, però no absoluta. Un connector actua exactament amb els permisos que aprovis, així que, dins d'aquests permisos, pot comportar-se de manera diferent del que suggereix la seva descripció i pot enviar les dades que té legítimament als amfitrions que ha declarat. TREK no llegeix ni jutja el que fa realment el codi d'un connector.",
+    "L'aïllament és una frontera de programari sòlida, però no absoluta. Un connector actua exactament amb els permisos que aprovis, així que, dins d'aquests permisos, pot comportar-se de manera diferent del que suggereix la seva descripció i pot enviar les dades que té legítimament als amfitrions que ha declarat. TT no llegeix ni jutja el que fa realment el codi d'un connector.",
   'admin.plugins.security.worstTitle': 'El pitjor dels casos',
   'admin.plugins.security.worstBody':
     "Un connector hostil que activis pot fer un mal ús de les dades i connexions que li has concedit — per exemple, filtrar els viatges que té permís per llegir. No pot robar contrasenyes, falsificar un inici de sessió d'administrador, executar ordres al teu servidor ni accedir a dades que no li has concedit. El dany es limita al que has aprovat, i desactivar el connector l'atura.",
   'admin.plugins.security.reviewedTitle': 'Què vol dir "Revisat"',
   'admin.plugins.security.reviewedBody':
-    "Un connector revisat ha estat analitzat manualment a la recerca de programari maliciós per un mantenidor de TREK a cada versió — s'hi ha buscat codi hostil, no pas si funciona bé. No és cap garantia que el connector sigui inofensiu.",
+    "Un connector revisat ha estat analitzat manualment a la recerca de programari maliciós per un mantenidor de TT a cada versió — s'hi ha buscat codi hostil, no pas si funciona bé. No és cap garantia que el connector sigui inofensiu.",
   'admin.plugins.security.signedTitle': 'Què vol dir "Signat"',
   'admin.plugins.security.signedBody':
-    "La suma de verificació que TREK comprova a cada instal·lació demostra que els fitxers són exactament els que el registre avala. Una signatura demostra una altra cosa: que provenen de l'autor, signats amb una clau que només ell posseeix. Un connector signat té totes dues coses. Un connector sense signar no és insegur — simplement té una garantia menys, i actualment la majoria dels connectors del registre no estan signats.",
+    "La suma de verificació que TT comprova a cada instal·lació demostra que els fitxers són exactament els que el registre avala. Una signatura demostra una altra cosa: que provenen de l'autor, signats amb una clau que només ell posseeix. Un connector signat té totes dues coses. Un connector sense signar no és insegur — simplement té una garantia menys, i actualment la majoria dels connectors del registre no estan signats.",
   'admin.plugins.signed': 'Signat',
   'admin.plugins.signedHint': "Verificat amb la clau de signatura de l'autor en el moment de la instal·lació",
   'admin.plugins.unsigned': 'Sense signar',
@@ -605,20 +605,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     "Els fitxers no coincideixen amb la signatura de l'autor. No són el que l'autor va signar — o bé s'han malmès, o bé s'han manipulat. Això no es pot ometre.",
   'admin.plugins.sig.missingBody':
-    'Aquest connector estava signat quan el vas instal·lar, però la nova versió no inclou cap signatura. TREK no acceptarà aquesta degradació en silenci. Això no es pot ometre.',
+    'Aquest connector estava signat quan el vas instal·lar, però la nova versió no inclou cap signatura. TT no acceptarà aquesta degradació en silenci. Això no es pot ometre.',
   'admin.plugins.sig.incompleteBody':
     "L'entrada del registre està signada a mitges: declara una clau d'autor però la versió no porta cap signatura (o a l'inrevés). És un error per part del connector. Això no es pot ometre.",
   'admin.plugins.sig.pinnedKey': 'Clau amb què es va instal·lar',
   'admin.plugins.sig.newKey': 'Clau que ofereix ara',
   'admin.plugins.sig.confirmOutOfBand':
-    "TREK no pot distingir una rotació de clau legítima d'una presa de control — des d'aquí totes dues es veuen idèntiques. Confirma la nova clau amb l'autor a través d'un canal en què ja confiïs abans d'acceptar-la. Un cop ho facis, el connector s'actualitza i la nova clau es recorda.",
+    "TT no pot distingir una rotació de clau legítima d'una presa de control — des d'aquí totes dues es veuen idèntiques. Confirma la nova clau amb l'autor a través d'un canal en què ja confiïs abans d'acceptar-la. Un cop ho facis, el connector s'actualitza i la nova clau es recorda.",
   'admin.plugins.sig.retrustConfirm': 'Confiar en la nova clau i actualitzar',
   'admin.plugins.sig.cancel': 'No confiar-hi',
   'admin.plugins.sig.consentUnsigned':
     "Res no vincula aquesta versió amb el seu autor — els fitxers coincideixen amb el registre, però no porten cap signatura de l'autor.",
   'admin.plugins.security.trustTitle': 'En resum',
   'admin.plugins.security.trustBody':
-    "Instal·lar un connector és com instal·lar qualsevol aplicació de tercers: afegeix només codi d'autors en qui confiïs i, en cas de dubte, inspecciona'l tu mateix primer. TREK no assumeix cap responsabilitat pels connectors de tercers.",
+    "Instal·lar un connector és com instal·lar qualsevol aplicació de tercers: afegeix només codi d'autors en qui confiïs i, en cas de dubte, inspecciona'l tu mateix primer. TT no assumeix cap responsabilitat pels connectors de tercers.",
   'admin.plugins.runtimeOn': "Entorn d'execució actiu",
   'admin.plugins.tabDiscover': 'Descobreix',
   'admin.plugins.searchPlaceholder': 'Cerca connectors…',
@@ -708,15 +708,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': 'Instal·la igualment',
   'admin.plugins.rangeBypass.pill': 'Comprovacions de versió desactivades',
   'admin.plugins.rangeBypass.pillHint':
-    'TREK_PLUGINS_IGNORE_TREK_RANGE està definit — els connectors es poden instal·lar i executar fora de les versions de TREK declarades pels seus autors',
-  'admin.plugins.rangeBypass.title': 'Fora de les versions de TREK compatibles',
-  'admin.plugins.rangeBypass.noticeTitle': 'Instal·lat fora de les versions de TREK compatibles',
+    'TREK_PLUGINS_IGNORE_TREK_RANGE està definit — els connectors es poden instal·lar i executar fora de les versions de TT declarades pels seus autors',
+  'admin.plugins.rangeBypass.title': 'Fora de les versions de TT compatibles',
+  'admin.plugins.rangeBypass.noticeTitle': 'Instal·lat fora de les versions de TT compatibles',
   'admin.plugins.rangeBypass.body':
-    '«{name}» declara compatibilitat amb TREK {range}, i aquest servidor executa {host}. TREK el deixa passar només perquè TREK_PLUGINS_IGNORE_TREK_RANGE està definit. L’autor no ha actualitzat el rang de versions del connector per a aquest TREK, així que no hi ha cap garantia que funcioni — i en casos rars un connector incompatible pot corrompre les dades de TREK. Continua només si acceptes aquest risc.',
+    '«{name}» declara compatibilitat amb TT {range}, i aquest servidor executa {host}. TT el deixa passar només perquè TREK_PLUGINS_IGNORE_TREK_RANGE està definit. L’autor no ha actualitzat el rang de versions del connector per a aquest TT, així que no hi ha cap garantia que funcioni — i en casos rars un connector incompatible pot corrompre les dades de TT. Continua només si acceptes aquest risc.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '«{name}» no declara quines versions de TREK admet; aquest servidor executa {host}. TREK el deixa passar només perquè TREK_PLUGINS_IGNORE_TREK_RANGE està definit. Res no indica que l’autor l’hagi provat en aquest TREK, així que no hi ha cap garantia que funcioni — i en casos rars un connector incompatible pot corrompre les dades de TREK. Continua només si acceptes aquest risc.',
-  'admin.plugins.dep.trekBypassed': 'Fora del seu rang de TREK ({range}) — comprovacions de versió desactivades',
-  'admin.plugins.dep.trekBypassedUnknown': 'No declara cap rang de TREK — comprovacions de versió desactivades',
+    '«{name}» no declara quines versions de TT admet; aquest servidor executa {host}. TT el deixa passar només perquè TREK_PLUGINS_IGNORE_TREK_RANGE està definit. Res no indica que l’autor l’hagi provat en aquest TT, així que no hi ha cap garantia que funcioni — i en casos rars un connector incompatible pot corrompre les dades de TT. Continua només si acceptes aquest risc.',
+  'admin.plugins.dep.trekBypassed': 'Fora del seu rang de TT ({range}) — comprovacions de versió desactivades',
+  'admin.plugins.dep.trekBypassedUnknown': 'No declara cap rang de TT — comprovacions de versió desactivades',
   'admin.plugins.incompatible': 'Incompatible',
   'admin.plugins.accessTitle': 'A què pot accedir',
   'admin.plugins.connectsTitle': 'Es connecta a',

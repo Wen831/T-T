@@ -2662,12 +2662,13 @@ function PluginDetailSheet({
             <div className="mt-2.5 grid grid-cols-2 gap-x-6 gap-y-3">
               {item.latest && <Meta k={t('admin.plugins.metaVersion')} v={`v${item.latest}`} />}
               {sizeKb !== null && <Meta k={t('admin.plugins.metaSize')} v={`${sizeKb} KB`} />}
-              {/* The range, not just its lower bound: "TREK 3.2.0+" reads as "and anything
-                  newer", which is exactly the claim a `<4.0.0` upper bound denies. */}
+              {/* The range, not just its lower bound: "TT 3.2.0+" reads as "and anything
+                  newer", which is exactly the claim a `<4.0.0` upper bound denies. A
+                  range is the plugin's contract with TREK, so the number stays TREK's. */}
               {(item.trek || item.minTrekVersion) && (
                 <Meta
                   k={t('admin.plugins.metaRequires')}
-                  v={item.trek ? `TREK ${item.trek}` : `TREK ${item.minTrekVersion}+`}
+                  v={item.trek ? `TREK ${item.trek}` : `TT ${item.minTrekVersion}+`}
                 />
               )}
               {item.reviewedAt && (

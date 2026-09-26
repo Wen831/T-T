@@ -59,7 +59,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'Mapa zobrazuje celou cestu. Klepněte nahoře na den a zobrazí se jeho trasa.',
   'mobileTrip.rtNoneAhead': 'Na cestě před vámi nic není. Zkuste celou etapu.',
   'mobileTrip.rtNoneOnStage': 'Nic takového podél této etapy není.',
-  'mobileTrip.rtPlanOnDesktop': 'Plánování probíhá na počítači. Jakmile má den dvě místa, TREK jízdu spočítá.',
+  'mobileTrip.rtPlanOnDesktop': 'Plánování probíhá na počítači. Jakmile má den dvě místa, TT jízdu spočítá.',
   'mobileTrip.rtReach': 'Jak daleko',
   'mobileTrip.rtReachAhead': '{distance} před vámi',
   'mobileTrip.rtSearchOffline': 'Vyžaduje připojení: hledání čte trasu před vámi.',

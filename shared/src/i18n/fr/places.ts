@@ -105,7 +105,7 @@ const places: TranslationStrings = {
   'places.details.nothing': 'Rien trouvé pour ce lieu.',
   'places.details.noKeyTitle': 'Plus de détails disponibles',
   'places.details.noKeyHint':
-    "Sans clé API Google, cette instance n'utilise que des sources libres. Demandez à votre administrateur TREK d'en ajouter une pour les avis, les horaires et les photos.",
+    "Sans clé API Google, cette instance n'utilise que des sources libres. Demandez à votre administrateur TT d'en ajouter une pour les avis, les horaires et les photos.",
   'places.details.aboutBrand': 'À propos de la chaîne',
   'places.details.aboutBrandNote': 'Décrit la chaîne, pas cet établissement.',
   'places.details.fact.rating': 'Note',
@@ -135,7 +135,7 @@ const places: TranslationStrings = {
   'places.imageRemoveError': "Impossible de supprimer l'image",
   'places.searchProvider': 'Rechercher :',
   'places.searchProviderAmap': 'AMap',
-  'places.searchProviderNative': 'TREK',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;

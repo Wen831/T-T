@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 
 /** The VCALENDAR preamble every TREK calendar starts with, single-trip or merged. */
 export const CALENDAR_HEADER =
-  'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//TREK//Travel Planner//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+  'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//TT//Travel Planner//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
 
 /** One trip's calendar in parts, so callers can merge several without re-parsing text. */
 export interface TripCalendar {
@@ -756,7 +756,7 @@ export class CalendarService {
     // Node's header validation refuses, so they 500'd the export (#2165).
     const safeFilename = (trip.title || 'trek-trip').replace(/["\r\n]/g, '').replace(/[^\w \t.-]/g, '_');
     return {
-      calName: esc(trip.title || 'TREK Trip'),
+      calName: esc(trip.title || 'TT Trip'),
       filename: `${safeFilename}.ics`,
       timezones,
       events,

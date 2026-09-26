@@ -418,7 +418,7 @@ describe('OauthPublicController /userinfo + /revoke', () => {
     const r1 = makeRes();
     opc(osvc(), rl()).userinfo(undefined, r1);
     expect(r1.statusCode).toBe(401);
-    expect(r1.headers['WWW-Authenticate']).toBe('Bearer realm="TREK MCP"');
+    expect(r1.headers['WWW-Authenticate']).toBe('Bearer realm="TT MCP"');
     const r2 = makeRes();
     opc(
       osvc({ getUserByAccessToken: vi.fn().mockReturnValue({ user: { id: 1, email: 'a@b.c', username: 'u' } }) }),
@@ -438,7 +438,7 @@ describe('OauthPublicController /userinfo + /revoke', () => {
     const res = makeRes();
     opc(osvc({ getUserByAccessToken: vi.fn().mockReturnValue(null) }), rl()).userinfo('Bearer tok', res);
     expect(res.statusCode).toBe(401);
-    expect(res.headers['WWW-Authenticate']).toBe('Bearer realm="TREK MCP", error="invalid_token"');
+    expect(res.headers['WWW-Authenticate']).toBe('Bearer realm="TT MCP", error="invalid_token"');
     expect(res.body).toEqual({ error: 'invalid_token' });
   });
 

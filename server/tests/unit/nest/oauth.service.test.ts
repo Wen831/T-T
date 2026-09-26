@@ -1272,7 +1272,7 @@ describe('branches the legacy suite could not reach', () => {
     expect(result).toEqual({
       valid: false,
       error: 'invalid_target',
-      error_description: 'Requested resource must be the TREK MCP endpoint',
+      error_description: 'Requested resource must be the TT MCP endpoint',
     });
   });
 

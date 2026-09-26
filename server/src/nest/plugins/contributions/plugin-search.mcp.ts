@@ -24,7 +24,7 @@ import { z } from 'zod';
  *
  * The browser merges the plugin hits into its own search list, so a person searching
  * for a hotel sees the installed index alongside OpenStreetMap without asking. An
- * assistant calling `search_place` saw only TREK's own indexes, which is the same
+ * assistant calling `search_place` saw only TT's own indexes, which is the same
  * asymmetry `get_trip_warnings` exists to close: what the user can see, the assistant
  * has to be able to see.
  *
@@ -41,7 +41,7 @@ export class PluginSearchMcp {
   @Tool({
     name: 'search_places_via_plugins',
     description:
-      'Search for a place in the search indexes installed plugins provide, which are the ones TREK does not ship itself. Use it alongside search_place, never instead of it: search_place is TREK\'s own index and OpenStreetMap, this is whatever else the instance owner installed, and only these results can carry a rating — open data has none, so a question like "the best rated hotel near here" can only be answered from this list. Results have the same shape search_place returns, plus a `rating` and the `pluginId` that found them. Returns an empty list when no plugin provides a search index, which is the normal case.',
+      'Search for a place in the search indexes installed plugins provide, which are the ones TT does not ship itself. Use it alongside search_place, never instead of it: search_place is TT\'s own index and OpenStreetMap, this is whatever else the instance owner installed, and only these results can carry a rating — open data has none, so a question like "the best rated hotel near here" can only be answered from this list. Results have the same shape search_place returns, plus a `rating` and the `pluginId` that found them. Returns an empty list when no plugin provides a search index, which is the normal case.',
     inputSchema: {
       query: z.string().min(1).max(MAX_QUERY).describe('Place name or address to search for'),
       near: z

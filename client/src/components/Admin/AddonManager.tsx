@@ -310,7 +310,7 @@ export default function AddonManager({
             {t('admin.addons.subtitleBefore')}
             <img
               src={dark ? '/text-light.svg' : '/text-dark.svg'}
-              alt="TREK"
+              alt="TT"
               style={{ height: 11, verticalAlign: 'middle', opacity: 0.7 }}
             />
             {t('admin.addons.subtitleAfter')}

@@ -59,7 +59,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'Harita tüm yolculuğu gösteriyor. Günün sürüşünü görmek için yukarıdan bir güne dokunun.',
   'mobileTrip.rtNoneAhead': 'İleride yol üzerinde bir şey yok. Tüm etabı deneyin.',
   'mobileTrip.rtNoneOnStage': 'Bu etap boyunca bu türden bir şey yok.',
-  'mobileTrip.rtPlanOnDesktop': 'Planlama masaüstünde yapılır. Bir günde iki yer olduğunda TREK sürüşü hesaplar.',
+  'mobileTrip.rtPlanOnDesktop': 'Planlama masaüstünde yapılır. Bir günde iki yer olduğunda TT sürüşü hesaplar.',
   'mobileTrip.rtReach': 'Ne kadar uzağa',
   'mobileTrip.rtReachAhead': '{distance} ileride',
   'mobileTrip.rtSearchOffline': 'Bağlantı gerekir: arama, ileride kalan rotayı okur.',

@@ -72,7 +72,7 @@ const common: TranslationStrings = {
   'common.errorReload': 'ページを再読み込み',
   'common.errorUpdateTitle': '新しいバージョンがあります',
   'common.errorUpdateBody':
-    'このタブを開いている間に TREK が更新されました。再読み込みして新しいバージョンを取得してください。',
+    'このタブを開いている間に TT が更新されました。再読み込みして新しいバージョンを取得してください。',
   'common.errorPluginTitle': 'このプラグインを表示できませんでした',
   'common.errorOccurred': '問題が発生しました',
   'common.remove': '削除',

@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'Az utazási emlékeztetők ki vannak kapcsolva. Kapcsold be az Admin > Beállítások > Értesítések menüben.',
   'trips.importTrekTab': 'Importálás TREK-ből',
   'trips.importTrekIntro':
-    'Töltsön fel egy TREK biztonsági mentést (.zip), és válassza ki a TT-be másolandó utakat — napok, helyek, foglalások, költségvetés és fényképek együtt jönnek.',
+    'Töltsön fel egy TT biztonsági mentést (.zip), és válassza ki a TT-be másolandó utakat — napok, helyek, foglalások, költségvetés és fényképek együtt jönnek.',
   'trips.importTrekPick': 'TREK biztonsági mentés (.zip) kiválasztása',
   'trips.importTrekScanning': 'Mentés olvasása…',
   'trips.importTrekImport': 'Kiválasztott utak importálása',

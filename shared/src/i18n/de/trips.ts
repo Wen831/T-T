@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'Reiseerinnerungen sind deaktiviert. Aktivieren Sie sie unter Admin > Einstellungen > Benachrichtigungen.',
   'trips.importTrekTab': 'Aus TREK importieren',
   'trips.importTrekIntro':
-    'Lade ein TREK-Backup (.zip) hoch und wähle die Reisen, die nach TT kopiert werden sollen — Tage, Orte, Buchungen, Budget und Fotos kommen mit.',
+    'Lade ein TT-Backup (.zip) hoch und wähle die Reisen, die nach TT kopiert werden sollen — Tage, Orte, Buchungen, Budget und Fotos kommen mit.',
   'trips.importTrekPick': 'TREK-Backup (.zip) auswählen',
   'trips.importTrekScanning': 'Backup wird gelesen…',
   'trips.importTrekImport': 'Ausgewählte Reisen importieren',

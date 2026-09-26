@@ -349,7 +349,7 @@ describe('DawarichAtlasDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Look for countries' }))
 
     await waitFor(() =>
-      expect(screen.getByText('Your recordings show no countries TREK does not already have.')).toBeInTheDocument(),
+      expect(screen.getByText('Your recordings show no countries TT does not already have.')).toBeInTheDocument(),
     )
     expect(screen.queryByRole('button', { name: /Add \d+ countries/ })).toBeNull()
   })
@@ -416,7 +416,7 @@ describe('DawarichAtlasDialog', () => {
     setForcedOffline(true)
     fireEvent.click(screen.getByRole('button', { name: /Tick off 1/ }))
 
-    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('TREK is offline right now'))
+    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('TT is offline right now'))
     // Not attempted at all: a confirmation fired into a dead connection hangs to
     // a timeout and then reports a server error for something no server saw.
     expect(api.confirmBucketVisits).not.toHaveBeenCalled()
@@ -432,7 +432,7 @@ describe('DawarichAtlasDialog', () => {
     setForcedOffline(true)
     fireEvent.click(screen.getByRole('button', { name: /Add 1 countries/ }))
 
-    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('TREK is offline right now'))
+    expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('TT is offline right now'))
     expect(api.acceptAtlasCountries).not.toHaveBeenCalled()
   })
 
@@ -479,7 +479,7 @@ describe('DawarichAtlasDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Look for countries' }))
 
     await waitFor(() =>
-      expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('TREK is offline right now')),
+      expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('TT is offline right now')),
     )
     // Still unasked, so the button that asks is the one on screen.
     expect(screen.getByRole('button', { name: 'Look for countries' })).toBeInTheDocument()
@@ -579,7 +579,7 @@ describe('DawarichAtlasDialog', () => {
     // and the only thing that changed is what the reader just pressed. The row
     // leaving the list is what says the write landed.
     await waitFor(() =>
-      expect(screen.getByText('Your recordings show no countries TREK does not already have.')).toBeInTheDocument(),
+      expect(screen.getByText('Your recordings show no countries TT does not already have.')).toBeInTheDocument(),
     )
     expect(screen.queryByRole('checkbox', { name: 'Netherlands' })).toBeNull()
     expect(screen.queryByRole('button', { name: /Add \d+ countries/ })).toBeNull()

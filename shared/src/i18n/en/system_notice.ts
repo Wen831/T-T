@@ -3,7 +3,7 @@ import type { TranslationStrings } from '../types';
 const system_notice: TranslationStrings = {
   'system_notice.v3_photos.title': 'Photos have moved in 3.0',
   'system_notice.v3_photos.body':
-    '**Photos** in the Trip Planner have been removed. Your photos are safe — TREK never modified your Immich or Synology library.\n\nPhotos now live in the **Journey** addon. Journey is optional — if it is not yet available, ask your admin to enable it under Admin → Addons.',
+    '**Photos** in the Trip Planner have been removed. Your photos are safe — TT never modified your Immich or Synology library.\n\nPhotos now live in the **Journey** addon. Journey is optional — if it is not yet available, ask your admin to enable it under Admin → Addons.',
   'system_notice.v3_journey.title': 'Meet Journey — travel journal',
   'system_notice.v3_journey.body':
     'Document your trips as rich travel stories with timelines, photo galleries, and interactive maps.',
@@ -27,7 +27,7 @@ const system_notice: TranslationStrings = {
   'system_notice.v3_mcp.highlight_tools': 'Expanded toolset & prompts',
   'system_notice.v3_thankyou.title': 'A personal note from me',
   'system_notice.v3_thankyou.body':
-    "Before you go — I want to take a moment.\n\nTREK started as a side project I built for my own trips. I never imagined it would grow into something that 4,000 of you now trust to plan your adventures. Every star, every issue, every feature request — I read them all, and they keep me going through late nights between a full-time job and university.\n\nI want you to know: TREK will always be open source, always self-hosted, always yours. No tracking, no subscriptions, no strings attached. Just a tool built by someone who loves traveling as much as you do.\n\nSpecial thanks to [jubnl](https://github.com/jubnl) — you have become an incredible collaborator. So much of what makes 3.0 great carries your fingerprints. Thank you for believing in this project when it was still rough around the edges.\n\nAnd to every single one of you who filed a bug, translated a string, shared TREK with a friend, or simply used it to plan a trip — **thank you**. You are the reason this exists.\n\nHere's to many more adventures together.\n\n— Maurice\n\n---\n\n[Join the community on Discord](https://discord.gg/7Q6M6jDwzf)\n\nIf TREK makes your travels better, a coffee always keeps the lights on.",
+    "Before you go — I want to take a moment.\n\nTREK started as a side project I built for my own trips. I never imagined it would grow into something that 4,000 of you now trust to plan your adventures. Every star, every issue, every feature request — I read them all, and they keep me going through late nights between a full-time job and university.\n\nI want you to know: TT will always be open source, always self-hosted, always yours. No tracking, no subscriptions, no strings attached. Just a tool built by someone who loves traveling as much as you do.\n\nSpecial thanks to [jubnl](https://github.com/jubnl) — you have become an incredible collaborator. So much of what makes 3.0 great carries your fingerprints. Thank you for believing in this project when it was still rough around the edges.\n\nAnd to every single one of you who filed a bug, translated a string, shared TT with a friend, or simply used it to plan a trip — **thank you**. You are the reason this exists.\n\nHere's to many more adventures together.\n\n— Maurice\n\n---\n\n[Join the community on Discord](https://discord.gg/7Q6M6jDwzf)\n\nIf TT makes your travels better, a coffee always keeps the lights on.",
   'system_notice.v3014_whitespace_collision.title': 'Action required: user account conflict',
   'system_notice.v3014_whitespace_collision.body':
     'The 3.0.14 upgrade detected one or more username or email collisions caused by leading/trailing whitespace in stored accounts. Affected accounts were renamed automatically. Check the server logs for lines starting with **[migration] WHITESPACE COLLISION** to identify which accounts need review.',
@@ -35,7 +35,7 @@ const system_notice: TranslationStrings = {
   'system_notice.welcome_v1.body':
     'TT is a travel planning and activity management tool maintained by the TT team. Plan itineraries, manage activities, and collaborate with travel partners. This project is developed from a TREK open-source branch.',
   'system_notice.welcome_v1.cta_label': 'Plan a trip',
-  'system_notice.welcome_v1.hero_alt': 'A scenic travel destination with TREK planning UI overlay',
+  'system_notice.welcome_v1.hero_alt': 'A scenic travel destination with TT planning UI overlay',
   'system_notice.welcome_v1.highlight_plan': 'Day-by-day itineraries for any trip',
   'system_notice.welcome_v1.highlight_share': 'Collaborate with travel partners',
   'system_notice.welcome_v1.highlight_offline': 'Works offline on mobile',
@@ -74,16 +74,16 @@ const system_notice: TranslationStrings = {
   'system_notice.release_400.note_eyebrow': 'A note from the maintainer',
   'system_notice.release_400.note_title': 'Thank you for using TT.',
   'system_notice.release_400.note_body':
-    'TREK started as a little tool for my own trips, written in my spare time. It still is: evenings, weekends, the hours next to a full-time job.\n\nFor a while it was only me. Not anymore — nineteen people shipped this release, and thousands of you arrived with stars, issues, translations and pull requests. I am grateful for every part of it.',
+    'TT started as a little tool for my own trips, written in my spare time. It still is: evenings, weekends, the hours next to a full-time job.\n\nFor a while it was only me. Not anymore — nineteen people shipped this release, and thousands of you arrived with stars, issues, translations and pull requests. I am grateful for every part of it.',
   'system_notice.release_400.promise_label': 'The promise',
   'system_notice.release_400.promise_text':
-    'The open-source side of TREK stays free, forever. No paid tiers, no subscriptions, no catch. Promised.',
+    'The open-source side of TT stays free, forever. No paid tiers, no subscriptions, no catch. Promised.',
   'system_notice.release_400.note_body_after':
     '4.0.0 took weeks of late nights — a phone app, a book designer, a server migration, most of it written between midnight and two. Not a complaint: I love building this. It is just the honest answer to how a release this size comes out of a spare-time project.',
   'system_notice.release_400.note_closing': 'Thank you for being here.',
   'system_notice.release_400.note_signature': '— Maurice',
   'system_notice.release_400.support_text':
-    'Support is what keeps this running — servers, domains, and the late nights that turn into releases like this one. If TREK is worth something to you, a coffee is the most direct way to keep it going.',
+    'Support is what keeps this running — servers, domains, and the late nights that turn into releases like this one. If TT is worth something to you, a coffee is the most direct way to keep it going.',
   'system_notice.release_400.cta_bmc': 'Buy me a coffee',
   'system_notice.release_400.cta_kofi': 'Support on Ko-fi',
   'system_notice.pager.prev': 'Previous notice',

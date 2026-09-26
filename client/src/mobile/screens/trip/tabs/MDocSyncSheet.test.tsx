@@ -398,13 +398,13 @@ describe('MDocSyncSheet: what the owner may do', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /Resolve/ }))
-    fireEvent.click(await screen.findByRole('button', { name: 'Keep the TREK version' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Keep the TT version' }))
 
     await waitFor(() => expect(docsyncApi.resolve).toHaveBeenCalledWith(TRIP_ID, 40, 'trek'))
     expect(await screen.findByRole('alert')).toHaveTextContent('The document changed on both sides.')
     // The list is read back rather than trimmed by hand, so the row is still
     // there, ready for another try.
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Keep the TREK version' })).toBeEnabled())
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Keep the TT version' })).toBeEnabled())
     expect(screen.getByText('boarding-pass.pdf')).toBeInTheDocument()
     expect(docsyncApi.items).toHaveBeenCalledTimes(2)
   })
@@ -504,7 +504,7 @@ describe('MDocSyncSheet: what a member may do', () => {
     expect(screen.getByText('Changed in both places. Pick which one to keep.')).toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Resolve/ })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Keep the TREK version' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Keep the TT version' })).not.toBeInTheDocument()
     expect(docsyncApi.items).not.toHaveBeenCalled()
   })
 
@@ -522,7 +522,7 @@ describe('MDocSyncSheet: what a member may do', () => {
     renderSheet({ canManage: false })
 
     expect(await screen.findByText('Nothing connected yet')).toBeInTheDocument()
-    expect(screen.getByText('The trip owner sets this up. Documents stay in TREK either way.')).toBeInTheDocument()
+    expect(screen.getByText('The trip owner sets this up. Documents stay in TT either way.')).toBeInTheDocument()
     expect(screen.queryByText('Connect a provider')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Nextcloud/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Papra/ })).not.toBeInTheDocument()

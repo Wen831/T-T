@@ -402,7 +402,7 @@ describe('AuthController (authenticated)', () => {
       await thrownAsync(() => ac(asvc(), rl()).avatar(user, { filename: 'a.jpg' } as Express.Multer.File)),
     ).toEqual({
       status: 403,
-      body: { error: 'Uploads are disabled in demo mode. Self-host TREK for full functionality.' },
+      body: { error: 'Uploads are disabled in demo mode. Self-host TT for full functionality.' },
     });
     vi.mocked(isDemoEmail).mockReturnValue(false);
     delete process.env.DEMO_MODE;

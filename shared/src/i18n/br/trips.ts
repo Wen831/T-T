@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'Os lembretes de viagem estão desativados. Ative-os em Admin > Configurações > Notificações.',
   'trips.importTrekTab': 'Importar do TREK',
   'trips.importTrekIntro':
-    'Envie um backup do TREK (.zip) e escolha as viagens a copiar para o TT — dias, lugares, reservas, orçamento e fotos vêm juntos.',
+    'Envie um backup do TT (.zip) e escolha as viagens a copiar para o TT — dias, lugares, reservas, orçamento e fotos vêm juntos.',
   'trips.importTrekPick': 'Escolher backup do TREK (.zip)',
   'trips.importTrekScanning': 'Lendo backup…',
   'trips.importTrekImport': 'Importar viagens selecionadas',

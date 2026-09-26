@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': '旅行のリマインダーは無効です。管理 > 設定 > 通知から有効にしてください。',
   'trips.importTrekTab': 'TREK からインポート',
   'trips.importTrekIntro':
-    'TREK のバックアップ（.zip）をアップロードし、TT にコピーする旅行を選択してください。日程・場所・予約・予算・写真も一緒に取り込みます。',
+    'TT のバックアップ（.zip）をアップロードし、TT にコピーする旅行を選択してください。日程・場所・予約・予算・写真も一緒に取り込みます。',
   'trips.importTrekPick': 'TREK バックアップ（.zip）を選択',
   'trips.importTrekScanning': 'バックアップを読み込み中…',
   'trips.importTrekImport': '選択した旅行をインポート',

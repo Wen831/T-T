@@ -391,7 +391,7 @@ describe('TrekOAuthProvider.authorize', () => {
     const target = new URL(vi.mocked(res.redirect).mock.calls[0][1] as string);
     expect(`${target.origin}${target.pathname}`).toBe('https://client.example.com/cb');
     expect(target.searchParams.get('error')).toBe('invalid_target');
-    expect(target.searchParams.get('error_description')).toBe('Requested resource must be the TREK MCP endpoint');
+    expect(target.searchParams.get('error_description')).toBe('Requested resource must be the TT MCP endpoint');
     expect(target.searchParams.get('state')).toBe('keep-me');
   });
 

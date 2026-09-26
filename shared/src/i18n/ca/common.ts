@@ -73,7 +73,7 @@ const common: TranslationStrings = {
   'common.errorReload': 'Torna a carregar la pàgina',
   'common.errorUpdateTitle': 'Hi ha una versió nova disponible',
   'common.errorUpdateBody':
-    "TREK s'ha actualitzat mentre aquesta pestanya era oberta. Torna a carregar per obtenir la versió nova.",
+    "TT s'ha actualitzat mentre aquesta pestanya era oberta. Torna a carregar per obtenir la versió nova.",
   'common.errorPluginTitle': "No s'ha pogut mostrar aquest connector",
   'common.errorOccurred': 'Alguna cosa ha fallat',
   'common.remove': 'Elimina',

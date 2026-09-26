@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': 'تذكيرات الرحلة معطلة. قم بتفعيلها من الإدارة > الإعدادات > الإشعارات.',
   'trips.importTrekTab': 'استيراد من TREK',
   'trips.importTrekIntro':
-    'قم بتحميل نسخة احتياطية من TREK (.zip) واختر الرحلات المراد نسخها إلى TT — الأيام والأماكن والحجوزات والميزانية والصور تأتي معها.',
+    'قم بتحميل نسخة احتياطية من TT (.zip) واختر الرحلات المراد نسخها إلى TT — الأيام والأماكن والحجوزات والميزانية والصور تأتي معها.',
   'trips.importTrekPick': 'اختر نسخة احتياطية TREK (.zip)',
   'trips.importTrekScanning': 'جارٍ قراءة النسخة الاحتياطية…',
   'trips.importTrekImport': 'استيراد الرحلات المحددة',

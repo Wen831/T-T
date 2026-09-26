@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'Reisherinneringen zijn uitgeschakeld. Schakel ze in via Admin > Instellingen > Meldingen.',
   'trips.importTrekTab': 'Importeren vanuit TREK',
   'trips.importTrekIntro':
-    "Upload een TREK-backup (.zip) en kies de reizen om naar TT te kopiëren — dagen, plaatsen, boekingen, budget en foto's komen mee.",
+    "Upload een TT-backup (.zip) en kies de reizen om naar TT te kopiëren — dagen, plaatsen, boekingen, budget en foto's komen mee.",
   'trips.importTrekPick': 'Kies een TREK-backup (.zip)',
   'trips.importTrekScanning': 'Backup lezen…',
   'trips.importTrekImport': 'Geselecteerde reizen importeren',

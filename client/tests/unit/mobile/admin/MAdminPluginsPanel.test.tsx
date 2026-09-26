@@ -508,7 +508,7 @@ describe('MAdminPluginsPanel — the registry detail sheet', () => {
     );
 
     expect(await screen.findByText('Needs no special access.')).toBeInTheDocument();
-    expect(screen.getByText('TREK 3.0.0+')).toBeInTheDocument();
+    expect(screen.getByText('TT 3.0.0+')).toBeInTheDocument();
     expect(screen.queryByText('Connects to')).not.toBeInTheDocument();
   });
 
@@ -1753,7 +1753,7 @@ describe('MAdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RAN
     expect(btn).toBeEnabled();
     fireEvent.click(btn);
 
-    const sheet = await screen.findByRole('dialog', { name: 'Outside its supported TREK versions' });
+    const sheet = await screen.findByRole('dialog', { name: 'Outside its supported TT versions' });
     expect(within(sheet).getByText(/no guarantee/i)).toBeInTheDocument();
     expect(body).toBeNull();
 
@@ -1769,9 +1769,9 @@ describe('MAdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RAN
     fireEvent.click(await screen.findByRole('tab', { name: /Discover/ }));
     fireEvent.click(await screen.findByRole('button', { name: 'Install anyway' }));
 
-    const sheet = await screen.findByRole('dialog', { name: 'Outside its supported TREK versions' });
+    const sheet = await screen.findByRole('dialog', { name: 'Outside its supported TT versions' });
     fireEvent.click(within(sheet).getByRole('button', { name: 'Cancel' }));
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Outside its supported TREK versions' })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Outside its supported TT versions' })).not.toBeInTheDocument());
     expect(posted).toBe(false);
   });
 
@@ -1785,7 +1785,7 @@ describe('MAdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RAN
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
     fireEvent.change(input, { target: { files: [new File(['zip'], 'plugin.zip', { type: 'application/zip' })] } });
 
-    const sheet = await screen.findByRole('dialog', { name: 'Installed outside its supported TREK versions' });
+    const sheet = await screen.findByRole('dialog', { name: 'Installed outside its supported TT versions' });
     expect(within(sheet).getByText(/no guarantee/i)).toBeInTheDocument();
     expect(within(sheet).getByText(/trek-new/)).toBeInTheDocument();
   });
@@ -1796,6 +1796,6 @@ describe('MAdminPluginsPanel — TREK-range bypass (TREK_PLUGINS_IGNORE_TREK_RAN
       trekRangeBypassed: { trekRange: '>=3.2.0 <4.0.0', hostVersion: '4.0.0' },
     })], [], { ignoreTrekRange: true });
     render(<MAdminPluginsPanel />);
-    expect(await screen.findByText('Outside its TREK range (>=3.2.0 <4.0.0) — version checks off')).toBeInTheDocument();
+    expect(await screen.findByText('Outside its TT range (>=3.2.0 <4.0.0) — version checks off')).toBeInTheDocument();
   });
 });

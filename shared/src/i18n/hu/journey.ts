@@ -217,7 +217,7 @@ const journey: TranslationStrings = {
   'journey.public.sharedVia': 'Megosztva a következőn keresztül:',
   'journey.public.madeWith': 'Készítve a következővel:',
   'journey.pdf.journeyBook': 'Útinaplókönyv',
-  'journey.pdf.madeWith': 'Készítve a TREK segítségével',
+  'journey.pdf.madeWith': 'Készítve a TT segítségével',
   'journey.pdf.day': 'Nap',
   'journey.pdf.theEnd': 'Vége',
   'journey.pdf.saveAsPdf': 'Mentés PDF-ként',
@@ -247,7 +247,7 @@ const journey: TranslationStrings = {
   'journey.editor.externalPhotosUnavailable': 'No connected photo providers are available.', // en-fallback
   'journey.editor.externalPhotosPartialFailed': '{failed} photo groups failed — save again to retry', // en-fallback
   'journey.picker.day': 'This day', // en-fallback
-  'journey.studio.title': 'TREK Studio', // en-fallback
+  'journey.studio.title': 'TT Studio', // en-fallback
   'journey.studio.open': 'Studio', // en-fallback
   'journey.studio.openAria': 'Open the photo book studio', // en-fallback
   'journey.studio.backToJourney': 'Back to the journey', // en-fallback
@@ -290,7 +290,7 @@ const journey: TranslationStrings = {
     'Fájlba menti az oldalpár elrendezését, a fényképek nélkül, megosztáshoz vagy újrafelhasználáshoz',
   'journey.studio.importSpread': 'Importálás',
   'journey.studio.importSpreadHint': 'Oldalpár hozzáadása letöltött elrendezésfájlból',
-  'journey.studio.importSpreadFailed': 'Ez a fájl nem TREK Studio oldalpár',
+  'journey.studio.importSpreadFailed': 'Ez a fájl nem TT Studio oldalpár',
   'journey.studio.desktopOnly': 'Studio needs a bigger screen', // en-fallback
   'journey.studio.desktopOnlyHint':
     'Egy könyv tördeléséhez hely kell, ezért a Studio csak asztali gépen érhető el, és a PDF is. Az utazás minden más része itt a megszokott módon működik.', // en-fallback

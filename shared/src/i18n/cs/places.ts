@@ -105,7 +105,7 @@ const places: TranslationStrings = {
   'places.details.nothing': 'Pro toto místo se nic nenašlo.',
   'places.details.noKeyTitle': 'K dispozici je více podrobností',
   'places.details.noKeyHint':
-    'Bez klíče Google API používá tato instance jen volné zdroje. Požádejte správce TREK o jeho přidání pro hodnocení, otevírací dobu a fotografie.',
+    'Bez klíče Google API používá tato instance jen volné zdroje. Požádejte správce TT o jeho přidání pro hodnocení, otevírací dobu a fotografie.',
   'places.details.aboutBrand': 'O řetězci',
   'places.details.aboutBrandNote': 'Popisuje řetězec, ne tuto pobočku.',
   'places.details.fact.rating': 'Hodnocení',
@@ -135,7 +135,7 @@ const places: TranslationStrings = {
   'places.imageRemoveError': 'Obrázek se nepodařilo odebrat',
   'places.searchProvider': 'Hledat:',
   'places.searchProviderAmap': 'AMap',
-  'places.searchProviderNative': 'TREK',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;

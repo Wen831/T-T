@@ -56,7 +56,7 @@ export class DiscoveryController {
       authorization_servers: [meta.issuer],
       bearer_methods_supported: ['header'],
       scopes_supported: ALL_SCOPES,
-      resource_name: 'TREK MCP',
+      resource_name: 'TT MCP',
     });
   }
 

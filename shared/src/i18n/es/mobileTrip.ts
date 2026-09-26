@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'No hay nada en la carretera que tienes por delante. Prueba con toda la etapa.',
   'mobileTrip.rtNoneOnStage': 'No hay nada de eso a lo largo de esta etapa.',
   'mobileTrip.rtPlanOnDesktop':
-    'La planificación se hace en el escritorio. TREK calcula el trayecto en cuanto un día tiene dos lugares.',
+    'La planificación se hace en el escritorio. TT calcula el trayecto en cuanto un día tiene dos lugares.',
   'mobileTrip.rtReach': 'Hasta dónde',
   'mobileTrip.rtReachAhead': '{distance} por delante',
   'mobileTrip.rtSearchOffline': 'Hace falta conexión: la búsqueda lee la ruta que queda por delante.',

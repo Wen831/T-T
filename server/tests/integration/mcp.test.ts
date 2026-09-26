@@ -102,7 +102,7 @@ function rpcResult(text: string): { tools?: Array<{ name: string; description?: 
 }
 
 const MCP_AUDIENCE = `${getMcpSafeUrl().replace(/\/+$/, '')}/mcp`;
-const EXPECTED_CHALLENGE = `Bearer realm="TREK MCP", resource_metadata="${getMcpSafeUrl().replace(/\/+$/, '')}/.well-known/oauth-protected-resource/mcp", error="invalid_token"`;
+const EXPECTED_CHALLENGE = `Bearer realm="TT MCP", resource_metadata="${getMcpSafeUrl().replace(/\/+$/, '')}/.well-known/oauth-protected-resource/mcp", error="invalid_token"`;
 
 let nestApp: INestApplication;
 let app: Application;

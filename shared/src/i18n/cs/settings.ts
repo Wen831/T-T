@@ -38,7 +38,7 @@ const settings: TranslationStrings = {
   'settings.mapCartoKeyHint': 'Podkladové mapy CARTO se bez klíče zobrazují s vodoznakem. Zdarma a bez účtu, na',
   'settings.mapCartoKeyLink': 'carto.com API klíč pro podkladové mapy',
   'settings.mapCartoKeyMissing':
-    'Tato šablona je podkladová mapa CARTO. Bez klíče CARTO vypálí do každé dlaždice nápis "API KEY REQUIRED". Dokud klíč nezadáte, TREK zobrazuje výchozí podkladovou mapu.',
+    'Tato šablona je podkladová mapa CARTO. Bez klíče CARTO vypálí do každé dlaždice nápis "API KEY REQUIRED". Dokud klíč nezadáte, TT zobrazuje výchozí podkladovou mapu.',
   'settings.mapStyle': 'Styl mapy',
   'settings.mapStylePlaceholder': 'Vyberte styl Mapbox',
   'settings.mapStyleHint': 'Preset nebo vaše vlastní URL mapbox://styles/USER/ID',
@@ -187,13 +187,13 @@ const settings: TranslationStrings = {
   'settings.about.featureRequestHint': 'Navrhněte novou funkci',
   'settings.about.wikiHint': 'Dokumentace a návody',
   'settings.about.descriptionManaged':
-    'TREK helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
+    'TT helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'TREK is open source, licensed AGPL-3.0',
   'settings.about.supporters.badge': 'Měsíční podporovatelé',
-  'settings.about.supporters.title': 'Společníci na cestě s TREK',
+  'settings.about.supporters.title': 'Společníci na cestě s TT',
   'settings.about.supporters.subtitle':
-    'Zatímco plánuješ další trasu, tihle lidé plánují společně se mnou budoucnost TREK. Jejich měsíční příspěvek jde přímo na vývoj a reálně strávené hodiny — aby TREK zůstal Open Source.',
+    'Zatímco plánuješ další trasu, tihle lidé plánují společně se mnou budoucnost TT. Jejich měsíční příspěvek jde přímo na vývoj a reálně strávené hodiny — aby TT zůstal Open Source.',
   'settings.about.supporters.since': 'podporovatel od {date}',
   'settings.about.supporters.tierEmpty': 'Buď první',
   'settings.about.supporter.tier.noReturnTicket': 'No Return Ticket',
@@ -202,7 +202,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Budget Traveller',
   'settings.about.supporter.tier.hostelBunkmate': 'Hostel Bunkmate',
   'settings.about.description':
-    'TREK je samohostovaný plánovač cest, který vám pomůže organizovat výlety od prvního nápadu po poslední vzpomínku. Denní plánování, rozpočet, balicí seznamy, fotky a mnoho dalšího — vše na jednom místě, na vašem vlastním serveru.',
+    'TT je samohostovaný plánovač cest, který vám pomůže organizovat výlety od prvního nápadu po poslední vzpomínku. Denní plánování, rozpočet, balicí seznamy, fotky a mnoho dalšího — vše na jednom místě, na vašem vlastním serveru.',
   'settings.about.madeWith': 'Vytvořeno s',
   'settings.about.madeBy': 'rostoucí open-source komunitou.',
   'settings.username': 'Uživatelské jméno',
@@ -346,7 +346,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': 'Povolte pouze pro důvěryhodnou instanci ve vlastní síti.',
   'settings.airtrail.writeBack': 'Zapisovat změny zpět do AirTrail',
   'settings.airtrail.writeBackHint':
-    'Ve výchozím stavu vypnuto: AirTrail je zdrojem pravdy a TREK z něj pouze čte. Zapněte, chcete-li odesílat úpravy provedené v TREK zpět do AirTrail.',
+    'Ve výchozím stavu vypnuto: AirTrail je zdrojem pravdy a TT z něj pouze čte. Zapněte, chcete-li odesílat úpravy provedené v TT zpět do AirTrail.',
   'settings.airtrail.connected': 'Připojeno',
   'settings.airtrail.notConnected': 'Nepřipojeno',
   'settings.airtrail.toast.saved': 'Připojení k AirTrail uloženo',
@@ -458,7 +458,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': 'Přehled',
   'settings.startPageActiveTrip': 'Aktivní cesta',
   'settings.startPageHint':
-    'TREK se otevře rovnou na cestě, která právě probíhá, jinak na nejbližší nadcházející. Je to táž cesta, kterou zvýrazňuje přehled.',
+    'TT se otevře rovnou na cestě, která právě probíhá, jinak na nejbližší nadcházející. Je to táž cesta, kterou zvýrazňuje přehled.',
   'settings.startTripTab': 'Úvodní karta',
   'settings.startTripTabHint':
     'Karta, kterou se cesta otevře. Pokud patří k vypnutému doplňku, otevře se místo ní plán.',

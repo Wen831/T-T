@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'Tidak ada apa-apa di jalan di depan. Coba seluruh etape.',
   'mobileTrip.rtNoneOnStage': 'Tidak ada yang seperti itu di sepanjang etape ini.',
   'mobileTrip.rtPlanOnDesktop':
-    'Perencanaan dilakukan di desktop. TREK menghitung perjalanannya begitu satu hari punya dua tempat.',
+    'Perencanaan dilakukan di desktop. TT menghitung perjalanannya begitu satu hari punya dua tempat.',
   'mobileTrip.rtReach': 'Sejauh apa',
   'mobileTrip.rtReachAhead': '{distance} ke depan',
   'mobileTrip.rtSearchOffline': 'Perlu koneksi: pencarian membaca rute di depan.',

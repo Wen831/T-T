@@ -39,7 +39,7 @@ const settings: TranslationStrings = {
   'settings.mapCartoKeyHint': 'CARTO-Basiskarten zeigen ohne Key ein Wasserzeichen. Kostenlos und ohne Konto, unter',
   'settings.mapCartoKeyLink': 'carto.com Basemap-API-Key',
   'settings.mapCartoKeyMissing':
-    'Diese Vorlage ist eine CARTO-Basiskarte. Ohne Key brennt CARTO "API KEY REQUIRED" in jede Kachel. Bis ein Key eingetragen ist, zeigt TREK die Standard-Basiskarte.',
+    'Diese Vorlage ist eine CARTO-Basiskarte. Ohne Key brennt CARTO "API KEY REQUIRED" in jede Kachel. Bis ein Key eingetragen ist, zeigt TT die Standard-Basiskarte.',
   'settings.mapStyle': 'Kartenstil',
   'settings.mapStylePlaceholder': 'Mapbox-Stil wählen',
   'settings.mapStyleHint': 'Preset oder eigene mapbox://styles/USER/ID URL',
@@ -191,13 +191,13 @@ const settings: TranslationStrings = {
   'settings.about.featureRequestHint': 'Schlage ein neues Feature vor',
   'settings.about.wikiHint': 'Dokumentation & Anleitungen',
   'settings.about.descriptionManaged':
-    'TREK helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
+    'TT helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'TREK is open source, licensed AGPL-3.0',
   'settings.about.supporters.badge': 'Monatliche Unterstützer',
-  'settings.about.supporters.title': 'Reisebegleitung für TREK',
+  'settings.about.supporters.title': 'Reisebegleitung für TT',
   'settings.about.supporters.subtitle':
-    'Während du deine nächste Route planst, planen diese Leute mit, wie TREK weitergeht. Ihr monatlicher Beitrag fließt direkt in Entwicklung und echten Zeitaufwand — damit TREK Open Source bleibt.',
+    'Während du deine nächste Route planst, planen diese Leute mit, wie TT weitergeht. Ihr monatlicher Beitrag fließt direkt in Entwicklung und echten Zeitaufwand — damit TT Open Source bleibt.',
   'settings.about.supporters.since': 'Unterstützer seit {date}',
   'settings.about.supporters.tierEmpty': 'Sei die/der Erste',
   'settings.about.supporter.tier.noReturnTicket': 'No Return Ticket',
@@ -206,7 +206,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Budget Traveller',
   'settings.about.supporter.tier.hostelBunkmate': 'Hostel Bunkmate',
   'settings.about.description':
-    'TREK ist ein selbst gehosteter Reiseplaner, der dir hilft, deine Trips von der ersten Idee bis zur letzten Erinnerung zu organisieren. Tagesplanung, Budget, Packlisten, Fotos und vieles mehr — alles an einem Ort, auf deinem eigenen Server.',
+    'TT ist ein selbst gehosteter Reiseplaner, der dir hilft, deine Trips von der ersten Idee bis zur letzten Erinnerung zu organisieren. Tagesplanung, Budget, Packlisten, Fotos und vieles mehr — alles an einem Ort, auf deinem eigenen Server.',
   'settings.about.madeWith': 'Entwickelt mit',
   'settings.about.madeBy': 'von einer wachsenden Open-Source-Community.',
   'settings.username': 'Benutzername',
@@ -355,7 +355,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': 'Nur für eine vertrauenswürdige Instanz im eigenen Netzwerk aktivieren.',
   'settings.airtrail.writeBack': 'Änderungen zurück nach AirTrail schreiben',
   'settings.airtrail.writeBackHint':
-    'Standardmäßig aus: AirTrail ist die maßgebliche Quelle und TREK liest nur. Aktivieren, um in TREK vorgenommene Änderungen zurück an AirTrail zu senden.',
+    'Standardmäßig aus: AirTrail ist die maßgebliche Quelle und TT liest nur. Aktivieren, um in TT vorgenommene Änderungen zurück an AirTrail zu senden.',
   'settings.airtrail.connected': 'Verbunden',
   'settings.airtrail.notConnected': 'Nicht verbunden',
   'settings.airtrail.toast.saved': 'AirTrail-Verbindung gespeichert',
@@ -467,7 +467,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': 'Dashboard',
   'settings.startPageActiveTrip': 'Aktive Reise',
   'settings.startPageHint':
-    'TREK öffnet direkt die Reise, die gerade läuft, sonst die nächste anstehende. Also genau die Reise, die auch das Dashboard hervorhebt.',
+    'TT öffnet direkt die Reise, die gerade läuft, sonst die nächste anstehende. Also genau die Reise, die auch das Dashboard hervorhebt.',
   'settings.startTripTab': 'Start-Tab',
   'settings.startTripTabHint':
     'Der Tab, mit dem die Reise öffnet. Gehört er zu einem ausgeschalteten Addon, öffnet stattdessen die Planung.',

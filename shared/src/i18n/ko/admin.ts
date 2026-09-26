@@ -364,7 +364,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': '소스 저장소',
   'admin.plugins.reportIssue': '문제 신고',
   'admin.plugins.homepage': '홈페이지',
-  'admin.plugins.requiresTrek': 'TREK {version} 이상 필요',
+  'admin.plugins.requiresTrek': 'TT {version} 이상 필요',
   'admin.plugins.reviewedOn': '{date} 검토됨',
   'admin.plugins.perm.db:own': '격리된 데이터베이스에 자체 데이터 저장',
   'admin.plugins.perm.db:read:trips': '현재 사용자가 접근할 수 있는 여행 읽기',
@@ -435,7 +435,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'AI 어시스턴트가 사용자를 대신해 실행할 수 있는 도구 게시 (여기서 플러그인에 부여한 권한으로 동작하며, 어시스턴트 자신의 권한이 아닙니다)',
   'admin.plugins.perm.geolocation:read':
-    '해당 플러그인 화면이 열려 있는 동안 실시간 위치 요청 (TREK이 이 사이트에 부여된 위치 권한으로 읽으며, 플러그인용 권한을 따로 묻지 않음)',
+    '해당 플러그인 화면이 열려 있는 동안 실시간 위치 요청 (TT이 이 사이트에 부여된 위치 권한으로 읽으며, 플러그인용 권한을 따로 묻지 않음)',
   'admin.plugins.perm.hook:pdf-section-provider': '여행 PDF 내보내기에 텍스트 섹션 추가',
   'admin.plugins.perm.hook:atlas-layer-provider': 'Atlas 세계 지도에서 국가 강조 표시(예: 위시리스트 또는 여행 경보)',
   'admin.plugins.perm.hook:journal-entry-provider': '저널 항목에 추가 행(링크, 통계) 제공',
@@ -459,26 +459,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateLater': '일단 꺼두기',
   'admin.plugins.updateKeptOff': '업데이트가 설치되었습니다 — 새 권한을 승인하기 전까지 꺼진 상태로 둡니다',
   'admin.plugins.reviewedMeaning':
-    '"검토됨"은 TREK 관리자가 각 버전마다 이 플러그인에 악성코드가 있는지 검사했다는 의미입니다 — 품질이나 정상 작동 여부를 검사한 것이 아닙니다. 플러그인이 무해하다는 보장은 아닙니다.',
+    '"검토됨"은 TT 관리자가 각 버전마다 이 플러그인에 악성코드가 있는지 검사했다는 의미입니다 — 품질이나 정상 작동 여부를 검사한 것이 아닙니다. 플러그인이 무해하다는 보장은 아닙니다.',
   'admin.plugins.security.title': '플러그인이 격리되는 방식 — 그리고 그 한계',
   'admin.plugins.security.isolationTitle': '모든 플러그인은 격리된 상태로 실행됩니다',
   'admin.plugins.security.isolationBody':
-    '플러그인은 자체 파일만 읽을 수 있는 잠긴 별도 프로세스로 실행됩니다. 데이터베이스, 로그인 비밀 값, 암호화 키를 읽을 수 없고, 다른 프로그램을 실행할 수 없으며, 어디에도 파일을 쓸 수 없습니다. 플러그인의 인터페이스는 세션 쿠키를 읽거나 주변 TREK 페이지를 건드릴 수 없는 봉인된 브라우저 프레임에서 실행됩니다.',
+    '플러그인은 자체 파일만 읽을 수 있는 잠긴 별도 프로세스로 실행됩니다. 데이터베이스, 로그인 비밀 값, 암호화 키를 읽을 수 없고, 다른 프로그램을 실행할 수 없으며, 어디에도 파일을 쓸 수 없습니다. 플러그인의 인터페이스는 세션 쿠키를 읽거나 주변 TT 페이지를 건드릴 수 없는 봉인된 브라우저 프레임에서 실행됩니다.',
   'admin.plugins.security.permsTitle': '권한이 의미하는 것',
   'admin.plugins.security.permsBody':
-    '설치 전에 표시되는 권한은 플러그인이 실행되는 동안 TREK이 강제하는 엄격한 한계입니다 — 목록에 없는 것은 말 그대로 아무것도 할 수 없습니다. 하지만 이는 플러그인이 무엇을 할 수 있는지를 알려줄 뿐, 실제로 무엇을 하는지는 알려주지 않습니다. 여행을 읽고 서버에 연결할 수 있는 플러그인은 그 서버로 여행 데이터를 전송할 수 있으므로, 설명뿐만 아니라 권한과 아웃바운드 호스트도 확인하세요.',
+    '설치 전에 표시되는 권한은 플러그인이 실행되는 동안 TT이 강제하는 엄격한 한계입니다 — 목록에 없는 것은 말 그대로 아무것도 할 수 없습니다. 하지만 이는 플러그인이 무엇을 할 수 있는지를 알려줄 뿐, 실제로 무엇을 하는지는 알려주지 않습니다. 여행을 읽고 서버에 연결할 수 있는 플러그인은 그 서버로 여행 데이터를 전송할 수 있으므로, 설명뿐만 아니라 권한과 아웃바운드 호스트도 확인하세요.',
   'admin.plugins.security.limitsTitle': '보장할 수 없는 것',
   'admin.plugins.security.limitsBody':
-    '이 격리는 강력한 소프트웨어 경계이지만 절대적인 것은 아닙니다. 플러그인은 정확히 승인한 권한만큼 동작하므로, 그 권한 범위 내에서는 설명과 다르게 동작할 수 있으며, 정당하게 보유한 데이터를 선언한 호스트로 전송할 수 있습니다. TREK은 플러그인의 코드가 실제로 무엇을 하는지 읽거나 판단하지 않습니다.',
+    '이 격리는 강력한 소프트웨어 경계이지만 절대적인 것은 아닙니다. 플러그인은 정확히 승인한 권한만큼 동작하므로, 그 권한 범위 내에서는 설명과 다르게 동작할 수 있으며, 정당하게 보유한 데이터를 선언한 호스트로 전송할 수 있습니다. TT은 플러그인의 코드가 실제로 무엇을 하는지 읽거나 판단하지 않습니다.',
   'admin.plugins.security.worstTitle': '최악의 경우',
   'admin.plugins.security.worstBody':
     '활성화한 악의적인 플러그인은 부여한 데이터와 연결을 오용할 수 있습니다 — 예를 들어 읽을 수 있는 여행 데이터를 유출할 수 있습니다. 하지만 비밀번호를 훔치거나, 관리자 로그인을 위조하거나, 서버에서 명령을 실행하거나, 부여하지 않은 데이터에 접근할 수는 없습니다. 피해는 승인한 범위 안에 머물며, 플러그인을 끄면 중단됩니다.',
   'admin.plugins.security.reviewedTitle': '"검토됨"의 의미',
   'admin.plugins.security.reviewedBody':
-    '검토된 플러그인은 각 버전마다 TREK 관리자가 악성코드를 수동으로 검사한 것입니다 — 정상 작동 여부가 아니라 악의적인 코드가 있는지 확인한 것입니다. 플러그인이 무해하다는 약속은 아닙니다.',
+    '검토된 플러그인은 각 버전마다 TT 관리자가 악성코드를 수동으로 검사한 것입니다 — 정상 작동 여부가 아니라 악의적인 코드가 있는지 확인한 것입니다. 플러그인이 무해하다는 약속은 아닙니다.',
   'admin.plugins.security.signedTitle': '"서명됨"의 의미',
   'admin.plugins.security.signedBody':
-    'TREK이 설치할 때마다 검증하는 체크섬은 파일이 레지스트리가 보증하는 것과 정확히 일치함을 증명합니다. 서명은 다른 것을 증명합니다. 그 파일이 작성자에게서 왔으며, 작성자만 가진 키로 서명되었다는 사실입니다. 서명된 플러그인은 두 가지를 모두 갖추고 있습니다. 서명되지 않았다고 해서 안전하지 않다는 뜻은 아닙니다 — 보장이 하나 적을 뿐이며, 현재 레지스트리의 플러그인 대부분은 서명되어 있지 않습니다.',
+    'TT이 설치할 때마다 검증하는 체크섬은 파일이 레지스트리가 보증하는 것과 정확히 일치함을 증명합니다. 서명은 다른 것을 증명합니다. 그 파일이 작성자에게서 왔으며, 작성자만 가진 키로 서명되었다는 사실입니다. 서명된 플러그인은 두 가지를 모두 갖추고 있습니다. 서명되지 않았다고 해서 안전하지 않다는 뜻은 아닙니다 — 보장이 하나 적을 뿐이며, 현재 레지스트리의 플러그인 대부분은 서명되어 있지 않습니다.',
   'admin.plugins.signed': '서명됨',
   'admin.plugins.signedHint': '설치 당시 작성자의 서명 키로 검증되었습니다',
   'admin.plugins.unsigned': '서명 없음',
@@ -493,20 +493,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     '파일이 작성자의 서명과 일치하지 않습니다. 작성자가 서명한 파일이 아니며, 손상되었거나 변조된 것입니다. 이 경우는 무시하고 진행할 수 없습니다.',
   'admin.plugins.sig.missingBody':
-    '설치할 때 이 플러그인에는 서명이 있었지만, 새 버전에는 서명이 없습니다. TREK은 이런 후퇴를 조용히 받아들이지 않습니다. 이 경우는 무시하고 진행할 수 없습니다.',
+    '설치할 때 이 플러그인에는 서명이 있었지만, 새 버전에는 서명이 없습니다. TT은 이런 후퇴를 조용히 받아들이지 않습니다. 이 경우는 무시하고 진행할 수 없습니다.',
   'admin.plugins.sig.incompleteBody':
     '레지스트리 항목이 반만 서명되어 있습니다. 작성자 키는 선언되어 있지만 해당 버전에는 서명이 없습니다(또는 그 반대입니다). 이는 플러그인 쪽의 실수입니다. 이 경우는 무시하고 진행할 수 없습니다.',
   'admin.plugins.sig.pinnedKey': '설치할 때 사용된 키',
   'admin.plugins.sig.newKey': '지금 제시하는 키',
   'admin.plugins.sig.confirmOutOfBand':
-    'TREK은 정당한 키 교체와 탈취를 구분할 수 없습니다 — 여기서는 둘이 똑같아 보입니다. 받아들이기 전에 이미 신뢰하는 경로를 통해 작성자에게 새 키를 확인하세요. 받아들이면 플러그인이 업데이트되고 새 키가 기억됩니다.',
+    'TT은 정당한 키 교체와 탈취를 구분할 수 없습니다 — 여기서는 둘이 똑같아 보입니다. 받아들이기 전에 이미 신뢰하는 경로를 통해 작성자에게 새 키를 확인하세요. 받아들이면 플러그인이 업데이트되고 새 키가 기억됩니다.',
   'admin.plugins.sig.retrustConfirm': '새 키를 신뢰하고 업데이트',
   'admin.plugins.sig.cancel': '신뢰하지 않기',
   'admin.plugins.sig.consentUnsigned':
     '이 버전과 작성자를 연결해 주는 것이 없습니다 — 파일은 레지스트리와 일치하지만 작성자 서명이 없습니다.',
   'admin.plugins.security.trustTitle': '핵심 요약',
   'admin.plugins.security.trustBody':
-    '플러그인을 설치하는 것은 다른 서드파티 앱을 설치하는 것과 같습니다: 신뢰할 수 있는 작성자의 코드만 추가하고, 의심스러우면 먼저 직접 확인하세요. TREK은 서드파티 플러그인에 대해 어떠한 책임도 지지 않습니다.',
+    '플러그인을 설치하는 것은 다른 서드파티 앱을 설치하는 것과 같습니다: 신뢰할 수 있는 작성자의 코드만 추가하고, 의심스러우면 먼저 직접 확인하세요. TT은 서드파티 플러그인에 대해 어떠한 책임도 지지 않습니다.',
   'admin.plugins.runtimeOn': '런타임 켜짐',
   'admin.plugins.tabDiscover': '둘러보기',
   'admin.plugins.searchPlaceholder': '플러그인 검색…',
@@ -595,15 +595,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': '그래도 설치',
   'admin.plugins.rangeBypass.pill': '버전 검사 꺼짐',
   'admin.plugins.rangeBypass.pillHint':
-    'TREK_PLUGINS_IGNORE_TREK_RANGE가 설정되어 있습니다 — 플러그인이 작성자가 선언한 TREK 버전 범위 밖에서도 설치·실행될 수 있습니다',
-  'admin.plugins.rangeBypass.title': '지원되는 TREK 버전 범위 밖',
-  'admin.plugins.rangeBypass.noticeTitle': '지원되는 TREK 버전 범위 밖에 설치됨',
+    'TREK_PLUGINS_IGNORE_TREK_RANGE가 설정되어 있습니다 — 플러그인이 작성자가 선언한 TT 버전 범위 밖에서도 설치·실행될 수 있습니다',
+  'admin.plugins.rangeBypass.title': '지원되는 TT 버전 범위 밖',
+  'admin.plugins.rangeBypass.noticeTitle': '지원되는 TT 버전 범위 밖에 설치됨',
   'admin.plugins.rangeBypass.body':
-    '“{name}”은(는) TREK {range} 지원을 선언했지만 이 서버는 {host}을(를) 실행 중입니다. TREK_PLUGINS_IGNORE_TREK_RANGE가 설정되어 있기 때문에만 TREK가 이를 허용합니다. 작성자가 이 TREK에 맞게 플러그인의 버전 범위를 갱신하지 않았으므로 정상 동작을 보장할 수 없으며, 드물게 호환되지 않는 플러그인이 TREK 데이터를 손상시킬 수 있습니다. 이 위험을 감수하는 경우에만 계속하세요.',
+    '“{name}”은(는) TT {range} 지원을 선언했지만 이 서버는 {host}을(를) 실행 중입니다. TREK_PLUGINS_IGNORE_TREK_RANGE가 설정되어 있기 때문에만 TT가 이를 허용합니다. 작성자가 이 TT에 맞게 플러그인의 버전 범위를 갱신하지 않았으므로 정상 동작을 보장할 수 없으며, 드물게 호환되지 않는 플러그인이 TT 데이터를 손상시킬 수 있습니다. 이 위험을 감수하는 경우에만 계속하세요.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '“{name}”은(는) 지원하는 TREK 버전을 선언하지 않았습니다. 이 서버는 {host}을(를) 실행 중입니다. TREK_PLUGINS_IGNORE_TREK_RANGE가 설정되어 있기 때문에만 TREK가 이를 허용합니다. 작성자가 이 TREK에서 테스트했다는 근거가 없으므로 정상 동작을 보장할 수 없으며, 드물게 호환되지 않는 플러그인이 TREK 데이터를 손상시킬 수 있습니다. 이 위험을 감수하는 경우에만 계속하세요.',
-  'admin.plugins.dep.trekBypassed': 'TREK 범위 밖 ({range}) — 버전 검사 꺼짐',
-  'admin.plugins.dep.trekBypassedUnknown': 'TREK 범위 선언 없음 — 버전 검사 꺼짐',
+    '“{name}”은(는) 지원하는 TT 버전을 선언하지 않았습니다. 이 서버는 {host}을(를) 실행 중입니다. TREK_PLUGINS_IGNORE_TREK_RANGE가 설정되어 있기 때문에만 TT가 이를 허용합니다. 작성자가 이 TT에서 테스트했다는 근거가 없으므로 정상 동작을 보장할 수 없으며, 드물게 호환되지 않는 플러그인이 TT 데이터를 손상시킬 수 있습니다. 이 위험을 감수하는 경우에만 계속하세요.',
+  'admin.plugins.dep.trekBypassed': 'TT 범위 밖 ({range}) — 버전 검사 꺼짐',
+  'admin.plugins.dep.trekBypassedUnknown': 'TT 범위 선언 없음 — 버전 검사 꺼짐',
   'admin.plugins.incompatible': '호환되지 않음',
   'admin.plugins.accessTitle': '접근할 수 있는 항목',
   'admin.plugins.connectsTitle': '연결 대상',
@@ -615,7 +615,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': '검토일',
   'admin.plugins.downloads': '다운로드',
   'admin.addons.title': '애드온',
-  'admin.addons.subtitle': '기능을 활성화 또는 비활성화하여 TREK 경험을 맞춤 설정하세요.',
+  'admin.addons.subtitle': '기능을 활성화 또는 비활성화하여 TT 경험을 맞춤 설정하세요.',
   'admin.addons.catalog.packing.name': '목록',
   'admin.addons.catalog.packing.description': '여행을 위한 짐 목록 및 할 일 작업',
   'admin.addons.catalog.budget.name': '비용',
@@ -655,7 +655,7 @@ const admin: TranslationStrings = {
   'admin.weather.title': '날씨 데이터',
   'admin.weather.badge': '2026년 3월 24일부터',
   'admin.weather.description':
-    'TT는 계속해서 TREK의 날씨 API를 사용합니다. 무료 오픈 소스 서비스이며 API 키가 필요 없습니다.',
+    'TT는 계속해서 TT의 날씨 API를 사용합니다. 무료 오픈 소스 서비스이며 API 키가 필요 없습니다.',
   'admin.weather.forecast': '16일 예보',
   'admin.weather.forecastDesc': '이전: 5일 (OpenWeatherMap)',
   'admin.weather.climate': '과거 기후 데이터',
@@ -712,13 +712,13 @@ const admin: TranslationStrings = {
   'admin.github.loading': '불러오는 중...',
   'admin.github.error': '릴리스 불러오기 실패',
   'admin.github.by': '작성자',
-  'admin.github.support': 'TREK 개발 지속에 도움이 됩니다',
+  'admin.github.support': 'TT 개발 지속에 도움이 됩니다',
   'admin.update.available': '업데이트 사용 가능',
-  'admin.update.text': 'TREK {version}이(가) 사용 가능합니다. 현재 {current}을(를) 실행 중입니다.',
+  'admin.update.text': 'TT {version}이(가) 사용 가능합니다. 현재 {current}을(를) 실행 중입니다.',
   'admin.update.button': 'GitHub에서 보기',
   'admin.update.install': '업데이트 설치',
   'admin.update.confirmTitle': '업데이트를 설치할까요?',
-  'admin.update.confirmText': 'TREK이 {current}에서 {version}으로 업데이트됩니다. 서버가 이후 자동으로 재시작됩니다.',
+  'admin.update.confirmText': 'TT이 {current}에서 {version}으로 업데이트됩니다. 서버가 이후 자동으로 재시작됩니다.',
   'admin.update.dataInfo': '모든 데이터 (여행, 사용자, API 키, 업로드, Vacay, Atlas, 예산)가 보존됩니다.',
   'admin.update.warning': '재시작 중에 앱이 잠시 사용할 수 없게 됩니다.',
   'admin.update.confirm': '지금 업데이트',
@@ -729,9 +729,9 @@ const admin: TranslationStrings = {
   'admin.update.backupLink': '백업으로 이동',
   'admin.update.howTo': '업데이트 방법',
   'admin.update.dockerText':
-    'TREK 인스턴스가 Docker에서 실행 중입니다. {version}으로 업데이트하려면 서버에서 다음 명령을 실행하세요:',
+    'TT 인스턴스가 Docker에서 실행 중입니다. {version}으로 업데이트하려면 서버에서 다음 명령을 실행하세요:',
   'admin.update.nonDockerText':
-    '이 TREK 인스턴스는 Docker에서 실행되고 있지 않습니다. {version}으로 업데이트하려면 사용했던 설치 또는 업데이트 방법을 다시 실행하세요 — 예를 들어 Proxmox Community Scripts에서는 LXC 콘솔에서 업데이트를 실행하세요:',
+    '이 TT 인스턴스는 Docker에서 실행되고 있지 않습니다. {version}으로 업데이트하려면 사용했던 설치 또는 업데이트 방법을 다시 실행하세요 — 예를 들어 Proxmox Community Scripts에서는 LXC 콘솔에서 업데이트를 실행하세요:',
   'admin.update.wikiLink': '업데이트 가이드 열기',
   'admin.update.reloadHint': '잠시 후 페이지를 새로 고침하세요.',
   'admin.tabs.permissions': '권한',
@@ -785,7 +785,7 @@ const admin: TranslationStrings = {
     '중국 내 장소 검색과 교통 상황을 반영한 경로 탐색에 사용됩니다. lbs.amap.com에서 웹 서비스 키를 발급받으세요.',
   'admin.amapSearch.title': '장소 검색에 AMap 사용',
   'admin.amapSearch.subtitle':
-    '기본적으로 AMap을 사용하며, 각 장소 검색 폼에서 TREK 네이티브 소스로 전환할 수 있습니다.',
+    '기본적으로 AMap을 사용하며, 각 장소 검색 폼에서 TT 네이티브 소스로 전환할 수 있습니다.',
   'admin.update.checkError': '',
   'admin.update.checkNow': '',
   'admin.update.prepare': 'Připravit aktualizaci',

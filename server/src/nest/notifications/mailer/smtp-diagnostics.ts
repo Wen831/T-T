@@ -75,7 +75,7 @@ export function describeSmtpFailure(err: unknown, target: SmtpTarget, secret = '
     };
   }
   if (/EHOSTUNREACH|ENETUNREACH|EACCES/.test(message)) {
-    return { code, reason: `${where} is unreachable from the TREK container: ${message}` };
+    return { code, reason: `${where} is unreachable from the TT container: ${message}` };
   }
   if (code === 'ETIMEDOUT' || /timed? ?out|Greeting never received/i.test(message)) {
     return {

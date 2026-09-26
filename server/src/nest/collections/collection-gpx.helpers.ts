@@ -153,7 +153,7 @@ export function collectionFileToGpx(file: ExportedCollectionFile): CollectionGpx
     '?xml': { '@_version': '1.0', '@_encoding': 'UTF-8' },
     gpx: {
       '@_version': '1.1',
-      '@_creator': 'TREK',
+      '@_creator': 'TT',
       '@_xmlns': GPX_NAMESPACE,
       [`@_xmlns:${TREK}`]: COLLECTION_GPX_NAMESPACE,
       '@_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',

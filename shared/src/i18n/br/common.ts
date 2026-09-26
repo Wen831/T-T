@@ -72,7 +72,7 @@ const common: TranslationStrings = {
   'common.errorReload': 'Adkargañ ar bajenn',
   'common.errorUpdateTitle': 'Un handelv nevez a zo hegerz',
   'common.errorUpdateBody':
-    'TREK a zo bet hizivaet e-pad ma oa digor an ivinell-mañ. Adkargit evit kaout an handelv nevez.',
+    'TT a zo bet hizivaet e-pad ma oa digor an ivinell-mañ. Adkargit evit kaout an handelv nevez.',
   'common.errorPluginTitle': "N'eus ket bet gallet diskwel an enlugellad-mañ",
   'common.errorOccurred': 'Algo deu errado',
   'common.remove': 'Remover',

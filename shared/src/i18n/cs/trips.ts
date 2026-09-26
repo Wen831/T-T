@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': 'Připomínky výletů jsou zakázány. Povolte je v Správa > Nastavení > Oznámení.',
   'trips.importTrekTab': 'Importovat z TREK',
   'trips.importTrekIntro':
-    'Nahrajte zálohu TREK (.zip) a vyberte cesty ke zkopírování do TT — dny, místa, rezervace, rozpočet a fotky přijedou s nimi.',
+    'Nahrajte zálohu TT (.zip) a vyberte cesty ke zkopírování do TT — dny, místa, rezervace, rozpočet a fotky přijedou s nimi.',
   'trips.importTrekPick': 'Vybrat zálohu TREK (.zip)',
   'trips.importTrekScanning': 'Čte se záloha…',
   'trips.importTrekImport': 'Importovat vybrané cesty',

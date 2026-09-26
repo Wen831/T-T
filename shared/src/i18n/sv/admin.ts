@@ -384,7 +384,7 @@ const admin: TranslationStrings = {
   'admin.plugins.sourceRepo': 'Källkodsarkiv',
   'admin.plugins.reportIssue': 'Rapportera ett problem',
   'admin.plugins.homepage': 'Webbplats',
-  'admin.plugins.requiresTrek': 'Kräver TREK {version}+',
+  'admin.plugins.requiresTrek': 'Kräver TT {version}+',
   'admin.plugins.reviewedOn': 'Granskad {date}',
   'admin.plugins.perm.db:own': 'Lagra sina egna data i en isolerad databas',
   'admin.plugins.perm.db:read:trips': 'Läsa resor som den aktiva användaren har åtkomst till',
@@ -472,7 +472,7 @@ const admin: TranslationStrings = {
   'admin.plugins.perm.mcp:tools':
     'Publicera verktyg som en AI-assistent kan köra åt dig (det agerar med de rättigheter du ger tillägget här, inte med assistentens egna)',
   'admin.plugins.perm.geolocation:read':
-    'Fråga efter din position i realtid medan en av dess vyer är öppen (TREK läser den med den här webbplatsens platsbehörighet, inte med en egen behörighet för tillägget)',
+    'Fråga efter din position i realtid medan en av dess vyer är öppen (TT läser den med den här webbplatsens platsbehörighet, inte med en egen behörighet för tillägget)',
   'admin.plugins.perm.hook:pdf-section-provider': 'Lägga till textavsnitt i resans PDF-export',
   'admin.plugins.perm.hook:atlas-layer-provider':
     'Markera länder på Atlas-världskartan (t.ex. önskelistor eller resevarningar)',
@@ -501,26 +501,26 @@ const admin: TranslationStrings = {
   'admin.plugins.updateKeptOff':
     'Uppdateringen är installerad — förblir avstängd tills du godkänner de nya behörigheterna',
   'admin.plugins.reviewedMeaning':
-    '”Granskad” betyder att en TREK-underhållare har skannat pluginet efter skadlig kod i varje version — inte efter kvalitet eller om det fungerar. Det är ingen garanti för att ett plugin är ofarligt.',
+    '”Granskad” betyder att en TT-underhållare har skannat pluginet efter skadlig kod i varje version — inte efter kvalitet eller om det fungerar. Det är ingen garanti för att ett plugin är ofarligt.',
   'admin.plugins.security.title': 'Så här isoleras plugins — och gränserna för det',
   'admin.plugins.security.isolationTitle': 'Varje plugin körs inkapslat',
   'admin.plugins.security.isolationBody':
-    'Ett plugin körs som en egen låst process som bara kan läsa sina egna filer. Det kan inte läsa din databas, din inloggningshemlighet eller din krypteringsnyckel, kan inte starta andra program och kan inte skriva filer någonstans. Dess gränssnitt körs i en förseglad webbläsarram som inte kan läsa din sessionscookie eller röra TREK-sidan runt omkring.',
+    'Ett plugin körs som en egen låst process som bara kan läsa sina egna filer. Det kan inte läsa din databas, din inloggningshemlighet eller din krypteringsnyckel, kan inte starta andra program och kan inte skriva filer någonstans. Dess gränssnitt körs i en förseglad webbläsarram som inte kan läsa din sessionscookie eller röra TT-sidan runt omkring.',
   'admin.plugins.security.permsTitle': 'Vad behörigheterna betyder',
   'admin.plugins.security.permsBody':
-    'Behörigheterna som visas innan du installerar är en hård gräns som TREK upprätthåller medan pluginet körs — det kan bokstavligen inte göra något som inte står på listan. Men de talar om vad ett plugin kan göra, inte vad det faktiskt gör. Ett plugin som får läsa dina resor och nå en server kan skicka dina resor till den servern, så läs behörigheterna och de utgående värdarna, inte bara beskrivningen.',
+    'Behörigheterna som visas innan du installerar är en hård gräns som TT upprätthåller medan pluginet körs — det kan bokstavligen inte göra något som inte står på listan. Men de talar om vad ett plugin kan göra, inte vad det faktiskt gör. Ett plugin som får läsa dina resor och nå en server kan skicka dina resor till den servern, så läs behörigheterna och de utgående värdarna, inte bara beskrivningen.',
   'admin.plugins.security.limitsTitle': 'Vad vi inte kan lova',
   'admin.plugins.security.limitsBody':
-    'Isoleringen är en stark mjukvarugräns, men inte en absolut. Ett plugin agerar med exakt de rättigheter du godkänner, så inom dessa rättigheter kan det bete sig annorlunda än vad beskrivningen antyder, och det kan skicka data som det legitimt innehar till de värdar det har deklarerat. TREK läser eller bedömer inte vad ett plugins kod faktiskt gör.',
+    'Isoleringen är en stark mjukvarugräns, men inte en absolut. Ett plugin agerar med exakt de rättigheter du godkänner, så inom dessa rättigheter kan det bete sig annorlunda än vad beskrivningen antyder, och det kan skicka data som det legitimt innehar till de värdar det har deklarerat. TT läser eller bedömer inte vad ett plugins kod faktiskt gör.',
   'admin.plugins.security.worstTitle': 'Värsta tänkbara fall',
   'admin.plugins.security.worstBody':
     'Ett fientligt plugin som du aktiverar kan missbruka de data och anslutningar du har gett det — till exempel läcka de resor det får läsa. Det kan inte stjäla lösenord, förfalska en administratörsinloggning, köra kommandon på din server eller nå data som du inte har beviljat. Skadan håller sig inom det du har godkänt, och att stänga av pluginet stoppar det.',
   'admin.plugins.security.reviewedTitle': 'Vad ”Granskad” betyder',
   'admin.plugins.security.reviewedBody':
-    'Ett granskat plugin har manuellt skannats efter skadlig kod av en TREK-underhållare i varje version — kontrollerat för fientlig kod, inte för om det fungerar bra. Det är inget löfte om att pluginet är ofarligt.',
+    'Ett granskat plugin har manuellt skannats efter skadlig kod av en TT-underhållare i varje version — kontrollerat för fientlig kod, inte för om det fungerar bra. Det är inget löfte om att pluginet är ofarligt.',
   'admin.plugins.security.signedTitle': 'Vad ”Signerad” betyder',
   'admin.plugins.security.signedBody':
-    'Kontrollsumman som TREK verifierar vid varje installation bevisar att filerna är exakt det som registret går i god för. En signatur bevisar något annat: att de kommer från upphovspersonen, signerade med en nyckel som bara hen har. Ett signerat plugin har båda delarna. Ett osignerat är inte osäkert — det bär helt enkelt en garanti mindre, och de flesta plugins i registret är osignerade i dag.',
+    'Kontrollsumman som TT verifierar vid varje installation bevisar att filerna är exakt det som registret går i god för. En signatur bevisar något annat: att de kommer från upphovspersonen, signerade med en nyckel som bara hen har. Ett signerat plugin har båda delarna. Ett osignerat är inte osäkert — det bär helt enkelt en garanti mindre, och de flesta plugins i registret är osignerade i dag.',
   'admin.plugins.signed': 'Signerad',
   'admin.plugins.signedHint': 'Verifierad mot upphovspersonens signeringsnyckel när den installerades',
   'admin.plugins.unsigned': 'Osignerad',
@@ -535,20 +535,20 @@ const admin: TranslationStrings = {
   'admin.plugins.sig.invalidBody':
     'Filerna stämmer inte med upphovspersonens signatur. De är inte det som upphovspersonen signerade — antingen har de skadats eller så har någon manipulerat dem. Detta går inte att förbigå.',
   'admin.plugins.sig.missingBody':
-    'Det här pluginet var signerat när du installerade det, men den nya versionen levereras utan signatur. TREK accepterar inte den försämringen i tysthet. Detta går inte att förbigå.',
+    'Det här pluginet var signerat när du installerade det, men den nya versionen levereras utan signatur. TT accepterar inte den försämringen i tysthet. Detta går inte att förbigå.',
   'admin.plugins.sig.incompleteBody':
     'Registerposten är halvsignerad: den anger en upphovspersonsnyckel men versionen bär ingen signatur (eller tvärtom). Det är ett misstag på pluginets sida. Detta går inte att förbigå.',
   'admin.plugins.sig.pinnedKey': 'Nyckeln det installerades med',
   'admin.plugins.sig.newKey': 'Nyckeln det erbjuder nu',
   'admin.plugins.sig.confirmOutOfBand':
-    'TREK kan inte skilja ett legitimt nyckelbyte från en kapning — härifrån ser de identiska ut. Bekräfta den nya nyckeln med upphovspersonen via en kanal du redan litar på innan du accepterar den. När du gör det uppdateras pluginet och den nya nyckeln sparas.',
+    'TT kan inte skilja ett legitimt nyckelbyte från en kapning — härifrån ser de identiska ut. Bekräfta den nya nyckeln med upphovspersonen via en kanal du redan litar på innan du accepterar den. När du gör det uppdateras pluginet och den nya nyckeln sparas.',
   'admin.plugins.sig.retrustConfirm': 'Lita på den nya nyckeln och uppdatera',
   'admin.plugins.sig.cancel': 'Lita inte på den',
   'admin.plugins.sig.consentUnsigned':
     'Ingenting knyter den här versionen till sin upphovsperson — filerna stämmer med registret, men de bär ingen signatur från upphovspersonen.',
   'admin.plugins.security.trustTitle': 'Sammanfattningsvis',
   'admin.plugins.security.trustBody':
-    'Att installera ett plugin är som att installera vilken tredjepartsapp som helst: lägg bara till kod från upphovspersoner du litar på, och granska det själv först om du är osäker. TREK tar inget ansvar för tredjepartsplugins.',
+    'Att installera ett plugin är som att installera vilken tredjepartsapp som helst: lägg bara till kod från upphovspersoner du litar på, och granska det själv först om du är osäker. TT tar inget ansvar för tredjepartsplugins.',
   'admin.plugins.runtimeOn': 'Körmiljö på',
   'admin.plugins.tabDiscover': 'Upptäck',
   'admin.plugins.searchPlaceholder': 'Sök plugins…',
@@ -637,15 +637,15 @@ const admin: TranslationStrings = {
   'admin.plugins.installAnyway': 'Installera ändå',
   'admin.plugins.rangeBypass.pill': 'Versionskontroller av',
   'admin.plugins.rangeBypass.pillHint':
-    'TREK_PLUGINS_IGNORE_TREK_RANGE är satt — plugin kan installeras och köras utanför de TREK-versioner deras upphovspersoner angett',
-  'admin.plugins.rangeBypass.title': 'Utanför de TREK-versioner som stöds',
-  'admin.plugins.rangeBypass.noticeTitle': 'Installerat utanför de TREK-versioner som stöds',
+    'TREK_PLUGINS_IGNORE_TREK_RANGE är satt — plugin kan installeras och köras utanför de TT-versioner deras upphovspersoner angett',
+  'admin.plugins.rangeBypass.title': 'Utanför de TT-versioner som stöds',
+  'admin.plugins.rangeBypass.noticeTitle': 'Installerat utanför de TT-versioner som stöds',
   'admin.plugins.rangeBypass.body':
-    '”{name}” anger stöd för TREK {range}, och den här servern kör {host}. TREK släpper igenom det bara för att TREK_PLUGINS_IGNORE_TREK_RANGE är satt. Upphovspersonen har inte uppdaterat pluginets versionsintervall för den här TREK-versionen, så det finns ingen garanti att det fungerar — och i sällsynta fall kan ett plugin som inte passar skada TREK-data. Fortsätt bara om du accepterar den risken.',
+    '”{name}” anger stöd för TT {range}, och den här servern kör {host}. TT släpper igenom det bara för att TREK_PLUGINS_IGNORE_TREK_RANGE är satt. Upphovspersonen har inte uppdaterat pluginets versionsintervall för den här TT-versionen, så det finns ingen garanti att det fungerar — och i sällsynta fall kan ett plugin som inte passar skada TT-data. Fortsätt bara om du accepterar den risken.',
   'admin.plugins.rangeBypass.bodyUnknown':
-    '”{name}” anger inte vilka TREK-versioner det stöder; den här servern kör {host}. TREK släpper igenom det bara för att TREK_PLUGINS_IGNORE_TREK_RANGE är satt. Inget tyder på att upphovspersonen har testat det på den här TREK-versionen, så det finns ingen garanti att det fungerar — och i sällsynta fall kan ett plugin som inte passar skada TREK-data. Fortsätt bara om du accepterar den risken.',
-  'admin.plugins.dep.trekBypassed': 'Utanför sitt TREK-intervall ({range}) — versionskontroller av',
-  'admin.plugins.dep.trekBypassedUnknown': 'Anger inget TREK-intervall — versionskontroller av',
+    '”{name}” anger inte vilka TT-versioner det stöder; den här servern kör {host}. TT släpper igenom det bara för att TREK_PLUGINS_IGNORE_TREK_RANGE är satt. Inget tyder på att upphovspersonen har testat det på den här TT-versionen, så det finns ingen garanti att det fungerar — och i sällsynta fall kan ett plugin som inte passar skada TT-data. Fortsätt bara om du accepterar den risken.',
+  'admin.plugins.dep.trekBypassed': 'Utanför sitt TT-intervall ({range}) — versionskontroller av',
+  'admin.plugins.dep.trekBypassedUnknown': 'Anger inget TT-intervall — versionskontroller av',
   'admin.plugins.incompatible': 'Inkompatibel',
   'admin.plugins.accessTitle': 'Vad det har åtkomst till',
   'admin.plugins.connectsTitle': 'Ansluter till',
@@ -657,7 +657,7 @@ const admin: TranslationStrings = {
   'admin.plugins.metaReviewed': 'Granskad',
   'admin.plugins.downloads': 'Nedladdningar',
   'admin.addons.title': 'Tillägg',
-  'admin.addons.subtitle': 'Aktivera eller inaktivera funktioner för att anpassa din TREK-upplevelse.',
+  'admin.addons.subtitle': 'Aktivera eller inaktivera funktioner för att anpassa din TT-upplevelse.',
   'admin.addons.catalog.packing.name': 'Listor',
   'admin.addons.catalog.packing.description': 'Packlistor och saker att göra inför dina resor',
   'admin.addons.catalog.budget.name': 'Kostnader',
@@ -758,14 +758,14 @@ const admin: TranslationStrings = {
   'admin.github.loading': 'Laddar...',
   'admin.github.error': 'Det gick inte att ladda utgåvorna',
   'admin.github.by': 'av',
-  'admin.github.support': 'Hjälper mig att fortsätta bygga TREK',
+  'admin.github.support': 'Hjälper mig att fortsätta bygga TT',
   'admin.update.available': 'Uppdatering tillgänglig',
-  'admin.update.text': 'TREK {version} finns tillgängligt. Du kör {current}.',
+  'admin.update.text': 'TT {version} finns tillgängligt. Du kör {current}.',
   'admin.update.button': 'Visa på GitHub',
   'admin.update.install': 'Installera uppdatering',
   'admin.update.confirmTitle': 'Ska uppdateringen installeras?',
   'admin.update.confirmText':
-    'TREK kommer att uppdateras från {current} till {version}. Servern startas om automatiskt därefter.',
+    'TT kommer att uppdateras från {current} till {version}. Servern startas om automatiskt därefter.',
   'admin.update.dataInfo':
     'Alla dina data (resor, användare, API-nycklar, uppladdningar, Vacay, Atlas, budgetar) kommer att bevaras.',
   'admin.update.warning': 'Appen kommer att vara tillfälligt otillgänglig under omstarten.',
@@ -777,9 +777,9 @@ const admin: TranslationStrings = {
   'admin.update.backupLink': 'Gå till Säkerhetskopiering',
   'admin.update.howTo': 'Så här uppdaterar du',
   'admin.update.dockerText':
-    'Din TREK-instans körs i Docker. För att uppdatera till {version} kör du följande kommandon på din server:',
+    'Din TT-instans körs i Docker. För att uppdatera till {version} kör du följande kommandon på din server:',
   'admin.update.nonDockerText':
-    'Denna TREK-instans körs inte i Docker. För att uppdatera till {version}, kör installations- eller uppdateringsmetod du använde på nytt — till exempel, i Proxmox Community Scripts kör du uppdateringen från LXC-konsolen:',
+    'Denna TT-instans körs inte i Docker. För att uppdatera till {version}, kör installations- eller uppdateringsmetod du använde på nytt — till exempel, i Proxmox Community Scripts kör du uppdateringen från LXC-konsolen:',
   'admin.update.wikiLink': 'Öppna uppdateringsguiden',
   'admin.update.reloadHint': 'Vänligen uppdatera sidan om några sekunder.',
   'admin.tabs.permissions': 'Behörigheter',

@@ -39,7 +39,7 @@ const settings: TranslationStrings = {
   'settings.mapCartoKeyHint': 'Bản đồ nền CARTO hiển thị hình mờ nếu không có khóa. Miễn phí, không cần tài khoản, từ',
   'settings.mapCartoKeyLink': 'khóa API bản đồ nền carto.com',
   'settings.mapCartoKeyMissing':
-    'Mẫu này là bản đồ nền CARTO. Không có khóa, CARTO in "API KEY REQUIRED" lên mọi ô bản đồ. Cho đến khi bạn nhập khóa, TREK hiển thị bản đồ nền mặc định.',
+    'Mẫu này là bản đồ nền CARTO. Không có khóa, CARTO in "API KEY REQUIRED" lên mọi ô bản đồ. Cho đến khi bạn nhập khóa, TT hiển thị bản đồ nền mặc định.',
   'settings.mapStyle': 'Kiểu bản đồ',
   'settings.mapStylePlaceholder': 'Chọn kiểu Mapbox',
   'settings.mapStyleHint': 'Đặt trước hoặc của riêng bạn mapbox://styles/USER/ID URL',
@@ -234,13 +234,13 @@ const settings: TranslationStrings = {
   'settings.about.featureRequestHint': 'Đề xuất tính năng mới',
   'settings.about.wikiHint': 'Tài liệu & hướng dẫn',
   'settings.about.descriptionManaged':
-    'TREK helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
+    'TT helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'TREK is open source, licensed AGPL-3.0',
   'settings.about.supporters.badge': 'Người ủng hộ hàng tháng',
-  'settings.about.supporters.title': 'Bạn đồng hành cho TREK',
+  'settings.about.supporters.title': 'Bạn đồng hành cho TT',
   'settings.about.supporters.subtitle':
-    'Trong khi bạn đang lên kế hoạch cho lộ trình tiếp theo của mình, những người này đang giúp lập kế hoạch cho tương lai của TREK. Đóng góp hàng tháng của họ được đổ thẳng vào hoạt động phát triển và số giờ thực tế được sử dụng — vì vậy TREK vẫn là Nguồn mở.',
+    'Trong khi bạn đang lên kế hoạch cho lộ trình tiếp theo của mình, những người này đang giúp lập kế hoạch cho tương lai của TT. Đóng góp hàng tháng của họ được đổ thẳng vào hoạt động phát triển và số giờ thực tế được sử dụng — vì vậy TT vẫn là Nguồn mở.',
   'settings.about.supporters.since': 'ủng hộ kể từ {date}',
   'settings.about.supporters.tierEmpty': 'Hãy là người đầu tiên',
   'settings.about.supporter.tier.noReturnTicket': 'Không có vé khứ hồi',
@@ -249,7 +249,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Khách du lịch tiết kiệm',
   'settings.about.supporter.tier.hostelBunkmate': 'Nhà nghỉ bạn cùng phòng',
   'settings.about.description':
-    'TREK là công cụ lập kế hoạch du lịch tự lưu trữ giúp bạn tổ chức các chuyến đi của mình từ ý tưởng đầu tiên đến kỷ niệm cuối cùng. Lập kế hoạch trong ngày, ngân sách, danh sách đóng gói, ảnh và nhiều nội dung khác — tất cả đều ở cùng một nơi, trên máy chủ của riêng bạn.',
+    'TT là công cụ lập kế hoạch du lịch tự lưu trữ giúp bạn tổ chức các chuyến đi của mình từ ý tưởng đầu tiên đến kỷ niệm cuối cùng. Lập kế hoạch trong ngày, ngân sách, danh sách đóng gói, ảnh và nhiều nội dung khác — tất cả đều ở cùng một nơi, trên máy chủ của riêng bạn.',
   'settings.about.madeWith': 'Được làm bằng',
   'settings.about.madeBy': 'của cộng đồng nguồn mở đang phát triển.',
   'settings.username': 'Tên người dùng',
@@ -355,7 +355,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': 'Chỉ kích hoạt cho một phiên bản đáng tin cậy trên mạng của riêng bạn.',
   'settings.airtrail.writeBack': 'Viết các thay đổi trở lại AirTrail',
   'settings.airtrail.writeBackHint':
-    'Tắt theo mặc định: AirTrail là nguồn sự thật và TREK chỉ đọc từ đó. Bật để đẩy các chỉnh sửa được thực hiện trong TREK trở lại AirTrail.',
+    'Tắt theo mặc định: AirTrail là nguồn sự thật và TT chỉ đọc từ đó. Bật để đẩy các chỉnh sửa được thực hiện trong TT trở lại AirTrail.',
   'settings.airtrail.connected': 'Đã kết nối',
   'settings.airtrail.notConnected': 'Không được kết nối',
   'settings.airtrail.toast.saved': 'AirTrail đã lưu kết nối',
@@ -467,7 +467,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': 'Bảng điều khiển',
   'settings.startPageActiveTrip': 'Chuyến đi đang diễn ra',
   'settings.startPageHint':
-    'TREK mở thẳng chuyến đi đang diễn ra, nếu không thì chuyến gần nhất sắp tới. Đó cũng là chuyến mà bảng điều khiển làm nổi bật.',
+    'TT mở thẳng chuyến đi đang diễn ra, nếu không thì chuyến gần nhất sắp tới. Đó cũng là chuyến mà bảng điều khiển làm nổi bật.',
   'settings.startTripTab': 'Tab khởi động',
   'settings.startTripTabHint':
     'Tab mà chuyến đi mở ra. Nếu tab đó thuộc tiện ích đã tắt, chế độ xem kế hoạch sẽ mở thay thế.',

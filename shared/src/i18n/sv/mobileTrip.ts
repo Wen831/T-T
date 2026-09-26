@@ -59,7 +59,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'Kartan visar hela resan. Tryck på en dag ovanför för att se dess körning.',
   'mobileTrip.rtNoneAhead': 'Inget på vägen framför dig. Prova hela etappen.',
   'mobileTrip.rtNoneOnStage': 'Inget sådant längs den här etappen.',
-  'mobileTrip.rtPlanOnDesktop': 'Planeringen sker på datorn. TREK räknar ut körningen så snart en dag har två platser.',
+  'mobileTrip.rtPlanOnDesktop': 'Planeringen sker på datorn. TT räknar ut körningen så snart en dag har två platser.',
   'mobileTrip.rtReach': 'Hur långt',
   'mobileTrip.rtReachAhead': '{distance} framåt',
   'mobileTrip.rtSearchOffline': 'Kräver anslutning: sökningen läser rutten som ligger framför dig.',

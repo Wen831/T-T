@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'Az előtted lévő úton nincs semmi. Próbáld az egész szakaszt.',
   'mobileTrip.rtNoneOnStage': 'Ezen a szakaszon nincs ilyesmi.',
   'mobileTrip.rtPlanOnDesktop':
-    'A tervezés asztali gépen történik. Amint egy napon két hely szerepel, a TREK kiszámolja az útvonalat.',
+    'A tervezés asztali gépen történik. Amint egy napon két hely szerepel, a TT kiszámolja az útvonalat.',
   'mobileTrip.rtReach': 'Meddig',
   'mobileTrip.rtReachAhead': '{distance} előre',
   'mobileTrip.rtSearchOffline': 'Internetkapcsolat kell hozzá: a keresés az előtted lévő útvonalat olvassa be.',

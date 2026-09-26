@@ -254,7 +254,7 @@ describe('MAdminSheets', () => {
     expect(screen.getByText(/docker pull ghcr\.io\/bhxnms\/tt-planner:latest/)).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Your TREK instance runs in Docker. To update to v3.5.0, run the following commands on your server:'
+        'Your TT instance runs in Docker. To update to v3.5.0, run the following commands on your server:'
       )
     ).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /update guide/ })).not.toBeInTheDocument();

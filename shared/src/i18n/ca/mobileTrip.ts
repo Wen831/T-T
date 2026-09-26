@@ -60,7 +60,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneAhead': 'No hi ha res a la carretera que tens al davant. Prova tota l’etapa.',
   'mobileTrip.rtNoneOnStage': 'No hi ha res d’aquest tipus al llarg d’aquesta etapa.',
   'mobileTrip.rtPlanOnDesktop':
-    'La planificació es fa a l’escriptori. TREK calcula el trajecte quan un dia té dos llocs.',
+    'La planificació es fa a l’escriptori. TT calcula el trajecte quan un dia té dos llocs.',
   'mobileTrip.rtReach': 'Fins on',
   'mobileTrip.rtReachAhead': '{distance} per endavant',
   'mobileTrip.rtSearchOffline': 'Cal connexió: la cerca llegeix la ruta que tens per endavant.',

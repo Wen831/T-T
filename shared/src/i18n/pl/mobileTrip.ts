@@ -59,7 +59,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'Mapa pokazuje całą podróż. Dotknij dnia powyżej, aby zobaczyć jego trasę.',
   'mobileTrip.rtNoneAhead': 'Na drodze przed tobą nic nie ma. Spróbuj całego etapu.',
   'mobileTrip.rtNoneOnStage': 'Na tym etapie nie ma nic takiego.',
-  'mobileTrip.rtPlanOnDesktop': 'Planowanie odbywa się na komputerze. TREK wylicza przejazd, gdy dzień ma dwa miejsca.',
+  'mobileTrip.rtPlanOnDesktop': 'Planowanie odbywa się na komputerze. TT wylicza przejazd, gdy dzień ma dwa miejsca.',
   'mobileTrip.rtReach': 'Jak daleko',
   'mobileTrip.rtReachAhead': '{distance} przed tobą',
   'mobileTrip.rtSearchOffline': 'Wymaga połączenia: wyszukiwanie czyta trasę przed tobą.',

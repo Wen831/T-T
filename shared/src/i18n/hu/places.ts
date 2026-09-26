@@ -106,7 +106,7 @@ const places: TranslationStrings = {
   'places.details.nothing': 'Ehhez a helyhez nem található semmi.',
   'places.details.noKeyTitle': 'További részletek érhetők el',
   'places.details.noKeyHint':
-    'Google API-kulcs nélkül ez a példány csak szabad forrásokat használ. Kérd a TREK rendszergazdáját, hogy adjon hozzá egyet az értékelésekhez, nyitvatartáshoz és fotókhoz.',
+    'Google API-kulcs nélkül ez a példány csak szabad forrásokat használ. Kérd a TT rendszergazdáját, hogy adjon hozzá egyet az értékelésekhez, nyitvatartáshoz és fotókhoz.',
   'places.details.aboutBrand': 'A láncról',
   'places.details.aboutBrandNote': 'A láncot írja le, nem ezt az egységet.',
   'places.details.fact.rating': 'Értékelés',
@@ -136,7 +136,7 @@ const places: TranslationStrings = {
   'places.imageRemoveError': 'Nem sikerült eltávolítani a képet',
   'places.searchProvider': 'Keresés:',
   'places.searchProviderAmap': 'AMap',
-  'places.searchProviderNative': 'TREK',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;

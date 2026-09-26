@@ -26,7 +26,7 @@ const notif: TranslationStrings = {
   'notif.packing_tagged.title': 'Задание для упаковки',
   'notif.packing_tagged.text': '{actor} назначил вас в {category} в {trip}',
   'notif.version_available.title': 'Доступна новая версия',
-  'notif.version_available.text': 'TREK {version} теперь доступен',
+  'notif.version_available.text': 'TT {version} теперь доступен',
   'notif.replica_failure.title': 'Сбой реплики хранилища',
   'notif.replica_failure.text': "Ошибка записи в реплику '{backend}': {op} для {key} — {error}",
   'notif.replica_failure.textSuppressed':

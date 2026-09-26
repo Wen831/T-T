@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': 'Напоминания о поездках отключены. Включите их в Админ > Настройки > Уведомления.',
   'trips.importTrekTab': 'Импорт из TREK',
   'trips.importTrekIntro':
-    'Загрузите резервную копию TREK (.zip) и выберите поездки для копирования в TT — дни, места, брони, бюджет и фото приедут вместе с ними.',
+    'Загрузите резервную копию TT (.zip) и выберите поездки для копирования в TT — дни, места, брони, бюджет и фото приедут вместе с ними.',
   'trips.importTrekPick': 'Выбрать резервную копию TREK (.zip)',
   'trips.importTrekScanning': 'Чтение копии…',
   'trips.importTrekImport': 'Импортировать выбранные поездки',

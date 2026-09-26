@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': '旅行提醒已禁用。请在管理 > 设置 > 通知中启用。',
   'trips.importTrekTab': '从TREK导入',
   'trips.importTrekIntro':
-    '上传 TREK 备份文件（.zip），选择要复制到 TT 的旅行——天数、地点、预订、预算和照片会一并带过来。',
+    '上传 TT 备份文件（.zip），选择要复制到 TT 的旅行——天数、地点、预订、预算和照片会一并带过来。',
   'trips.importTrekPick': '选择 TREK 备份文件（.zip）',
   'trips.importTrekScanning': '正在读取备份…',
   'trips.importTrekImport': '导入选中旅行',

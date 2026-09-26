@@ -159,6 +159,6 @@ export function bypassedRange(range: string | null | undefined): TrekRangeBypass
 export function warnRangeBypass(id: string, b: TrekRangeBypass): void {
   const declared = b.trekRange ? `declares TREK ${b.trekRange}` : 'declares no TREK version range';
   console.warn(
-    `[plugins] ${id} ${declared} — this is TREK ${b.hostVersion}; continuing because TREK_PLUGINS_IGNORE_TREK_RANGE is set. The author has not verified it on this version: it may not work, and it could corrupt TREK data.`,
+    `[plugins] ${id} ${declared} — this is TT ${b.hostVersion}; continuing because TREK_PLUGINS_IGNORE_TREK_RANGE is set. The author has not verified it on this version: it may not work, and it could corrupt TT data.`,
   );
 }

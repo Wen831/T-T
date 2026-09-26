@@ -59,7 +59,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'De kaart toont de hele reis. Tik hierboven op een dag om de rit te zien.',
   'mobileTrip.rtNoneAhead': 'Niets op de weg die voor je ligt. Probeer de hele etappe.',
   'mobileTrip.rtNoneOnStage': 'Niets van dat soort langs deze etappe.',
-  'mobileTrip.rtPlanOnDesktop': 'Plannen doe je op de desktop. TREK berekent de rit zodra een dag twee plaatsen heeft.',
+  'mobileTrip.rtPlanOnDesktop': 'Plannen doe je op de desktop. TT berekent de rit zodra een dag twee plaatsen heeft.',
   'mobileTrip.rtReach': 'Hoe ver',
   'mobileTrip.rtReachAhead': '{distance} vooruit',
   'mobileTrip.rtSearchOffline': 'Vereist een verbinding: de zoekopdracht leest de route die voor je ligt.',

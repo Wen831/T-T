@@ -39,7 +39,7 @@ const settings: TranslationStrings = {
     'CARTO temel haritaları anahtar olmadan filigran gösterir. Ücretsiz, hesap gerekmez, kaynağı:',
   'settings.mapCartoKeyLink': 'carto.com temel harita API anahtarı',
   'settings.mapCartoKeyMissing':
-    'Bu şablon bir CARTO temel haritası. Anahtar olmadan CARTO her karoya "API KEY REQUIRED" damgası basar. Anahtar girilene kadar TREK varsayılan temel haritayı gösterir.',
+    'Bu şablon bir CARTO temel haritası. Anahtar olmadan CARTO her karoya "API KEY REQUIRED" damgası basar. Anahtar girilene kadar TT varsayılan temel haritayı gösterir.',
   'settings.mapStyle': 'Harita Stili',
   'settings.mapStylePlaceholder': 'Bir Mapbox stili seçin',
   'settings.mapStyleHint': 'Ön ayar veya kendi mapbox://styles/KULLANICI/ID adresiniz',
@@ -219,13 +219,13 @@ const settings: TranslationStrings = {
   'settings.about.featureRequestHint': 'Yeni bir özellik önerin',
   'settings.about.wikiHint': 'Belgeler ve kılavuzlar',
   'settings.about.descriptionManaged':
-    'TREK helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
+    'TT helps you organize your trips from the first idea to the last memory. Day planning, budget, packing lists, photos and much more — all in one place.',
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'TREK is open source, licensed AGPL-3.0',
   'settings.about.supporters.badge': 'Aylık Destekçiler',
-  'settings.about.supporters.title': 'TREK için seyahat Arkadaşları',
+  'settings.about.supporters.title': 'TT için seyahat Arkadaşları',
   'settings.about.supporters.subtitle':
-    "While you're planning your next route, these folks are helping plan TREK's future. Their monthly contribution goes straight into development and real hours spent — so TREK stays Open Source.",
+    "While you're planning your next route, these folks are helping plan TT's future. Their monthly contribution goes straight into development and real hours spent — so TT stays Open Source.",
   'settings.about.supporters.since': '{date} tarihinden beri destekçimiz',
   'settings.about.supporters.tierEmpty': 'İlk olun',
   'settings.about.supporter.tier.noReturnTicket': 'Dönüş Bileti Yok',
@@ -234,7 +234,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Bütçe Gezgini',
   'settings.about.supporter.tier.hostelBunkmate': 'Hostel Yatakhane Arkadaşı',
   'settings.about.description':
-    'TREK, seyahatlerinizi ilk fikirden son anıya kadar organize etmenize yardımcı olan, kendi kendine barındırılan bir seyahat planlayıcıdır. Gün planlaması, bütçe, paketleme listeleri, fotoğraflar ve çok daha fazlası; hepsi tek bir yerde, kendi sunucunuzda.',
+    'TT, seyahatlerinizi ilk fikirden son anıya kadar organize etmenize yardımcı olan, kendi kendine barındırılan bir seyahat planlayıcıdır. Gün planlaması, bütçe, paketleme listeleri, fotoğraflar ve çok daha fazlası; hepsi tek bir yerde, kendi sunucunuzda.',
   'settings.about.madeWith': 'İle yapıldı',
   'settings.about.madeBy': 'büyüyen bir açık kaynak topluluğu tarafından.',
   'settings.username': 'Kullanıcı adı',
@@ -350,7 +350,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': 'Yalnızca kendi ağınızdaki güvenilir bir örnek için etkinleştirin.',
   'settings.airtrail.writeBack': 'Değişiklikleri AirTrail’e geri yaz',
   'settings.airtrail.writeBackHint':
-    'Varsayılan olarak kapalı: AirTrail asıl kaynaktır ve TREK yalnızca okur. TREK’te yapılan değişiklikleri AirTrail’e geri göndermek için açın.',
+    'Varsayılan olarak kapalı: AirTrail asıl kaynaktır ve TT yalnızca okur. TT’te yapılan değişiklikleri AirTrail’e geri göndermek için açın.',
   'settings.airtrail.connected': 'Bağlandı',
   'settings.airtrail.notConnected': 'Bağlı değil',
   'settings.airtrail.toast.saved': 'AirTrail bağlantısı kaydedildi',
@@ -463,7 +463,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': 'Pano',
   'settings.startPageActiveTrip': 'Aktif seyahat',
   'settings.startPageHint':
-    'TREK doğrudan devam eden seyahati, yoksa sıradaki seyahati açar. Panonun öne çıkardığı seyahatin aynısı.',
+    'TT doğrudan devam eden seyahati, yoksa sıradaki seyahati açar. Panonun öne çıkardığı seyahatin aynısı.',
   'settings.startTripTab': 'Başlangıç sekmesi',
   'settings.startTripTabHint':
     'Seyahatin açılacağı sekme. Kapalı bir eklentiye aitse onun yerine plan görünümü açılır.',

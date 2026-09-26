@@ -33,7 +33,7 @@ const trip: TranslationStrings = {
   'trip.loadingSteps.arrive': 'Już prawie na miejscu...',
   'trip.invite.linkTitle': 'Link zaproszenia do podróży',
   'trip.invite.linkHint':
-    'Każda osoba z kontem TREK, która otworzy ten link, dołączy do podróży jako członek. Wygeneruj ponownie, aby unieważnić stary link.',
+    'Każda osoba z kontem TT, która otworzy ten link, dołączy do podróży jako członek. Wygeneruj ponownie, aby unieważnić stary link.',
   'trip.invite.create': 'Utwórz link zaproszenia',
   'trip.invite.regenerate': 'Wygeneruj ponownie',
   'trip.invite.disable': 'Wyłącz',

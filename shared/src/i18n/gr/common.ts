@@ -72,7 +72,7 @@ const common: TranslationStrings = {
   'common.errorReload': 'Επαναφόρτωση σελίδας',
   'common.errorUpdateTitle': 'Διατίθεται νέα έκδοση',
   'common.errorUpdateBody':
-    'Το TREK ενημερώθηκε ενώ αυτή η καρτέλα ήταν ανοιχτή. Κάντε επαναφόρτωση για τη νέα έκδοση.',
+    'Το TT ενημερώθηκε ενώ αυτή η καρτέλα ήταν ανοιχτή. Κάντε επαναφόρτωση για τη νέα έκδοση.',
   'common.errorPluginTitle': 'Δεν ήταν δυνατή η εμφάνιση αυτού του πρόσθετου',
   'common.errorOccurred': 'Κάτι πήγε στραβά',
   'common.remove': 'Αφαίρεση',

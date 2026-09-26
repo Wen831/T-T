@@ -58,7 +58,7 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoDayHint': 'تعرض الخريطة الرحلة كاملة. اضغط على يوم في الأعلى لعرض مسيره.',
   'mobileTrip.rtNoneAhead': 'لا شيء على الطريق أمامك. جرّب المرحلة كاملة.',
   'mobileTrip.rtNoneOnStage': 'لا شيء من هذا النوع على طول هذه المرحلة.',
-  'mobileTrip.rtPlanOnDesktop': 'يتم التخطيط على سطح المكتب. يحسب TREK القيادة بمجرد أن يضم اليوم مكانين.',
+  'mobileTrip.rtPlanOnDesktop': 'يتم التخطيط على سطح المكتب. يحسب TT القيادة بمجرد أن يضم اليوم مكانين.',
   'mobileTrip.rtReach': 'إلى أي مدى',
   'mobileTrip.rtReachAhead': '{distance} أمامك',
   'mobileTrip.rtSearchOffline': 'يلزم اتصال بالإنترنت: يقرأ البحث المسار الذي أمامك.',

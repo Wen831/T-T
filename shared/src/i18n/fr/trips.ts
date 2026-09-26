@@ -15,7 +15,7 @@ const trips: TranslationStrings = {
     'Les rappels de voyage sont désactivés. Activez-les dans Admin > Paramètres > Notifications.',
   'trips.importTrekTab': 'Importer depuis TREK',
   'trips.importTrekIntro':
-    'Téléversez une sauvegarde TREK (.zip) et choisissez les voyages à copier dans TT — jours, lieux, réservations, budget et photos inclus.',
+    'Téléversez une sauvegarde TT (.zip) et choisissez les voyages à copier dans TT — jours, lieux, réservations, budget et photos inclus.',
   'trips.importTrekPick': 'Choisir une sauvegarde TREK (.zip)',
   'trips.importTrekScanning': 'Lecture de la sauvegarde…',
   'trips.importTrekImport': 'Importer les voyages sélectionnés',

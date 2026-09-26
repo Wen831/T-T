@@ -17,7 +17,7 @@ export function StudioWordmark({ style, title }: { style?: CSSProperties; title?
       viewBox="70 142 1362 470"
       fill="currentColor"
       role="img"
-      aria-label={title ?? 'TREK Studio'}
+      aria-label={title ?? 'TT Studio'}
       style={{ display: 'block', ...style }}
     >
       <defs>

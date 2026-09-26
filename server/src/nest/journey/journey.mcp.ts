@@ -356,7 +356,7 @@ export class JourneyMcp {
         'Defaults to private; "shared" and "public" expose the entry through the journey share link',
       ),
       type: ENTRY_TYPE.optional().describe(
-        'Defaults to "entry"; "skeleton" is the stub TREK derives from a trip place and hides behind the hide-skeletons preference',
+        'Defaults to "entry"; "skeleton" is the stub TT derives from a trip place and hides behind the hide-skeletons preference',
       ),
       sort_order: z.number().int().min(0).optional(),
     },

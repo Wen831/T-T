@@ -47,7 +47,7 @@ const settings: TranslationStrings = {
   'settings.mapCartoKeyHint': 'CARTO basemaps show a watermark without a key. Free, no account needed, from',
   'settings.mapCartoKeyLink': 'carto.com basemap API key',
   'settings.mapCartoKeyMissing':
-    'This template is a CARTO basemap. Without a key CARTO stamps "API KEY REQUIRED" onto every tile. Until you enter one, TREK shows the default basemap instead.',
+    'This template is a CARTO basemap. Without a key CARTO stamps "API KEY REQUIRED" onto every tile. Until you enter one, TT shows the default basemap instead.',
   'settings.mapStyle': 'Map Style',
   'settings.mapStylePlaceholder': 'Select a Mapbox style',
   'settings.mapStyleHint': 'Preset or your own mapbox://styles/USER/ID URL',
@@ -241,9 +241,9 @@ const settings: TranslationStrings = {
   'settings.about.sourceTitle': 'Source code',
   'settings.about.sourceHint': 'Tourism-Team is a personal fork based on TREK, licensed AGPL-3.0',
   'settings.about.supporters.badge': 'Monthly Supporters',
-  'settings.about.supporters.title': 'Travel companions for TREK',
+  'settings.about.supporters.title': 'Travel companions for TT',
   'settings.about.supporters.subtitle':
-    "While you're planning your next route, these folks are helping plan TREK's future. Their monthly contribution goes straight into development and real hours spent — so TREK stays Open Source.",
+    "While you're planning your next route, these folks are helping plan TT's future. Their monthly contribution goes straight into development and real hours spent — so TT stays Open Source.",
   'settings.about.supporters.since': 'supporter since {date}',
   'settings.about.supporters.tierEmpty': 'Be the first',
   'settings.about.supporter.tier.noReturnTicket': 'No Return Ticket',
@@ -356,7 +356,7 @@ const settings: TranslationStrings = {
   'settings.airtrail.allowInsecureTlsHint': 'Enable only for a trusted instance on your own network.',
   'settings.airtrail.writeBack': 'Write changes back to AirTrail',
   'settings.airtrail.writeBackHint':
-    'Off by default: AirTrail is the source of truth and TREK only reads from it. Turn on to push edits made in TREK back to AirTrail.',
+    'Off by default: AirTrail is the source of truth and TT only reads from it. Turn on to push edits made in TT back to AirTrail.',
   'settings.airtrail.connected': 'Connected',
   'settings.airtrail.notConnected': 'Not connected',
   'settings.airtrail.toast.saved': 'AirTrail connection saved',
@@ -467,7 +467,7 @@ const settings: TranslationStrings = {
   'settings.startPageDashboard': 'Dashboard',
   'settings.startPageActiveTrip': 'Active trip',
   'settings.startPageHint':
-    'TREK opens straight in the trip running today, or the next one coming up. That is the same trip the dashboard features.',
+    'TT opens straight in the trip running today, or the next one coming up. That is the same trip the dashboard features.',
   'settings.startTripTab': 'Start tab',
   'settings.startTripTabHint':
     'The tab the trip opens on. If it belongs to an addon you switched off, the plan view opens instead.',

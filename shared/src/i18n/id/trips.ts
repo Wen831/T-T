@@ -14,7 +14,7 @@ const trips: TranslationStrings = {
   'trips.reminderDisabledHint': 'Pengingat perjalanan dinonaktifkan. Aktifkan di Admin > Pengaturan > Notifikasi.',
   'trips.importTrekTab': 'Impor dari TREK',
   'trips.importTrekIntro':
-    'Unggah cadangan TREK (.zip) dan pilih perjalanan yang akan disalin ke TT — hari, tempat, pemesanan, anggaran, dan foto ikut serta.',
+    'Unggah cadangan TT (.zip) dan pilih perjalanan yang akan disalin ke TT — hari, tempat, pemesanan, anggaran, dan foto ikut serta.',
   'trips.importTrekPick': 'Pilih cadangan TREK (.zip)',
   'trips.importTrekScanning': 'Membaca cadangan…',
   'trips.importTrekImport': 'Impor perjalanan terpilih',

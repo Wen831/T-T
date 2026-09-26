@@ -88,7 +88,7 @@ const places: TranslationStrings = {
     'AMap position passcodes can only be opened in the AMap app. Use a share link instead.',
   'places.searchProvider': 'Search:',
   'places.searchProviderAmap': 'AMap',
-  'places.searchProviderNative': 'TREK',
+  'places.searchProviderNative': 'TT',
   'places.mapsSearchError': 'Place search failed.',
   'places.loadingDetails': 'Loading place details…',
   'places.osmHint':
@@ -108,7 +108,7 @@ const places: TranslationStrings = {
   'places.details.nothing': 'Nothing found for this place.',
   'places.details.noKeyTitle': 'More detail is available',
   'places.details.noKeyHint':
-    'Without a Google API key this instance can only use free sources. Ask your TREK administrator to add one for ratings, opening hours and photos.',
+    'Without a Google API key this instance can only use free sources. Ask your TT administrator to add one for ratings, opening hours and photos.',
   'places.details.aboutBrand': 'About the chain',
   'places.details.aboutBrandNote': 'This describes the chain, not this branch.',
   'places.details.fact.rating': 'Rating',
