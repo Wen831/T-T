@@ -143,9 +143,16 @@ export function applyViasAmap(
   const drawn = new Map<string, DrawnVia>();
   let currentHandlers = handlers;
 
-  if (!Marker || (zoom < AMAP_VIA_MIN_ZOOM && handlers.onMove)) {
-    return { count: 0, update() {}, clear() {} };
-  }
+  /**
+   * The zoom gate is evaluated on every update, never latched.
+   *
+   * It used to be checked once, at construction, and the manager built below the
+   * threshold was a no-op shell that `update` could never escape. The map mounts
+   * at zoom 5 — below the gate — so the manager was always that shell and no
+   * handle could ever appear, at any zoom.
+   */
+  const handlesHidden = (nextZoom: number, nextHandlers: AmapViaHandlers): boolean =>
+    !Marker || (nextZoom < AMAP_VIA_MIN_ZOOM && !!nextHandlers.onMove);
 
   const cancelHold = (entry: DrawnVia): void => {
     if (entry.timer !== null) window.clearTimeout(entry.timer);
@@ -242,7 +249,9 @@ export function applyViasAmap(
 
   const update = (nextVias: readonly RoadtripVia[], nextHandlers: AmapViaHandlers, nextZoom: number): void => {
     currentHandlers = nextHandlers;
-    if (nextZoom < AMAP_VIA_MIN_ZOOM && nextHandlers.onMove) {
+    // Re-read every time: the zoom changes under this manager, and a latched
+    // answer is what kept the handles off the map entirely.
+    if (handlesHidden(nextZoom, nextHandlers)) {
       for (const [key, entry] of drawn) removeEntry(key, entry);
       return;
     }

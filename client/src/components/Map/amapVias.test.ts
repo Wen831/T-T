@@ -282,3 +282,47 @@ describe('applyViasAmap — the marker content contract', () => {
     }
   });
 });
+
+
+describe('applyViasAmap — the zoom gate is not latched', () => {
+  it('FE-MAP-VIAAMAP-017: handles appear after the user zooms in past the gate', () => {
+    // The regression this pins, and the reason nothing was visible at all: the
+    // manager was constructed below the gate (the map mounts at zoom 5), returned
+    // a no-op shell, and `update` could never escape it. A later zoom in has to
+    // draw the handles that were asked for all along.
+    const { api, created } = fakeApi();
+    const onMove = vi.fn();
+    const manager = applyViasAmap(api, map, [via()], { onMove }, 5);
+    expect(created).toHaveLength(0);
+
+    manager.update([via()], { onMove }, 12);
+
+    expect(created).toHaveLength(1);
+    expect(manager.count).toBe(1);
+  });
+
+  it('FE-MAP-VIAAMAP-018: zooming back out takes them away again', () => {
+    const { api, created } = fakeApi();
+    const onMove = vi.fn();
+    const manager = applyViasAmap(api, map, [via()], { onMove }, 12);
+    expect(created).toHaveLength(1);
+
+    manager.update([via()], { onMove }, 5);
+
+    expect(manager.count).toBe(0);
+    expect(created[0].setMap).toHaveBeenLastCalledWith(null);
+  });
+
+  it('FE-MAP-VIAAMAP-019: a via added while zoomed in is drawn on the next update', () => {
+    // The ordinary path: the manager exists, the list grows, the handle appears.
+    const { api, created } = fakeApi();
+    const onMove = vi.fn();
+    const manager = applyViasAmap(api, map, [], { onMove }, 12);
+    expect(manager.count).toBe(0);
+
+    manager.update([via({ id: 11 })], { onMove }, 12);
+
+    expect(manager.count).toBe(1);
+    expect(created).toHaveLength(1);
+  });
+});

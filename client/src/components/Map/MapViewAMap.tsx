@@ -508,7 +508,12 @@ export function MapViewAMap(props: any) {
       }
     }
     return () => lines.forEach((l) => l.setMap(null));
-  }, [places, props.route, ready, props.onMarkerClick]);
+    // `onRouteClick` is a dependency, not just a callback: it arrives as undefined
+    // while permissions and the addon are still resolving, and the click band is
+    // only created when it is set. Leaving it out meant the band was never drawn
+    // on a map that mounted before the planner was ready, and no click could ever
+    // reach the handler.
+  }, [places, props.route, props.onRouteClick, ready, props.onMarkerClick]);
 
   useEffect(() => {
     if (props.tripId == null) {
