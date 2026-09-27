@@ -26,3 +26,18 @@
 *.eot  binary
 *.pdf  binary
 *.zip  binary
+
+# GPX test fixtures are byte-level inputs, not source.
+#
+# `* text=auto eol=lf` above rewrites them on the way in AND on the way out, so a
+# fixture cannot carry the bytes it exists to test. bom-crlf.gpx is a Windows
+# export — UTF-8 BOM plus CRLF — and collection-gpx.helpers.test.ts checks both
+# before using it ("the fixture must really be what it claims, or this case tests
+# nothing"). With the conversion active the CRLF is stripped at commit time, the
+# guard fails, and the case silently stops covering CRLF input.
+#
+# Both attributes have to be turned off: `-text` stops the content sniffing, but
+# the `eol=lf` inherited from the first line still rewrites line endings on its
+# own, so `-eol` is what actually keeps the bytes (`-text -eol` == binary to git
+# for this path, without pretending the file is unmergeable).
+*.gpx -text -eol
