@@ -1,6 +1,21 @@
 name: Deploy Wiki
 
 on:
+  # Restored: a wiki edit and its deployment are one change, not two.
+  #
+  # Running this only on demand is how the 0.8.0 documentation sat unpublished —
+  # the README linked New-Features, the page existed in wiki/, and GitHub
+  # redirected the link to the wiki home because the page was never deployed, so
+  # the reader got a "create this page" editor. Nothing was broken enough to fail;
+  # it just needed someone to remember to press a button, and twice nobody did.
+  #
+  # Scoped to the two paths that can change the output, so unrelated commits cost
+  # no runner time. The job itself is gated to this repository.
+  push:
+    branches: [main]
+    paths:
+      - "wiki/**"
+      - ".github/workflows/wiki.yml"
   workflow_dispatch:
 
 permissions:
