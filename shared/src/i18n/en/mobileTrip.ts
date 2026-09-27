@@ -61,6 +61,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'Nothing of that kind along this stage.',
   'mobileTrip.rtPlanOnDesktop': 'Planning happens on the desktop. TT works out the drive once a day has two places.',
   'mobileTrip.rtReach': 'How far',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} ahead',
   'mobileTrip.rtSearchOffline': 'Needs a connection: the search reads the route ahead.',
   'mobileTrip.rtStart': 'Start',

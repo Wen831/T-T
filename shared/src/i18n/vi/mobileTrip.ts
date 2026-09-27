@@ -62,6 +62,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtPlanOnDesktop':
     'Việc lên kế hoạch diễn ra trên máy tính. TT tính chặng lái xe ngay khi một ngày có hai địa điểm.',
   'mobileTrip.rtReach': 'Xa đến đâu',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} phía trước',
   'mobileTrip.rtSearchOffline': 'Cần có kết nối: việc tìm kiếm đọc lộ trình phía trước.',
   'mobileTrip.rtStart': 'Bắt đầu',

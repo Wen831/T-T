@@ -629,6 +629,12 @@ export const MapView = memo(function MapView({
    * traveller may not reshape the drive, in which case the line stays inert.
    */
   onRouteClick,
+  /**
+   * Core and casing per drive line, when the caller draws several days at once — the
+   * shape `dayColor()` returns, so a day reads the same colour as its card in the rail.
+   * Absent means the single blue the route has always been.
+   */
+  routeColors,
   routeVias = [],
   dawarichTrack = null,
   dawarichSelectedDate = null,
@@ -1079,7 +1085,13 @@ export const MapView = memo(function MapView({
                     <Polyline
                       key={`${i}-casing`}
                       positions={seg}
-                      pathOptions={{ color: '#0a5cc2', weight: 8, opacity: 1, lineCap: 'round', lineJoin: 'round' }}
+                      pathOptions={{
+                        color: routeColors?.[i]?.casing ?? '#0a5cc2',
+                        weight: 8,
+                        opacity: 1,
+                        lineCap: 'round',
+                        lineJoin: 'round',
+                      }}
                       interactive={!!onRouteClick}
                       eventHandlers={
                         onRouteClick
@@ -1097,7 +1109,13 @@ export const MapView = memo(function MapView({
                     <Polyline
                       key={`${i}-core`}
                       positions={seg}
-                      pathOptions={{ color: '#0a84ff', weight: 5, opacity: 1, lineCap: 'round', lineJoin: 'round' }}
+                      pathOptions={{
+                        color: routeColors?.[i]?.line ?? '#0a84ff',
+                        weight: 5,
+                        opacity: 1,
+                        lineCap: 'round',
+                        lineJoin: 'round',
+                      }}
                       interactive={false}
                     />,
                   ]

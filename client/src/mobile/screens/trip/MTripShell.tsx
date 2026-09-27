@@ -19,7 +19,7 @@ import { canManageDocSync } from '../../../components/Files/docsync/useDocSync';
 import { useDocSyncOffered } from '../../../components/Files/docsync/useDocSyncOffered';
 import { findEntryDayId, findFocusDayId } from '../../../components/Planner/today';
 import { dayTintBackground, usePluginDayTints } from '../../../components/Plugins/PluginDaySchedule';
-import type { CorridorReach } from '../../../components/Roadtrip/corridorSearchModel';
+import { PHONE_REACH_KM, type CorridorReach, type PhoneReachKm } from '../../../components/Roadtrip/corridorSearchModel';
 import { useTripPlanner } from '../../../pages/tripPlanner/useTripPlanner';
 import { useAuthStore } from '../../../store/authStore';
 import { useTripStore } from '../../../store/tripStore';
@@ -94,6 +94,16 @@ export interface MTripShellApi {
    */
   rtReach: CorridorReach;
   setRtReach: (value: CorridorReach) => void;
+  /**
+   * How far "ahead" reaches, in kilometres of driving.
+   *
+   * The second half of the same question, and kept in the same place for the same
+   * reason: the bar prints the span and the sheet picks it, so one value has to serve
+   * both. A phone needs to ask "what is at the next exit" as often as "what is in the
+   * next town", and one fixed distance cannot answer both.
+   */
+  rtReachKm: PhoneReachKm;
+  setRtReachKm: (value: PhoneReachKm) => void;
   /** Travel/Plan/Places segment: go | edit | browse. */
   mode: MTripMode;
   /** Legacy tab ids: plan · transports · buchungen · listen · finanzplan · dateien · collab · plugin:* */
@@ -216,6 +226,7 @@ export default function MTripShell({
   // Whether the front layer of the active tab is a list (vs the map showing the
   // same content) — one reading for the toggle icon on both map tabs.
   const [rtReach, setRtReach] = useState<CorridorReach>('ahead');
+  const [rtReachKm, setRtReachKm] = useState<PhoneReachKm>(PHONE_REACH_KM as PhoneReachKm);
   const [mode, setMode] = useState<MTripMode>('go');
   const [browseFromEdit, setBrowseFromEdit] = useState(false);
   const [sheet, setSheet] = useState<MTripSheetState | null>(null);
@@ -393,6 +404,8 @@ export default function MTripShell({
     toggleRtView,
     rtReach,
     setRtReach,
+    rtReachKm,
+    setRtReachKm,
     mode,
     trTab,
     setTrTab,
@@ -443,15 +456,15 @@ export default function MTripShell({
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-[color:var(--m-bg)] bg-[image:var(--m-scr)] text-m-ink">
       {/* ── Content layers ─────────────────────────────────────────────── */}
-      {trTab === 'plan' && (
+      {MAP_TABS.has(trTab) && (
         <div className="absolute inset-0">
           <MapArea planner={planner} shell={shell} />
-          {view === 'plan' && mode !== 'browse' && (
+          {trTab === 'plan' && view === 'plan' && mode !== 'browse' && (
             <div className="absolute inset-0 z-10 bg-[color:var(--m-bg)] bg-[image:var(--m-scr)]">
               <PlanTimeline planner={planner} shell={shell} />
             </div>
           )}
-          {mode === 'browse' && (
+          {trTab === 'plan' && mode === 'browse' && (
             <div className="absolute inset-0 z-30 bg-[color:var(--m-bg)] bg-[image:var(--m-scr)]">
               <PlacesBrowser planner={planner} shell={shell} />
             </div>
@@ -466,6 +479,8 @@ export default function MTripShell({
           <TabPanel planner={planner} shell={shell} tab={trTab} />
         </div>
       )}
+      {/* The map half is the same panel without its opaque backdrop: the chain is the
+          list, and the map is the instance underneath, framed on the stage. */}
       {trTab === 'roadtrip' && rtView === 'map' && <TabPanel planner={planner} shell={shell} tab={trTab} />}
       {!MAP_TABS.has(trTab) && (
         <div className="absolute inset-0 z-30 bg-[color:var(--m-bg)] bg-[image:var(--m-scr)]">

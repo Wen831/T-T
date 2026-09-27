@@ -7,6 +7,7 @@ import { Eyebrow } from '../sheets/MTripSheetUi'
 import { useMRtCorridor, type MRtCorridorController } from './useMRtCorridor'
 import { corridorHitLabel } from '../../../../components/Roadtrip/corridorSearchModel'
 import { CORRIDOR_CATEGORIES, CORRIDOR_CATEGORY_BY_KEY } from '../../../../components/Roadtrip/stopKinds'
+import { PHONE_REACH_CHOICES_KM, type PhoneReachKm } from '../../../../components/Roadtrip/corridorSearchModel'
 import { serviceColor } from '../../../../components/Roadtrip/roadtripModel'
 import { formatDistance } from '../../../../utils/units'
 import { useSettingsStore } from '../../../../store/settingsStore'
@@ -123,6 +124,25 @@ export default function MRtCorridorSheet({ planner, shell }: MTripSheetsProps) {
             {t('roadtrip.poi.wholeDay')}
           </MChip>
         </div>
+
+        {/* The span, as its own row and only while "ahead" is the question: it says how
+            much road "ahead" means, so with the whole stage selected there is nothing for
+            it to narrow. Each chip is a different number of Overpass boxes over a mobile
+            connection, which is why the steps are coarse rather than a slider. */}
+        {corridor.reach === 'ahead' && (
+          <div className="mt-[6px] flex flex-wrap gap-[6px]">
+            {PHONE_REACH_CHOICES_KM.map(km => (
+              <MChip
+                key={km}
+                size="tap"
+                active={corridor.reachKm === km}
+                onClick={() => corridor.setReachKm(km as PhoneReachKm)}
+              >
+                {formatDistance(km, unit)}
+              </MChip>
+            ))}
+          </div>
+        )}
 
         <StatusBand corridor={corridor} t={t} />
 

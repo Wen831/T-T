@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import { PHONE_REACH_KM, type PhoneReachKm } from '../../src/components/Roadtrip/corridorSearchModel';
 import type { MTripShellApi, TripPlanner } from '../../src/mobile/screens/trip/MTripShell';
 import { buildTrip } from './factories';
 
@@ -390,6 +391,8 @@ export function buildShell(overrides: Partial<MTripShellApi> = {}): MTripShellAp
     toggleRtView: vi.fn(),
     rtReach: 'ahead',
     setRtReach: vi.fn(),
+    rtReachKm: PHONE_REACH_KM as PhoneReachKm,
+    setRtReachKm: vi.fn(),
     mode: 'go',
     trTab: 'plan',
     setTrTab: vi.fn(),

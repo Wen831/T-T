@@ -60,6 +60,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'لا شيء من هذا النوع على طول هذه المرحلة.',
   'mobileTrip.rtPlanOnDesktop': 'يتم التخطيط على سطح المكتب. يحسب TT القيادة بمجرد أن يضم اليوم مكانين.',
   'mobileTrip.rtReach': 'إلى أي مدى',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} أمامك',
   'mobileTrip.rtSearchOffline': 'يلزم اتصال بالإنترنت: يقرأ البحث المسار الذي أمامك.',
   'mobileTrip.rtStart': 'البداية',

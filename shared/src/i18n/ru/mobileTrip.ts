@@ -62,6 +62,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtPlanOnDesktop':
     'Планирование происходит на компьютере. TT рассчитает маршрут, как только в дне окажется два места.',
   'mobileTrip.rtReach': 'Насколько далеко',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} впереди',
   'mobileTrip.rtSearchOffline': 'Нужна сеть: поиск считывает маршрут впереди.',
   'mobileTrip.rtStart': 'Начало',

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { anchorKmFor, corridorWindow, PHONE_REACH_KM, type CorridorReach } from '../../../../components/Roadtrip/corridorSearchModel'
+import { anchorKmFor, corridorWindow, type CorridorReach, type PhoneReachKm } from '../../../../components/Roadtrip/corridorSearchModel'
 import { stageOf, upNextStop } from '../../../../components/Roadtrip/roadtripRowModel'
 import { useNetworkMode } from '../../../../hooks/useNetworkMode'
 import type { CorridorPoi } from '../../../../components/Roadtrip/useCorridorPois'
@@ -19,8 +19,14 @@ export interface MRtCorridorController {
   /** How much of the stage the next search covers. */
   reach: CorridorReach
   setReach: (value: CorridorReach) => void
-  /** How far "ahead" reaches, in kilometres of driving. */
-  reachKm: number
+  /**
+   * How far "ahead" reaches, in kilometres of driving.
+   *
+   * The user's own choice, not a constant: the sheet offers a span and this is what the
+   * bar prints and the window is cut to.
+   */
+  reachKm: PhoneReachKm
+  setReachKm: (value: PhoneReachKm) => void
   /**
    * True when "ahead" would start at the stop the clock says is next, false when it
    * starts at the beginning of the stage. The sheet says which, because that difference
@@ -68,6 +74,7 @@ export function useMRtCorridor(planner: TripPlanner, shell: MTripShellApi): MRtC
   const { setDayId, clear: clearCorridor, search, categories, toggleCategory, stopsAlongKm } = corridor
   const { offline } = useNetworkMode()
   const reach = shell.rtReach
+  const reachKm = shell.rtReachKm
 
   const stage = useMemo(
     () => stageOf(planner.roadtripRoutes.days, planner.selectedDayId),
@@ -108,8 +115,8 @@ export function useMRtCorridor(planner: TripPlanner, shell: MTripShellApi): MRtC
   const run = useCallback(() => {
     if (!canSearch) return
     const index = upNextIndexNow()
-    runSearch(corridorWindow(anchorKmFor(stopsAlongKm, index > 0 ? index : null), reach))
-  }, [canSearch, runSearch, upNextIndexNow, stopsAlongKm, reach])
+    runSearch(corridorWindow(anchorKmFor(stopsAlongKm, index > 0 ? index : null), reach, reachKm))
+  }, [canSearch, runSearch, upNextIndexNow, stopsAlongKm, reach, reachKm])
 
   /**
    * Changing the reach throws the answer away on purpose.
@@ -119,19 +126,33 @@ export function useMRtCorridor(planner: TripPlanner, shell: MTripShellApi): MRtC
    * quiet wrongness that gets a stop planned in the wrong place. The categories behave
    * the same way one level down, in `useCorridorPois`.
    */
-  const { setRtReach } = shell
+  const { setRtReach, setRtReachKm } = shell
   const setReach = useCallback((value: CorridorReach) => {
     if (value === reach) return
     setRtReach(value)
     clearCorridor()
   }, [reach, setRtReach, clearCorridor])
 
+  /**
+   * A different span is a different question, so the answer goes.
+   *
+   * The same rule as `setReach` one level up: hits found within 5 km are not an answer
+   * to "the next 25 km", and a list that stays put while the chip above it says
+   * otherwise is how a stop gets planned against a road nobody asked about.
+   */
+  const setReachKm = useCallback((value: PhoneReachKm) => {
+    if (value === reachKm) return
+    setRtReachKm(value)
+    clearCorridor()
+  }, [reachKm, setRtReachKm, clearCorridor])
+
   return {
     categories,
     toggleCategory,
     reach,
     setReach,
-    reachKm: PHONE_REACH_KM,
+    reachKm,
+    setReachKm,
     anchored,
     run,
     clear: clearCorridor,

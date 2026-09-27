@@ -549,6 +549,8 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
     dawarichTrail,
     dawarichHiddenDates,
     roadtripMapVias,
+    roadtripMapLines,
+    roadtripLineColors,
     roadtripVias,
     roadtripHazards,
     serviceStopMode,
@@ -701,7 +703,10 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
               hazards={roadtripHazards.feed?.hazards ?? []}
               places={mapPlaces}
               dayPlaces={dayPlaces}
-              route={route}
+              // In drive mode every routed day is drawn as its own line, each in the
+              // colour of its card; otherwise it is the selected day's route.
+              route={roadtripActive ? roadtripMapLines : route}
+              routeColors={roadtripActive ? roadtripLineColors : undefined}
               // In drive mode the day's route carries the night stops and the
               // automatic handles; otherwise it is the ordinary daily route.
               routeVias={roadtripActive ? roadtripMapVias : routeVias}

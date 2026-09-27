@@ -61,6 +61,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'Nic takového podél této etapy není.',
   'mobileTrip.rtPlanOnDesktop': 'Plánování probíhá na počítači. Jakmile má den dvě místa, TT jízdu spočítá.',
   'mobileTrip.rtReach': 'Jak daleko',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} před vámi',
   'mobileTrip.rtSearchOffline': 'Vyžaduje připojení: hledání čte trasu před vámi.',
   'mobileTrip.rtStart': 'Začátek',

@@ -115,6 +115,14 @@ interface Props {
    * traveller may not reshape the drive, in which case the band is inert.
    */
   onRouteClick?: (lat: number, lng: number) => void;
+  /**
+   * One colour per drive line, when the caller draws several days at once. Absent
+   * means the single blue the route has always been.
+   *
+   * Core and casing travel together, in the shape `dayColor()` returns: a line drawn
+   * without its own darkened casing goes muddy over water and forest.
+   */
+  routeColors?: { line: string; casing: string }[];
   /** Weather and disaster notices; empty unless the layer is on. */
   hazards?: import('@trek/shared').RoadtripHazard[];
   dawarichTrack?: import('@trek/shared').DawarichTrack | null;
@@ -458,6 +466,7 @@ export function MapViewGL({
   tripId,
   routeVias = NO_ROUTE_VIAS,
   onRouteClick,
+  routeColors,
   hazards = NO_HAZARDS,
   dawarichTrack = null,
   dawarichSelectedDate = null,
@@ -705,14 +714,16 @@ export function MapViewGL({
           id: 'trip-route-casing',
           type: 'line',
           source: 'trip-route',
-          paint: { 'line-color': '#0a5cc2', 'line-width': 8 },
+          // Per feature where the caller gave a colour, else the blue the route has
+          // always been. `coalesce` rather than a second layer: one source, one stroke.
+          paint: { 'line-color': ['coalesce', ['get', 'casing'], '#0a5cc2'], 'line-width': 8 },
           layout: { 'line-cap': 'round', 'line-join': 'round' },
         });
         map.addLayer({
           id: 'trip-route-line',
           type: 'line',
           source: 'trip-route',
-          paint: { 'line-color': '#0a84ff', 'line-width': 5 },
+          paint: { 'line-color': ['coalesce', ['get', 'color'], '#0a84ff'], 'line-width': 5 },
           layout: { 'line-cap': 'round', 'line-join': 'round' },
         });
         // An invisible band over the route, purely to be clicked. The drawn line is
@@ -1555,13 +1566,17 @@ export function MapViewGL({
     if (!src) return;
     const features = (route || [])
       .filter((seg) => seg && seg.length > 1)
-      .map((seg) => ({
+      .map((seg, i) => ({
         type: 'Feature' as const,
-        properties: {},
+        // A drive day carries its own colour, darkened for the casing under it. Absent,
+        // both paints fall back to the single blue they have always used.
+        properties: routeColors?.[i]
+          ? { color: routeColors[i].line, casing: routeColors[i].casing }
+          : {},
         geometry: { type: 'LineString' as const, coordinates: seg.map(([lat, lng]) => [lng, lat]) },
       }));
     src.setData({ type: 'FeatureCollection', features });
-  }, [route, mapReady]);
+  }, [route, routeColors, mapReady]);
 
   // Travel times now live in the day sidebar (per-segment connectors), not on the map.
 

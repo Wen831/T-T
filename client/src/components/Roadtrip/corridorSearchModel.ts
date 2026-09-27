@@ -51,8 +51,28 @@ export const PHONE_CORRIDOR_BUDGET: CorridorBudget = {
 /** Passed by identity, so the search callback below it is not rebuilt every render. */
 export const PHONE_CORRIDOR_OPTIONS = { budget: PHONE_CORRIDOR_BUDGET }
 
-/** How far ahead "ahead" means, in kilometres of driving. */
+/**
+ * How far ahead "ahead" means by default, in kilometres of driving.
+ *
+ * A default rather than a fixed distance: 50 km is roughly where the driver is going,
+ * but "what is at the next exit" and "what is in the next town" are both corridor
+ * questions and neither is answered by a fixed span. The phone picks one of
+ * PHONE_REACH_CHOICES; this is what it starts on.
+ */
 export const PHONE_REACH_KM = 50
+
+/**
+ * The spans the phone offers, in kilometres of driving.
+ *
+ * Ordered shortest first, and the first entry is the default. They are deliberately
+ * coarse: each one is a different number of Overpass boxes over a mobile connection, so
+ * the difference between 5 and 8 km is not a decision anybody wants to make on a phone
+ * in a car. `corridorWindow` slices the day's line by whichever is chosen.
+ */
+export const PHONE_REACH_CHOICES_KM = [5, 10, 25, 50] as const
+
+/** Narrowed to what the choices actually hold, so a typo cannot become a type. */
+export type PhoneReachKm = (typeof PHONE_REACH_CHOICES_KM)[number]
 
 export type CorridorReach = 'ahead' | 'stage'
 

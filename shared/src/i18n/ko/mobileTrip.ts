@@ -60,6 +60,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': '이 구간에는 그런 곳이 없습니다.',
   'mobileTrip.rtPlanOnDesktop': '계획은 데스크톱에서 세웁니다. 하루에 장소가 두 곳 생기면 TT이 주행을 계산합니다.',
   'mobileTrip.rtReach': '어디까지',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '앞으로 {distance}',
   'mobileTrip.rtSearchOffline': '연결이 필요합니다: 이 검색은 앞으로 갈 경로를 읽습니다.',
   'mobileTrip.rtStart': '시작',

@@ -61,6 +61,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'Niets van dat soort langs deze etappe.',
   'mobileTrip.rtPlanOnDesktop': 'Plannen doe je op de desktop. TT berekent de rit zodra een dag twee plaatsen heeft.',
   'mobileTrip.rtReach': 'Hoe ver',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} vooruit',
   'mobileTrip.rtSearchOffline': 'Vereist een verbinding: de zoekopdracht leest de route die voor je ligt.',
   'mobileTrip.rtStart': 'Start',

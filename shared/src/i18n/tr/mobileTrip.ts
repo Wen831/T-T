@@ -61,6 +61,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'Bu etap boyunca bu türden bir şey yok.',
   'mobileTrip.rtPlanOnDesktop': 'Planlama masaüstünde yapılır. Bir günde iki yer olduğunda TT sürüşü hesaplar.',
   'mobileTrip.rtReach': 'Ne kadar uzağa',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} ileride',
   'mobileTrip.rtSearchOffline': 'Bağlantı gerekir: arama, ileride kalan rotayı okur.',
   'mobileTrip.rtStart': 'Başlangıç',

@@ -9,6 +9,7 @@ import {
   PHONE_CORRIDOR_BUDGET,
   PHONE_CORRIDOR_OPTIONS,
   PHONE_REACH_KM,
+  PHONE_REACH_CHOICES_KM,
 } from './corridorSearchModel'
 import type { TranslationFn } from '../../types'
 
@@ -89,5 +90,36 @@ describe('the budgets', () => {
     expect(PHONE_CORRIDOR_BUDGET).toEqual({ maxTiles: 10, maxRetries: 2, deadlineMs: 25_000 })
     // Handed down by identity so the search callback underneath is not rebuilt.
     expect(PHONE_CORRIDOR_OPTIONS.budget).toBe(PHONE_CORRIDOR_BUDGET)
+  })
+})
+
+/**
+ * The phone offers a span, and the window has to be cut to the one chosen.
+ *
+ * The reach used to be the single constant PHONE_REACH_KM, so "what is at the next
+ * exit" and "what is in the next town" were the same 50 km question and the narrow
+ * end of the corridor was unreachable from a phone.
+ */
+describe('the phone reach choices', () => {
+  it('FE-ROADTRIP-CORWIN-010: the narrow end of the corridor is offered', () => {
+    // 5 and 10 km are the point of this list: they are the spans a driver actually
+    // asks about, and neither was expressible while the reach was one constant.
+    expect(PHONE_REACH_CHOICES_KM).toContain(5)
+    expect(PHONE_REACH_CHOICES_KM).toContain(10)
+  })
+
+  it('FE-ROADTRIP-CORWIN-011: the default is one of the choices, so the chip starts pressed', () => {
+    expect(PHONE_REACH_CHOICES_KM).toContain(PHONE_REACH_KM as (typeof PHONE_REACH_CHOICES_KM)[number])
+  })
+
+  it('FE-ROADTRIP-CORWIN-012: the list is ordered shortest first', () => {
+    const sorted = [...PHONE_REACH_CHOICES_KM].sort((a, b) => a - b)
+    expect([...PHONE_REACH_CHOICES_KM]).toEqual(sorted)
+  })
+
+  it('FE-ROADTRIP-CORWIN-013: the window is cut to whichever span was chosen', () => {
+    // The whole fix: 5 km ahead is a window five kilometres long, not fifty.
+    expect(corridorWindow(100, 'ahead', 5)).toEqual({ fromKm: 100, toKm: 105 })
+    expect(corridorWindow(100, 'ahead', 10)).toEqual({ fromKm: 100, toKm: 110 })
   })
 })

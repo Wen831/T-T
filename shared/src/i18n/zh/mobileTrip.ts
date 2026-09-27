@@ -59,6 +59,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': '本段沿途没有这类地点。',
   'mobileTrip.rtPlanOnDesktop': '规划在桌面端进行。一天里有了两个地点，TT 就会算出这段车程。',
   'mobileTrip.rtReach': '找多远',
+  'mobileTrip.rtTruncated.one': '{count} 段路被截断；少选几个类别能覆盖更多路段。',
+  'mobileTrip.rtTruncated.other': '{count} 段路被截断；少选几个类别能覆盖更多路段。',
   'mobileTrip.rtReachAhead': '前方 {distance}',
   'mobileTrip.rtSearchOffline': '需要联网：搜索会读取前方的路线。',
   'mobileTrip.rtStart': '开始',

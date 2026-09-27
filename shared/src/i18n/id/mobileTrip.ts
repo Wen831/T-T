@@ -62,6 +62,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtPlanOnDesktop':
     'Perencanaan dilakukan di desktop. TT menghitung perjalanannya begitu satu hari punya dua tempat.',
   'mobileTrip.rtReach': 'Sejauh apa',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} ke depan',
   'mobileTrip.rtSearchOffline': 'Perlu koneksi: pencarian membaca rute di depan.',
   'mobileTrip.rtStart': 'Mulai',

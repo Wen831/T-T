@@ -62,6 +62,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtPlanOnDesktop':
     'Ο σχεδιασμός γίνεται στον υπολογιστή. Το TT υπολογίζει τη διαδρομή μόλις μια ημέρα έχει δύο μέρη.',
   'mobileTrip.rtReach': 'Πόσο μακριά',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} μπροστά',
   'mobileTrip.rtSearchOffline': 'Χρειάζεται σύνδεση: η αναζήτηση διαβάζει τη διαδρομή που ακολουθεί.',
   'mobileTrip.rtStart': 'Έναρξη',

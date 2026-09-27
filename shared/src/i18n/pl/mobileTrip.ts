@@ -61,6 +61,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'Na tym etapie nie ma nic takiego.',
   'mobileTrip.rtPlanOnDesktop': 'Planowanie odbywa się na komputerze. TT wylicza przejazd, gdy dzień ma dwa miejsca.',
   'mobileTrip.rtReach': 'Jak daleko',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': '{distance} przed tobą',
   'mobileTrip.rtSearchOffline': 'Wymaga połączenia: wyszukiwanie czyta trasę przed tobą.',
   'mobileTrip.rtStart': 'Początek',

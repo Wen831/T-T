@@ -60,6 +60,8 @@ const mobileTrip: TranslationStrings = {
   'mobileTrip.rtNoneOnStage': 'この区間沿いにはそうした場所はありません。',
   'mobileTrip.rtPlanOnDesktop': '計画はデスクトップで行います。1日に場所が2か所そろうと、TTが走行を計算します。',
   'mobileTrip.rtReach': 'どこまで',
+  'mobileTrip.rtTruncated.one': '{count} stretch was cut short; fewer categories fit more of it.',
+  'mobileTrip.rtTruncated.other': '{count} stretches were cut short; fewer categories fit more of them.',
   'mobileTrip.rtReachAhead': 'この先 {distance}',
   'mobileTrip.rtSearchOffline': '接続が必要です：この検索は先のルートを読み取ります。',
   'mobileTrip.rtStart': '開始',

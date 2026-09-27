@@ -422,10 +422,22 @@ export function MapViewAMap(props: any) {
       lines.push(line);
     };
     const route = props.route || [];
-    for (const seg of route)
-      addLine(gcjPath(seg), { strokeColor: '#fff', strokeWeight: 9, strokeOpacity: 0.95, zIndex: 20 });
-    for (const seg of route)
-      addLine(gcjPath(seg), { strokeColor: '#2563eb', strokeWeight: 5, strokeOpacity: 0.85, zIndex: 21 });
+    // A drive day carries its own core and casing, so one day reads the same colour as
+    // its card in the rail; absent, it is the single blue the route has always been.
+    const routeColors: { line: string; casing: string }[] | undefined = props.routeColors;
+    route.forEach((seg, i) => {
+      const path = gcjPath(seg);
+      // The white under-stroke is deliberately not the day's casing: on AMap the wider
+      // halo is what keeps the line legible over satellite imagery, and the coloured
+      // core sits on top of it.
+      addLine(path, { strokeColor: '#fff', strokeWeight: 9, strokeOpacity: 0.95, zIndex: 20 });
+      addLine(path, {
+        strokeColor: routeColors?.[i]?.line ?? '#2563eb',
+        strokeWeight: 5,
+        strokeOpacity: 0.85,
+        zIndex: 21,
+      });
+    });
     // The route as a click target, while it can be reshaped. A transparent band
     // rather than the drawn line: the line is 5-9px and a pointer is not that
     // accurate, so aiming at the road was most of why putting a via there felt like

@@ -30,7 +30,15 @@ export default function MMapArea({ planner, shell }: MMapAreaProps) {
   const [glMap, setGlMap] = useState<CompassMap | null>(null);
   const poiPillEnabled = useSettingsStore((s) => s.settings.map_poi_pill_enabled) !== false;
 
-  const mapActive = shell.view === 'map';
+  // Two ways to the map on this shell: the plan tab's own view switch, and the road
+  // trip tab's list ⇄ map half. Both mean "the map is the thing in front", which is
+  // what the floating chrome and the camera framing key off.
+  const mapActive = shell.view === 'map' || (shell.trTab === 'roadtrip' && shell.rtView === 'map');
+  // Which of the two map halves is in front. The road trip tab asks the map a different
+  // question — every routed day, its own place pool, its own handles — so the props
+  // below switch on this rather than on `roadtripActive`, which is false on a phone by
+  // design (the mobile shell drives the feed through `roadtripFeedActive`).
+  const rtHalf = shell.trTab === 'roadtrip';
 
   return (
     // `isolate` keeps the map's internal z-indexes (Leaflet panes, the z-1000
@@ -42,15 +50,26 @@ export default function MMapArea({ planner, shell }: MMapAreaProps) {
     <div className="absolute inset-0 isolate overflow-hidden bg-[color:var(--m-mapb)] [--bottom-nav-h:calc(env(safe-area-inset-bottom,0px)+74px)]">
       <MapViewAuto
         tripId={planner.tripId}
-        places={planner.mapPlaces}
-        dayPlaces={planner.dayPlaces}
-        route={planner.route}
+        // The drive half reads the road trip's own pool, which is what taking a folded
+        // card off the map works on; the plan half keeps the ordinary one.
+        places={rtHalf ? planner.roadtripMapPlaces : planner.mapPlaces}
+        dayPlaces={rtHalf ? planner.roadtripMapPlaces : planner.dayPlaces}
+        // The drive half draws every routed day as its own line, which is the whole
+        // point of it; the plan half draws the selected day's route. Both arrive as
+        // segments in one prop, and only the drive has a colour per line — each one the
+        // colour of the card it belongs to, which is what tells the days apart in a
+        // single continuous stroke.
+        route={rtHalf ? planner.roadtripMapLines : planner.route}
+        routeColors={rtHalf ? planner.roadtripLineColors : undefined}
         // In drive mode the day's route carries the night stops and automatic
         // handles; otherwise the ordinary daily route. Same rule as desktop.
-        routeVias={planner.roadtripActive ? planner.roadtripMapVias : planner.routeVias}
-        roadtripVias={planner.roadtripActive ? planner.roadtripVias.byDay : undefined}
-        onMoveVia={planner.roadtripActive ? planner.moveRoadtripVia : undefined}
-        onRemoveVia={planner.roadtripActive ? planner.removeRoadtripVia : undefined}
+        routeVias={rtHalf ? planner.roadtripMapVias : planner.routeVias}
+        roadtripVias={rtHalf ? planner.roadtripVias.byDay : undefined}
+        onMoveVia={rtHalf ? planner.moveRoadtripVia : undefined}
+        onRemoveVia={rtHalf ? planner.removeRoadtripVia : undefined}
+        // Clicking the route drops a via, which is the only way the traveller's own
+        // handles are created. Gated on the same permission as moving them.
+        onRouteClick={rtHalf && planner.can('day_edit', planner.trip) ? planner.addRoadtripVia : undefined}
         hazards={planner.roadtripHazards.feed?.hazards ?? []}
         showTransitRoutes={planner.transitRoutesShown}
         // The route toggle belongs to one day, so the map needs that day to know
