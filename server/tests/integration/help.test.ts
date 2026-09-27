@@ -110,7 +110,13 @@ describe('GET /api/help?lang', () => {
     expect(zh.body.sections.length).toBe(en.body.sections.length);
     expect(slugsOf(zh.body)).toEqual(slugsOf(en.body));
     expect(zh.body.sections[0].title).not.toBe(en.body.sections[0].title);
-    expect(zh.body.sections[0].pages[0].slug).toBe('Home');
+    // Home is the first page of Getting Started, not of the whole sidebar — a
+    // release-notes section sits above it. Asserted against the section that
+    // holds it, so adding a section never reads as a parity failure.
+    const firstPageOf = (body: any, sectionTitle: string): string | undefined =>
+      body.sections.find((s: any) => s.title === sectionTitle)?.pages[0]?.slug;
+    expect(firstPageOf(en.body, 'Getting Started')).toBe('Home');
+    expect(firstPageOf(zh.body, '快速上手')).toBe('Home');
   });
 
   it('serves a translated page when one exists', async () => {

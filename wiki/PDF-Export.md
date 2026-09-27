@@ -1,5 +1,7 @@
 # PDF Export
 
+> **New in 0.8.0:** the trip PDF carries a **Route overview** map, drawn as vectors so it needs no tile server.
+
 Tourism-Team generates a structured **Trip Plan PDF** from your trip data. It renders as HTML in a sandboxed iframe and opens the browser's native print/save dialog — no server-side processing is involved. Journey entries no longer go through a fixed PDF template: they are laid out in **Tourism-Team Studio** and printed through the same browser mechanism (see below).
 
 ![PDF Export](assets/PDFTrip.png)

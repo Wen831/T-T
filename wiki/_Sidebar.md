@@ -1,3 +1,6 @@
+## What's New
+- [[New Features in 0.8.0|New-Features]]
+
 ## Getting Started
 - [[Home]]
 - [[Quick Start|Quick-Start]]
@@ -41,6 +44,7 @@
 - [[Activities]]
 - [[Map Features|Map-Features]]
 - [[Route Optimization|Route-Optimization]]
+- [[Road Trip Mode|Road-Trip]]
 - [[Weather Forecasts|Weather-Forecasts]]
 
 ## Travel Management
@@ -54,6 +58,7 @@
 - [[Packing Templates|Packing-Templates]]
 - [[Todos and Tasks|Todos-and-Tasks]]
 - [[Documents and Files|Documents-and-Files]]
+- [[Document Sync|Document-Sync]]
 - [[Tags and Categories|Tags-and-Categories]]
 - [[Calendar Feeds|Calendar-Feeds]]
 
@@ -89,6 +94,7 @@
 
 ## Integrations
 - [[Public API|Public-API]]
+- [[Dawarich]]
 
 ## AI / MCP
 - [[MCP Overview|MCP-Overview]]

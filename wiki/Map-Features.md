@@ -1,5 +1,7 @@
 # Map Features
 
+> **New in 0.8.0:** draggable route handles, hazard and night-pause layers, and per-day route colours for road trips. See [Road Trip Mode](Road-Trip).
+
 The trip planner map shows your places, route lines, transport overlays, and your current location in real time.
 
 ![Trip Planner Map](assets/TripPlannerWithPlane.png)

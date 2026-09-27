@@ -1,5 +1,7 @@
 # Collections
 
+> **New in 0.8.0:** a list can be exported to a file and imported again — TT's own list format or GPX. See **Export** in a list's hero.
+
 Collections is a personal, server-wide library of saved places that lives outside of any single trip. Keep multiple named lists of places you have discovered — a "Norway road trip" wishlist, "Best coffee in Lisbon", "Someday" — each place carrying an idea / want-to-go / visited status, and share a list with other users.
 
 > **Admin:** enable Collections in [Admin-Addons](Admin-Addons).

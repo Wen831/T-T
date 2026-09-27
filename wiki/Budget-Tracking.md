@@ -1,5 +1,7 @@
 # Costs (Budget Tracking)
 
+> **New in 0.8.0:** expenses can carry receipts (images or PDFs), added from the expense itself and stored with the trip's files.
+
 Track trip expenses by category, split costs between members, and visualize spending.
 
 > **Renamed to Costs (v3.3.0, #1464):** This feature is now called **Costs** everywhere in the UI — the planner tab reads **Costs** and it is listed as **Costs** in Admin → Addons. Its internal addon id stays `budget`, which is why the permission is `budget_edit` and the MCP scopes are `budget:read` / `budget:write`.

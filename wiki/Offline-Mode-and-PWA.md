@@ -1,5 +1,7 @@
 # Offline Mode and PWA
 
+> **New in 0.8.0:** the offline layer gained a viewport-prefetched place cache, so place search keeps working on a weak connection.
+
 Tourism-Team can be installed as a Progressive Web App (PWA) and used without an internet connection for previously synced trips.
 
 ## Install as an app (PWA)

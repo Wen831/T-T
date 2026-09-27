@@ -1,5 +1,7 @@
 # Documents and Files
 
+> **New in 0.8.0:** [Document Sync](Document-Sync) pairs a trip with a folder in a cloud store, so documents stay in the store you already use.
+
 Attach and manage documents, tickets, and other files for your trip.
 
 ![Files](assets/Files.png)

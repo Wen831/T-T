@@ -1,5 +1,7 @@
 # Updating
 
+> **New in 0.8.0:** the admin panel can **Prepare update** — run the preparation on the server and report what it did — instead of only printing instructions.
+
 How to update Tourism-Team to a newer version without losing data.
 
 ## Before You Update

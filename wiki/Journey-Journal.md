@@ -1,5 +1,7 @@
 # Journey Journal
 
+> **New in 0.8.0:** the phone view gained a day scrubber and a photo-as-card layout.
+
 Journey is a photo-first travel journal. Each journey is linked to one or more of your trips and contains per-day entries with text, photos, mood, and weather.
 
 > **Admin:** enable Journey in [Admin-Addons](Admin-Addons).

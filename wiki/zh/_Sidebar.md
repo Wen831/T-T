@@ -1,3 +1,6 @@
+## 新增功能
+- [[0.8.0 新增功能|New-Features]]
+
 ## 快速上手
 - [[首页|Home]]
 - [[快速开始|Quick-Start]]
@@ -41,6 +44,7 @@
 - [[活动|Activities]]
 - [[地图功能|Map-Features]]
 - [[路线优化|Route-Optimization]]
+- [[公路旅行模式|Road-Trip]]
 - [[天气预报|Weather-Forecasts]]
 
 ## 旅行管理
@@ -54,6 +58,7 @@
 - [[打包模板|Packing-Templates]]
 - [[待办事项|Todos-and-Tasks]]
 - [[文档与文件|Documents-and-Files]]
+- [[文档同步|Document-Sync]]
 - [[标签与分类|Tags-and-Categories]]
 - [[日历订阅|Calendar-Feeds]]
 
@@ -89,6 +94,7 @@
 
 ## 集成
 - [[公开 API|Public-API]]
+- [[Dawarich]]
 
 ## AI / MCP
 - [[MCP 概览|MCP-Overview]]

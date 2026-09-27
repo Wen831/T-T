@@ -1,5 +1,7 @@
 # Route Optimization
 
+> **New in 0.8.0:** the planner also has a full [Road Trip Mode](Road-Trip) — the trip read as a drive, with along-the-route search, range planning and draggable route handles.
+
 Tourism-Team calculates walking and driving times between your places and can reorder them to minimize total travel distance.
 
 ![Route Optimization](assets/OptimizeRoute.png)
