@@ -5,26 +5,15 @@ import { gcj02ToWgs84, wgs84ToGcj02 } from './engines/amap';
  * The handles that shape a drive, on the AMap renderer — TT's own, because
  * upstream has no AMap engine (see docs/MAP-ENGINES.md).
  *
- * This is the one place in the whole port where a drag writes data, and that
- * makes the datum the load-bearing detail. AMap reports a dragged marker in
- * GCJ-02; every via in TT is WGS-84, and the server stores what it is sent. Hand
- * the GCJ-02 pair straight back and the whole route shifts a few hundred metres
- * east — which looks like a routing bug, not a units bug, and is exactly the
- * class of mistake the unit tests cannot see: they stub the transform, so a
- * reversed or missing conversion still passes.
+ * The datum is load-bearing: AMap reports GCJ-02; TT stores WGS-84. Conversion is
+ * done only at the marker boundary, never in the route or persistence layers.
  *
- * So the rule this file exists to enforce: `gcj02ToWgs84` on the way OUT
- * (dragend → onMoveVia), `wgs84ToGcj02` on the way IN (via → marker position).
- * Nothing else in here ever touches a coordinate.
- *
- * Why this is much shorter than the GL twin: MapLibre has no draggable marker,
- * so upstream hand-writes pointerdown/move/up/cancel, a moved-enough threshold
- * to tell a drag from a click, and five `preventDefault` handlers to stop the
- * map panning underneath. An AMap marker takes `draggable: true` and reports
- * `dragend` with the new position, so the hard part there is simply absent here.
+ * The manager is deliberately stateful. A route write causes React to hand the map
+ * a fresh via array; clearing and recreating every marker at that point destroys the
+ * marker under a user's finger. On a touchscreen that is exactly the difference
+ * between "drag the same handle again" and "pan the map".
  */
 
-/** The AMap constructors this needs. Narrowed so a test can pass a stub. */
 export interface AmapViaApi {
   Marker?: new (options?: Record<string, unknown>) => AmapViaMarker;
 }
@@ -32,7 +21,10 @@ export interface AmapViaApi {
 export interface AmapViaMarker {
   setMap: (map: unknown | null) => void;
   on?: (event: string, handler: (e?: unknown) => void) => void;
+  off?: (event: string, handler?: (e?: unknown) => void) => void;
   setPosition?: (position: [number, number]) => void;
+  setContent?: (content: string | HTMLElement) => void;
+  setDraggable?: (draggable: boolean) => void;
 }
 
 export interface AmapViaMap {
@@ -40,28 +32,27 @@ export interface AmapViaMap {
   remove?: (overlay: unknown) => void;
 }
 
-/**
- * Below this the handles are not drawn.
- *
- * A via is a handle for a few hundred metres of road. Zoomed out, a day's worth
- * of them piles into one town and dragging one moves the route by kilometres per
- * pixel. Shared with the other two renderers' own copies so the three agree on
- * when the handles exist.
- */
+/** Below this the handles are not drawn. */
 export const VIA_MIN_ZOOM = 9;
 export const AMAP_VIA_MIN_ZOOM = VIA_MIN_ZOOM;
 
-/** The same 12px dot the Leaflet renderer draws, so the two look alike. */
-export const AMAP_VIA_ICON_HTML =
-  '<span style="display:block;width:12px;height:12px;border-radius:9999px;background:#0a84ff;border:2.5px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:grab;"></span>';
+/** The mobile deletion gesture. */
+export const AMAP_VIA_LONG_PRESS_MS = 600;
+export const AMAP_VIA_LONG_PRESS_TOLERANCE_PX = 10;
 
-/** `[lng, lat]` in GCJ-02, which is what an AMap marker wants. */
+/** The same 12px dot the Leaflet renderer draws. */
+export const AMAP_VIA_ICON_HTML =
+  '<span style="display:block;width:12px;height:12px;border-radius:9999px;background:#0a84ff;border:2.5px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:grab;touch-action:none;"></span>';
+
+/** Visible while a long press is counting down. */
+export const AMAP_VIA_ICON_ARMED_HTML =
+  '<span style="display:block;width:12px;height:12px;border-radius:9999px;background:#ff9f0a;border:2.5px solid #ffffff;box-shadow:0 0 0 6px rgba(255,159,10,.35),0 1px 4px rgba(0,0,0,.45);cursor:grabbing;touch-action:none;"></span>';
+
 const toGcjPosition = (via: RoadtripVia): [number, number] => {
   const p = wgs84ToGcj02(via.lng, via.lat);
   return [p.lng, p.lat];
 };
 
-/** Read a dragged position back out of whatever shape the event carries. */
 function draggedLngLat(event: unknown): { lng: number; lat: number } | null {
   const lnglat = (event as { lnglat?: { getLng?: () => number; getLat?: () => number } } | null)?.lnglat;
   const lng = Number(lnglat?.getLng?.());
@@ -71,70 +62,198 @@ function draggedLngLat(event: unknown): { lng: number; lat: number } | null {
 }
 
 export interface AmapViaHandlers {
-  /** Called with WGS-84, converted here from what AMap reported. */
   onMove?: (dayId: number, id: number, lat: number, lng: number) => void;
   onRemove?: (dayId: number, id: number) => void;
 }
 
+export interface AmapViaManager {
+  count: number;
+  update: (vias: readonly RoadtripVia[], handlers: AmapViaHandlers, zoom: number) => void;
+  clear: () => void;
+}
+
+type Timer = number;
+
+type DrawnVia = {
+  marker: AmapViaMarker;
+  dayId: number;
+  id: number;
+  markerListeners: { type: string; handler: (event?: unknown) => void }[];
+  domListeners: { element: HTMLElement; type: string; handler: EventListener }[];
+  timer: Timer | null;
+  startAt: { x: number; y: number } | null;
+  element: HTMLElement | null;
+};
+
+function handleKey(dayId: number, id: number): string {
+  return `${dayId}:${id}`;
+}
+
+function handleElement(): HTMLElement | null {
+  if (typeof document === 'undefined') return null;
+  const element = document.createElement('span');
+  element.style.cssText =
+    'display:block;width:12px;height:12px;border-radius:9999px;background:#0a84ff;' +
+    'border:2.5px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.45);' +
+    'cursor:grab;touch-action:none;';
+  return element;
+}
+
+function setElementArmed(entry: DrawnVia, armed: boolean): void {
+  if (!entry.element) return;
+  entry.element.style.background = armed ? '#ff9f0a' : '#0a84ff';
+  entry.element.style.boxShadow = armed
+    ? '0 0 0 6px rgba(255,159,10,.35),0 1px 4px rgba(0,0,0,.45)'
+    : '0 1px 4px rgba(0,0,0,.45)';
+  entry.element.style.cursor = armed ? 'grabbing' : 'grab';
+}
+
+function touchPoint(event: Event): { x: number; y: number } | null {
+  const touch = (event as TouchEvent).touches?.[0];
+  return touch ? { x: touch.clientX, y: touch.clientY } : null;
+}
+
 /**
- * Draw the handles, replacing whatever this manager drew before.
- *
- * A via is not draggable when there is no move handler: a read-only viewer must
- * not be handed a handle that silently does nothing, which is worse than no
- * handle — it looks broken.
+ * Draw or update the handles. Existing markers are moved in place; they are only
+ * destroyed when their via disappears, the layer is cleared, or the zoom gate closes.
  */
 export function applyViasAmap(
   api: AmapViaApi,
   map: AmapViaMap,
   vias: readonly RoadtripVia[],
   handlers: AmapViaHandlers,
-  zoom: number
+  zoom: number,
 ) {
-  const drawn: AmapViaMarker[] = [];
   const Marker = api.Marker;
+  const drawn = new Map<string, DrawnVia>();
+  let currentHandlers = handlers;
 
-  // Zoomed out, the handles go away. A read-only viewer keeps them, because with
-  // no map to shape there is nothing to zoom in for.
   if (!Marker || (zoom < AMAP_VIA_MIN_ZOOM && handlers.onMove)) {
-    return { clear() {}, count: 0 };
+    return { count: 0, update() {}, clear() {} };
   }
 
-  for (const via of vias) {
+  const cancelHold = (entry: DrawnVia): void => {
+    if (entry.timer !== null) window.clearTimeout(entry.timer);
+    entry.timer = null;
+    entry.startAt = null;
+    setElementArmed(entry, false);
+  };
+
+  const removeEntry = (key: string, entry: DrawnVia): void => {
+    cancelHold(entry);
+    for (const listener of entry.markerListeners) entry.marker.off?.(listener.type, listener.handler);
+    for (const listener of entry.domListeners) listener.element.removeEventListener(listener.type, listener.handler);
+    entry.marker.setMap(null);
+    drawn.delete(key);
+  };
+
+  const bindTouchRemoval = (entry: DrawnVia): void => {
+    const element = entry.element;
+    if (!element || !currentHandlers.onRemove) return;
+
+    const onStart: EventListener = (event) => {
+      const point = touchPoint(event);
+      if (!point) return;
+      entry.startAt = point;
+      setElementArmed(entry, true);
+      entry.timer = window.setTimeout(() => {
+        entry.timer = null;
+        entry.startAt = null;
+        setElementArmed(entry, false);
+        currentHandlers.onRemove?.(entry.dayId, entry.id);
+      }, AMAP_VIA_LONG_PRESS_MS);
+    };
+    const onMove: EventListener = (event) => {
+      const point = touchPoint(event);
+      const start = entry.startAt;
+      if (!point || !start) return;
+      if (Math.hypot(point.x - start.x, point.y - start.y) > AMAP_VIA_LONG_PRESS_TOLERANCE_PX) cancelHold(entry);
+    };
+    const onEnd: EventListener = () => cancelHold(entry);
+
+    element.addEventListener('touchstart', onStart, { passive: true });
+    element.addEventListener('touchmove', onMove, { passive: true });
+    element.addEventListener('touchend', onEnd, { passive: true });
+    element.addEventListener('touchcancel', onEnd, { passive: true });
+    entry.domListeners.push(
+      { element, type: 'touchstart', handler: onStart },
+      { element, type: 'touchmove', handler: onMove },
+      { element, type: 'touchend', handler: onEnd },
+      { element, type: 'touchcancel', handler: onEnd },
+    );
+  };
+
+  const createEntry = (via: RoadtripVia): DrawnVia => {
+    const element = handleElement();
     const marker = new Marker({
       position: toGcjPosition(via),
-      content: AMAP_VIA_ICON_HTML,
-      draggable: !!handlers.onMove,
+      content: element ?? AMAP_VIA_ICON_HTML,
+      draggable: !!currentHandlers.onMove,
       zIndex: 400,
-      // The dot is 12px, so its centre is 6px in from the corner.
       offset: [-6, -6],
     });
-
-    marker.on?.('dragend', (event) => {
-      if (!handlers.onMove) return;
+    const entry: DrawnVia = {
+      marker,
+      dayId: via.day_id,
+      id: via.id,
+      markerListeners: [],
+      domListeners: [],
+      timer: null,
+      startAt: null,
+      element,
+    };
+    const on = (type: string, handler: (event?: unknown) => void): void => {
+      marker.on?.(type, handler);
+      entry.markerListeners.push({ type, handler });
+    };
+    on('dragend', (event) => {
+      cancelHold(entry);
+      if (!currentHandlers.onMove) return;
       const at = draggedLngLat(event);
       if (!at) return;
-      // The load-bearing line: AMap reported GCJ-02, TT stores WGS-84.
       const wgs = gcj02ToWgs84(at.lng, at.lat);
-      handlers.onMove(via.day_id, via.id, wgs.lat, wgs.lng);
+      currentHandlers.onMove(entry.dayId, entry.id, wgs.lat, wgs.lng);
     });
+    // Desktop mouse fallback. Touch devices use the long-press DOM handlers below.
+    on('rightclick', () => currentHandlers.onRemove?.(entry.dayId, entry.id));
+    bindTouchRemoval(entry);
+    marker.setMap(map);
+    return entry;
+  };
 
-    // A right-click rather than a delete handle: a 12px dot has no room for one,
-    // and the same gesture removes things elsewhere on the map. AMap names the
-    // marker-level event `rightclick`; `contextmenu` is the map's own.
-    marker.on?.('rightclick', () => handlers.onRemove?.(via.day_id, via.id));
+  const update = (nextVias: readonly RoadtripVia[], nextHandlers: AmapViaHandlers, nextZoom: number): void => {
+    currentHandlers = nextHandlers;
+    if (nextZoom < AMAP_VIA_MIN_ZOOM && nextHandlers.onMove) {
+      for (const [key, entry] of drawn) removeEntry(key, entry);
+      return;
+    }
+    const wanted = new Set<string>();
+    for (const via of nextVias) {
+      const key = handleKey(via.day_id, via.id);
+      wanted.add(key);
+      const existing = drawn.get(key);
+      if (existing) {
+        existing.dayId = via.day_id;
+        existing.id = via.id;
+        existing.marker.setPosition?.(toGcjPosition(via));
+        existing.marker.setDraggable?.(!!nextHandlers.onMove);
+        // The callbacks are read through currentHandlers, so no listener is rebound.
+        continue;
+      }
+      drawn.set(key, createEntry(via));
+    }
+    for (const [key, entry] of drawn) if (!wanted.has(key)) removeEntry(key, entry);
+  };
 
-    drawn.push(marker);
-  }
-
-  for (const marker of drawn) marker.setMap(map);
+  update(vias, handlers, zoom);
 
   return {
-    /** The number of handles actually drawn, for a caller that wants to say so. */
-    count: drawn.length,
-    /** Take every handle off the map (mode off, zoomed out, unmount). */
-    clear() {
-      for (const marker of drawn) marker.setMap(null);
-      drawn.length = 0;
+    get count(): number {
+      return drawn.size;
+    },
+    update,
+    clear(): void {
+      for (const [key, entry] of drawn) removeEntry(key, entry);
     },
   };
 }

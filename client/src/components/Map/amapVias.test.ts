@@ -36,7 +36,16 @@ const via = (over: Partial<RoadtripVia> = {}): RoadtripVia =>
 function fakeApi() {
   const created: Array<Record<string, unknown>> = [];
   const Marker = vi.fn(function (options?: Record<string, unknown>) {
-    const marker = { kind: 'Marker', options, setMap: vi.fn(), on: vi.fn(), setPosition: vi.fn() };
+    const marker = {
+      kind: 'Marker',
+      options,
+      setMap: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+      setPosition: vi.fn(),
+      setContent: vi.fn(),
+      setDraggable: vi.fn(),
+    };
     created.push(marker);
     return marker;
   });
@@ -169,5 +178,74 @@ describe('applyViasAmap — removal and read-only', () => {
 
   it('FE-MAP-VIAAMAP-011: an engine without Marker degrades to no layer, not a crash', () => {
     expect(() => applyViasAmap({} as never, map, [via()], { onMove: vi.fn() }, 12)).not.toThrow();
+  });
+});
+
+
+describe('applyViasAmap — mobile touch lifecycle', () => {
+  it('FE-MAP-VIAAMAP-012: updating the same via moves the existing marker instead of rebuilding it', () => {
+    const { api, created } = fakeApi();
+    const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn() }, 12);
+    const original = created[0];
+
+    manager.update([via({ lat: WGS.lat + 0.01, lng: WGS.lng + 0.01 })], { onMove: vi.fn() }, 12);
+
+    expect(created).toHaveLength(1);
+    expect(original.setPosition).toHaveBeenCalled();
+    expect(original.setMap).toHaveBeenCalledTimes(1);
+    expect(original.setMap).not.toHaveBeenLastCalledWith(null);
+  });
+
+  it('FE-MAP-VIAAMAP-013: a long press removes a via on touch devices', () => {
+    vi.useFakeTimers();
+    try {
+      const { api, created } = fakeApi();
+      const onRemove = vi.fn();
+      // jsdom has no AMap DOM, so provide the marker content element the manager
+      // would normally own. The real production marker uses the same touch listeners.
+      const element = document.createElement('span');
+      const marker = created[0];
+      vi.spyOn(document, 'createElement').mockReturnValue(element);
+      const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove }, 12);
+      const touch = (type: string, x = 10, y = 10) => {
+        const event = new Event(type, { bubbles: true });
+        Object.defineProperty(event, 'touches', { value: type === 'touchend' ? [] : [{ clientX: x, clientY: y }] });
+        element.dispatchEvent(event);
+      };
+      touch('touchstart');
+      vi.advanceTimersByTime(599);
+      expect(onRemove).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(onRemove).toHaveBeenCalledWith(2, 7);
+      manager.clear();
+      vi.restoreAllMocks();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('FE-MAP-VIAAMAP-014: moving a finger cancels the long press and leaves the via', () => {
+    vi.useFakeTimers();
+    try {
+      const { api, created } = fakeApi();
+      const onRemove = vi.fn();
+      const element = document.createElement('span');
+      vi.spyOn(document, 'createElement').mockReturnValue(element);
+      const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove }, 12);
+      const touch = (type: string, x: number, y: number) => {
+        const event = new Event(type, { bubbles: true });
+        Object.defineProperty(event, 'touches', { value: [{ clientX: x, clientY: y }] });
+        element.dispatchEvent(event);
+      };
+      touch('touchstart', 10, 10);
+      touch('touchmove', 25, 10);
+      vi.advanceTimersByTime(700);
+      expect(onRemove).not.toHaveBeenCalled();
+      expect(manager.count).toBe(1);
+      manager.clear();
+      vi.restoreAllMocks();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
