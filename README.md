@@ -18,7 +18,7 @@
 A powerful self-hosted travel planning platform with real-time collaboration, interactive maps, and AI-powered features. Plan your journeys with day-by-day itineraries, track expenses, manage bookings, and explore the world with an integrated atlas.
 
 [![License](https://img.shields.io/badge/license-AGPL_v3-6B7280?style=flat-square)](LICENSE)
-![Version](https://img.shields.io/badge/version-0.7.2-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.0-blue?style=flat-square)
 
 ---
 
@@ -78,9 +78,67 @@ A powerful self-hosted travel planning platform with real-time collaboration, in
 
 ---
 
-## 🆕 What's New in v0.7.2
+## 🆕 What's New in v0.8.0
 
-**If you downloaded the 0.7.1 Windows package, this release fixes it — please
+**This release is a large one: the whole of upstream TREK 4.3.0, adapted to TT's
+own map engines, its own AMap (高德) support and its own look.** The headline is
+**road trip mode** — a trip read as a drive rather than a list of days — and there
+is a lot besides. Each feature is written up in the wiki, starting from
+**[New Features in 0.8.0](https://github.com/bhxnms/T-T/wiki/New-Features)**.
+
+### Road trip mode
+
+- **A trip as a drive.** Switch the plan view between **Days** and **Road trip**,
+  and the left rail becomes the whole trip routed end to end: distance, driving
+  time and stop count, then each day as a chain of legs and stops with departure
+  and arrival times that update themselves.
+- **Along-the-route search.** Ask what is *on the way* — fuel, charging, service
+  areas, campsites, food, sights — within a range you choose (2 / 5 / 10 km ahead,
+  or the whole stage), returned in driving order with how far along and how far off
+  route each hit sits. It follows the map engine you chose, so with AMap search on
+  it asks AMap.
+- **Shape the road.** Click the route to drop a handle, drag it to re-route, and
+  delete it by dragging it onto the delete zone at the top-left. On all three map
+  engines, and on a phone.
+- **Import a route from a link.** Google Maps directions links as before, and now
+  **AMap (高德) links too** — `ditu.amap.com/dir` or `uri.amap.com/route` — with
+  GCJ-02 converted on the way in.
+- **Range, limits and layers.** Fuel and charge range with the dry point marked on
+  each leg; per-leg and per-day driving limits; daily time windows with automatic
+  overnight stops; service stops that stay out of the day's stop count; avoid
+  tolls, motorways and ferries; current-weather hazard layer.
+
+### Also in 0.8.0
+
+- **Document sync** — pair a trip with a folder in a cloud document store, so
+  documents stay where they already live.
+- **Dawarich** — read visits and recorded routes from a self-hosted Dawarich
+  instance, offered as journal entries, places and countries you confirm. Read-only
+  from TT's side.
+- **Collection lists as files** — export a saved list and import it again, as TT's
+  own list format or GPX.
+- **Receipts on expenses** — attach pictures or PDFs to a trip expense.
+- **Links and pictures in trip chat** — paste an image and it uploads inline; paste
+  a link and it becomes a card.
+- **Printed route map in the PDF** — the trip PDF carries a vector route overview,
+  drawn without a tile server.
+- **Public transit journeys** — plan a leg by public transport.
+- **Mobile Journey timeline** — a day scrubber and a photo-as-card layout.
+- **Place search names its source** — 高德 or OpenStreetMap, per result.
+- **Offline foundations** — a viewport-prefetched place cache, so search keeps
+  working on a weak connection.
+- **Prepare an update from the admin panel** — the server runs the preparation and
+  reports what it did, instead of only printing instructions.
+
+### Upgrading
+
+No manual steps. The database migrations are additive and run on first start.
+
+---
+
+## 0.7.2 (detail)
+
+**If you downloaded the 0.7.1 Windows package, that release fixed it — please
 download again.** The app started and answered `/api/health`, then showed a 404
 on every page. Nothing was wrong with your machine or your extraction.
 
@@ -357,7 +415,7 @@ docker compose up -d
 ```
 
 Use a fixed release in `.env` for production, for example
-`IMAGE_TAG=0.7.2`. `latest` tracks the newest stable release; the image
+`IMAGE_TAG=0.8.0`. `latest` tracks the newest stable release; the image
 supports `linux/amd64` and `linux/arm64`. If the package is private, authenticate
 first with a GitHub token that can read packages:
 
@@ -407,7 +465,7 @@ git pull && docker compose up -d --build
 git clone https://github.com/bhxnms/T-T.git
 cd T-T
 mkdir -p data uploads
-docker build --build-arg APP_VERSION=0.7.2 -t tt-planner:local .
+docker build --build-arg APP_VERSION=0.8.0 -t tt-planner:local .
 docker run -d --name tt-planner --restart unless-stopped \
   -p 3000:3000 \
   -v "$(pwd)/data:/app/data" \

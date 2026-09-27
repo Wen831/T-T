@@ -18,7 +18,7 @@
 一个支持自托管、实时协作、交互式地图和 AI 功能的旅行规划平台。你可以按天规划行程、管理费用和预订、记录旅行日志，并通过 Atlas 探索和记录去过的地方。
 
 [![License](https://img.shields.io/badge/license-AGPL_v3-6B7280?style=flat-square)](LICENSE)
-![Version](https://img.shields.io/badge/version-0.7.2-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.0-blue?style=flat-square)
 
 ---
 
@@ -75,9 +75,54 @@
 
 ---
 
-## 🆕 v0.7.2 更新
+## 🆕 v0.8.0 更新
 
-**如果你下载了 0.7.1 的 Windows 免安装包，这一版修好了它 —— 请重新下载。**
+**这一版内容很多：上游 TREK 4.3.0 的全部功能并入 TT，并按 TT 自己的地图引擎、
+自己的高德（AMap）支持和自己的外观做了适配。** 最重点的是**公路旅行模式**——
+把行程读作一次驾驶，而不只是一串日期。其余新增也不少，每一项都在 WIKI 里有
+说明，入口是
+**[0.8.0 新增功能](https://github.com/bhxnms/T-T/wiki/New-Features?lang=zh)**。
+
+### 公路旅行模式
+
+- **行程即一次驾驶。** 计划视图可在 **按天** 与 **公路旅行** 之间切换，左侧栏随即
+  变成整趟行程端到端的路线：总距离、总驾驶时间与停靠点数，然后逐日展开为路段与
+  停靠点的链条，出发与抵达时间会自动更新。
+- **沿线搜索。** 问「路上有什么」——加油、充电、服务区、露营地、餐饮、景点——
+  范围可选（前方 2 / 5 / 10 km，或整段），结果按行驶顺序返回，并标明离起点多远、
+  偏离路线多少。搜索跟随你所选的地图引擎，启用高德搜索时即走高德。
+- **塑造路线。** 点击路线落下手柄，拖动即改变行车路线；把它拖到左上角的删除区即可
+  删除。三种地图引擎、手机端均支持。
+- **从链接导入路线。** 仍支持 Google Maps 路线链接，现在还支持**高德链接**——
+  `ditu.amap.com/dir` 或 `uri.amap.com/route`，导入时会做 GCJ-02 坐标换算。
+- **续航、时限与图层。** 油耗与电耗续航，并在每段上标出会耗尽的位置；每段与每天
+  的驾驶时限；每日时间窗与自动生成的过夜停靠；不计入停靠点数的服务型停靠；避让
+  收费路段、高速公路与轮渡；当前天气风险图层。
+
+### 0.8.0 还包括
+
+- **文档同步** —— 把行程与云盘目录配对，文档仍留在你已在使用的云盘里。
+- **Dawarich** —— 读取自建 Dawarich 实例的到访记录与轨迹，作为推荐内容供你确认。
+  TT 侧只读。
+- **收藏列表导出为文件** —— 列表可导出再导入，格式为 TT 列表文件或 GPX。
+- **费用收据** —— 给行程开支附上图片或 PDF。
+- **协作聊天中的链接与图片** —— 粘贴图片直接上传并内嵌；粘贴链接生成卡片。
+- **PDF 行程地图** —— 行程 PDF 带矢量路线总览，无需瓦片服务器。
+- **公共交通行程** —— 按公共交通规划一段行程。
+- **手机端 Journey 时间轴** —— 日期滑条与「照片即卡片」版式。
+- **地点搜索标明来源** —— 每条结果标出是高德还是 OpenStreetMap。
+- **离线底座** —— 按视口预取的地点缓存，网络较弱时搜索仍可用。
+- **在管理面板中准备更新** —— 服务端执行更新准备并报告结果，而不只是打印命令。
+
+### 升级
+
+无需任何手动步骤。数据库迁移为纯追加，首次启动时自动执行。
+
+---
+
+## v0.7.2（详情）
+
+**如果你下载了 0.7.1 的 Windows 免安装包，那一版已修好 —— 请重新下载。**
 包能正常启动、`/api/health` 也有响应，但打开任何页面都是 404。这不是你的机器
 或解压方式的问题。
 
@@ -98,7 +143,7 @@
 ### 本版还包括
 
 - 覆盖服务开关与桌面版 cookie 行为的回归测试，避免日后有人靠悄悄打开生产环境
-  安全设置来「修好」页面，却把纯 HTTP 下的登录弄坏。
+  安全设置来「修好」纯 HTTP 下的页面。
 
 ---
 
@@ -251,7 +296,7 @@ http://localhost:3000
 生产环境建议在 `.env` 中固定版本：
 
 ```env
-IMAGE_TAG=0.7.2
+IMAGE_TAG=0.8.0
 ```
 
 `latest` 表示最新稳定版本。若 GHCR 包是私有的，先登录：
@@ -291,7 +336,7 @@ git pull && docker compose up -d --build
 git clone https://github.com/bhxnms/T-T.git
 cd T-T
 mkdir -p data uploads
-docker pull ghcr.io/bhxnms/tt-planner:0.7.2
+docker pull ghcr.io/bhxnms/tt-planner:0.8.0
 docker run -d --name tt-planner --restart unless-stopped \
   -p 3000:3000 \
   -v "$(pwd)/data:/app/data" \
@@ -301,7 +346,7 @@ docker run -d --name tt-planner --restart unless-stopped \
   -e ENCRYPTION_KEY="$(openssl rand -hex 32)" \
   -e ADMIN_EMAIL=admin@example.com \
   -e ADMIN_PASSWORD='replace-with-a-strong-password' \
-  ghcr.io/bhxnms/tt-planner:0.7.2
+  ghcr.io/bhxnms/tt-planner:0.8.0
 ```
 
 请备份 `ENCRYPTION_KEY`，容器重建时必须继续使用相同的值。
