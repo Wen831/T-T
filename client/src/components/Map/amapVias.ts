@@ -89,23 +89,38 @@ function handleKey(dayId: number, id: number): string {
   return `${dayId}:${id}`;
 }
 
-function handleElement(): HTMLElement | null {
-  if (typeof document === 'undefined') return null;
-  const element = document.createElement('span');
-  element.style.cssText =
-    'display:block;width:12px;height:12px;border-radius:9999px;background:#0a84ff;' +
-    'border:2.5px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.45);' +
-    'cursor:grab;touch-action:none;';
-  return element;
+/**
+ * The element AMap actually renders for a handle, reached through the marker.
+ *
+ * AMap keeps no public accessor for it, so this reads the two spellings it has
+ * used (`dom` on older builds, `getContentDom()` on current ones) and returns
+ * null rather than guessing when neither is there. Null only costs the touch
+ * gesture; the right-click path and the marker itself are unaffected.
+ */
+function mountedElement(marker: AmapViaMarker): HTMLElement | null {
+  const candidate = marker as unknown as {
+    getContentDom?: () => unknown;
+    dom?: unknown;
+  };
+  const viaAccessor = candidate.getContentDom?.();
+  if (viaAccessor instanceof HTMLElement) return viaAccessor;
+  if (candidate.dom instanceof HTMLElement) return candidate.dom;
+  return null;
+}
+
+/**
+ * The armed/resting look, as the string AMap renders.
+ *
+ * A string rather than a live element: AMap takes the content and mounts it
+ * itself, so an element handed in is not the one on the map and styling it does
+ * nothing. `setContent` is the only way to change what is actually displayed.
+ */
+function iconHtml(armed: boolean): string {
+  return armed ? AMAP_VIA_ICON_ARMED_HTML : AMAP_VIA_ICON_HTML;
 }
 
 function setElementArmed(entry: DrawnVia, armed: boolean): void {
-  if (!entry.element) return;
-  entry.element.style.background = armed ? '#ff9f0a' : '#0a84ff';
-  entry.element.style.boxShadow = armed
-    ? '0 0 0 6px rgba(255,159,10,.35),0 1px 4px rgba(0,0,0,.45)'
-    : '0 1px 4px rgba(0,0,0,.45)';
-  entry.element.style.cursor = armed ? 'grabbing' : 'grab';
+  entry.marker.setContent?.(iconHtml(armed));
 }
 
 function touchPoint(event: Event): { x: number; y: number } | null {
@@ -184,10 +199,11 @@ export function applyViasAmap(
   };
 
   const createEntry = (via: RoadtripVia): DrawnVia => {
-    const element = handleElement();
     const marker = new Marker({
       position: toGcjPosition(via),
-      content: element ?? AMAP_VIA_ICON_HTML,
+      // A string, not an element: AMap mounts the content itself, so an element
+      // created here is never the one on the map and styling it changes nothing.
+      content: AMAP_VIA_ICON_HTML,
       draggable: !!currentHandlers.onMove,
       zIndex: 400,
       offset: [-6, -6],
@@ -200,7 +216,7 @@ export function applyViasAmap(
       domListeners: [],
       timer: null,
       startAt: null,
-      element,
+      element: null,
     };
     const on = (type: string, handler: (event?: unknown) => void): void => {
       marker.on?.(type, handler);
@@ -216,8 +232,11 @@ export function applyViasAmap(
     });
     // Desktop mouse fallback. Touch devices use the long-press DOM handlers below.
     on('rightclick', () => currentHandlers.onRemove?.(entry.dayId, entry.id));
-    bindTouchRemoval(entry);
+    // Mount first: the element the listeners go on only exists once AMap has
+    // rendered the marker.
     marker.setMap(map);
+    entry.element = mountedElement(marker);
+    bindTouchRemoval(entry);
     return entry;
   };
 

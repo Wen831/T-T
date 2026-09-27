@@ -36,6 +36,10 @@ const via = (over: Partial<RoadtripVia> = {}): RoadtripVia =>
 function fakeApi() {
   const created: Array<Record<string, unknown>> = [];
   const Marker = vi.fn(function (options?: Record<string, unknown>) {
+    // `getContentDom` is the accessor the real AMap build exposes for the element
+    // it mounted. The manager reaches the touch listeners through it, so a fake
+    // without one would test a path production never takes.
+    const contentDom = document.createElement('span');
     const marker = {
       kind: 'Marker',
       options,
@@ -45,6 +49,7 @@ function fakeApi() {
       setPosition: vi.fn(),
       setContent: vi.fn(),
       setDraggable: vi.fn(),
+      getContentDom: () => contentDom,
     };
     created.push(marker);
     return marker;
@@ -203,10 +208,8 @@ describe('applyViasAmap — mobile touch lifecycle', () => {
       const onRemove = vi.fn();
       // jsdom has no AMap DOM, so provide the marker content element the manager
       // would normally own. The real production marker uses the same touch listeners.
-      const element = document.createElement('span');
-      const marker = created[0];
-      vi.spyOn(document, 'createElement').mockReturnValue(element);
       const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove }, 12);
+      const element = (created[0].getContentDom as () => HTMLElement)();
       const touch = (type: string, x = 10, y = 10) => {
         const event = new Event(type, { bubbles: true });
         Object.defineProperty(event, 'touches', { value: type === 'touchend' ? [] : [{ clientX: x, clientY: y }] });
@@ -218,7 +221,6 @@ describe('applyViasAmap — mobile touch lifecycle', () => {
       vi.advanceTimersByTime(1);
       expect(onRemove).toHaveBeenCalledWith(2, 7);
       manager.clear();
-      vi.restoreAllMocks();
     } finally {
       vi.useRealTimers();
     }
@@ -229,9 +231,8 @@ describe('applyViasAmap — mobile touch lifecycle', () => {
     try {
       const { api, created } = fakeApi();
       const onRemove = vi.fn();
-      const element = document.createElement('span');
-      vi.spyOn(document, 'createElement').mockReturnValue(element);
       const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove }, 12);
+      const element = (created[0].getContentDom as () => HTMLElement)();
       const touch = (type: string, x: number, y: number) => {
         const event = new Event(type, { bubbles: true });
         Object.defineProperty(event, 'touches', { value: [{ clientX: x, clientY: y }] });
@@ -243,7 +244,39 @@ describe('applyViasAmap — mobile touch lifecycle', () => {
       expect(onRemove).not.toHaveBeenCalled();
       expect(manager.count).toBe(1);
       manager.clear();
-      vi.restoreAllMocks();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+
+describe('applyViasAmap — the marker content contract', () => {
+  it('FE-MAP-VIAAMAP-015: content is the icon markup, never a detached element', () => {
+    // The regression this pins: passing a live element made AMap render nothing,
+    // because the element the manager styled was not the one on the map. The
+    // handles were invisible on BOTH shells and every route click looked offset.
+    const { api, created } = fakeApi();
+    applyViasAmap(api, map, [via()], { onMove: vi.fn() }, 12);
+
+    const content = (created[0].options as { content: unknown }).content;
+    expect(typeof content).toBe('string');
+    expect(content).toContain('border-radius');
+  });
+
+  it('FE-MAP-VIAAMAP-016: the armed look is pushed through setContent, not by styling an element', () => {
+    vi.useFakeTimers();
+    try {
+      const { api, created } = fakeApi();
+      applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove: vi.fn() }, 12);
+      const element = (created[0].getContentDom as () => HTMLElement)();
+      const start = new Event('touchstart', { bubbles: true });
+      Object.defineProperty(start, 'touches', { value: [{ clientX: 5, clientY: 5 }] });
+      element.dispatchEvent(start);
+
+      // Only setContent changes what is displayed; a style write would be lost.
+      expect(created[0].setContent).toHaveBeenCalled();
+      vi.advanceTimersByTime(700);
     } finally {
       vi.useRealTimers();
     }
