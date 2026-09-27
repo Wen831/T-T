@@ -140,6 +140,8 @@ describe('CollectionsController', () => {
         user,
         'gpid',
         undefined,
+        undefined,
+        undefined,
         'Rome',
         '41.9',
         '12.5',
@@ -147,9 +149,30 @@ describe('CollectionsController', () => {
       expect(svc.findMembership).toHaveBeenCalledWith(1, {
         google_place_id: 'gpid',
         google_ftid: undefined,
+        osm_id: undefined,
+        amap_id: undefined,
         name: 'Rome',
         lat: 41.9,
         lng: 12.5,
+      });
+    });
+    it('forwards the OSM and AMap ids', () => {
+      const svc = makeService();
+      new CollectionsController(svc, new RuntimeEnvService(), storageStub).membership(
+        user,
+        undefined,
+        undefined,
+        'N123',
+        'B035300A2B',
+      );
+      expect(svc.findMembership).toHaveBeenCalledWith(1, {
+        google_place_id: undefined,
+        google_ftid: undefined,
+        osm_id: 'N123',
+        amap_id: 'B035300A2B',
+        name: undefined,
+        lat: undefined,
+        lng: undefined,
       });
     });
     it('leaves lat/lng undefined when absent', () => {
@@ -158,6 +181,8 @@ describe('CollectionsController', () => {
       expect(svc.findMembership).toHaveBeenCalledWith(1, {
         google_place_id: undefined,
         google_ftid: undefined,
+        osm_id: undefined,
+        amap_id: undefined,
         name: undefined,
         lat: undefined,
         lng: undefined,

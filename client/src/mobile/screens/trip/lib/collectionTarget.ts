@@ -19,6 +19,7 @@ export function collectionTargetFromPlace(place: Place): SaveToCollectionTarget 
     google_place_id: place.google_place_id ?? null,
     google_ftid: place.google_ftid ?? null,
     osm_id: place.osm_id ?? null,
+    amap_id: place.amap_id ?? null,
     website: place.website ?? null,
     phone: place.phone ?? null,
   }

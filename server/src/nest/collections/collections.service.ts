@@ -455,6 +455,7 @@ export class CollectionsService {
       google_place_id: row.google_place_id ?? null,
       google_ftid: row.google_ftid ?? null,
       osm_id: row.osm_id ?? null,
+      amap_id: row.amap_id ?? null,
       status: row.status,
       links: parseLinks((row as { links?: unknown }).links),
       category: row.category_name ?? null,
@@ -641,8 +642,8 @@ export class CollectionsService {
     INSERT INTO collection_places (
       collection_id, owner_id, saved_by, name, description, lat, lng, address,
       category_id, price, currency, notes, image_url, google_place_id, google_ftid,
-      osm_id, website, phone, status, links, sort_order
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      osm_id, amap_id, website, phone, status, links, sort_order
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
     const assignLabel = this.db.prepare(
       'INSERT OR IGNORE INTO collection_place_labels (collection_place_id, label_id) VALUES (?, ?)',
@@ -669,6 +670,7 @@ export class CollectionsService {
           google_place_id: place.google_place_id ?? null,
           google_ftid: place.google_ftid ?? null,
           osm_id: place.osm_id ?? null,
+          amap_id: place.amap_id ?? null,
         })
       ) {
         duplicates += 1;
@@ -691,6 +693,7 @@ export class CollectionsService {
         place.google_place_id ?? null,
         place.google_ftid ?? null,
         place.osm_id ?? null,
+        place.amap_id ?? null,
         place.website ?? null,
         place.phone ?? null,
         place.status ?? 'idea',
@@ -869,10 +872,11 @@ export class CollectionsService {
         hit = this.db.get<{ id: number; name: string }>(
           `
       SELECT id, name FROM collection_places
-      WHERE collection_id = ? AND (google_place_id = ? OR google_ftid = ? OR osm_id = ?)
+      WHERE collection_id = ? AND (google_place_id = ? OR google_ftid = ? OR osm_id = ? OR amap_id = ?)
       ORDER BY id ASC LIMIT 1
     `,
           collectionId,
+          strategy.id,
           strategy.id,
           strategy.id,
           strategy.id,
@@ -986,8 +990,8 @@ export class CollectionsService {
     INSERT INTO collection_places (
       collection_id, owner_id, saved_by, name, description, lat, lng, address,
       category_id, price, currency, notes, image_url, google_place_id, google_ftid,
-      osm_id, website, phone, status, source_trip_id, source_place_id, links
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      osm_id, amap_id, website, phone, status, source_trip_id, source_place_id, links
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `,
         body.collection_id,
         ownerId,
@@ -1005,6 +1009,7 @@ export class CollectionsService {
         body.google_place_id ?? null,
         body.google_ftid ?? null,
         body.osm_id ?? null,
+        body.amap_id ?? null,
         body.website ?? null,
         body.phone ?? null,
         body.status ?? 'idea',
@@ -1069,6 +1074,7 @@ export class CollectionsService {
         google_place_id: (place.google_place_id as string | null) ?? null,
         google_ftid: (place.google_ftid as string | null) ?? null,
         osm_id: (place.osm_id as string | null) ?? null,
+        amap_id: (place.amap_id as string | null) ?? null,
         website: (place.website as string | null) ?? null,
         phone: (place.phone as string | null) ?? null,
         source_trip_id: tripId,
@@ -1154,8 +1160,8 @@ export class CollectionsService {
     INSERT INTO collection_places (
       collection_id, owner_id, saved_by, name, description, lat, lng, address,
       category_id, price, currency, notes, image_url, google_place_id, google_ftid,
-      osm_id, website, phone, status, source_trip_id, source_place_id, links
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'idea', ?, ?, NULL)
+      osm_id, amap_id, website, phone, status, source_trip_id, source_place_id, links
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'idea', ?, ?, NULL)
   `);
     let copied = 0;
     const skipped: { id: number; name: string }[] = [];
@@ -1181,6 +1187,7 @@ export class CollectionsService {
           google_place_id: (p.google_place_id as string | null) ?? null,
           google_ftid: (p.google_ftid as string | null) ?? null,
           osm_id: (p.osm_id as string | null) ?? null,
+          amap_id: (p.amap_id as string | null) ?? null,
         };
         if (!force && this.findDuplicateCollectionPlace(collectionId, candidate)) {
           skipped.push({ id: placeId, name });
@@ -1203,6 +1210,7 @@ export class CollectionsService {
           (p.google_place_id as string | null) ?? null,
           (p.google_ftid as string | null) ?? null,
           (p.osm_id as string | null) ?? null,
+          (p.amap_id as string | null) ?? null,
           (p.website as string | null) ?? null,
           (p.phone as string | null) ?? null,
           tripId,
@@ -1454,9 +1462,10 @@ export class CollectionsService {
           google_place_id: string | null;
           google_ftid: string | null;
           osm_id: string | null;
+          amap_id: string | null;
         }>(
           `
-        SELECT id, name, lat, lng, google_place_id, google_ftid, osm_id
+        SELECT id, name, lat, lng, google_place_id, google_ftid, osm_id, amap_id
         FROM places WHERE trip_id = ? AND id IN (${placeIds.map(() => '?').join(',')})
       `,
           tripId,
@@ -1502,6 +1511,7 @@ export class CollectionsService {
       google_place_id: string | null;
       google_ftid: string | null;
       osm_id: string | null;
+      amap_id: string | null;
     },
   ): Array<{ id: number }> {
     const conditions: string[] = ['(cp.source_trip_id = ? AND cp.source_place_id = ?)'];
@@ -1517,6 +1527,10 @@ export class CollectionsService {
     if (place.osm_id) {
       conditions.push('cp.osm_id = ?');
       params.push(place.osm_id);
+    }
+    if (place.amap_id) {
+      conditions.push('cp.amap_id = ?');
+      params.push(place.amap_id);
     }
     if (place.lat != null && place.lng != null) {
       conditions.push('(cp.lat IS NOT NULL AND cp.lng IS NOT NULL AND abs(cp.lat - ?) <= ? AND abs(cp.lng - ?) <= ?)');
@@ -1595,6 +1609,7 @@ export class CollectionsService {
       google_place_id: string | null;
       google_ftid: string | null;
       osm_id: string | null;
+      amap_id: string | null;
       website: string | null;
       phone: string | null;
       collection_id: number;
@@ -1603,7 +1618,7 @@ export class CollectionsService {
       const row = this.db.get<(typeof sources)[number]>(
         `
       SELECT id, collection_id, name, description, lat, lng, address, category_id, price, currency,
-             notes, image_url, google_place_id, google_ftid, osm_id, website, phone
+             notes, image_url, google_place_id, google_ftid, osm_id, amap_id, website, phone
       FROM collection_places WHERE id = ?
     `,
         pid,
@@ -1622,7 +1637,8 @@ export class CollectionsService {
       google_place_id: string | null;
       google_ftid: string | null;
       osm_id: string | null;
-    }>('SELECT name, lat, lng, google_place_id, google_ftid, osm_id FROM places WHERE trip_id = ?', body.trip_id);
+      amap_id: string | null;
+    }>('SELECT name, lat, lng, google_place_id, google_ftid, osm_id, amap_id FROM places WHERE trip_id = ?', body.trip_id);
     const dedup: DedupSet = { names: new Set(), coords: [], externalIds: new Set() };
     for (const r of existing) {
       for (const id of externalIdsOf(r)) dedup.externalIds.add(id);
@@ -1632,8 +1648,8 @@ export class CollectionsService {
 
     const insertPlace = this.db.prepare(`
     INSERT INTO places (trip_id, name, description, lat, lng, address, category_id, price,
-      currency, notes, image_url, google_place_id, google_ftid, website, phone, osm_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      currency, notes, image_url, google_place_id, google_ftid, website, phone, osm_id, amap_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
     const insertTag = this.db.prepare('INSERT OR IGNORE INTO place_tags (place_id, tag_id) VALUES (?, ?)');
     const insertRating = this.db.prepare(
@@ -1655,6 +1671,7 @@ export class CollectionsService {
               google_place_id: s.google_place_id,
               google_ftid: s.google_ftid,
               osm_id: s.osm_id,
+              amap_id: s.amap_id,
             },
             dedup,
           )
@@ -1679,6 +1696,7 @@ export class CollectionsService {
           s.website,
           s.phone,
           s.osm_id,
+          s.amap_id,
         );
         const newPlaceId = Number(res.lastInsertRowid);
         const tagIds = this.db.all<{ tag_id: number }>(
@@ -1708,7 +1726,15 @@ export class CollectionsService {
 
   findMembership(
     userId: number,
-    query: { google_place_id?: string; google_ftid?: string; name?: string; lat?: number; lng?: number },
+    query: {
+      google_place_id?: string;
+      google_ftid?: string;
+      osm_id?: string;
+      amap_id?: string;
+      name?: string;
+      lat?: number;
+      lng?: number;
+    },
   ): CollectionMembership {
     const ids = this.accessibleCollectionIds(userId);
     if (ids.length === 0) return { saved: false, lists: [] };
@@ -1723,6 +1749,14 @@ export class CollectionsService {
     if (query.google_ftid) {
       conditions.push('cp.google_ftid = ?');
       params.push(query.google_ftid);
+    }
+    if (query.osm_id) {
+      conditions.push('cp.osm_id = ?');
+      params.push(query.osm_id);
+    }
+    if (query.amap_id) {
+      conditions.push('cp.amap_id = ?');
+      params.push(query.amap_id);
     }
     // Coordinate proximity is the location signal. A bare NAME match is deliberately
     // NOT a condition on its own — "Starbucks" (or any repeated name) would otherwise

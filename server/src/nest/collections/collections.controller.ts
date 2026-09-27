@@ -322,6 +322,8 @@ export class CollectionsController {
     @CurrentUser() user: User,
     @Query('google_place_id') googlePlaceId?: string,
     @Query('google_ftid') googleFtid?: string,
+    @Query('osm_id') osmId?: string,
+    @Query('amap_id') amapId?: string,
     @Query('name') name?: string,
     @Query('lat') lat?: string,
     @Query('lng') lng?: string,
@@ -329,6 +331,8 @@ export class CollectionsController {
     return this.collections.findMembership(user.id, {
       google_place_id: googlePlaceId,
       google_ftid: googleFtid,
+      osm_id: osmId,
+      amap_id: amapId,
       name,
       lat: lat != null && lat !== '' ? Number(lat) : undefined,
       lng: lng != null && lng !== '' ? Number(lng) : undefined,

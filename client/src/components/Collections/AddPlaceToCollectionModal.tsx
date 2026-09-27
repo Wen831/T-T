@@ -143,6 +143,7 @@ export default function AddPlaceToCollectionModal({
         google_place_id: (picked && str(picked.google_place_id)) ?? null,
         google_ftid: (picked && str(picked.google_ftid)) ?? null,
         osm_id: (picked && str(picked.osm_id)) ?? null,
+        amap_id: (picked && str(picked.amap_id)) ?? null,
         website: (picked && str(picked.website)) ?? null,
         phone: (picked && str(picked.phone)) ?? null,
         category_id: categoryId,

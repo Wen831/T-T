@@ -39,6 +39,8 @@ const base = '/addons/collections';
 export interface MembershipQuery {
   google_place_id?: string;
   google_ftid?: string;
+  osm_id?: string;
+  amap_id?: string;
   name?: string;
   lat?: number;
   lng?: number;

@@ -352,6 +352,8 @@ export default function PlaceInspector({
       .membership({
         google_place_id: place.google_place_id ?? undefined,
         google_ftid: place.google_ftid ?? undefined,
+        osm_id: place.osm_id ?? undefined,
+        amap_id: place.amap_id ?? undefined,
         name: place.name,
         lat: place.lat ?? undefined,
         lng: place.lng ?? undefined,
@@ -388,6 +390,7 @@ export default function PlaceInspector({
       google_place_id: place.google_place_id ?? null,
       google_ftid: place.google_ftid ?? null,
       osm_id: place.osm_id ?? null,
+      amap_id: place.amap_id ?? null,
       website: place.website ?? null,
       phone: place.phone ?? null,
     });

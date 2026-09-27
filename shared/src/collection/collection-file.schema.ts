@@ -134,6 +134,8 @@ export const collectionFilePlaceSchema = z.object({
   google_place_id: z.string().max(255).nullable().optional(),
   google_ftid: z.string().max(255).nullable().optional(),
   osm_id: z.string().max(255).nullable().optional(),
+  /** TT carries a third provider besides Google and OSM: AMap (高德). */
+  amap_id: z.string().max(255).nullable().optional(),
   status: collectionStatusSchema.optional(),
   links: collectionLinksSchema.optional(),
   /** The category's NAME; the receiving instance matches it against its own palette. */
@@ -257,6 +259,7 @@ export const COLLECTION_GPX_PLACE_FIELDS = {
   google_place_id: 'extension',
   google_ftid: 'extension',
   osm_id: 'extension',
+  amap_id: 'extension',
   labels: 'extension',
   links: 'extension',
 } as const satisfies Record<keyof CollectionFilePlace, 'waypoint' | 'extension'>;

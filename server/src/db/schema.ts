@@ -429,6 +429,10 @@ function createTables(db: Database.Database): void {
       google_place_id TEXT,
       google_ftid TEXT,
       osm_id TEXT,
+      -- The AMap (高德) POI id, the same value places.amap_id holds. Read by
+      -- the place-photo cache to decide whether a saved collection place owns a
+      -- cached photo, so an AMap place saved to a list keeps its picture.
+      amap_id TEXT,
       website TEXT,
       phone TEXT,
       status TEXT NOT NULL DEFAULT 'idea',

@@ -23,6 +23,10 @@ export interface SaveToCollectionTarget {
   google_place_id?: string | null
   google_ftid?: string | null
   osm_id?: string | null
+  /** TT's third provider besides Google and OSM. Without it an AMap place reaches
+   *  the list carrying nothing to recognise it by, so saving the same POI twice
+   *  would create a second row. */
+  amap_id?: string | null
   website?: string | null
   phone?: string | null
 }

@@ -35,6 +35,8 @@ export default function MSaveToCollectionSheet() {
     return {
       google_place_id: target.google_place_id ?? undefined,
       google_ftid: target.google_ftid ?? undefined,
+      osm_id: target.osm_id ?? undefined,
+      amap_id: target.amap_id ?? undefined,
       name: target.name,
       lat: target.lat ?? undefined,
       lng: target.lng ?? undefined,
@@ -142,6 +144,7 @@ export default function MSaveToCollectionSheet() {
           google_place_id: target.google_place_id ?? null,
           google_ftid: target.google_ftid ?? null,
           osm_id: target.osm_id ?? null,
+          amap_id: target.amap_id ?? null,
           website: target.website ?? null,
           phone: target.phone ?? null,
           force: true,

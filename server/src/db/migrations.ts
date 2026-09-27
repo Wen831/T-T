@@ -5129,6 +5129,30 @@ function runMigrations(db: Database.Database): void {
         dateless.forEach((r, i) => setDayNumber.run(trip.span + i + 1, r.id));
       }
     },
+
+    /**
+     * TT fix: `collection_places.amap_id`.
+     *
+     * `place-photo-cache.service.ts` decides whether a saved collection place owns
+     * a cached photo by provider id, with
+     * `SELECT 1 FROM collection_places WHERE amap_id = ? OR image_url = ?`. TT added
+     * that AMap branch (upstream only has the Google one) but never added the column
+     * it reads, so every orphan sweep threw `no such column: amap_id`. The throw is
+     * caught one level up, which is why the only symptom was a cache that grew and
+     * never got swept.
+     *
+     * Appended as the LAST element on purpose: this array is index-addressed
+     * against schema_version, so inserting in the middle would replay the wrong
+     * step against an existing database.
+     */
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('collection_places')").all() as Array<{
+        name: string;
+      }>;
+      if (!cols.some((c) => c.name === 'amap_id')) {
+        db.exec('ALTER TABLE collection_places ADD COLUMN amap_id TEXT');
+      }
+    },
   ];
 
   if (currentVersion < migrations.length) {

@@ -35,6 +35,13 @@ export interface PlaceMatchCandidate {
   google_place_id?: string | null;
   google_ftid?: string | null;
   osm_id?: string | null;
+  /**
+   * The AMap (高德) POI id — TT's third provider, alongside Google and OSM. It is
+   * listed last only because the order is the order Google then OSM was already
+   * in; the strategies are mutually exclusive predicates, not a ranking, so this
+   * changes no existing outcome.
+   */
+  amap_id?: string | null;
 }
 
 /** One way to look for an existing place, to be tried in order. */
@@ -51,7 +58,7 @@ export function normalizePlaceName(name: string | null | undefined): string | nu
 
 /** The provider ids a candidate carries, trimmed, in provider order, blanks dropped. */
 export function externalIdsOf(candidate: PlaceMatchCandidate): string[] {
-  return [candidate.google_place_id, candidate.google_ftid, candidate.osm_id]
+  return [candidate.google_place_id, candidate.google_ftid, candidate.osm_id, candidate.amap_id]
     .filter((id): id is string => typeof id === 'string' && id.trim() !== '')
     .map((id) => id.trim());
 }

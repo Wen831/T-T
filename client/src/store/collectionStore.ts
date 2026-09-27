@@ -358,6 +358,7 @@ export const useCollectionStore = create<CollectionState>((set, get) => ({
         google_place_id: p.google_place_id ?? null,
         google_ftid: p.google_ftid ?? null,
         osm_id: p.osm_id ?? null,
+        amap_id: p.amap_id ?? null,
         website: p.website ?? null,
         phone: p.phone ?? null,
         status: p.status,

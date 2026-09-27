@@ -65,6 +65,8 @@ export const collectionPlaceSchema = z.object({
   google_place_id: z.string().nullable().optional(),
   google_ftid: z.string().nullable().optional(),
   osm_id: z.string().nullable().optional(),
+  /** TT's third provider alongside Google and OSM. */
+  amap_id: z.string().nullable().optional(),
   website: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   status: collectionStatusSchema,
@@ -162,6 +164,8 @@ export const collectionSavePlaceRequestSchema = z.object({
   google_place_id: z.string().nullable().optional(),
   google_ftid: z.string().nullable().optional(),
   osm_id: z.string().nullable().optional(),
+  /** TT's third provider alongside Google and OSM. */
+  amap_id: z.string().nullable().optional(),
   website: placeWebsiteSchema.nullable().optional(),
   phone: z.string().nullable().optional(),
   status: collectionStatusSchema.optional(),

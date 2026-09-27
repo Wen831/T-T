@@ -28,16 +28,20 @@ const { testDb } = vi.hoisted(() => {
 
 // Minimal real DB with just the tables the cache touches. isReferenced
 // UNIONs collection_places (#1081 photo-cache fix), so the bare fixture must
-// declare it too or the reference check would throw "no such table".
+// declare it too or the reference check would throw "no such table". Both
+// tables carry amap_id: the service's AMap branch reads it, and the fixture
+// dropping it is exactly how a missing column reached production once.
 testDb.exec(`
   CREATE TABLE places (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     google_place_id TEXT,
+    amap_id TEXT,
     image_url TEXT
   );
   CREATE TABLE collection_places (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     google_place_id TEXT,
+    amap_id TEXT,
     image_url TEXT
   );
   CREATE TABLE google_place_photo_meta (
@@ -181,6 +185,32 @@ describe.each([
       await cache.removeIfUnreferenced(id);
 
       expect(fs.existsSync(filePathFor(id))).toBe(true);
+    });
+
+    // Regression: the AMap branch reads collection_places.amap_id. The column was
+    // missing from the schema, so every sweep threw `no such column: amap_id` and
+    // was caught a level up — the cache simply grew and was never swept. The
+    // saved row here is what the branch has to recognise.
+    it('PPC-016: keeps an entry a saved list place owns by amap_id', async () => {
+      const id = 'amap:B035300A2B';
+      await cache.put(id, await makeJpeg(50, 50), null);
+      testDb.prepare('INSERT INTO collection_places (amap_id) VALUES (?)').run('B035300A2B');
+
+      await cache.removeIfUnreferenced(id);
+
+      expect(fs.existsSync(filePathFor(id))).toBe(true);
+    });
+
+    it('PPC-017: an amap: meta row does not make sweepOrphans() throw', async () => {
+      const id = 'amap:B000A60DA1';
+      await cache.put(id, await makeJpeg(50, 50), null);
+
+      // Unreferenced, so this one goes — the point is that the sweep completes
+      // rather than aborting on the column lookup.
+      const removed = await cache.sweepOrphans();
+
+      expect(removed).toBe(1);
+      expect(fs.existsSync(filePathFor(id))).toBe(false);
     });
   });
 
