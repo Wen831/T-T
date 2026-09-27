@@ -249,6 +249,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Sürüşe göre hesaplandı',
   'roadtrip.stop.endIsLeave': 'Yol gezisinde bu saatte yola çıkılır.',
   'roadtrip.via.hint': 'Rotayı yeniden şekillendirmek için sürükleyin, kaldırmak için sağ tıklayın',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Belirlenen saatten {minutes} dk sonra varış',
   'roadtrip.warn.missedLeave': 'Belirlenen kalkış saatinden {minutes} dk sonra varış',
   'roadtrip.warn.overnight': 'Ertesi gün',

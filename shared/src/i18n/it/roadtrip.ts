@@ -250,6 +250,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Calcolato dal tragitto',
   'roadtrip.stop.endIsLeave': 'Nel viaggio su strada si riparte a quest’ora.',
   'roadtrip.via.hint': 'Trascina per rimodellare il percorso, clic destro per rimuovere',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Arrivo {minutes} min dopo l’orario impostato',
   'roadtrip.warn.missedLeave': 'Arrivo {minutes} min dopo l’orario di partenza impostato',
   'roadtrip.warn.overnight': 'Giorno successivo',

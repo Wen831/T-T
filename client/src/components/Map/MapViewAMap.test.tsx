@@ -588,3 +588,59 @@ describe('MapViewAMap lifecycle', () => {
     expect(ReservationAMapOverlay).toHaveBeenCalledTimes(1);
   });
 });
+
+/**
+ * The camera belongs to the user once they have moved it.
+ *
+ * `setFitView` is a request to frame the trip, and `fitKey` is that request being
+ * made — a day is picked, a place is opened. The two place lists are also in the
+ * effect's dependency list because it reads them, but their identity changes on
+ * every route recompute and every websocket update. Refitting on those moved the
+ * map out from under the user: zoom in, a route lands, and the camera jumps back
+ * to the framed view. That is the "zoom jumps around" report.
+ */
+describe('MapViewAMap camera framing', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    currentMockInstance = null;
+  });
+
+  it('FE-COMP-MAPVIEWAMAP-040: a data update alone never refits the camera', async () => {
+    const { loadAmap } = await import('./engines/amap');
+    const place = { id: 1, name: 'A', lat: 39.9, lng: 116.4 };
+    const { rerender } = render(
+      <MapViewAMap places={[place]} fitKey={1} zoom={10} center={[39.908, 116.397]} />
+    );
+    await waitFor(() => expect(loadAmap).toHaveBeenCalled());
+    await waitFor(() => expect(currentMockInstance).toBeTruthy());
+    const { map } = currentMockInstance!;
+    await waitFor(() => expect(map.setFitView).toHaveBeenCalled());
+    const afterFirst = map.setFitView.mock.calls.length;
+
+    // Same fitKey, a fresh array identity — what a route recompute hands over.
+    rerender(
+      <MapViewAMap places={[{ ...place }]} fitKey={1} zoom={10} center={[39.908, 116.397]} />
+    );
+
+    expect(map.setFitView.mock.calls.length).toBe(afterFirst);
+  });
+
+  it('FE-COMP-MAPVIEWAMAP-041: a new fitKey does reframe, which is what it is for', async () => {
+    const { loadAmap } = await import('./engines/amap');
+    const place = { id: 1, name: 'A', lat: 39.9, lng: 116.4 };
+    const { rerender } = render(
+      <MapViewAMap places={[place]} fitKey={1} zoom={10} center={[39.908, 116.397]} />
+    );
+    await waitFor(() => expect(loadAmap).toHaveBeenCalled());
+    await waitFor(() => expect(currentMockInstance).toBeTruthy());
+    const { map } = currentMockInstance!;
+    await waitFor(() => expect(map.setFitView).toHaveBeenCalled());
+    const before = map.setFitView.mock.calls.length;
+
+    rerender(
+      <MapViewAMap places={[place]} fitKey={2} zoom={10} center={[39.908, 116.397]} />
+    );
+
+    expect(map.setFitView.mock.calls.length).toBeGreaterThan(before);
+  });
+});

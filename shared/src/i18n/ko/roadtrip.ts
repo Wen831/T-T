@@ -244,6 +244,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': '주행 시간으로 계산됨',
   'roadtrip.stop.endIsLeave': '로드트립에서는 이 시간에 출발합니다.',
   'roadtrip.via.hint': '끌어서 경로를 바꾸고, 오른쪽 클릭으로 삭제',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': '지정한 시간보다 {minutes}분 늦게 도착',
   'roadtrip.warn.missedLeave': '지정한 출발 시간보다 {minutes}분 늦게 도착',
   'roadtrip.warn.overnight': '다음 날',

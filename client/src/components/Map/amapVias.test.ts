@@ -187,70 +187,6 @@ describe('applyViasAmap — removal and read-only', () => {
 });
 
 
-describe('applyViasAmap — mobile touch lifecycle', () => {
-  it('FE-MAP-VIAAMAP-012: updating the same via moves the existing marker instead of rebuilding it', () => {
-    const { api, created } = fakeApi();
-    const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn() }, 12);
-    const original = created[0];
-
-    manager.update([via({ lat: WGS.lat + 0.01, lng: WGS.lng + 0.01 })], { onMove: vi.fn() }, 12);
-
-    expect(created).toHaveLength(1);
-    expect(original.setPosition).toHaveBeenCalled();
-    expect(original.setMap).toHaveBeenCalledTimes(1);
-    expect(original.setMap).not.toHaveBeenLastCalledWith(null);
-  });
-
-  it('FE-MAP-VIAAMAP-013: a long press removes a via on touch devices', () => {
-    vi.useFakeTimers();
-    try {
-      const { api, created } = fakeApi();
-      const onRemove = vi.fn();
-      // jsdom has no AMap DOM, so provide the marker content element the manager
-      // would normally own. The real production marker uses the same touch listeners.
-      const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove }, 12);
-      const element = (created[0].getContentDom as () => HTMLElement)();
-      const touch = (type: string, x = 10, y = 10) => {
-        const event = new Event(type, { bubbles: true });
-        Object.defineProperty(event, 'touches', { value: type === 'touchend' ? [] : [{ clientX: x, clientY: y }] });
-        element.dispatchEvent(event);
-      };
-      touch('touchstart');
-      vi.advanceTimersByTime(599);
-      expect(onRemove).not.toHaveBeenCalled();
-      vi.advanceTimersByTime(1);
-      expect(onRemove).toHaveBeenCalledWith(2, 7);
-      manager.clear();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-
-  it('FE-MAP-VIAAMAP-014: moving a finger cancels the long press and leaves the via', () => {
-    vi.useFakeTimers();
-    try {
-      const { api, created } = fakeApi();
-      const onRemove = vi.fn();
-      const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove }, 12);
-      const element = (created[0].getContentDom as () => HTMLElement)();
-      const touch = (type: string, x: number, y: number) => {
-        const event = new Event(type, { bubbles: true });
-        Object.defineProperty(event, 'touches', { value: [{ clientX: x, clientY: y }] });
-        element.dispatchEvent(event);
-      };
-      touch('touchstart', 10, 10);
-      touch('touchmove', 25, 10);
-      vi.advanceTimersByTime(700);
-      expect(onRemove).not.toHaveBeenCalled();
-      expect(manager.count).toBe(1);
-      manager.clear();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-});
-
-
 describe('applyViasAmap — the marker content contract', () => {
   it('FE-MAP-VIAAMAP-015: content is the icon markup, never a detached element', () => {
     // The regression this pins: passing a live element made AMap render nothing,
@@ -264,22 +200,17 @@ describe('applyViasAmap — the marker content contract', () => {
     expect(content).toContain('border-radius');
   });
 
-  it('FE-MAP-VIAAMAP-016: the armed look is pushed through setContent, not by styling an element', () => {
-    vi.useFakeTimers();
-    try {
-      const { api, created } = fakeApi();
-      applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove: vi.fn() }, 12);
-      const element = (created[0].getContentDom as () => HTMLElement)();
-      const start = new Event('touchstart', { bubbles: true });
-      Object.defineProperty(start, 'touches', { value: [{ clientX: 5, clientY: 5 }] });
-      element.dispatchEvent(start);
+  it('FE-MAP-VIAAMAP-016: selecting a handle rings it through setContent, not by styling an element', () => {
+    const { api, created } = fakeApi();
+    const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onRemove: vi.fn() }, 12);
 
-      // Only setContent changes what is displayed; a style write would be lost.
-      expect(created[0].setContent).toHaveBeenCalled();
-      vi.advanceTimersByTime(700);
-    } finally {
-      vi.useRealTimers();
-    }
+    manager.setSelected('2:7');
+
+    // Only setContent changes what is displayed; a style write would be lost.
+    expect(created[0].setContent).toHaveBeenCalled();
+    const calls = (created[0].setContent as { mock: { calls: string[][] } }).mock.calls;
+    const last = calls[calls.length - 1][0];
+    expect(String(last)).toContain('rgba(10,132,255');
   });
 });
 
@@ -324,5 +255,77 @@ describe('applyViasAmap — the zoom gate is not latched', () => {
 
     expect(manager.count).toBe(1);
     expect(created).toHaveLength(1);
+  });
+});
+
+
+describe('applyViasAmap — deleting through the drop zone', () => {
+  const zone = { left: 0, top: 0, right: 120, bottom: 60 };
+
+  it('FE-MAP-VIAAMAP-020: a handle dropped inside the zone is removed', () => {
+    // The gesture that replaces a long press: a browser claims the long press for
+    // text selection, so the delete had to become a drop the finger already makes.
+    const { api, created } = fakeApi();
+    const onRemove = vi.fn();
+    const onMove = vi.fn();
+    const manager = applyViasAmap(api, map, [via()], { onMove, onRemove }, 12);
+    manager.setDropZone(zone);
+
+    fire(created[0], 'dragend')({
+      lnglat: { getLng: () => GCJ.lng, getLat: () => GCJ.lat },
+      pixel: { getX: () => 40, getY: () => 20 },
+    });
+
+    expect(onRemove).toHaveBeenCalledWith(2, 7);
+    // A drop in the zone is a delete, never also a move.
+    expect(onMove).not.toHaveBeenCalled();
+  });
+
+  it('FE-MAP-VIAAMAP-021: a handle dropped outside the zone is moved, not removed', () => {
+    const { api, created } = fakeApi();
+    const onRemove = vi.fn();
+    const onMove = vi.fn();
+    const manager = applyViasAmap(api, map, [via()], { onMove, onRemove }, 12);
+    manager.setDropZone(zone);
+
+    fire(created[0], 'dragend')({
+      lnglat: { getLng: () => GCJ.lng, getLat: () => GCJ.lat },
+      pixel: { getX: () => 400, getY: () => 500 },
+    });
+
+    expect(onRemove).not.toHaveBeenCalled();
+    expect(onMove).toHaveBeenCalled();
+  });
+
+  it('FE-MAP-VIAAMAP-022: without a zone every drag is a move', () => {
+    // The desktop path: a right-click deletes, so no zone is shown and a drag
+    // must never be read as one.
+    const { api, created } = fakeApi();
+    const onRemove = vi.fn();
+    const onMove = vi.fn();
+    applyViasAmap(api, map, [via()], { onMove, onRemove }, 12);
+
+    fire(created[0], 'dragend')({
+      lnglat: { getLng: () => GCJ.lng, getLat: () => GCJ.lat },
+      pixel: { getX: () => 1, getY: () => 1 },
+    });
+
+    expect(onRemove).not.toHaveBeenCalled();
+    expect(onMove).toHaveBeenCalled();
+  });
+
+  it('FE-MAP-VIAAMAP-023: a tap reports the selection, and clearing it reports null', () => {
+    const { api, created } = fakeApi();
+    const onSelect = vi.fn();
+    const manager = applyViasAmap(api, map, [via()], { onMove: vi.fn(), onSelect }, 12);
+
+    fire(created[0], 'click')();
+    expect(onSelect).toHaveBeenCalledWith({ dayId: 2, id: 7 });
+
+    // The handle going away must drop the selection, or the zone stays on screen
+    // with nothing to drop into it.
+    onSelect.mockClear();
+    manager.update([], { onMove: vi.fn(), onSelect }, 12);
+    expect(onSelect).toHaveBeenCalledWith(null);
   });
 });

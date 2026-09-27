@@ -246,6 +246,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': '運転時間からの計算値',
   'roadtrip.stop.endIsLeave': 'ロードトリップでは、この時刻に出発します。',
   'roadtrip.via.hint': 'ドラッグでルートを変え、右クリックで削除',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': '設定した時刻より {minutes} 分遅く到着します',
   'roadtrip.warn.missedLeave': '設定した出発時刻より {minutes} 分遅く到着します',
   'roadtrip.warn.overnight': '翌日',

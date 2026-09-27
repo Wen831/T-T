@@ -244,6 +244,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'محسوب من زمن القيادة',
   'roadtrip.stop.endIsLeave': 'في الرحلة البرية، تنطلق الرحلة في هذا الوقت.',
   'roadtrip.via.hint': 'اسحب لإعادة تشكيل المسار، وانقر بالزر الأيمن للإزالة',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'الوصول بعد {minutes} دقيقة من الوقت المحدد',
   'roadtrip.warn.missedLeave': 'الوصول بعد {minutes} دقيقة من وقت المغادرة المحدد',
   'roadtrip.warn.overnight': 'اليوم التالي',

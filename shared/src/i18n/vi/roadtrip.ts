@@ -248,6 +248,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Tính từ thời gian lái xe',
   'roadtrip.stop.endIsLeave': 'Trong chuyến đi đường bộ, sẽ khởi hành vào giờ này.',
   'roadtrip.via.hint': 'Kéo để định hình lại lộ trình, chuột phải để xóa',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Đến muộn {minutes} phút so với giờ đã đặt',
   'roadtrip.warn.missedLeave': 'Đến muộn {minutes} phút so với giờ rời đi đã đặt',
   'roadtrip.warn.overnight': 'Ngày hôm sau',

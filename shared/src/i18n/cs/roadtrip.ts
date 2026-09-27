@@ -247,6 +247,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Vypočteno z doby jízdy',
   'roadtrip.stop.endIsLeave': 'Na cestě autem se v tento čas odjíždí.',
   'roadtrip.via.hint': 'Tažením změníte trasu, pravým tlačítkem odeberete',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Příjezd {minutes} min po nastaveném čase',
   'roadtrip.warn.missedLeave': 'Příjezd {minutes} min po nastaveném čase odjezdu',
   'roadtrip.warn.overnight': 'Následující den',

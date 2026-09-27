@@ -250,6 +250,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Dihitung dari waktu berkendara',
   'roadtrip.stop.endIsLeave': 'Dalam perjalanan darat, keberangkatan pada waktu ini.',
   'roadtrip.via.hint': 'Seret untuk mengubah rute, klik kanan untuk menghapus',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Tiba {minutes} menit setelah waktu yang ditetapkan',
   'roadtrip.warn.missedLeave': 'Tiba {minutes} menit setelah waktu berangkat yang ditetapkan',
   'roadtrip.warn.overnight': 'Hari berikutnya',

@@ -249,6 +249,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Розраховано за часом у дорозі',
   'roadtrip.stop.endIsLeave': 'В автоподорожі відʼїзд відбувається в цей час.',
   'roadtrip.via.hint': 'Перетягніть, щоб змінити маршрут, права кнопка — видалити',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Прибуття на {minutes} хв пізніше заданого часу',
   'roadtrip.warn.missedLeave': 'Прибуття на {minutes} хв пізніше заданого часу відʼїзду',
   'roadtrip.warn.overnight': 'Наступний день',

@@ -252,6 +252,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Υπολογισμένη από τη διαδρομή',
   'roadtrip.stop.endIsLeave': 'Στο οδικό ταξίδι, η αναχώρηση γίνεται αυτή την ώρα.',
   'roadtrip.via.hint': 'Σύρετε για να αλλάξετε τη διαδρομή, δεξί κλικ για αφαίρεση',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Άφιξη {minutes} λεπτά μετά την ορισμένη ώρα',
   'roadtrip.warn.missedLeave': 'Άφιξη {minutes} λεπτά μετά την ορισμένη ώρα αναχώρησης',
   'roadtrip.warn.overnight': 'Επόμενη μέρα',

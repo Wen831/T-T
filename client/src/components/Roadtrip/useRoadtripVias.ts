@@ -215,11 +215,21 @@ export function useRoadtripVias(tripId: number | string | null, active: boolean)
     // The anchor rides along when the caller worked out a new one: a via dragged past the
     // stop it used to sit before belongs to the next leg now, and saying only where it is
     // leaves it claiming the old one.
-    await roadtripApi.moveVia(tripId, dayId, id, {
-      lat,
-      lng,
-      ...(afterOrderIndex === undefined ? {} : { after_order_index: afterOrderIndex }),
-    })
+    try {
+      await roadtripApi.moveVia(tripId, dayId, id, {
+        lat,
+        lng,
+        ...(afterOrderIndex === undefined ? {} : { after_order_index: afterOrderIndex }),
+      })
+    } catch (err: unknown) {
+      // A 404 means this via is gone — the day's stops changed shape under the gesture
+      // (adding a place, replacing a leg, following a track), and the write that did it
+      // deleted the point the finger is on. That is a stale handle, not a failed edit:
+      // reloading drops the handle and the route is already correct without it. Reporting
+      // it as an error would blame the user for a gesture the server had already
+      // superseded, and left the dead handle on the map to be dragged again.
+      if ((err as { response?: { status?: number } })?.response?.status !== 404) throw err
+    }
     await reload()
   }, [tripId, reload])
 

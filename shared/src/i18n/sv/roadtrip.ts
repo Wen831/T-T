@@ -247,6 +247,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Beräknad utifrån körningen',
   'roadtrip.stop.endIsLeave': 'På bilresan åker ni vidare vid den här tiden.',
   'roadtrip.via.hint': 'Dra för att forma om rutten, högerklicka för att ta bort',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Ankomst {minutes} min efter den satta tiden',
   'roadtrip.warn.missedLeave': 'Ankomst {minutes} min efter den satta avfärdstiden',
   'roadtrip.warn.overnight': 'Nästa dag',

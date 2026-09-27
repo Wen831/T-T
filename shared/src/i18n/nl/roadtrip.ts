@@ -250,6 +250,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'Berekend uit de rit',
   'roadtrip.stop.endIsLeave': 'Op de roadtrip vertrek je op dit tijdstip.',
   'roadtrip.via.hint': 'Sleep om de route te hervormen, rechtsklik om te verwijderen',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Aankomst {minutes} min na de gezette tijd',
   'roadtrip.warn.missedLeave': 'Aankomst {minutes} min na de gezette vertrektijd',
   'roadtrip.warn.overnight': 'Volgende dag',

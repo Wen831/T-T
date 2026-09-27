@@ -248,6 +248,7 @@ const roadtrip: TranslationStrings = {
   'roadtrip.stop.computed': 'A menetidőből számolva',
   'roadtrip.stop.endIsLeave': 'Az autós úton ekkor indul tovább az út.',
   'roadtrip.via.hint': 'Húzza az útvonal átalakításához, jobb gombbal eltávolítható',
+  'roadtrip.via.dropToDelete': 'Drag here to delete',
   'roadtrip.warn.late': 'Érkezés {minutes} perccel a megadott idő után',
   'roadtrip.warn.missedLeave': 'Érkezés {minutes} perccel a megadott indulási idő után',
   'roadtrip.warn.overnight': 'Következő nap',

@@ -1,5 +1,6 @@
 import type { RoadtripVia } from '@trek/shared';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import { pluginsApi, type PluginMapLayer, type PluginMapMarker } from '../../api/client';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import { useTranslation } from '../../i18n';
@@ -75,6 +76,11 @@ export function MapViewAMap(props: any) {
   const [pluginLayers, setPluginLayers] = useState<PluginMapLayer[]>([]);
   const [pluginVersion, setPluginVersion] = useState(0);
   const [mapZoom, setMapZoom] = useState<number | null>(null);
+  // The handle the user tapped. While one is selected the delete zone is on
+  // screen: dragging the handle into it removes the point. This replaces a long
+  // press, which a browser claims for text selection rather than delivering.
+  const [selectedVia, setSelectedVia] = useState<{ dayId: number; id: number } | null>(null);
+  const dropZoneRef = useRef<HTMLDivElement | null>(null);
   const places = props.places || [];
   const dayPlaces = props.dayPlaces || [];
   const selected = props.selectedPlaceId;
@@ -218,23 +224,39 @@ export function MapViewAMap(props: any) {
     const byDay = props.roadtripVias as Record<number, RoadtripVia[]> | undefined;
     const vias = byDay ? Object.values(byDay).flat() : [];
     if (!map || !AMap || !ready) return;
+    const handlers = {
+      onMove: props.onMoveVia,
+      onRemove: props.onRemoveVia,
+      onSelect: (selection: { dayId: number; id: number } | null) => setSelectedVia(selection),
+    };
+    const zoom = mapZoom ?? Number(props.zoom ?? 5);
 
     if (!viaRef.current) {
-      viaRef.current = applyViasAmap(
-        AMap,
-        map,
-        vias,
-        { onMove: props.onMoveVia, onRemove: props.onRemoveVia },
-        mapZoom ?? Number(props.zoom ?? 5),
-      );
+      viaRef.current = applyViasAmap(AMap, map, vias, handlers, zoom);
     } else {
-      viaRef.current.update?.(
-        vias,
-        { onMove: props.onMoveVia, onRemove: props.onRemoveVia },
-        mapZoom ?? Number(props.zoom ?? 5),
-      );
+      viaRef.current.update(vias, handlers, zoom);
     }
   }, [ready, props.roadtripVias, props.onMoveVia, props.onRemoveVia, mapZoom]);
+
+  // The selected handle, so the drop zone knows what it would delete and the dot
+  // stays ringed while the finger travels to it.
+  const selectedKey = selectedVia ? `${selectedVia.dayId}:${selectedVia.id}` : null;
+  useEffect(() => {
+    viaRef.current?.setSelected(selectedKey);
+  }, [selectedKey]);
+
+  // The zone is measured from the DOM rather than assumed, because the map fills
+  // whatever the shell gives it and the safe-area inset differs per device.
+  useEffect(() => {
+    const zone = dropZoneRef.current;
+    if (!viaRef.current || !zone) return;
+    if (!selectedVia) {
+      viaRef.current.setDropZone(null);
+      return;
+    }
+    const r = zone.getBoundingClientRect();
+    viaRef.current.setDropZone({ left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+  }, [selectedVia, ready]);
 
   useEffect(() => () => {
     viaRef.current?.clear();
@@ -589,11 +611,27 @@ export function MapViewAMap(props: any) {
     locationOverlayRef.current.update(position, { follow: mode === 'follow' });
   }, [position, mode, ready]);
 
+  /**
+   * Refit only when a fit is actually asked for.
+   *
+   * `fitKey` is that request — it is bumped when a day is selected or a place is
+   * opened, which are the moments the camera should move. The two data lists are
+   * in the dependency list because the effect reads them, but their identity
+   * changes on every route recompute and every websocket update, and refitting on
+   * those moved the map out from under the user: zoom in, a route lands, and the
+   * camera jumps back to the framed view. So the data is read fresh and the fit is
+   * keyed on `fitKey` alone.
+   */
+  const lastFitKey = useRef<number | null>(null);
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready || props.fitKey == null) return;
     const target = (dayPlaces.length ? dayPlaces : places).filter((p: any) => valid(p.lat, p.lng));
     if (!target.length) return;
+    // Already framed for this request. The first pass with data is the one that
+    // counts, so a trip whose places arrive after the key still gets framed once.
+    if (lastFitKey.current === props.fitKey) return;
+    lastFitKey.current = props.fitKey;
     const overlays = target
       .map((p: any) => {
         const c = point(p)!;
@@ -607,7 +645,42 @@ export function MapViewAMap(props: any) {
   }, [props.fitKey, dayPlaces, places, ready]);
 
   if (failed) return <MapView {...props} />;
-  return <div ref={hostRef} style={{ width: '100%', height: '100%', minHeight: 240 }} aria-label="高德地图" />;
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: 240 }}>
+      <div ref={hostRef} style={{ width: '100%', height: '100%' }} aria-label="高德地图" />
+      {/* The delete zone, top-left, while a handle is selected. Out of the way of the
+          map's own controls (which sit top-right and bottom) and reachable by a thumb
+          holding the handle, which is the whole point of a drop target. */}
+      {selectedVia && (
+        <div
+          ref={dropZoneRef}
+          role="button"
+          aria-label={t('roadtrip.via.dropToDelete')}
+          data-testid="amap-via-dropzone"
+          style={{
+            position: 'absolute',
+            left: 12,
+            top: 'calc(var(--m-safe-top, 12px) + 8px)',
+            zIndex: 1200,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '10px 14px',
+            borderRadius: 9999,
+            background: 'rgba(220,38,38,.94)',
+            color: '#fff',
+            font: '600 13px/1 var(--font-system, sans-serif)',
+            boxShadow: '0 6px 20px rgba(0,0,0,.35)',
+            border: '2px dashed rgba(255,255,255,.85)',
+            pointerEvents: 'none',
+          }}
+        >
+          <Trash2 size={15} strokeWidth={2.4} aria-hidden="true" />
+          {t('roadtrip.via.dropToDelete')}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function AMapFallbackBoundary(props: any) {
