@@ -3,6 +3,7 @@ import {
   DAWARICH_KEY_MASK,
   type DawarichCapabilities,
   type DawarichConnection,
+  type DawarichSource,
   type DawarichStatus,
   type DawarichSyncState,
 } from '@trek/shared';
@@ -11,6 +12,7 @@ import { AuditService } from '../audit/audit.service';
 import { maybe_encrypt_api_key, decrypt_api_key } from '../common/crypto/apiKeyCrypto';
 import { checkSsrf } from '../../utils/ssrfGuard';
 import { DawarichClient, DawarichError, type DawarichCreds } from './dawarich.client';
+import { DawarichLocalSource } from './dawarich-local-source';
 
 /**
  * The Dawarich connection: credentials, the probe, and what the connected
@@ -33,11 +35,12 @@ export class DawarichService {
     private readonly db: DatabaseService,
     private readonly audit: AuditService,
     private readonly client: DawarichClient,
+    private readonly local: DawarichLocalSource,
   ) {}
 
   private readRow(userId: number): ConnRow | undefined {
     return this.db.get<ConnRow>(
-      `SELECT user_id, url, api_key, allow_insecure_tls, sync_enabled,
+      `SELECT user_id, url, api_key, allow_insecure_tls, sync_enabled, source,
               last_sync_at, last_sync_state, last_sync_error, capabilities
          FROM dawarich_connections WHERE user_id = ?`,
       userId,
@@ -53,8 +56,21 @@ export class DawarichService {
     return { baseUrl: row.url, apiKey, allowInsecureTls: !!row.allow_insecure_tls };
   }
 
-  /** True when the user has both an address and a key on file. */
+  /**
+   * Where this user's location history is read from. A user whose row is not
+   * `builtin` reads the remote instance exactly as before this field existed —
+   * including users with no row at all, whose answer is the external default.
+   */
+  getSource(userId: number): DawarichSource {
+    return this.readRow(userId)?.source === 'builtin' ? 'builtin' : 'external';
+  }
+
+  /**
+   * True when the integration has something to read from: a builtin archive,
+   * or both an address and a key on file for the remote instance.
+   */
   isConnected(userId: number): boolean {
+    if (this.getSource(userId) === 'builtin') return true;
     const row = this.readRow(userId);
     return !!(row?.url && row?.api_key);
   }
@@ -63,7 +79,9 @@ export class DawarichService {
   listSyncableUserIds(): number[] {
     const rows = this.db.all<{ user_id: number }>(
       `SELECT user_id FROM dawarich_connections
-        WHERE sync_enabled = 1 AND url IS NOT NULL AND url <> '' AND api_key IS NOT NULL`,
+        WHERE sync_enabled = 1
+          AND (source = 'builtin'
+               OR (url IS NOT NULL AND url <> '' AND api_key IS NOT NULL))`,
     );
     return rows.map((r) => r.user_id);
   }
@@ -78,7 +96,8 @@ export class DawarichService {
       // A row that does not exist yet is a user who has never opened the card,
       // and the default there is "poll once it is connected".
       syncEnabled: row ? !!row.sync_enabled : true,
-      connected: !!(row?.url && row?.api_key),
+      source: this.getSource(userId),
+      connected: this.isConnected(userId),
       lastSyncAt: row?.last_sync_at ?? null,
       lastSyncState: normalizeSyncState(row?.last_sync_state),
       lastSyncError: row?.last_sync_error ?? null,
@@ -100,6 +119,12 @@ export class DawarichService {
    * A private address is saved with a warning rather than refused: a
    * self-hosted Dawarich on a LAN is the common case, not an attack. Only a URL
    * that could not work at all (malformed, unresolvable, not http) is rejected.
+   *
+   * `source` arrives from callers that know it (the settings body carries it
+   * optionally); when it is absent the stored value is kept untouched, so an
+   * old form posting the pre-source shape cannot silently flip a builtin
+   * connection back to external. Switching the source clears the probe and the
+   * sync history: what the other source answered says nothing about this one.
    */
   async saveSettings(
     userId: number,
@@ -108,6 +133,7 @@ export class DawarichService {
     allowInsecureTls: boolean,
     syncEnabled: boolean,
     clientIp: string | null,
+    source?: DawarichSource,
   ): Promise<{ success: boolean; warning?: string; warningCode?: string; warningIp?: string; error?: string; code?: string }> {
     const trimmedUrl = (url || '').trim();
     let warning: string | undefined;
@@ -139,6 +165,10 @@ export class DawarichService {
       userId,
     )?.url ?? null;
 
+    const previousSource = this.getSource(userId);
+    const nextSource: DawarichSource = source ?? previousSource;
+    const sourceChanged = nextSource !== previousSource && source !== undefined;
+
     const provided = (apiKey || '').trim();
     const newKey = provided && provided !== DAWARICH_KEY_MASK ? maybe_encrypt_api_key(provided) : undefined;
 
@@ -147,17 +177,19 @@ export class DawarichService {
     // the next sync would send it there.
     this.db.transaction(() => {
       this.db.run(
-        `INSERT INTO dawarich_connections (user_id, url, allow_insecure_tls, sync_enabled, updated_at)
-              VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+        `INSERT INTO dawarich_connections (user_id, url, allow_insecure_tls, sync_enabled, source, updated_at)
+              VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
          ON CONFLICT(user_id) DO UPDATE SET
               url = excluded.url,
               allow_insecure_tls = excluded.allow_insecure_tls,
               sync_enabled = excluded.sync_enabled,
+              source = excluded.source,
               updated_at = CURRENT_TIMESTAMP`,
         userId,
         trimmedUrl || null,
         allowInsecureTls ? 1 : 0,
         syncEnabled ? 1 : 0,
+        nextSource,
       );
 
       if (newKey !== undefined) {
@@ -199,6 +231,20 @@ export class DawarichService {
           userId,
         );
       }
+
+      // The same reasoning across the source boundary: the capabilities and the
+      // sync history describe whichever source answered before, and the probe
+      // of an instance says nothing about the local archive or the other way
+      // round. The next sync re-probes and repopulates both.
+      if (sourceChanged) {
+        this.db.run(
+          `UPDATE dawarich_connections
+              SET capabilities = NULL, last_sync_state = 'never',
+                  last_sync_error = NULL, last_sync_at = NULL
+            WHERE user_id = ?`,
+          userId,
+        );
+      }
     });
 
     return warning ? { success: true, warning, warningCode, warningIp } : { success: true };
@@ -235,6 +281,16 @@ export class DawarichService {
     apiKey: string | undefined,
     allowInsecureTls: boolean,
   ): Promise<DawarichStatus> {
+    // The builtin source has no address to reach and no key to mistype: the
+    // archive is this database. A probe here would be theatre — the honest
+    // answer is what the local source can serve, plus proof of life.
+    if (this.getSource(userId) === 'builtin') {
+      const to = new Date();
+      const from = new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const { visits } = await this.local.listVisits(userId, from, to);
+      return { connected: true, visitCount: visits.length, capabilities: this.local.capabilities() };
+    }
+
     const typedKey = (apiKey || '').trim();
     const stored = this.getCredentials(userId);
     const baseUrl = (url || '').trim() || stored?.baseUrl || '';
@@ -362,6 +418,7 @@ interface ConnRow {
   api_key: string | null;
   allow_insecure_tls: number | null;
   sync_enabled: number | null;
+  source: string | null;
   last_sync_at: string | null;
   last_sync_state: string | null;
   last_sync_error: string | null;

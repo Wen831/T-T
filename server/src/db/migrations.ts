@@ -5223,6 +5223,30 @@ function runMigrations(db: Database.Database): void {
         )
       `);
     },
+
+    /**
+     * Dawarich connection `source` — external | builtin.
+     *
+     * `external` is the connection as it has always been: a self-hosted
+     * Dawarich instance addressed by url + api_key. `builtin` points the same
+     * consumers at TT's own footprint archive (location_points + the ported
+     * stay detector), so recording into TT and reading that recording are two
+     * settings on one integration instead of two integrations. The default on
+     * the column is `external`, so every existing row keeps its exact behavior
+     * — this migration changes storage, not anyone's data source.
+     *
+     * Appended as the LAST element on purpose: this array is index-addressed
+     * against schema_version, so inserting in the middle would replay the wrong
+     * step against an existing database.
+     */
+    () => {
+      const cols = db.prepare("SELECT name FROM pragma_table_info('dawarich_connections')").all() as Array<{
+        name: string;
+      }>;
+      if (!cols.some((c) => c.name === 'source')) {
+        db.exec("ALTER TABLE dawarich_connections ADD COLUMN source TEXT NOT NULL DEFAULT 'external'");
+      }
+    },
   ];
 
   if (currentVersion < migrations.length) {

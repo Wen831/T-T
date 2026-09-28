@@ -79,6 +79,7 @@ function connection(over: Partial<DawarichConnection> = {}): DawarichConnection 
     apiKeyMasked: '****abcd',
     allowInsecureTls: false,
     syncEnabled: true,
+    source: 'external',
     connected: true,
     lastSyncAt: '2026-09-01T07:00:00.000Z',
     lastSyncState: 'ok',

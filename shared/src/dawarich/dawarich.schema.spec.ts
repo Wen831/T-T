@@ -181,6 +181,18 @@ describe('dawarichSettingsSchema', () => {
     expect(parsed.success).toBe(true);
   });
 
+  it('DAWARICH-SCHEMA-042 leaves source optional, so a pre-source form cannot reset it', () => {
+    // Absent means "keep what is stored" in the save path — the same contract
+    // the apiKey field runs on. Present, it must be one of the two sources.
+    const url = 'https://dawarich.example.com';
+    const parsed = dawarichSettingsSchema.parse({ url });
+    expect(parsed.source).toBeUndefined();
+    expect(dawarichSettingsSchema.parse({ url, source: 'builtin' }).source).toBe('builtin');
+    expect(dawarichSettingsSchema.safeParse({ url, source: 'external' }).success).toBe(true);
+    expect(dawarichSettingsSchema.safeParse({ url, source: 'archive' }).success).toBe(false);
+    expect(dawarichSettingsSchema.safeParse({ url, source: 1 }).success).toBe(false);
+  });
+
   it('DAWARICH-SCHEMA-040 uses a mask nobody could type, because the save path decides by equality', () => {
     // `saveSettings` keeps the stored key whenever the posted one is equal to the
     // mask. A mask made of characters a person could plausibly type would turn
@@ -266,6 +278,7 @@ describe('dawarichConnectionSchema', () => {
     apiKeyMasked: DAWARICH_KEY_MASK,
     allowInsecureTls: false,
     syncEnabled: true,
+    source: 'external',
     connected: true,
     lastSyncAt: null,
     lastSyncState: 'never',
@@ -288,6 +301,10 @@ describe('dawarichConnectionSchema', () => {
         capabilities,
       }).success,
     ).toBe(true);
+    // A builtin row reads TT's own archive; the card says so the same way it
+    // says everything else, as a value and never as an absence.
+    expect(dawarichConnectionSchema.safeParse({ ...connection, source: 'builtin' }).success).toBe(true);
+    expect(dawarichConnectionSchema.safeParse({ ...connection, source: 'nope' }).success).toBe(false);
   });
 
   it('DAWARICH-SCHEMA-013 refuses a state the card cannot render and a missing flag', () => {

@@ -52,16 +52,14 @@ export class FootprintController {
   @Get('track')
   track(@CurrentUser() user: User, @Query('from') from?: string, @Query('to') to?: string, @Query('offset') offset?: string) {
     const { fromTs, toTs } = windowBounds(from, to);
-    const track = this.footprint.localTrack(
+    // The AddonGuard has already established the archive is being served, so
+    // localTrack cannot answer null here.
+    return this.footprint.localTrack(
       user.id,
       new Date(fromTs * 1000).toISOString(),
       new Date(toTs * 1000).toISOString(),
       parseOffsetMinutes(offset),
     );
-    if (!track) {
-      throw new HttpException({ error: 'Footprint recording is not configured — mint an ingest token first' }, 404);
-    }
-    return track;
   }
 
   /** Detected stays for a window, each scored by the ported ConfidenceScorer. */

@@ -68,9 +68,9 @@ export class FootprintService {
 
   /**
    * A user is recording locally when the addon is on and they hold an ingest
-   * token — minting one is the opt-in that says "my phone reports to TT, not
-   * to a separate Dawarich". Everything downstream keys off this: the track
-   * endpoints serve this archive instead of the remote instance for such users.
+   * token — minting one is the opt-in that says "my phone reports to TT". The
+   * READ side keys off the Dawarich connection's `source: 'builtin'` instead:
+   * reading the archive needs no ingest credential, only the addon being on.
    */
   isLocalRecorder(userId: number): boolean {
     return this.isAddonEnabled() && this.hasIngestToken(userId);
@@ -266,14 +266,15 @@ export class FootprintService {
    * helper the remote `points` fallback uses, so thinning, day-stitching and
    * the 600-points-per-day cap behave identically across both sources.
    *
-   * Returns null when this user is not recording locally (addon off, or no
-   * ingest token): the caller then falls through to the remote instance. Once
-   * the user IS recording locally, the local archive answers even when the
-   * window is empty — a hole in your own recording is a hole, not a reason to
-   * go ask another server.
+   * Returns null when the footprint addon is off: the archive belongs to that
+   * addon, and an off addon is not a data source. (Whether the archive IS the
+   * Dawarich overlay's source is the Dawarich connection's `source` setting,
+   * not this method's call.) Once the addon is on, the archive answers even
+   * when the window is empty — a hole in your own recording is a hole, not a
+   * reason to go ask another server.
    */
   localTrack(userId: number, fromIso: string, toIso: string, offsetMinutes: number): DawarichTrack | null {
-    if (!this.isLocalRecorder(userId)) return null;
+    if (!this.isAddonEnabled()) return null;
 
     const from = Date.parse(fromIso);
     const to = Date.parse(toIso);
@@ -343,8 +344,10 @@ export class FootprintService {
    * but a source build compiled without it must not take the server down. */
   private rtreeAvailable(): boolean {
     if (this.rtreeFlag === undefined) {
-      const row = this.db.get<{ on: number }>("SELECT sqlite_compileoption_used('ENABLE_RTREE') AS on");
-      this.rtreeFlag = row?.on === 1;
+      const row = this.db.get<{ rtree_on: number }>(
+        "SELECT sqlite_compileoption_used('ENABLE_RTREE') AS rtree_on",
+      );
+      this.rtreeFlag = row?.rtree_on === 1;
     }
     return this.rtreeFlag;
   }

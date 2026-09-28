@@ -26,6 +26,20 @@ import { idSchema } from '../common/primitives.schema';
 /** Placeholder returned instead of the stored key. Never the key itself. */
 export const DAWARICH_KEY_MASK = '••••••••';
 
+/**
+ * Where the integration reads location history from.
+ *
+ * `external` is the original shape — a per-user connection to a self-hosted
+ * Dawarich instance. `builtin` points the same consumers at TT's own footprint
+ * archive (the footprint addon's `location_points` + its ported stay
+ * detector), so a user who records into TT gets suggestions and the trail
+ * overlay without running a second server. The default is `external`: an
+ * existing connection behaves exactly as it did before this field existed.
+ */
+export const DAWARICH_SOURCES = ['external', 'builtin'] as const;
+export const dawarichSourceSchema = z.enum(DAWARICH_SOURCES);
+export type DawarichSource = (typeof DAWARICH_SOURCES)[number];
+
 export const dawarichSettingsSchema = z.object({
   /** Instance origin, e.g. https://dawarich.example.com — TREK appends /api/v1 itself. */
   url: z.string().trim().max(2048),
@@ -39,6 +53,12 @@ export const dawarichSettingsSchema = z.object({
    * history on a timer.
    */
   syncEnabled: z.boolean().optional().default(true),
+  /**
+   * Where visits and tracks are read from. Omitted leaves the stored value
+   * unchanged — the settings form predates this field and must not reset it
+   * just because it does not send it. `builtin` needs no url or key at all.
+   */
+  source: dawarichSourceSchema.optional(),
 });
 export type DawarichSettings = z.infer<typeof dawarichSettingsSchema>;
 
@@ -87,6 +107,8 @@ export const dawarichConnectionSchema = z.object({
   apiKeyMasked: z.string(),
   allowInsecureTls: z.boolean(),
   syncEnabled: z.boolean(),
+  /** Where this connection reads from — `builtin` rows need no url or key. */
+  source: dawarichSourceSchema,
   connected: z.boolean(),
   /** ISO-8601 of the last sync that finished, successfully or not. */
   lastSyncAt: z.string().nullable(),

@@ -20,6 +20,7 @@ import { PermissionsService } from '../permissions/permissions.service';
 import { JourneyDomainService } from '../journey/journey-domain.service';
 import { NAME_TO_CODE } from '../atlas/atlas-geo';
 import { DawarichClient, type DawarichCreds } from './dawarich.client';
+import { DawarichLocalSource } from './dawarich-local-source';
 import { DawarichService } from './dawarich.service';
 import { minutesBetween, toNumber } from './dawarich.helpers';
 
@@ -48,6 +49,7 @@ export class DawarichSuggestionsService {
     private readonly db: DatabaseService,
     private readonly dawarich: DawarichService,
     private readonly client: DawarichClient,
+    private readonly localSource: DawarichLocalSource,
     private readonly atlas: AtlasService,
     private readonly places: PlacesService,
     private readonly assignments: AssignmentsService,
@@ -433,8 +435,11 @@ export class DawarichSuggestionsService {
    * eighty wishes must not be told their other thirty had no match.
    */
   async scanBucketList(userId: number): Promise<DawarichBucketScan> {
-    const creds = this.dawarich.getCredentials(userId);
-    if (!creds) throw new AcceptError('not_connected', 'Dawarich is not connected', 400);
+    // A builtin connection reads the local archive and needs no credentials;
+    // an external one needs both an address and a key or there is nothing to ask.
+    const builtin = this.dawarich.getSource(userId) === 'builtin';
+    const creds = builtin ? null : this.dawarich.getCredentials(userId);
+    if (!builtin && !creds) throw new AcceptError('not_connected', 'Dawarich is not connected', 400);
 
     const items = this.db.all<BucketRow>(
       `SELECT id, name, lat, lng, visited_at
@@ -451,7 +456,7 @@ export class DawarichSuggestionsService {
       matches.push({
         itemId: item.id,
         name: item.name,
-        match: await this.bestStayNear(creds, item.lat!, item.lng!),
+        match: await this.bestStayNear(userId, creds, item.lat!, item.lng!),
         alreadyVisited: item.visited_at !== null,
       });
     }
@@ -472,13 +477,16 @@ export class DawarichSuggestionsService {
    * the bus stopping outside.
    */
   private async bestStayNear(
-    creds: DawarichCreds,
+    userId: number,
+    creds: DawarichCreds | null,
     lat: number,
     lng: number,
   ): Promise<DawarichBucketMatch['match']> {
     let stays;
     try {
-      stays = await this.client.findVisitsNear(creds, lat, lng, DAWARICH_BUCKET_MATCH_RADIUS_M, 20);
+      stays = creds
+        ? await this.client.findVisitsNear(creds, lat, lng, DAWARICH_BUCKET_MATCH_RADIUS_M, 20)
+        : await this.localSource.findVisitsNear(userId, lat, lng, DAWARICH_BUCKET_MATCH_RADIUS_M, 20);
     } catch {
       // One wish that could not be checked is not a failed scan; it reports as
       // "no match found" and the user can run it again.
@@ -575,10 +583,13 @@ export class DawarichSuggestionsService {
    * country the user went to, and silently losing it would be the worse bug.
    */
   async atlasSuggestions(userId: number, from: Date, to: Date): Promise<DawarichAtlasSuggestions> {
-    const creds = this.dawarich.getCredentials(userId);
-    if (!creds) throw new AcceptError('not_connected', 'Dawarich is not connected', 400);
+    const builtin = this.dawarich.getSource(userId) === 'builtin';
+    const creds = builtin ? null : this.dawarich.getCredentials(userId);
+    if (!builtin && !creds) throw new AcceptError('not_connected', 'Dawarich is not connected', 400);
 
-    const countries = await this.client.listVisitedCities(creds, from, to);
+    const countries = creds
+      ? await this.client.listVisitedCities(creds, from, to)
+      : await this.localSource.listVisitedCities(userId, from, to);
 
     // "Already on the map" is what the Atlas itself paints as visited: the
     // countries a finished trip's places resolve to, a booking landed in, or a

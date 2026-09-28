@@ -12,6 +12,7 @@ import { SchedulingModule } from '../scheduling/scheduling.module';
 import { McpSharedModule } from '../mcp-shared/mcp-shared.module';
 import { DawarichClient } from './dawarich.client';
 import { DawarichController } from './dawarich.controller';
+import { DawarichLocalSource } from './dawarich-local-source';
 import { DawarichMcp } from './dawarich.mcp';
 import { DawarichService } from './dawarich.service';
 import { DawarichSuggestionsService } from './dawarich-suggestions.service';
@@ -60,6 +61,7 @@ import { DawarichTracksService } from './dawarich-tracks.service';
   controllers: [DawarichController],
   providers: [
     DawarichClient,
+    DawarichLocalSource,
     DawarichService,
     DawarichSyncService,
     DawarichSuggestionsService,

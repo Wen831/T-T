@@ -84,6 +84,7 @@ export class DawarichController {
       !!body.allowInsecureTls,
       body.syncEnabled !== false,
       getClientIp(req),
+      body.source,
     );
     if (!result.success) {
       throw new HttpException({ error: result.error }, 400);

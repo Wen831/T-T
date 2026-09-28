@@ -12,6 +12,7 @@ import { AddonsService } from '../addons/addons.service';
 import { logError, logInfo } from '../audit/audit-log.logger';
 import { getCountryFromCoords } from '../atlas/atlas-geo';
 import { DawarichClient, DawarichError, type DawarichCreds } from './dawarich.client';
+import { DawarichLocalSource } from './dawarich-local-source';
 import { DawarichService } from './dawarich.service';
 import { distanceMeters, localDateOf, normalizeVisit, syncWindow, visitHash } from './dawarich.helpers';
 
@@ -69,6 +70,7 @@ export class DawarichSyncService {
     private readonly db: DatabaseService,
     private readonly addons: AddonsService,
     private readonly client: DawarichClient,
+    private readonly localSource: DawarichLocalSource,
     private readonly dawarich: DawarichService,
   ) {}
 
@@ -137,8 +139,12 @@ export class DawarichSyncService {
       return { state: 'failed', created: 0, updated: 0, missing: 0 };
     }
 
-    const creds = this.dawarich.getCredentials(userId);
-    if (!creds) {
+    // The source is the connection's own setting: a builtin row reads TT's
+    // footprint archive and needs no credentials, an external row needs both
+    // an address and a key or there is nothing to ask.
+    const builtin = this.dawarich.getSource(userId) === 'builtin';
+    const creds = builtin ? null : this.dawarich.getCredentials(userId);
+    if (!builtin && !creds) {
       this.dawarich.recordSyncResult(userId, 'failed', 'not_connected');
       return { state: 'failed', created: 0, updated: 0, missing: 0 };
     }
@@ -185,10 +191,15 @@ export class DawarichSyncService {
 
     // The probe is cheap next to the windows just fetched, and re-running it is
     // how a Dawarich upgrade that finally ships `updated_at` starts being used
-    // without anyone reconnecting.
+    // without anyone reconnecting. The builtin source's capabilities are code,
+    // not a probe — they are written down so the card shows the same truth.
     if (state !== 'failed') {
       try {
-        this.dawarich.storeCapabilities(userId, await this.dawarich.probeCapabilities(creds));
+        if (builtin) {
+          this.dawarich.storeCapabilities(userId, this.localSource.capabilities());
+        } else if (creds) {
+          this.dawarich.storeCapabilities(userId, await this.dawarich.probeCapabilities(creds));
+        }
       } catch {
         // Capabilities are an optimisation; a failed probe is not a failed sync.
       }
@@ -235,6 +246,10 @@ export class DawarichSyncService {
    * deletion. Comparing the whole window against what TREK already holds is the
    * only thing that can.
    *
+   * `creds` names the source: non-null asks the remote instance, null asks
+   * TT's own footprint archive through the local source — same shapes, same
+   * reconciliation, whichever answered.
+   *
    * `trips` is every trip this run walks. A window reaches past its own trip
    * on both sides, so a stay can be fetched by two neighbouring trips, and the
    * one whose dates actually hold it is the one that gets it (see `tripForVisit`).
@@ -242,12 +257,14 @@ export class DawarichSyncService {
   async syncTripWindow(
     userId: number,
     tripId: number,
-    creds: DawarichCreds,
+    creds: DawarichCreds | null,
     from: Date,
     to: Date,
     trips: TripRow[] = [],
   ): Promise<{ created: number; updated: number; missing: number }> {
-    const { visits } = await this.client.listVisits(creds, from, to);
+    const { visits } = creds
+      ? await this.client.listVisits(creds, from, to)
+      : await this.localSource.listVisits(userId, from, to);
 
     const seenIds = new Set<string>();
     let created = 0;

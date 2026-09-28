@@ -13,13 +13,12 @@ import {
 
 /**
  * The recorded route for a window, fetched on demand and never stored — with
- * one exception, which is not this service's to own: a user recording INTO TT
- * through the footprint addon (server/src/nest/footprint) has their own
- * archive, and `forWindow` serves that first, before any remote fetch. For
- * everyone else the original rule stands: Dawarich owns the location archive,
- * TREK draws the part of it somebody is looking at right now and forgets it
- * again. There is no table here, no `route_geometry` written to a place, no
- * background import.
+ * one exception, which is not this service's to own: a user whose Dawarich
+ * connection says `source: 'builtin'` reads TT's own footprint archive
+ * (server/src/nest/footprint) through the same contract. For everyone else the
+ * original rule stands: Dawarich owns the location archive, TREK draws the
+ * part of it somebody is looking at right now and forgets it again. There is
+ * no table here, no `route_geometry` written to a place, no background import.
  *
  * What there is instead is a short in-memory cache, because "update the line
  * while the map is open" and "ask an instance for a month of GPS every few
@@ -97,12 +96,16 @@ export class DawarichTracksService {
     toIso: string,
     offsetMinutes = offsetMinutesOf(fromIso),
   ): Promise<DawarichTrack> {
-    // A user recording INTO TT (footprint addon on, ingest token minted) reads
-    // from their own archive, full stop: it is the freshest source they have,
-    // it costs no HTTP, and minting the token was the act of choosing it. The
-    // remote instance below is exactly what non-recorders still get, unchanged.
-    const local = this.footprint.localTrack(userId, fromIso, toIso, offsetMinutes);
-    if (local) return local;
+    // Where the recording lives is a setting on the connection (`source`), not
+    // an inference: `builtin` reads TT's own footprint archive, everyone else
+    // reads the remote instance exactly as before the field existed. A builtin
+    // user falls through to the remote path only when the footprint addon is
+    // off — the archive is not being served, and a line is better than a blank
+    // map for someone whose connection also carries an instance.
+    if (this.dawarich.getSource(userId) === 'builtin') {
+      const local = this.footprint.localTrack(userId, fromIso, toIso, offsetMinutes);
+      if (local) return local;
+    }
 
     const creds = this.dawarich.getCredentials(userId);
     if (!creds) return emptyTrack();
