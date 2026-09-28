@@ -18,7 +18,7 @@
 A powerful self-hosted travel planning platform with real-time collaboration, interactive maps, and AI-powered features. Plan your journeys with day-by-day itineraries, track expenses, manage bookings, and explore the world with an integrated atlas.
 
 [![License](https://img.shields.io/badge/license-AGPL_v3-6B7280?style=flat-square)](LICENSE)
-![Version](https://img.shields.io/badge/version-0.8.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.2-blue?style=flat-square)
 
 ---
 
@@ -78,7 +78,52 @@ A powerful self-hosted travel planning platform with real-time collaboration, in
 
 ---
 
-## 🆕 What's New in v0.8.0
+## 🆕 What's New in v0.8.2
+
+**TT now records your location history itself.** Dawarich's core — the archive,
+the stay detection, the trail — runs inside TT on the map engines TT already
+has, so you can record your footprints without standing up a second server.
+It is still an addon, still off by default, and the existing external-instance
+connection is untouched.
+
+### Record your own footprints (Footprint addon)
+
+- **Two sources, one card.** The Dawarich card now opens with a **Data source**
+  choice: an **external Dawarich instance** (exactly as before) or the **TT
+  built-in engine**. Only the fields that apply are shown, and switching back
+  never asks for the instance details again.
+- **A phone reports straight into TT.** Enable the addon, generate an ingest
+  token in the settings card, point a tracker app at
+  `POST /api/v1/points/ingest` with the token. OwnTracks, Overland, GPSLogger
+  and the automation tools all work.
+- **The official Dawarich app works too.** `POST /api/v1/points` is served in
+  the same shape the Dawarich apps already post — same path, same `api_key`
+  authentication, same `{locations: [...]}` GeoJSON, same answer — so pointing
+  the app at TT is a one-field change.
+- **Stay detection, ported stage for stage.** Dwell sweeping, gap bridging,
+  chain merging, the dwell/point filters and a confidence score, with the same
+  numbers Dawarich uses — so "you were here for 25 minutes" means the same
+  thing whichever source answered.
+- **Same surfaces as before.** Detected stays feed the existing suggestions
+  panel as journal entries, places and countries you confirm; the recorded
+  trail draws on all three map engines, with the GCJ-02 conversion the AMap
+  renderer already applies. Nothing new to learn — the reader is the one that
+  was already there.
+- **Spatial index.** Points land in `location_points` with an RTREE bbox
+  mirror, so "was I ever near here" is a spatial query rather than a scan.
+
+Full write-up, payload examples and the tracker-app table:
+**[Footprint](https://github.com/bhxnms/T-T/wiki/Footprint)**.
+
+### Upgrading
+
+No manual steps. Migration 246 adds the connection's `source` column with
+`external` as the default, so every existing connection keeps reading from the
+instance it always did.
+
+---
+
+## 0.8.0 (detail)
 
 **This release is a large one: the whole of upstream TREK 4.3.0, adapted to TT's
 own map engines, its own AMap (高德) support and its own look.** The headline is
@@ -114,7 +159,8 @@ is a lot besides. Each feature is written up in the wiki, starting from
   documents stay where they already live.
 - **Dawarich** — read visits and recorded routes from a self-hosted Dawarich
   instance, offered as journal entries, places and countries you confirm. Read-only
-  from TT's side.
+  from TT's side. (Since 0.8.2 the same card can also record into TT itself —
+  see [Footprint](https://github.com/bhxnms/T-T/wiki/Footprint).)
 - **Collection lists as files** — export a saved list and import it again, as TT's
   own list format or GPX.
 - **Receipts on expenses** — attach pictures or PDFs to a trip expense.
@@ -415,7 +461,7 @@ docker compose up -d
 ```
 
 Use a fixed release in `.env` for production, for example
-`IMAGE_TAG=0.8.0`. `latest` tracks the newest stable release; the image
+`IMAGE_TAG=0.8.2`. `latest` tracks the newest stable release; the image
 supports `linux/amd64` and `linux/arm64`. If the package is private, authenticate
 first with a GitHub token that can read packages:
 
@@ -465,7 +511,7 @@ git pull && docker compose up -d --build
 git clone https://github.com/bhxnms/T-T.git
 cd T-T
 mkdir -p data uploads
-docker build --build-arg APP_VERSION=0.8.0 -t tt-planner:local .
+docker build --build-arg APP_VERSION=0.8.2 -t tt-planner:local .
 docker run -d --name tt-planner --restart unless-stopped \
   -p 3000:3000 \
   -v "$(pwd)/data:/app/data" \

@@ -18,7 +18,7 @@
 一个支持自托管、实时协作、交互式地图和 AI 功能的旅行规划平台。你可以按天规划行程、管理费用和预订、记录旅行日志，并通过 Atlas 探索和记录去过的地方。
 
 [![License](https://img.shields.io/badge/license-AGPL_v3-6B7280?style=flat-square)](LICENSE)
-![Version](https://img.shields.io/badge/version-0.8.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.2-blue?style=flat-square)
 
 ---
 
@@ -75,7 +75,43 @@
 
 ---
 
-## 🆕 v0.8.0 更新
+## 🆕 v0.8.2 更新
+
+**TT 现在可以自己记录你的位置历史了。** Dawarich 的核心——档案、停留判定、
+轨迹——搬进了 TT，跑在 TT 已有的地图引擎上，因此**不需要再单独部署一台服务器**。
+它仍然是一个插件、仍然默认关闭，原有的外部实例连接方式完全不受影响。
+
+### 记录你自己的足迹（Footprint 插件）
+
+- **两种数据来源，一张卡片。** Dawarich 卡片开头新增**数据来源**选择：**外部
+  Dawarich 实例**（与之前完全一致）或 **TT 内置引擎**。只显示与所选来源相关的
+  字段，切回外部时无需重新填写实例信息。
+- **手机直接上报到 TT。** 开启插件，在设置卡片里生成上报凭据，把追踪 App 指向
+  `POST /api/v1/points/ingest` 并带上凭据即可。OwnTracks、Overland、GPSLogger
+  以及各类自动化工具都可用。
+- **官方 Dawarich App 也能直接用。** `POST /api/v1/points` 以官方 App 本来就发给
+  Dawarich 服务器的相同格式提供服务——相同的路径、相同的 `api_key` 鉴权、相同的
+  `{locations: [...]}` GeoJSON、相同的响应——因此把 App 指向 TT 只需改一个字段。
+- **逐阶段移植的停留判定。** 时间序扫描聚类、静默桥接、链式合并、最短停留/最少
+  点数过滤，以及置信度打分，参数与 Dawarich 一致——因此无论数据来自哪个来源，
+  「你在这里待了 25 分钟」含义相同。
+- **与之前完全相同的界面。** 判定出的停留照常喂给现有的建议面板，作为日志条目、
+  地点与国家供你确认；轨迹在三种地图引擎上都能绘制，高德渲染器会自动做 GCJ-02
+  坐标换算。没有新的东西要学——读取方就是原来那一个。
+- **空间索引。** 位置点写入 `location_points`，并同步维护一张 RTREE 包围盒索引，
+  「我是否曾到过这附近」是一次空间查询而非全表扫描。
+
+完整说明、请求体示例与手机 App 对照表见
+**[足迹（内置引擎）](https://github.com/bhxnms/T-T/wiki/Footprint?lang=zh)**。
+
+### 升级
+
+无需任何手动步骤。迁移 246 为连接增加了 `source` 列，默认值为 `external`，
+因此所有既有连接仍然读取原来那台实例。
+
+---
+
+## v0.8.0（详情）
 
 **这一版内容很多：上游 TREK 4.3.0 的全部功能并入 TT，并按 TT 自己的地图引擎、
 自己的高德（AMap）支持和自己的外观做了适配。** 最重点的是**公路旅行模式**——
@@ -103,7 +139,8 @@
 
 - **文档同步** —— 把行程与云盘目录配对，文档仍留在你已在使用的云盘里。
 - **Dawarich** —— 读取自建 Dawarich 实例的到访记录与轨迹，作为推荐内容供你确认。
-  TT 侧只读。
+  TT 侧只读。（自 0.8.2 起，同一张卡片也能记录到 TT 自身，见
+  [足迹（内置引擎）](https://github.com/bhxnms/T-T/wiki/Footprint?lang=zh)。）
 - **收藏列表导出为文件** —— 列表可导出再导入，格式为 TT 列表文件或 GPX。
 - **费用收据** —— 给行程开支附上图片或 PDF。
 - **协作聊天中的链接与图片** —— 粘贴图片直接上传并内嵌；粘贴链接生成卡片。
@@ -296,7 +333,7 @@ http://localhost:3000
 生产环境建议在 `.env` 中固定版本：
 
 ```env
-IMAGE_TAG=0.8.0
+IMAGE_TAG=0.8.2
 ```
 
 `latest` 表示最新稳定版本。若 GHCR 包是私有的，先登录：
@@ -336,7 +373,7 @@ git pull && docker compose up -d --build
 git clone https://github.com/bhxnms/T-T.git
 cd T-T
 mkdir -p data uploads
-docker pull ghcr.io/bhxnms/tt-planner:0.8.0
+docker pull ghcr.io/bhxnms/tt-planner:0.8.2
 docker run -d --name tt-planner --restart unless-stopped \
   -p 3000:3000 \
   -v "$(pwd)/data:/app/data" \
@@ -346,7 +383,7 @@ docker run -d --name tt-planner --restart unless-stopped \
   -e ENCRYPTION_KEY="$(openssl rand -hex 32)" \
   -e ADMIN_EMAIL=admin@example.com \
   -e ADMIN_PASSWORD='replace-with-a-strong-password' \
-  ghcr.io/bhxnms/tt-planner:0.8.0
+  ghcr.io/bhxnms/tt-planner:0.8.2
 ```
 
 请备份 `ENCRYPTION_KEY`，容器重建时必须继续使用相同的值。
