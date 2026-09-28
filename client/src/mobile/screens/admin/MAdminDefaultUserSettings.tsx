@@ -52,15 +52,27 @@ type Defaults = {
   maplibre_style?: string;
   mapbox_3d_enabled?: boolean;
   mapbox_quality_mode?: boolean;
+  amap_js_api_key?: string;
 };
 
-type MapProvider = 'leaflet' | GlMapProvider;
+/**
+ * The providers an admin can make the default. Wider than `GlMapProvider`
+ * because AMap is its own renderer: it has no style presets, just a key.
+ */
+type MapProvider = 'leaflet' | GlMapProvider | 'amap';
 
 function normalizeProvider(value: unknown): MapProvider {
-  return value === 'mapbox-gl' || value === 'maplibre-gl' ? value : 'leaflet';
+  if (value === 'mapbox-gl' || value === 'maplibre-gl' || value === 'amap') return value;
+  return 'leaflet';
+}
+
+/** AMap keeps no style slot — its basemap is fixed and needs only a key. */
+function isAmap(provider: MapProvider): provider is 'amap' {
+  return provider === 'amap';
 }
 
 function styleForProvider(provider: MapProvider, style?: string | null): string {
+  if (provider === 'amap') return '';
   if (provider === 'leaflet') return style || MAPBOX_DEFAULT_STYLE;
   if (provider === 'mapbox-gl' && isOpenFreeMapStyle(style)) return MAPBOX_DEFAULT_STYLE;
   return normalizeStyleForProvider(provider, style);
@@ -79,6 +91,7 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
   const [mapboxToken, setMapboxToken] = useState('');
   const [cartoKey, setCartoKey] = useState('');
   const [mapboxStyle, setMapboxStyle] = useState('');
+  const [amapToken, setAmapToken] = useState('');
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [presetOpen, setPresetOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
@@ -92,8 +105,9 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
         setMapTileUrl(normalizeTileUrl(data.map_tile_url || ''));
         setMapboxToken(data.mapbox_access_token || '');
         setCartoKey(data.carto_api_key || '');
+        setAmapToken(data.amap_js_api_key || '');
         setMapboxStyle(
-          provider === 'leaflet'
+          provider === 'leaflet' || isAmap(provider)
             ? data.mapbox_style || ''
             : styleForProvider(provider, provider === 'maplibre-gl' ? data.maplibre_style : data.mapbox_style)
         );
@@ -119,9 +133,10 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
       if (key === 'map_tile_url') setMapTileUrl('');
       if (key === 'mapbox_access_token') setMapboxToken('');
       if (key === 'carto_api_key') setCartoKey('');
+      if (key === 'amap_js_api_key') setAmapToken('');
       if (key === 'mapbox_style' || key === 'maplibre_style') {
         const provider = normalizeProvider(defaults.map_provider);
-        setMapboxStyle(provider === 'leaflet' ? '' : defaultStyleForProvider(provider));
+        setMapboxStyle(provider === 'leaflet' || isAmap(provider) ? '' : defaultStyleForProvider(provider));
       }
       toast.success(t('admin.defaultSettings.reset'));
     } catch (err: unknown) {
@@ -182,11 +197,13 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
 
   const darkMode = defaults.dark_mode;
   const mapProvider = normalizeProvider(defaults.map_provider);
-  const glStylePresets = mapProvider === 'leaflet' ? [] : getStylePresets(mapProvider);
+  // AMap has no style slot, so it contributes no presets and no style key.
+  const glStylePresets = mapProvider === 'leaflet' || isAmap(mapProvider) ? [] : getStylePresets(mapProvider);
   const styleKey: keyof Defaults = mapProvider === 'maplibre-gl' ? 'maplibre_style' : 'mapbox_style';
   const saveMapProvider = (nextProvider: MapProvider) => {
     const patch: Partial<Defaults> = { map_provider: nextProvider };
-    if (nextProvider !== 'leaflet') {
+    // Only the GL providers carry a style slot; AMap and Leaflet are saved as-is.
+    if (nextProvider !== 'leaflet' && !isAmap(nextProvider)) {
       // Load + save the new provider's own style slot so the other provider's style is kept.
       const slot = nextProvider === 'maplibre-gl' ? defaults.maplibre_style : defaults.mapbox_style;
       const nextStyle = styleForProvider(nextProvider, slot);
@@ -228,6 +245,7 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
     { value: 'leaflet', label: t('admin.defaultSettings.providerLeaflet') },
     { value: 'mapbox-gl', label: t('admin.defaultSettings.providerMapbox') },
     { value: 'maplibre-gl', label: t('admin.defaultSettings.providerMapLibre') },
+    { value: 'amap', label: t('admin.defaultSettings.providerAmap') },
   ];
 
   const currencyLabel = defaults.default_currency
@@ -428,7 +446,31 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
             </MAdminField>
           </div>
 
-          {mapProvider !== 'leaflet' && (
+          {/* AMap: instance-wide key, no style slot — its basemap is fixed. */}
+          {mapProvider === 'amap' && (
+            <MAdminField
+              label={
+                <>
+                  {t('admin.defaultSettings.amapToken')} <ResetButton field="amap_js_api_key" />
+                </>
+              }
+              hint={t('admin.defaultSettings.amapTokenHint')}
+            >
+              <MAdminInput
+                type="text"
+                value={amapToken}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmapToken(e.target.value)}
+                onBlur={() => save({ amap_js_api_key: amapToken })}
+                placeholder="高德 Web JS API key"
+                spellCheck={false}
+                autoComplete="off"
+              />
+            </MAdminField>
+          )}
+
+          {/* The GL providers and their styles. AMap is handled above: no style,
+              no GL-specific toggles, and its key is the only thing it needs. */}
+          {mapProvider !== 'leaflet' && !isAmap(mapProvider) && (
             <div className="space-y-[14px]">
               {mapProvider === 'mapbox-gl' && !managed && (
                 <MAdminField

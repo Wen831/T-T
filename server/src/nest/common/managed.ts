@@ -75,8 +75,14 @@ export function isManagedBlocked(env: RuntimeEnvService): boolean {
  * and it is the operator's for one more reason: the key is registered to
  * whoever runs the instance, and CARTO's terms hold that account answerable for
  * the tiles it fetches.
+ *
+ * amap_js_api_key joins them as a defaultable map credential: it also reaches
+ * the browser (the AMap SDK is loaded with it), and on a managed instance the
+ * operator's key is the one that must be used — a member saving their own over
+ * it would break the map for that member alone.
  */
 export const MANAGED_LOCKED_SETTING_KEYS = [
+  'amap_js_api_key',
   'carto_api_key',
   'llm_api_key',
   'llm_base_url',
