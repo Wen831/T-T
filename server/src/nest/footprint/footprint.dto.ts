@@ -6,6 +6,9 @@
  */
 import { createZodDto } from 'nestjs-zod';
 
-import { footprintIngestBodySchema } from './footprint-ingest';
+import { footprintCompatBodySchema, footprintIngestBodySchema } from './footprint-ingest';
 
 export class FootprintIngestDto extends createZodDto(footprintIngestBodySchema) {}
+
+/** The Dawarich/Overland wire shape the official apps post to /api/v1/points. */
+export class FootprintCompatDto extends createZodDto(footprintCompatBodySchema) {}

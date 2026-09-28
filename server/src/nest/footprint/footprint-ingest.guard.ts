@@ -4,13 +4,15 @@ import type { Request } from 'express';
 import { FootprintService } from './footprint.service';
 
 /**
- * Authenticates `POST /api/v1/points/ingest` by the caller's per-user ingest
- * token — the credential a phone tracker holds, not a browser session.
+ * Authenticates `POST /api/v1/points/ingest` (and the Dawarich-compatible
+ * `POST /api/v1/points`) by the caller's per-user ingest token — the
+ * credential a phone tracker holds, not a browser session.
  *
  * Accepted transports, in order: `Authorization: Bearer <token>` (the standard
- * shape), `X-Ingest-Token: <token>`, and `?token=` (OwnTracks' custom-connection
- * config is friendlier with a URL parameter than a header). Only the hash is
- * stored, so the token cannot be read back anywhere.
+ * shape), `X-Ingest-Token: <token>`, `?token=`, and `?api_key=` (the parameter
+ * the official Dawarich apps authenticate with — it lands on the same hash
+ * lookup as every other transport). Only the hash is stored, so the token
+ * cannot be read back anywhere.
  *
  * Declared AFTER AddonGuard in the controller's guard chain on purpose — a
  * disabled addon answers 404 to anonymous callers too, and the ingest token
@@ -42,5 +44,8 @@ function extractIngestToken(req: Request): string | null {
   if (typeof header === 'string' && header.trim()) return header.trim();
   const query = req.query['token'];
   if (typeof query === 'string' && query.trim()) return query.trim();
+  // The Dawarich-app spelling of the same credential.
+  const apiKey = req.query['api_key'];
+  if (typeof apiKey === 'string' && apiKey.trim()) return apiKey.trim();
   return null;
 }

@@ -7,8 +7,12 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { ADDON_IDS } from '../../addons';
 import { FootprintIngestGuard } from './footprint-ingest.guard';
 import { FootprintService } from './footprint.service';
-import { FootprintIngestDto } from './footprint.dto';
-import { MAX_INGEST_ENTRIES, normalizeIngestEntry } from './footprint-ingest';
+import { FootprintCompatDto, FootprintIngestDto } from './footprint.dto';
+import {
+  MAX_INGEST_ENTRIES,
+  normalizeDawarichRecord,
+  normalizeIngestEntry,
+} from './footprint-ingest';
 import type { IngestPoint } from './footprint-ingest';
 
 /**
@@ -47,5 +51,35 @@ export class FootprintIngestController {
 
     const { received, inserted } = this.footprint.ingest(user.id, fixes);
     return { status: 'ok', received, inserted };
+  }
+
+  /**
+   * The Dawarich-app wire, on the Dawarich-app path — so the official mobile
+   * apps can point at TT as if it were their own server: same path
+   * (`POST /api/v1/points`), same `api_key` authentication (verified against
+   * the ingest token's hash, like every other transport), same
+   * `{locations: [...]}` GeoJSON body with Overland-style properties, same
+   * `{ data: [...] }` answer. `count` is TT's addition — the honest number of
+   * NEW rows, since duplicates are a no-op here just as they are upstream.
+   *
+   * The OwnTracks route above remains the format TT speaks natively; this one
+   * exists so nobody has to care which app they picked.
+   */
+  @Post()
+  @HttpCode(200)
+  compatIngest(@CurrentUser() user: User, @Body() body: FootprintCompatDto): { data: unknown[]; count: number } {
+    const records = body.records;
+    if (records.length > MAX_INGEST_ENTRIES) {
+      throw new HttpException({ error: `Too many points in one request (max ${MAX_INGEST_ENTRIES})` }, 400);
+    }
+
+    const fixes: IngestPoint[] = [];
+    for (const record of records) {
+      const fix = normalizeDawarichRecord(record);
+      if (fix) fixes.push(fix);
+    }
+
+    const { inserted } = this.footprint.ingest(user.id, fixes);
+    return { data: [], count: inserted };
   }
 }

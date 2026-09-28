@@ -264,8 +264,71 @@ describe('Dawarich source: builtin', () => {
   });
 });
 
-describe('Dawarich source: external stays the default', () => {
-  it('DASRC-006 — a fresh card reads external and unconnected; saving without source keeps builtin', async () => {
+describe('Dawarich-compatible ingest (POST /api/v1/points)', () => {
+  it('DASRC-008 — the official app payload lands in the archive, authenticated by ?api_key=', async () => {
+    const { user } = createUser(testDb);
+    const footprint = nestApp.get(FootprintService);
+    const token = footprint.mintIngestToken(user.id);
+
+    // Exactly what the official Dawarich apps post: Overland-style GeoJSON
+    // under `locations`, with the fix's metadata in `properties`.
+    const res = await request(app)
+      .post('/api/v1/points')
+      .query({ api_key: token })
+      .send({
+        locations: [
+          {
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [LON0, LAT0] },
+            properties: {
+              timestamp: new Date(BASE_TS * 1000).toISOString(),
+              battery_level: 0.77,
+              horizontal_accuracy: 8,
+            },
+          },
+        ],
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.count).toBe(1);
+    expect(Array.isArray(res.body.data)).toBe(true);
+
+    const stored = testDb
+      .prepare('SELECT lat, lon, timestamp, accuracy, battery FROM location_points WHERE user_id = ?')
+      .get(user.id) as { lat: number; lon: number; timestamp: number; accuracy: number; battery: number };
+    expect(stored.lat).toBeCloseTo(LAT0, 5);
+    expect(stored.lon).toBeCloseTo(LON0, 5);
+    expect(stored.timestamp).toBe(BASE_TS);
+    expect(stored.accuracy).toBe(8);
+    expect(stored.battery).toBe(77);
+  });
+
+  it('DASRC-009 — a token that is not the caller\'s own is refused, and resends are no-ops', async () => {
+    const { user } = createUser(testDb);
+    const footprint = nestApp.get(FootprintService);
+    const token = footprint.mintIngestToken(user.id);
+
+    const unauthorised = await request(app)
+      .post('/api/v1/points')
+      .query({ api_key: 'trek_fp_not_a_real_token' })
+      .send({ locations: [] });
+    expect(unauthorised.status).toBe(401);
+
+    const body = {
+      locations: [
+        { geometry: { coordinates: [LON0, LAT0] }, properties: { timestamp: BASE_TS } },
+      ],
+    };
+    const first = await request(app).post('/api/v1/points').query({ api_key: token }).send(body);
+    const second = await request(app).post('/api/v1/points').query({ api_key: token }).send(body);
+    expect(first.body.count).toBe(1);
+    // The (user, timestamp, lat, lon) unique index — a tracker re-sending its
+    // current fix is a no-op, exactly as upstream dedupes.
+    expect(second.body.count).toBe(0);
+  });
+});
+
+describe('Dawarich source: external stays the default', () => {  it('DASRC-006 — a fresh card reads external and unconnected; saving without source keeps builtin', async () => {
     const { user } = createUser(testDb);
 
     const fresh = await request(app).get('/api/integrations/dawarich/settings').set('Cookie', authCookie(user.id));
