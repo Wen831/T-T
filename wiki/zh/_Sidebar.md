@@ -95,6 +95,7 @@
 ## 集成
 - [[公开 API|Public-API]]
 - [[Dawarich]]
+- [[Footprint|足迹（内置引擎）]]
 
 ## AI / MCP
 - [[MCP 概览|MCP-Overview]]

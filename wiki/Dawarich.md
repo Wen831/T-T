@@ -6,11 +6,22 @@ Dawarich is a self-hosted location history service. Connect one to TT and TT can
 
 > **Addon.** Enable **Dawarich** under [Admin: Addons](Admin-Addons) first. The connection card lives on the **Integrations** settings tab, which itself only appears when at least one integration addon is on.
 
-> **A note for readers in mainland China.** Dawarich's own image is OpenStreetMap-based, so it is unlikely to be useful there and testing it further has little value. Dawarich is documented here because the integration exists and works for instances elsewhere; it is not the recommended way to record travel inside China.
+> **A note for readers in mainland China.** Dawarich's own image is OpenStreetMap-based, so it is unlikely to be useful there and testing it further has little value. If you are recording travel inside China, use the built-in engine instead — see [Footprint](Footprint).
+
+## Two data sources
+
+The card opens with a **Data source** choice:
+
+| Source | What it means |
+|---|---|
+| **External Dawarich instance** | TT reads visits and routes from a Dawarich server you run — the connection described below |
+| **TT built-in engine** | A phone reports into TT itself; no external server. See [Footprint](Footprint) |
+
+Everything further down this page is about the **external** source. The built-in engine feeds the same surfaces — the trail overlay, the suggestions, the Atlas offers — from TT's own archive.
 
 ## Connecting
 
-**Where:** **Settings** → **Integrations** → the **Dawarich** card.
+**Where:** **Settings** → **Integrations** → the **Dawarich** card → **External Dawarich instance**.
 
 | Field | What it is |
 |---|---|
@@ -43,6 +54,6 @@ Works on all three map engines (Leaflet, MapLibre/Mapbox GL and AMap).
 
 ## Related
 
-- Recording your own movement inside TT, without an external service, is not part of 0.8.0. See [New Features in 0.8.0](New-Features) for what did ship.
+- [Footprint](Footprint) — recording your own movement inside TT, with no external service.
 - [Journey Journal](Journey-Journal) for what the suggestions turn into.
 - [Atlas](Atlas) for the countries and cities side.

@@ -95,6 +95,7 @@
 ## Integrations
 - [[Public API|Public-API]]
 - [[Dawarich]]
+- [[Footprint]]
 
 ## AI / MCP
 - [[MCP Overview|MCP-Overview]]
