@@ -5153,6 +5153,76 @@ function runMigrations(db: Database.Database): void {
         db.exec('ALTER TABLE collection_places ADD COLUMN amap_id TEXT');
       }
     },
+
+    /**
+     * Footprint addon: TT's own location archive (the Dawarich core, ported).
+     *
+     * `location_points` is the first GPS-point table in the schema — until now
+     * TREK only ever fetched another server's tracks on demand and stored none
+     * of them. One row per ingested fix, WGS-84, unix-seconds timestamps, with
+     * the (user, timestamp, lat, lon) unique index doing exactly what Dawarich's
+     * point dedupe does: a tracker resending its current fix on every reconnect
+     * is a no-op, not a duplicate row.
+     *
+     * `location_points_rtree` mirrors the point ids into an R*-tree bbox for
+     * spatial lookups. It is created only when this SQLite build ships with
+     * RTREE (better-sqlite3's prebuilts do; a source build compiled without
+     * ENABLE_RTREE would otherwise fail the migration and, via the runner, the
+     * whole boot). The service degrades gracefully when it is absent.
+     *
+     * `footprint_ingest_tokens` holds one ingest credential per user — hash
+     * and prefix only, the same shape as mcp_tokens, so the raw token lives
+     * only in the response that minted it.
+     *
+     * Appended as the LAST element on purpose: this array is index-addressed
+     * against schema_version, so inserting in the middle would replay the wrong
+     * step against an existing database.
+     */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS location_points (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          lat REAL NOT NULL,
+          lon REAL NOT NULL,
+          timestamp INTEGER NOT NULL,
+          accuracy REAL,
+          battery INTEGER,
+          altitude REAL,
+          velocity REAL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_location_points_user_time ON location_points(user_id, timestamp)',
+      );
+      db.exec(
+        'CREATE UNIQUE INDEX IF NOT EXISTS idx_location_points_dedupe ON location_points(user_id, timestamp, lat, lon)',
+      );
+
+      const rtree = db.prepare("SELECT sqlite_compileoption_used('ENABLE_RTREE') AS rtree_on").get() as
+        | { rtree_on: number }
+        | undefined;
+      if (rtree?.rtree_on === 1) {
+        db.exec(`
+          CREATE VIRTUAL TABLE IF NOT EXISTS location_points_rtree USING rtree(
+            id, min_lat, max_lat, min_lon, max_lon, +user_id
+          )
+        `);
+      } else {
+        console.warn('[DB] Migration 245: SQLite built without ENABLE_RTREE — location_points_rtree skipped');
+      }
+
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS footprint_ingest_tokens (
+          user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          token_hash TEXT NOT NULL,
+          token_prefix TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_used_at DATETIME
+        )
+      `);
+    },
   ];
 
   if (currentVersion < migrations.length) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DAWARICH_TRACK_POINTS_PER_DAY, type DawarichTrack } from '@trek/shared';
 import { DatabaseService } from '../database/database.service';
+import { FootprintService } from '../footprint/footprint.service';
 import { DawarichClient, type DawarichCreds } from './dawarich.client';
 import { DawarichService } from './dawarich.service';
 import {
@@ -11,17 +12,21 @@ import {
 } from './dawarich.helpers';
 
 /**
- * The recorded route for a window, fetched on demand and never stored.
- *
- * That is the point of the whole feature and the one rule it must not break:
- * Dawarich owns the location archive. TREK draws the part of it somebody is
- * looking at right now and forgets it again. There is no table here, no
- * `route_geometry` written to a place, no background import.
+ * The recorded route for a window, fetched on demand and never stored — with
+ * one exception, which is not this service's to own: a user recording INTO TT
+ * through the footprint addon (server/src/nest/footprint) has their own
+ * archive, and `forWindow` serves that first, before any remote fetch. For
+ * everyone else the original rule stands: Dawarich owns the location archive,
+ * TREK draws the part of it somebody is looking at right now and forgets it
+ * again. There is no table here, no `route_geometry` written to a place, no
+ * background import.
  *
  * What there is instead is a short in-memory cache, because "update the line
  * while the map is open" and "ask an instance for a month of GPS every few
  * seconds" are the same request otherwise. It lives for a minute, it is keyed
- * per user and window, and losing it on restart costs one extra fetch.
+ * per user and window, and losing it on restart costs one extra fetch. (The
+ * local archive answers straight from SQLite and skips the cache — its
+ * freshest point may be seconds old, which is the point of recording.)
  */
 @Injectable()
 export class DawarichTracksService {
@@ -44,6 +49,7 @@ export class DawarichTracksService {
     private readonly db: DatabaseService,
     private readonly dawarich: DawarichService,
     private readonly client: DawarichClient,
+    private readonly footprint: FootprintService,
   ) {}
 
   /**
@@ -91,6 +97,13 @@ export class DawarichTracksService {
     toIso: string,
     offsetMinutes = offsetMinutesOf(fromIso),
   ): Promise<DawarichTrack> {
+    // A user recording INTO TT (footprint addon on, ingest token minted) reads
+    // from their own archive, full stop: it is the freshest source they have,
+    // it costs no HTTP, and minting the token was the act of choosing it. The
+    // remote instance below is exactly what non-recorders still get, unchanged.
+    const local = this.footprint.localTrack(userId, fromIso, toIso, offsetMinutes);
+    if (local) return local;
+
     const creds = this.dawarich.getCredentials(userId);
     if (!creds) return emptyTrack();
 

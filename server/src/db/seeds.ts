@@ -265,6 +265,16 @@ function seedAddons(db: Database.Database): void {
         enabled: 0,
         sort_order: 17,
       },
+      {
+        id: 'footprint',
+        name: 'Footprint',
+        description:
+          'Record your own location history into TT — a phone tracker posts points, TT stores them, detects stays and draws the trail on your trips',
+        type: 'integration',
+        icon: 'Footprint',
+        enabled: 0,
+        sort_order: 18,
+      },
     ];
     const insertAddon = db.prepare(
       'INSERT OR IGNORE INTO addons (id, name, description, type, icon, enabled, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)',

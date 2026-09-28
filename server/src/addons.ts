@@ -12,6 +12,7 @@ export const ADDON_IDS = {
   COLLECTIONS: 'collections',
   ROADTRIP: 'roadtrip',
   DAWARICH: 'dawarich',
+  FOOTPRINT: 'footprint',
 } as const;
 
 export type AddonId = (typeof ADDON_IDS)[keyof typeof ADDON_IDS];
@@ -35,6 +36,7 @@ export const MCP_GATED_ADDON_IDS: readonly AddonId[] = [
   ADDON_IDS.COLLECTIONS,
   ADDON_IDS.DAWARICH,
   ADDON_IDS.DOCUMENTS,
+  ADDON_IDS.FOOTPRINT,
   ADDON_IDS.JOURNEY,
   ADDON_IDS.PACKING,
   ADDON_IDS.ROADTRIP,

@@ -18,6 +18,7 @@ import { DayNotesModule } from './day-notes/day-notes.module';
 import { DaysModule } from './days/days.module';
 import { FeedsModule } from './feeds/feeds.module';
 import { FilesModule } from './files/files.module';
+import { FootprintModule } from './footprint/footprint.module';
 import { GeoModule } from './geo/geo.module';
 import { HelpModule } from './help/help.module';
 import { AirtrailModule } from './integrations/airtrail.module';
@@ -90,6 +91,7 @@ import { Module } from '@nestjs/common';
     TripsModule,
     CollabModule,
     FilesModule,
+    FootprintModule,
     DocSyncModule,
     PhotosModule,
     MemoriesModule,

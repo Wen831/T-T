@@ -35,7 +35,10 @@ export function useDawarichTrail(
   range?: { from?: string; to?: string },
 ): DawarichTrailState {
   const addonEnabled = useAddonStore(s => s.isEnabled)
-  const active = enabled && !!tripId && addonEnabled('dawarich')
+  // The footprint addon records location history into TT itself; when it is on,
+  // the same endpoint serves the user's own archive instead of a remote Dawarich
+  // instance, so the layer lights up for either source.
+  const active = enabled && !!tripId && (addonEnabled('dawarich') || addonEnabled('footprint'))
 
   const [track, setTrack] = useState<DawarichTrack | null>(null)
   const [status, setStatus] = useState<DawarichTrailStatus>('idle')

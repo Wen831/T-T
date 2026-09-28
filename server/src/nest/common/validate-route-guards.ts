@@ -154,6 +154,10 @@ export const PUBLIC_ROUTE_ALLOW_LIST: string[] = [
  * hole the gate should close — it is one it has to keep visible.
  */
 export const ANONYMOUS_GUARDED_ROUTE_ALLOW_LIST: string[] = [
+  // The footprint ingest endpoint: a phone tracker has no TREK session, the
+  // per-user ingest token is the credential (FootprintIngestGuard resolves it),
+  // and AddonGuard answers 404 first while the addon is off.
+  'FootprintIngestController.ingest',
   // The passkey login ceremony, which by definition runs before a session
   // exists. PasskeyEnabledGuard only 404s when the admin toggle is off.
   'PasskeyController.loginOptions',

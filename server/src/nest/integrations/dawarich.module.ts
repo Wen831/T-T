@@ -3,6 +3,7 @@ import { AddonsModule } from '../addons/addons.module';
 import { AuditModule } from '../audit/audit.module';
 import { AuthModule } from '../auth/auth.module';
 import { AtlasModule } from '../atlas/atlas.module';
+import { FootprintModule } from '../footprint/footprint.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { PlacesModule } from '../places/places.module';
 import { AssignmentsDomainModule } from '../assignments/assignments-domain.module';
@@ -50,6 +51,11 @@ import { DawarichTracksService } from './dawarich-tracks.service';
     JourneyDomainModule,
     SchedulingModule,
     McpSharedModule,
+    // The footprint addon records location history INTO TT (the Dawarich core,
+    // ported); the track service below serves a local recorder's archive
+    // through the same DawarichTrack contract before it ever asks the remote
+    // instance.
+    FootprintModule,
   ],
   controllers: [DawarichController],
   providers: [
