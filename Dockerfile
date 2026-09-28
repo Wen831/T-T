@@ -84,7 +84,17 @@ COPY server/package.json ./server/
 # changeset, so it costs nothing. Everything copied after this point carries
 # --chown=node:node for the same reason — a recursive chown in a later layer
 # would copy up every inode it touches and duplicate the whole tree in the image.
+#
+# `apt-get upgrade` is part of this layer on purpose. Everything installed here —
+# libkitinerary-bin most of all — drags in a long tail of Debian libraries
+# (Qt6, poppler, Mesa, LLVM, curl, libxml2 …), and without the upgrade those
+# stay at whatever snapshot the repos held when the image was last built. A
+# Docker Scout run against 0.8.2 counted 85 open CVEs that way, almost all of
+# them system packages with patches already published. The upgrade pulls them to
+# the patched versions at build time, so a rebuild is a security refresh instead
+# of a re-freeze of the same snapshot.
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends tzdata dumb-init wget ca-certificates python3 build-essential \
     libkitinerary-bin && \
     npm ci --workspace=server --omit=dev && \
