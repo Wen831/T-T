@@ -4,7 +4,8 @@ import type { SweepFragment } from './types';
 
 /**
  * Decides what tracking silence MEANS — the port of
- * `Visits::Detection::GapBridger`.
+ * `Visits::Detection::GapBridger` in Freika/dawarich (AGPL-3.0).
+ * See ./README.md for the source files and licensing of this port.
  *
  * A gap whose fragments sit at the same place is evidence of a continuous
  * stay (phone idle indoors, dead battery at home) and is bridged into one

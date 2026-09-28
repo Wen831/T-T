@@ -8,7 +8,8 @@ import type { DetectionPoint, Stay } from './types';
 /**
  * The footprint port of the Dawarich detection pipeline
  * (`Visits::Detection::Runner#detect_stays` + `StayScoring`), composed over one
- * window's points:
+ * window's points — from Freika/dawarich (AGPL-3.0). See ./README.md for the
+ * source files and licensing of this port.
  *
  *   DwellSweep → GapBridger → StayAssembler → ConfidenceScorer
  *

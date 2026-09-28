@@ -3,7 +3,8 @@
  *
  * The pipeline is a port of Dawarich's visit detector —
  * `app/services/visits/detection/{dwell_sweep,gap_bridger,stay_assembler,policy}.rb`
- * plus `app/services/visits/confidence_scorer.rb` on Freika/dawarich. The Ruby
+ * plus `app/services/visits/confidence_scorer.rb` on Freika/dawarich
+ * (AGPL-3.0 — see ./README.md for the source files and licensing). The Ruby
  * `Pt` struct becomes `DetectionPoint`, the mutable fragment hashes become
  * `SweepFragment`, and the finalized stay hash becomes `Stay`. Field names keep
  * the snake_case of the source where they are pure data (bridged_s) so reading

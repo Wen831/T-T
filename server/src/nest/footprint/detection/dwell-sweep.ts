@@ -4,7 +4,8 @@ import type { DetectionPoint, SweepFragment } from './types';
 
 /**
  * Single-pass dwell sweep over time-ordered points (the v2 detector core) —
- * the port of `Visits::Detection::DwellSweep`.
+ * the port of `Visits::Detection::DwellSweep` in Freika/dawarich (AGPL-3.0).
+ * See ./README.md for the source files and licensing of this port.
  *
  * Emits EVERY colocated run as a fragment — including runs far below the
  * minimum dwell — because what a short run *means* is decided later:

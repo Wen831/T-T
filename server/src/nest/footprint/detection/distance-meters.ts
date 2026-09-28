@@ -1,9 +1,10 @@
 /**
  * Great-circle distance in metres — the footprint port of the
  * `Geocoder::Calculations.distance_between([lat, lon], [lat, lon], units: :km) * 1000`
- * every detection stage calls. Spherical haversine on the same 6371 km earth
- * radius the Ruby gem uses, so radius comparisons behave identically at the
- * 100 m scale the pipeline works on.
+ * every detection stage calls (Freika/dawarich, AGPL-3.0 — see ./README.md).
+ * Spherical haversine on the same 6371 km earth radius the Ruby gem uses, so
+ * radius comparisons behave identically at the 100 m scale the pipeline works
+ * on.
  */
 export function haversineMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const toRad = Math.PI / 180;

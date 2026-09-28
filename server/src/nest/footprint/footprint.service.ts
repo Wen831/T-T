@@ -17,7 +17,8 @@ import type { IngestPoint } from './footprint-ingest';
  *
  * This is the Dawarich core (record footprints) living inside TT instead of
  * beside it — the archive Dawarich would keep, the detector Dawarich runs
- * (ported stage-for-stage in ./detection), and the same `DawarichTrack`
+ * (ported stage-for-stage in ./detection, from Freika/dawarich, AGPL-3.0 — see
+ * ./detection/README.md for sources and licensing), and the same `DawarichTrack`
  * contract the remote-instance integration serves, so every existing consumer
  * reads both sources through one shape. Coordinates are stored and served
  * WGS-84 end to end: the shared track schema has no coordinate-system field,

@@ -4,7 +4,8 @@ import type { DetectionPoint, Stay, SweepFragment } from './types';
 
 /**
  * The single merge layer of the pipeline — the port of
- * `Visits::Detection::StayAssembler`.
+ * `Visits::Detection::StayAssembler` in Freika/dawarich (AGPL-3.0).
+ * See ./README.md for the source files and licensing of this port.
  *
  * Chain-merges same-place fragments within the merge gap (brief re-entries
  * whose excursion the reconciler already vetoed away), then — and only then —

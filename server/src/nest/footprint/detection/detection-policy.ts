@@ -1,6 +1,8 @@
 /**
  * The single source of every stay-detection threshold — the port of
- * `Visits::Detection::Policy` (app/services/visits/detection/policy.rb).
+ * `Visits::Detection::Policy` (app/services/visits/detection/policy.rb) in
+ * Freika/dawarich (AGPL-3.0). See ./README.md for the source files and
+ * licensing of this port.
  *
  * The pipeline internals are constants here and nowhere else; the four
  * user-tunable values are the constructor arguments, which FootprintService

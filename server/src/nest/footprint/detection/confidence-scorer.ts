@@ -2,8 +2,11 @@ import type { ConfidenceBreakdown, ConfidenceResult } from './types';
 
 /**
  * The port of `Visits::ConfidenceScorer`
- * (app/services/visits/confidence_scorer.rb): an integer 0..100 score for one
- * stay, plus the per-component breakdown behind it.
+ * (app/services/visits/confidence_scorer.rb) in Freika/dawarich (AGPL-3.0).
+ * See ./README.md for the source files and licensing of this port.
+ *
+ * An integer 0..100 score for one stay, plus the per-component breakdown
+ * behind it.
  *
  * `placeMatch` is optional (there is no place-attribution layer in the
  * footprint pipeline to feed it); when absent its weight is redistributed

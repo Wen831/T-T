@@ -108,6 +108,25 @@ Nothing here is written back to any external service — the archive lives in TT
 - The archive belongs to the Footprint addon: turning the addon off stops the endpoints and the local reads (the points stay in the database).
 - Reported points and detected stays are **recomputed on request** — there is no background job writing derived rows, so changing the detection thresholds changes the answer immediately.
 
+## Where the detection comes from
+
+The stay detection is a stage-for-stage port of the visit detector in
+**[Freika/dawarich](https://github.com/Freika/dawarich)** — the dwell sweep, the
+gap bridger, the stay assembler, the policy constants and the confidence
+scorer all keep the upstream names and behaviour, so a stay detected here and
+the same stay detected by a Dawarich instance have the same bounds. That is
+what lets one set of surfaces read both sources without caring which answered.
+
+It is a translation into TypeScript, not a call into Dawarich: no Ruby runs,
+nothing is shared at build or runtime, and TT carries no dependency on that
+repository. The upstream source files are listed in
+`server/src/nest/footprint/detection/README.md`.
+
+Both projects are licensed **AGPL-3.0**. The copyright in the original
+algorithm and its implementation remains with Dawarich's authors; the port
+keeps the attribution in each file's header and is distributed under TT's own
+AGPL-3.0 terms.
+
 ## Related
 
 - [Dawarich](Dawarich) — the external instance this is the alternative to, and the surfaces both feed.
