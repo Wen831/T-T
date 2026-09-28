@@ -1,8 +1,10 @@
 import type { LucideIcon } from 'lucide-react';
-import { Plug, RefreshCw, Save, Unplug } from 'lucide-react';
+import { Check, Copy, KeyRound, Plug, RefreshCw, Save, Unplug } from 'lucide-react';
 import React from 'react';
 import { useDawarichConnection } from '../../hooks/useDawarichConnection';
 import { useTranslation } from '../../i18n';
+import { useAddonStore } from '../../store/addonStore';
+import { copyText } from '../../utils/clipboard';
 import DawarichIcon from '../shared/DawarichIcon';
 import Section from './Section';
 import ToggleSwitch from './ToggleSwitch';
@@ -20,6 +22,11 @@ import ToggleSwitch from './ToggleSwitch';
  * connection to somebody else's server fails in ways they can act on — a wrong
  * key, a certificate, an instance that is simply off — and "not connected" with
  * no reason is the version of this card that generates support questions.
+ *
+ * The card opens with the source choice, because everything below it depends on
+ * the answer: an external instance wants an address and a key, the builtin
+ * engine wants an ingest token for the phone instead — and shows none of the
+ * fields that do not apply.
  */
 /**
  * Renders Dawarich's own mark through the `LucideIcon` shape Section expects.
@@ -46,34 +53,70 @@ export default function DawarichConnectionSection(): React.ReactElement {
         <p className="text-caption text-content-secondary">{t('dawarich.intro')}</p>
 
         <div>
-          <label htmlFor="dawarich-url" className="mb-1.5 block text-caption font-medium text-content-secondary">
-            {t('dawarich.url')}
-          </label>
-          <input
-            id="dawarich-url"
-            type="url"
-            value={S.url}
-            onChange={(e) => S.setUrl(e.target.value)}
-            placeholder="https://dawarich.example.com"
-            className="w-full rounded-lg border border-edge bg-surface-input px-3 py-2.5 text-body text-content ring-accent focus:outline-none focus:ring-2"
-          />
+          <p className="mb-1.5 text-caption font-medium text-content-secondary">{t('dawarich.source.label')}</p>
+          <div className="grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={t('dawarich.source.label')}>
+            <SourceOption
+              selected={S.source !== 'builtin'}
+              onSelect={() => S.setSource('external')}
+              title={t('dawarich.source.external')}
+              hint={t('dawarich.source.externalHint')}
+            />
+            <SourceOption
+              selected={S.source === 'builtin'}
+              onSelect={() => S.setSource('builtin')}
+              title={t('dawarich.source.builtin')}
+              hint={t('dawarich.source.builtinHint')}
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="dawarich-key" className="mb-1.5 block text-caption font-medium text-content-secondary">
-            {t('dawarich.apiKey')}
-          </label>
-          <input
-            id="dawarich-key"
-            type="password"
-            value={S.apiKey}
-            onChange={(e) => S.setApiKey(e.target.value)}
-            autoComplete="off"
-            placeholder={S.connected && !S.apiKey ? '••••••••' : t('dawarich.apiKeyPlaceholder')}
-            className="w-full rounded-lg border border-edge bg-surface-input px-3 py-2.5 text-body text-content ring-accent focus:outline-none focus:ring-2"
-          />
-          <p className="mt-1 text-caption text-content-muted">{t('dawarich.apiKeyHint')}</p>
-        </div>
+        {S.source === 'builtin' ? (
+          <FootprintIngestCard state={S} />
+        ) : (
+          <>
+            <div>
+              <label htmlFor="dawarich-url" className="mb-1.5 block text-caption font-medium text-content-secondary">
+                {t('dawarich.url')}
+              </label>
+              <input
+                id="dawarich-url"
+                type="url"
+                value={S.url}
+                onChange={(e) => S.setUrl(e.target.value)}
+                placeholder="https://dawarich.example.com"
+                className="w-full rounded-lg border border-edge bg-surface-input px-3 py-2.5 text-body text-content ring-accent focus:outline-none focus:ring-2"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="dawarich-key" className="mb-1.5 block text-caption font-medium text-content-secondary">
+                {t('dawarich.apiKey')}
+              </label>
+              <input
+                id="dawarich-key"
+                type="password"
+                value={S.apiKey}
+                onChange={(e) => S.setApiKey(e.target.value)}
+                autoComplete="off"
+                placeholder={S.connected && !S.apiKey ? '••••••••' : t('dawarich.apiKeyPlaceholder')}
+                className="w-full rounded-lg border border-edge bg-surface-input px-3 py-2.5 text-body text-content ring-accent focus:outline-none focus:ring-2"
+              />
+              <p className="mt-1 text-caption text-content-muted">{t('dawarich.apiKeyHint')}</p>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-3">
+                <ToggleSwitch
+                  on={S.allowInsecureTls}
+                  onToggle={S.toggleInsecureTls}
+                  label={t('dawarich.allowInsecureTls')}
+                />
+                <span className="text-body font-medium text-content-secondary">{t('dawarich.allowInsecureTls')}</span>
+              </div>
+              <p className="mt-1 text-caption text-content-muted">{t('dawarich.allowInsecureTlsHint')}</p>
+            </div>
+          </>
+        )}
 
         <div>
           <div className="flex items-center gap-3">
@@ -81,18 +124,6 @@ export default function DawarichConnectionSection(): React.ReactElement {
             <span className="text-body font-medium text-content-secondary">{t('dawarich.syncEnabled')}</span>
           </div>
           <p className="mt-1 text-caption text-content-muted">{t('dawarich.syncEnabledHint')}</p>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-3">
-            <ToggleSwitch
-              on={S.allowInsecureTls}
-              onToggle={S.toggleInsecureTls}
-              label={t('dawarich.allowInsecureTls')}
-            />
-            <span className="text-body font-medium text-content-secondary">{t('dawarich.allowInsecureTls')}</span>
-          </div>
-          <p className="mt-1 text-caption text-content-muted">{t('dawarich.allowInsecureTlsHint')}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -108,7 +139,7 @@ export default function DawarichConnectionSection(): React.ReactElement {
           <button
             type="button"
             onClick={S.test}
-            disabled={S.testing || S.loading || !S.url.trim()}
+            disabled={S.testing || S.loading || !S.canTest}
             className="flex items-center gap-2 rounded-lg border border-edge px-4 py-2 text-body text-content-secondary hover:bg-surface-hover disabled:opacity-50"
           >
             {S.testing ? (
@@ -154,6 +185,128 @@ export default function DawarichConnectionSection(): React.ReactElement {
       </div>
     </Section>
   );
+}
+
+/**
+ * One half of the source choice — a selectable card, the same shape the map's
+ * base-layer picker uses: the whole card is the hit target, selection is the
+ * accent ring, and the hint says what choosing it will ask of you.
+ */
+function SourceOption({
+  selected,
+  onSelect,
+  title,
+  hint,
+}: {
+  selected: boolean;
+  onSelect: () => void;
+  title: string;
+  hint: string;
+}): React.ReactElement {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      onClick={onSelect}
+      className={`rounded-lg border p-3 text-left transition-colors ${
+        selected
+          ? 'border-accent bg-accent-soft ring-1 ring-accent'
+          : 'border-edge bg-surface-input hover:bg-surface-hover'
+      }`}
+    >
+      <span className={`block text-body font-medium ${selected ? 'text-content' : 'text-content-secondary'}`}>
+        {title}
+      </span>
+      <span className="mt-0.5 block text-caption text-content-muted">{hint}</span>
+    </button>
+  );
+}
+
+/**
+ * The builtin credential: what the archive holds, the token a phone reports
+ * with, and the address it reports to. The token itself is shown exactly once
+ * per mint — the server stores only its hash — so the copy affordance sits
+ * directly under the fresh value and the card keeps saying so.
+ */
+function FootprintIngestCard({ state }: { state: ReturnType<typeof useDawarichConnection> }): React.ReactElement {
+  const { t, locale } = useTranslation();
+  const addonEnabled = useAddonStore((s) => s.isEnabled);
+  const footprintAddonOn = addonEnabled('footprint');
+  const [copied, setCopied] = React.useState(false);
+
+  const status = state.footprintStatus;
+  const token = status?.token;
+
+  const copyFresh = async () => {
+    if (!state.freshIngestToken) return;
+    await copyText(state.freshIngestToken);
+    setCopied(true);
+  };
+
+  return (
+    <div className="space-y-3 rounded-lg border border-edge bg-surface-secondary p-3">
+      {!footprintAddonOn && <p className="text-caption text-warning">{t('dawarich.footprint.addonHint')}</p>}
+
+      <p className="text-caption text-content-secondary">
+        {status && status.pointCount > 0
+          ? t('dawarich.footprint.points', { count: status.pointCount })
+          : t('dawarich.footprint.empty')}
+        {status?.latestPointAt &&
+          ' · ' + t('dawarich.footprint.latest', { when: new Date(status.latestPointAt * 1000).toLocaleString(locale) })}
+      </p>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={state.mintIngestToken}
+          disabled={state.minting}
+          className="flex items-center gap-2 rounded-lg border border-edge px-3 py-2 text-body text-content-secondary hover:bg-surface-hover disabled:opacity-50"
+        >
+          <KeyRound className="h-4 w-4" />
+          {token?.configured ? t('dawarich.footprint.rotate') : t('dawarich.footprint.mint')}
+        </button>
+
+        {token?.configured && (
+          <span className="text-caption text-content-muted">
+            {t('dawarich.footprint.tokenPrefix', { prefix: token.tokenPrefix ?? '' })}
+            {token.lastUsedAt
+              ? ' · ' + t('dawarich.footprint.tokenLastUsed', { when: new Date(token.lastUsedAt).toLocaleString(locale) })
+              : token.createdAt
+                ? ' · ' + t('dawarich.footprint.tokenNeverUsed')
+                : ''}
+          </span>
+        )}
+      </div>
+
+      {state.freshIngestToken && (
+        <div className="space-y-1.5 rounded-lg border border-accent bg-surface-input p-3">
+          <code className="block break-all text-caption text-content select-all">{state.freshIngestToken}</code>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={copyFresh}
+              className="flex items-center gap-1.5 rounded-lg border border-edge px-2.5 py-1.5 text-caption text-content-secondary hover:bg-surface-hover"
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? t('dawarich.footprint.copied') : t('dawarich.footprint.copy')}
+            </button>
+            <span className="text-caption text-content-muted">{t('dawarich.footprint.fresh')}</span>
+          </div>
+        </div>
+      )}
+
+      <p className="text-caption text-content-muted">{t('dawarich.footprint.ingestUrl')}</p>
+      <code className="block break-all rounded-lg border border-edge bg-surface-input px-3 py-2 text-caption text-content">
+        {ingestUrl()}
+      </code>
+    </div>
+  );
+}
+
+/** The address a phone tracker posts to, derived from where this page was served from. */
+function ingestUrl(): string {
+  return `${window.location.origin}/api/v1/points/ingest`;
 }
 
 /**

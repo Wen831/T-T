@@ -26,6 +26,9 @@ beforeAll(() => {
     configurable: true,
     writable: true,
   });
+  // copyText only reaches navigator.clipboard in a secure context; jsdom is
+  // not one, so the secure-context gate is mocked open with the clipboard.
+  Object.defineProperty(window, 'isSecureContext', { value: true, configurable: true, writable: true });
 });
 
 beforeEach(() => {
@@ -1081,5 +1084,140 @@ describe('IntegrationsTab — Dawarich connection', () => {
     });
     render(<IntegrationsTab />);
     expect(await screen.findByText(CARD_TEXT)).toBeInTheDocument();
+  });
+});
+
+/**
+ * The source choice (external instance vs the builtin footprint engine) and
+ * what each side asks for. The server keeps the stored source when a save
+ * omits it, so the UI's job is precise: send the source exactly as the user
+ * sees it, and only once it has been read.
+ */
+describe('IntegrationsTab — Dawarich source', () => {
+  function enableDawarich() {
+    seedStore(useAddonStore, {
+      addons: [
+        { id: 'dawarich', name: 'Dawarich', type: 'integration', icon: '', enabled: true },
+        { id: 'footprint', name: 'Footprint', type: 'integration', icon: '', enabled: true },
+      ],
+      loaded: true,
+      loadAddons: vi.fn(),
+    });
+  }
+
+  const externalConnection = {
+    url: 'https://dawarich.example.com',
+    apiKeyMasked: '••••••••',
+    allowInsecureTls: false,
+    syncEnabled: true,
+    source: 'external',
+    connected: true,
+    lastSyncAt: null,
+    lastSyncState: 'never',
+    lastSyncError: null,
+    capabilities: null,
+  };
+
+  it('FE-COMP-INTEGRATIONS-DAW-003: defaults to the external fields, with both sources offered', async () => {
+    enableDawarich();
+    server.use(http.get('/api/integrations/dawarich/settings', () => HttpResponse.json(externalConnection)));
+    render(<IntegrationsTab />);
+
+    await screen.findByText(/External Dawarich instance/i);
+    expect(screen.getByLabelText('Instance address')).toBeInTheDocument();
+    expect(screen.queryByText(/Generate ingest token/i)).toBeNull();
+  });
+
+  it('FE-COMP-INTEGRATIONS-DAW-004: switching to builtin swaps the fields for the ingest credential card', async () => {
+    const user = userEvent.setup();
+    enableDawarich();
+    server.use(
+      http.get('/api/integrations/dawarich/settings', () => HttpResponse.json(externalConnection)),
+      http.get('/api/footprint/status', () =>
+        HttpResponse.json({
+          token: { configured: true, tokenPrefix: 'trek_fp_abc', createdAt: '2026-09-01T00:00:00Z', lastUsedAt: null },
+          pointCount: 128,
+          latestPointAt: 1758900000,
+        }),
+      ),
+    );
+    render(<IntegrationsTab />);
+    await screen.findByText(/External Dawarich instance/i);
+
+    await user.click(screen.getByRole('radio', { name: /TT built-in engine/i }));
+
+    expect(screen.queryByLabelText('Instance address')).toBeNull();
+    expect(await screen.findByText(/128 location points recorded/i)).toBeInTheDocument();
+    expect(screen.getByText(/trek_fp_abc…/i)).toBeInTheDocument();
+    expect(screen.getByText(/api\/v1\/points\/ingest/i)).toBeInTheDocument();
+  });
+
+  it('FE-COMP-INTEGRATIONS-DAW-005: minting shows the raw token once, with a copy affordance', async () => {
+    const user = userEvent.setup();
+    enableDawarich();
+    server.use(
+      http.get('/api/integrations/dawarich/settings', () => HttpResponse.json(externalConnection)),
+      http.get('/api/footprint/status', () =>
+        HttpResponse.json({
+          token: { configured: false, tokenPrefix: null, createdAt: null, lastUsedAt: null },
+          pointCount: 0,
+          latestPointAt: null,
+        }),
+      ),
+      http.post('/api/footprint/ingest-token', () =>
+        HttpResponse.json({
+          ingestToken: 'trek_fp_fresh_value',
+          configured: true,
+          tokenPrefix: 'trek_fp_fresh',
+          createdAt: '2026-09-28T00:00:00Z',
+          lastUsedAt: null,
+        }),
+      ),
+    );
+    render(<IntegrationsTab />);
+    await screen.findByText(/External Dawarich instance/i);
+
+    // Spy after userEvent.setup() may have replaced navigator.clipboard — the
+    // same ordering the MCP copy tests use.
+    const writeSpy = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue(undefined);
+
+    await user.click(screen.getByRole('radio', { name: /TT built-in engine/i }));
+    await user.click(await screen.findByRole('button', { name: /Generate ingest token/i }));
+
+    expect(await screen.findByText('trek_fp_fresh_value')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Copy/i }));
+    expect(writeSpy).toHaveBeenCalledWith('trek_fp_fresh_value');
+    // The once-only rule is the copy hint right under the value.
+    expect(screen.getByText(/shown only this once/i)).toBeInTheDocument();
+  });
+
+  it('FE-COMP-INTEGRATIONS-DAW-006: saving a builtin choice sends source builtin and no url requirement', async () => {
+    const user = userEvent.setup();
+    enableDawarich();
+    let savedBody: Record<string, unknown> = {};
+    server.use(
+      http.get('/api/integrations/dawarich/settings', () => HttpResponse.json(externalConnection)),
+      http.get('/api/footprint/status', () =>
+        HttpResponse.json({
+          token: { configured: false, tokenPrefix: null, createdAt: null, lastUsedAt: null },
+          pointCount: 0,
+          latestPointAt: null,
+        }),
+      ),
+      http.put('/api/integrations/dawarich/settings', async (req) => {
+        savedBody = (await req.request.json()) as Record<string, unknown>;
+        return HttpResponse.json({ success: true });
+      }),
+    );
+    render(<IntegrationsTab />);
+    await screen.findByText(/External Dawarich instance/i);
+
+    await user.click(screen.getByRole('radio', { name: /TT built-in engine/i }));
+    await user.click(screen.getByRole('button', { name: /^Save$/i }));
+
+    await waitFor(() => expect(savedBody.source).toBe('builtin'));
+    // The external address travels with the save: switching back must not ask
+    // for the instance details to be typed all over again.
+    expect(savedBody.url).toBe('https://dawarich.example.com');
   });
 });

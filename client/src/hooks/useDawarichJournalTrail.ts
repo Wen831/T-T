@@ -31,7 +31,9 @@ export function useDawarichJournalTrail(
   status: 'idle' | 'loading' | 'ready' | 'unavailable' | 'offline';
 } {
   const addonEnabled = useAddonStore((s) => s.isEnabled);
-  const active = enabled && addonEnabled('dawarich') && dates.size > 0;
+  // Either source lights the journal trail: the remote instance or the builtin
+  // archive answer the same endpoint.
+  const active = enabled && (addonEnabled('dawarich') || addonEnabled('footprint')) && dates.size > 0;
 
   const [tracks, setTracks] = useState<JourneyTrack[]>(EMPTY);
   const [fetchedAt, setFetchedAt] = useState<string | null>(null);

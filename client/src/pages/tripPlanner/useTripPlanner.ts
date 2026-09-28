@@ -3216,7 +3216,9 @@ export function useTripPlanner() {
     toggleDawarichTrail,
     dawarichTrail,
     dawarichHiddenDates,
-    dawarichEnabled: !!enabledAddons.dawarich,
+    // The trail layer serves either source: a remote Dawarich instance, or the
+    // builtin footprint archive — so either addon being on is enough to offer it.
+    dawarichEnabled: !!enabledAddons.dawarich || !!enabledAddons.footprint,
     followTrack,
     roadtripViaCounts,
     allowedFileTypes,

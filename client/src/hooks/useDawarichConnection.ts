@@ -1,6 +1,7 @@
-import type { DawarichCapabilities, DawarichErrorCode, DawarichSyncState } from '@trek/shared';
+import type { DawarichCapabilities, DawarichErrorCode, DawarichSource, DawarichSyncState } from '@trek/shared';
 import { useCallback, useEffect, useState } from 'react';
 import { dawarichApi } from '../api/dawarich';
+import { footprintApi, type FootprintStatus } from '../api/footprint';
 import { useToast } from '../components/shared/Toast';
 import { useTranslation } from '../i18n';
 
@@ -23,6 +24,14 @@ export interface DawarichConnectionState {
   syncEnabled: boolean;
   toggleSync: () => void;
 
+  /**
+   * Where the reads come from. Null until the connection has loaded — the form
+   * must not send a source it has not read, or a save racing the load would
+   * flip a builtin row back to the external default.
+   */
+  source: DawarichSource | null;
+  setSource: (value: DawarichSource) => void;
+
   connected: boolean;
   loading: boolean;
   saving: boolean;
@@ -37,7 +46,16 @@ export interface DawarichConnectionState {
   /** Set after a test run, so the card can show what the probe found. */
   probeMessage: string | null;
 
+  /** The builtin half: what the local archive holds, and its ingest credential. */
+  footprintStatus: FootprintStatus | null;
+  /** The raw token from the last mint — shown once, never stored client-side. */
+  freshIngestToken: string | null;
+  minting: boolean;
+  mintIngestToken: () => Promise<void>;
+
   canSave: boolean;
+  /** A builtin connection has no address to test against itself — the server answers from the archive. */
+  canTest: boolean;
   save: () => Promise<void>;
   test: () => Promise<void>;
   syncNow: () => Promise<void>;
@@ -52,6 +70,10 @@ export function useDawarichConnection(): DawarichConnectionState {
   const [apiKey, setApiKey] = useState('');
   const [allowInsecureTls, setAllowInsecureTls] = useState(false);
   const [syncEnabled, setSyncEnabled] = useState(true);
+  const [source, setSource] = useState<DawarichSource | null>(null);
+  const [footprintStatus, setFootprintStatus] = useState<FootprintStatus | null>(null);
+  const [freshIngestToken, setFreshIngestToken] = useState<string | null>(null);
+  const [minting, setMinting] = useState(false);
   const [connected, setConnected] = useState(false);
   const [lastSyncAt, setLastSyncAt] = useState<string | null>(null);
   const [lastSyncState, setLastSyncState] = useState<DawarichSyncState>('never');
@@ -88,6 +110,7 @@ export function useDawarichConnection(): DawarichConnectionState {
         setUrl(data.url || '');
         setAllowInsecureTls(!!data.allowInsecureTls);
         setSyncEnabled(data.syncEnabled !== false);
+        setSource(data.source ?? 'external');
         setConnected(!!data.connected);
         setLastSyncAt(data.lastSyncAt);
         setLastSyncState(data.lastSyncState);
@@ -107,6 +130,47 @@ export function useDawarichConnection(): DawarichConnectionState {
     };
   }, []);
 
+  // The builtin card mirrors the archive: loaded when the source is (or is
+  // being switched to) builtin, and refreshed after a mint.
+  useEffect(() => {
+    if (source !== 'builtin') return;
+    let cancelled = false;
+    footprintApi
+      .status()
+      .then((status) => {
+        if (!cancelled) setFootprintStatus(status);
+      })
+      .catch(() => {
+        // The card renders its empty state; the save path will surface real errors.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [source]);
+
+  const mintIngestToken = useCallback(async () => {
+    setMinting(true);
+    try {
+      const result = await footprintApi.mintIngestToken();
+      setFreshIngestToken(result.ingestToken);
+      setFootprintStatus((prev) => ({
+        token: {
+          configured: true,
+          tokenPrefix: result.tokenPrefix,
+          createdAt: result.createdAt,
+          lastUsedAt: null,
+        },
+        pointCount: prev?.pointCount ?? 0,
+        latestPointAt: prev?.latestPointAt ?? null,
+      }));
+      toast.success(t('dawarich.footprint.toast.minted'));
+    } catch {
+      toast.error(t('dawarich.footprint.toast.mintError'));
+    } finally {
+      setMinting(false);
+    }
+  }, [toast, t]);
+
   /** The key field is never prefilled, so blank means "keep the stored one". */
   const keyPayload = useCallback((): { apiKey?: string } => {
     const typed = apiKey.trim();
@@ -120,6 +184,9 @@ export function useDawarichConnection(): DawarichConnectionState {
         url: url.trim(),
         allowInsecureTls,
         syncEnabled,
+        // Sent only once it has been read: absent means "keep the stored value"
+        // on the server, which is what protects a builtin row from an old form.
+        ...(source ? { source } : {}),
         ...keyPayload(),
       });
       const fresh = await dawarichApi.getSettings().catch(() => null);
@@ -128,6 +195,7 @@ export function useDawarichConnection(): DawarichConnectionState {
         setCapabilities(fresh.capabilities);
         setLastSyncState(fresh.lastSyncState);
         setLastSyncErrorCode(fresh.lastSyncError);
+        setSource(fresh.source ?? 'external');
       }
       setApiKey('');
       // The warning the server attaches when the address resolves to a private
@@ -143,7 +211,7 @@ export function useDawarichConnection(): DawarichConnectionState {
     } finally {
       setSaving(false);
     }
-  }, [url, allowInsecureTls, syncEnabled, keyPayload, toast, t]);
+  }, [url, allowInsecureTls, syncEnabled, source, keyPayload, toast, t]);
 
   const test = useCallback(async () => {
     setTesting(true);
@@ -212,6 +280,10 @@ export function useDawarichConnection(): DawarichConnectionState {
       setLastSyncState('never');
       setLastSyncErrorCode(null);
       setProbeMessage(null);
+      // The row is gone, so the source is the external default again — the
+      // archive itself belongs to the Footprint addon and is not touched.
+      setSource('external');
+      setFreshIngestToken(null);
       toast.success(t('dawarich.toast.disconnected'));
     } catch (err) {
       toast.error(errorText(err, t) || t('dawarich.toast.saveError'));
@@ -229,6 +301,8 @@ export function useDawarichConnection(): DawarichConnectionState {
     toggleInsecureTls: () => setAllowInsecureTls((v) => !v),
     syncEnabled,
     toggleSync: () => setSyncEnabled((v) => !v),
+    source,
+    setSource,
     connected,
     loading,
     saving,
@@ -239,9 +313,15 @@ export function useDawarichConnection(): DawarichConnectionState {
     lastSyncError: translateError(lastSyncErrorCode),
     capabilities,
     probeMessage,
-    // An address alone is not a connection, and the key field is blank once a
-    // key is stored — so saving needs either an existing connection or a typed key.
-    canSave: !!url.trim() && (connected || !!apiKey.trim()),
+    footprintStatus,
+    freshIngestToken,
+    minting,
+    mintIngestToken,
+    // An external connection needs an address, and the key field is blank once
+    // a key is stored — so saving needs either an existing connection or a
+    // typed key. A builtin connection has neither: the archive is this server.
+    canSave: source === 'builtin' ? true : !!url.trim() && (connected || !!apiKey.trim()),
+    canTest: source === 'builtin' ? true : !!url.trim(),
     save,
     test,
     syncNow,

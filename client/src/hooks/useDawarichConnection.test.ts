@@ -296,11 +296,14 @@ describe('useDawarichConnection: the save gate', () => {
     });
 
     // No `apiKey` property whatsoever: an empty string would clear the stored
-    // key, and this save was about two switches.
+    // key, and this save was about two switches. The source rides along as it
+    // was read — absent would mean "keep the stored one", and an explicit echo
+    // is how the card never fights what the user sees.
     expect(api.saveSettings).toHaveBeenCalledWith({
       url: 'https://dawarich.example',
       allowInsecureTls: true,
       syncEnabled: false,
+      source: 'external',
     });
 
     act(() => result.current.toggleInsecureTls());
@@ -350,6 +353,7 @@ describe('useDawarichConnection: save', () => {
       allowInsecureTls: false,
       syncEnabled: true,
       apiKey: 'k-123',
+      source: 'external',
     });
     // Cleared, so the next save of an unrelated switch does not resend it.
     expect(result.current.apiKey).toBe('');
