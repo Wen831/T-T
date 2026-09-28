@@ -16,6 +16,7 @@ import {
   type GlMapProvider,
 } from '../../../components/Map/glProviders';
 import ErrorBoundary from '../../../components/shared/ErrorBoundary';
+import AMapPreview from '../../../components/Settings/AMapPreview';
 import type { Place } from '../../../types';
 import { withTileApiKey } from '../../../utils/tileUrl';
 import MToggle from '../../components/MToggle';
@@ -344,7 +345,17 @@ export default function MSettingsMap() {
       )}
 
       <div className="relative mt-3 h-[200px] w-full overflow-hidden rounded-xl">
-        {provider === 'mapbox-gl' || provider === 'maplibre-gl' ? (
+        {provider === 'amap' ? (
+          // See MapSettingsTab: AMap cannot render without a key, and showing
+          // Leaflet in its place would misrepresent the provider.
+          amapKey.trim() ? (
+            <AMapPreview apiKey={amapKey} lat={PREVIEW_CENTER[0]} lng={PREVIEW_CENTER[1]} zoom={PREVIEW_ZOOM} />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center rounded-xl border border-m-border bg-m-card px-4 text-center text-caption text-m-muted">
+              {t('map.amapPreviewNeedsKey')}
+            </div>
+          )
+        ) : provider === 'mapbox-gl' || provider === 'maplibre-gl' ? (
           /* See MapSettingsTab: the preview gets its own net. */
           <ErrorBoundary
             boundaryId="settings:map-preview"

@@ -716,6 +716,14 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.journey.description': '旅行追踪与旅行日志，包含签到、照片和每日故事',
   'admin.addons.catalog.collections.name': '收藏',
   'admin.addons.catalog.collections.description': '把任意行程的地点收进命名列表，随时再次使用',
+  'admin.addons.catalog.roadtrip.name': '公路旅行',
+  'admin.addons.catalog.roadtrip.description': '沿路线停靠的驾驶模式，提供行驶时间与自动更新的抵达时间',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    '读取自建 Dawarich 实例的到访记录与轨迹——推荐日志条目、地点与国家，由你确认',
+  'admin.addons.catalog.footprint.name': '足迹记录',
+  'admin.addons.catalog.footprint.description':
+    '在 TT 内部记录你自己的位置历史——手机上报位置点，TT 存储、判定停留并在地图上画出轨迹',
   'admin.passkey.title': '通行密钥登录',
   'admin.passkey.cardHint': '允许用户使用通行密钥（WebAuthn）登录。默认关闭。',
   'admin.passkey.login': '启用通行密钥登录',
@@ -736,6 +744,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': '标准（免费）',
   'admin.defaultSettings.providerMapbox': 'Mapbox（3D）',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': '高德地图',
+  'admin.defaultSettings.amapToken': '共享高德密钥',
+  'admin.defaultSettings.amapTokenHint':
+    '用于所有未输入自己密钥的用户。高德必须有自己的 Web JS 密钥才能正常渲染，因此建议先填好密钥再把它设为默认。以加密方式存储。',
   'admin.defaultSettings.mapboxToken': '共享 Mapbox 令牌',
   'admin.defaultSettings.mapboxTokenHint':
     '用于所有未输入自己令牌的用户 — 这样无需逐个分享密钥，整个实例即可使用 Mapbox。以加密方式存储。',

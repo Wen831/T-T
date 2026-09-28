@@ -20,6 +20,7 @@ import {
   type GlMapProvider,
 } from '../Map/glProviders';
 import ErrorBoundary from '../shared/ErrorBoundary';
+import AMapPreview from './AMapPreview';
 import Section from './Section';
 import ToggleSwitch from './ToggleSwitch';
 
@@ -509,7 +510,19 @@ export default function MapSettingsTab(): React.ReactElement {
 
       <div>
         <div style={{ position: 'relative', inset: 0, height: '200px', width: '100%' }}>
-          {provider === 'mapbox-gl' || provider === 'maplibre-gl' ? (
+          {provider === 'amap' ? (
+            // AMap renders only with a key — without one the SDK cannot start at
+            // all. Showing the Leaflet preview in its place would be a lie about
+            // what the provider does, so an empty key leaves the frame blank with
+            // a prompt instead.
+            amapKey.trim() ? (
+              <AMapPreview apiKey={amapKey} lat={PREVIEW_CENTER[0]} lng={PREVIEW_CENTER[1]} zoom={PREVIEW_ZOOM} />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center rounded-lg border border-edge bg-surface-secondary px-4 text-center text-caption text-content-muted">
+                {t('map.amapPreviewNeedsKey')}
+              </div>
+            )
+          ) : provider === 'mapbox-gl' || provider === 'maplibre-gl' ? (
             /* A net of its own: the preview is the one place a user flips providers
                live, so it is the likeliest chunk to fail — and a broken preview must
                not take the rest of the settings tab with it. */

@@ -49,12 +49,23 @@ type Defaults = {
   maplibre_style?: string;
   mapbox_3d_enabled?: boolean;
   mapbox_quality_mode?: boolean;
+  amap_js_api_key?: string;
 };
 
-type MapProvider = 'leaflet' | GlMapProvider;
+/**
+ * The providers an admin can make the default. Wider than `GlMapProvider`
+ * because AMap is its own renderer: it has no style presets, just a key.
+ */
+type MapProvider = 'leaflet' | GlMapProvider | 'amap';
 
 function normalizeProvider(value: unknown): MapProvider {
-  return value === 'mapbox-gl' || value === 'maplibre-gl' ? value : 'leaflet';
+  if (value === 'mapbox-gl' || value === 'maplibre-gl' || value === 'amap') return value;
+  return 'leaflet';
+}
+
+/** AMap keeps no style slot — its basemap is fixed and needs only a key. */
+function isAmap(provider: MapProvider): provider is 'amap' {
+  return provider === 'amap';
 }
 
 /** Only the GL providers keep a style — Leaflet is handled by its callers. */
@@ -117,6 +128,7 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
   const [mapboxToken, setMapboxToken] = useState('');
   const [cartoKey, setCartoKey] = useState('');
   const [mapboxStyle, setMapboxStyle] = useState('');
+  const [amapToken, setAmapToken] = useState('');
 
   useEffect(() => {
     adminApi
@@ -127,8 +139,9 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
         setMapTileUrl(normalizeTileUrl(data.map_tile_url || ''));
         setMapboxToken(data.mapbox_access_token || '');
         setCartoKey(data.carto_api_key || '');
+        setAmapToken(data.amap_js_api_key || '');
         setMapboxStyle(
-          provider === 'leaflet'
+          provider === 'leaflet' || isAmap(provider)
             ? data.mapbox_style || ''
             : styleForProvider(provider, provider === 'maplibre-gl' ? data.maplibre_style : data.mapbox_style)
         );
@@ -154,9 +167,10 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
       if (key === 'map_tile_url') setMapTileUrl('');
       if (key === 'mapbox_access_token') setMapboxToken('');
       if (key === 'carto_api_key') setCartoKey('');
+      if (key === 'amap_js_api_key') setAmapToken('');
       if (key === 'mapbox_style' || key === 'maplibre_style') {
         const provider = normalizeProvider(defaults.map_provider);
-        setMapboxStyle(provider === 'leaflet' ? '' : defaultStyleForProvider(provider));
+        setMapboxStyle(provider === 'leaflet' || isAmap(provider) ? '' : defaultStyleForProvider(provider));
       }
       toast.success(t('admin.defaultSettings.reset'));
     } catch (err: unknown) {
@@ -221,11 +235,13 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
 
   const darkMode = defaults.dark_mode;
   const mapProvider = normalizeProvider(defaults.map_provider);
-  const glStylePresets = mapProvider === 'leaflet' ? [] : getStylePresets(mapProvider);
+  // AMap has no style slot, so it contributes no presets and no style key.
+  const glStylePresets = mapProvider === 'leaflet' || isAmap(mapProvider) ? [] : getStylePresets(mapProvider);
   const styleKey: keyof Defaults = mapProvider === 'maplibre-gl' ? 'maplibre_style' : 'mapbox_style';
   const saveMapProvider = (nextProvider: MapProvider) => {
     const patch: Partial<Defaults> = { map_provider: nextProvider };
-    if (nextProvider !== 'leaflet') {
+    // Only the GL providers carry a style slot; AMap and Leaflet are saved as-is.
+    if (nextProvider !== 'leaflet' && !isAmap(nextProvider)) {
       // Load + save the new provider's own style slot so the other provider's style is kept.
       const slot = nextProvider === 'maplibre-gl' ? defaults.maplibre_style : defaults.mapbox_style;
       const nextStyle = styleForProvider(nextProvider, slot);
@@ -476,6 +492,7 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
               { value: 'leaflet', label: t('admin.defaultSettings.providerLeaflet') },
               { value: 'mapbox-gl', label: t('admin.defaultSettings.providerMapbox') },
               { value: 'maplibre-gl', label: t('admin.defaultSettings.providerMapLibre') },
+              { value: 'amap', label: t('admin.defaultSettings.providerAmap') },
             ] as const
           ).map((opt) => (
             <OptionButton key={opt.value} active={mapProvider === opt.value} onClick={() => saveMapProvider(opt.value)}>
@@ -484,7 +501,33 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
           ))}
         </OptionRow>
 
-        {mapProvider !== 'leaflet' && (
+        {/* ── AMap: instance-wide key, no style slot ───────────────────── */}
+        {/* AMap has no style presets (its basemap is fixed), so it gets one field
+            and nothing else. Left blank the engine cannot start, which is why the
+            provider is only worth choosing once a key is on file. */}
+        {mapProvider === 'amap' && (
+          <div style={{ marginTop: 16 }}>
+            <label className="mb-1.5 block text-sm font-medium text-content-secondary">
+              {t('admin.defaultSettings.amapToken')}
+              <ResetButton field="amap_js_api_key" />
+            </label>
+            <input
+              type="text"
+              value={amapToken}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmapToken(e.target.value)}
+              onBlur={() => save({ amap_js_api_key: amapToken })}
+              placeholder="高德 Web JS API key"
+              spellCheck={false}
+              autoComplete="off"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-slate-400"
+            />
+            <p className="mt-1 text-xs text-content-faint">{t('admin.defaultSettings.amapTokenHint')}</p>
+          </div>
+        )}
+
+        {/* The GL providers and their styles. AMap is handled above: no style, no
+            GL-specific toggles, and its key is the only thing it needs. */}
+        {mapProvider !== 'leaflet' && !isAmap(mapProvider) && (
           <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 18 }}>
             {/* The token comes with the instance on a managed install, injected when the
               settings are read. A field here would only let somebody save a worse one. */}

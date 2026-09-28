@@ -53,6 +53,14 @@ vi.mock('./MapboxPreview', () => ({
   ),
 }));
 
+// The AMap preview boots the real 高德 SDK from a script tag; jsdom cannot load
+// it, so the tab is asked about the props it would pass instead.
+vi.mock('./AMapPreview', () => ({
+  default: ({ apiKey, zoom }: { apiKey: string; zoom: number }) => (
+    <div data-testid="amap-preview" data-api-key={apiKey} data-zoom={String(zoom)} />
+  ),
+}));
+
 beforeEach(() => {
   resetAllStores();
   vi.clearAllMocks();
@@ -384,6 +392,34 @@ describe('MapSettingsTab – GL providers', () => {
 
     expect(screen.getByPlaceholderText('请输入高德地图 API Key')).toBeInTheDocument();
   });
+
+  it('FE-COMP-MAP-030c: an AMap preview without a key stays blank instead of drawing Leaflet', async () => {
+    const user = userEvent.setup();
+    render(<MapSettingsTab />);
+
+    await user.click(screen.getByRole('button', { name: /高德地图/ }));
+
+    // The point of the case: the Leaflet renderer must NOT stand in for AMap.
+    expect(screen.queryByTestId('map-view')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('amap-preview')).not.toBeInTheDocument();
+    expect(screen.getByText(/Enter your AMap Web JS key above/)).toBeInTheDocument();
+  });
+
+  it('FE-COMP-MAP-030d: once a key is typed the preview becomes the AMap renderer', async () => {
+    const user = userEvent.setup();
+    render(<MapSettingsTab />);
+
+    await user.click(screen.getByRole('button', { name: /高德地图/ }));
+    fireEvent.change(screen.getByPlaceholderText('请输入高德地图 API Key'), {
+      target: { value: ' my-amap-key ' },
+    });
+
+    // The raw field value is passed through; `loadAmap` trims it itself.
+    const preview = await screen.findByTestId('amap-preview');
+    expect(preview).toHaveAttribute('data-api-key', ' my-amap-key ');
+    expect(screen.queryByTestId('map-view')).not.toBeInTheDocument();
+  });
+
   it('FE-COMP-MAP-030: picking a Leaflet template fills the tile URL input', async () => {
     const user = userEvent.setup();
     render(<MapSettingsTab />);

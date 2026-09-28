@@ -303,6 +303,39 @@ describe('DefaultUserSettingsTab', () => {
     await waitFor(() => expect(screen.queryByText('Map style')).not.toBeInTheDocument());
   });
 
+  it('FE-ADMIN-DUS-028: AMap is offered as a default and stores only the provider', async () => {
+    const user = userEvent.setup();
+    const { puts } = stubDefaults({ map_provider: 'leaflet' });
+    render(<DefaultUserSettingsTab />);
+    await screen.findByText('Default User Settings');
+
+    await user.click(screen.getByRole('button', { name: 'AMap (高德)' }));
+
+    // AMap has no style slot, so switching to it sends nothing but the provider.
+    await waitFor(() => expect(puts).toEqual([{ map_provider: 'amap' }]));
+  });
+
+  it('FE-ADMIN-DUS-029: the shared AMap key is stored on blur and cleared by its reset link', async () => {
+    const user = userEvent.setup();
+    const { puts, state } = stubDefaults({ map_provider: 'amap' });
+    render(<DefaultUserSettingsTab />);
+    await screen.findByText('Shared AMap key');
+
+    // No style controls while AMap is the provider — it has no style slot.
+    expect(screen.queryByText('Map style')).not.toBeInTheDocument();
+
+    const input = within(screen.getByText('Shared AMap key').closest('div') as HTMLElement).getByRole('textbox');
+    await user.type(input, 'amap-key-123');
+    fireEvent.blur(input);
+
+    await waitFor(() => expect(puts).toEqual([{ amap_js_api_key: 'amap-key-123' }]));
+
+    await user.click(resetLink('Shared AMap key'));
+
+    await waitFor(() => expect(state.amap_js_api_key).toBeUndefined());
+    expect(input).toHaveValue('');
+  });
+
   it('FE-ADMIN-DUS-017: a Mapbox default holding an OpenFreeMap style falls back to the Mapbox standard', async () => {
     stubDefaults({ map_provider: 'mapbox-gl', mapbox_style: OFM_LIBERTY });
     render(<DefaultUserSettingsTab />);
@@ -311,8 +344,7 @@ describe('DefaultUserSettingsTab', () => {
     expect(screen.getByDisplayValue(MAPBOX_STANDARD)).toBeInTheDocument();
   });
 
-  it('FE-ADMIN-DUS-018: a stored Mapbox style survives while the standard engine is active', async () => {
-    const user = userEvent.setup();
+  it('FE-ADMIN-DUS-018: a stored Mapbox style survives while the standard engine is active', async () => {    const user = userEvent.setup();
     const { puts } = stubDefaults({ map_provider: 'leaflet', mapbox_style: MAPBOX_DARK });
     render(<DefaultUserSettingsTab />);
     await screen.findByText('Default User Settings');

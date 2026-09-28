@@ -22,5 +22,7 @@ const map: TranslationStrings = {
   'map.location.denied': '定位权限已被阻止。请检查设备设置,已安装的应用拥有与浏览器分开的定位权限。',
   'map.location.unavailable': '无法确定你的位置。',
   'map.location.timeout': '定位耗时过长。请在能看到天空的开阔位置重试。',
+  'map.amapPreviewNeedsKey': '在上方填入高德 Web JS 密钥后即可预览地图。',
+  'map.amapPreviewFailed': '该密钥无法加载高德 SDK，请检查密钥及其域名绑定。',
 };
 export default map;

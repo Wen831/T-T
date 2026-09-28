@@ -197,6 +197,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standard (free)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Shared AMap key',
+  'admin.defaultSettings.amapTokenHint':
+    'Used for every user who has not entered their own key. AMap needs its own Web JS key to render anything at all, so the default is only worth choosing once a key is on file. Stored encrypted.',
   'admin.defaultSettings.mapboxToken': 'Shared Mapbox token',
   'admin.defaultSettings.mapboxTokenHint':
     'Used for every user who has not entered their own token — so the whole instance gets Mapbox without sharing the key individually. Stored encrypted.',
@@ -788,6 +792,15 @@ const admin: TranslationStrings = {
     'Trip tracking & travel journal with check-ins, photos, and daily stories',
   'admin.addons.catalog.collections.name': 'Collections',
   'admin.addons.catalog.collections.description': 'Collect places from any trip into named lists and reuse them',
+  'admin.addons.catalog.roadtrip.name': 'Road trip',
+  'admin.addons.catalog.roadtrip.description':
+    'Drives with stops along the route, driving times, and arrival times that update themselves',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Read visits and recorded routes from your Dawarich instance — suggested journal entries, places and countries you confirm yourself',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    'Record your own location history into TT — a phone tracker posts points, TT stores them, detects stays and draws the trail on your trips',
   'admin.passkey.title': 'Passkey login',
   'admin.passkey.cardHint': 'Let users sign in with passkeys (WebAuthn). Off by default.',
   'admin.passkey.login': 'Enable passkey login',

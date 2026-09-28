@@ -35,7 +35,11 @@ export const DEFAULTABLE_USER_SETTING_KEYS = [
   // the key is per-instance rather than per-person: defaultable so one admin
   // value clears the watermark for everybody at once.
   'carto_api_key',
-  // A user's browser-only AMap Web JS key is encrypted but never an admin default.
+  // A user's browser-only AMap Web JS key is encrypted; when the admin sets one
+  // it becomes the instance default every member inherits (and can still
+  // override with their own quota) — the same treatment mapbox_access_token
+  // gets. See the merge in getUserSettings.
+  'amap_js_api_key',
   'map_provider',
   'mapbox_access_token',
   'mapbox_style',
