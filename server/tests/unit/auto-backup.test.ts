@@ -177,7 +177,9 @@ describe('auto-backup run', () => {
     expect(dbMock.db.exec).toHaveBeenCalledWith(expect.stringContaining('VACUUM INTO'));
     const dbEntry = archiveMock.file.mock.calls.find(([, opts]) => opts?.name === 'travel.db');
     expect(dbEntry).toBeDefined();
-    expect(dbEntry?.[0]).toContain('/stub/spool/travel-snap-auto-backup-');
+    // path.join, not a literal slash: the snapshot lands on the local filesystem,
+    // so on Windows the staged path is '\stub\spool\...'.
+    expect(dbEntry?.[0]).toContain(path.join('/stub/spool', 'travel-snap-auto-backup-'));
     expect(dbEntry?.[0]).not.toBe(liveDb);
   });
 
