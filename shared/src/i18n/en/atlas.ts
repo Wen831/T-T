@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.plannedFor': 'Planned for',
   'atlas.antarctica': 'Antarctica',
   'atlas.lastVisitLabel': 'Last trip',
+  'atlas.exportStats': 'Download stats as CSV',
+  'atlas.exportFailed': 'Could not export the stats',
 };
 export default atlas;

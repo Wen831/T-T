@@ -1,3 +1,4 @@
+import { Download } from 'lucide-react';
 import React from 'react';
 import ToggleSwitch from '../../components/Settings/ToggleSwitch';
 import type { TranslationFn } from '../../types';
@@ -9,6 +10,8 @@ interface AtlasLayerToggleProps {
   plannedCount: number;
   showLandmarks?: boolean;
   onToggleLandmarks?: () => void;
+  /** Renders the download button when given. Atlas has no other toolbar. */
+  onExportStats?: () => void;
 }
 
 // Floating switch that reveals the countries you only plan to visit (#1048). Hidden
@@ -22,6 +25,7 @@ export default function AtlasLayerToggle({
   plannedCount,
   showLandmarks,
   onToggleLandmarks,
+  onExportStats,
 }: AtlasLayerToggleProps): React.ReactElement | null {
   return (
     <div
@@ -39,6 +43,21 @@ export default function AtlasLayerToggle({
           WebkitBackdropFilter: 'blur(18px) saturate(180%)',
         }}
       >
+        {onExportStats && (
+          <>
+            <button
+              type="button"
+              onClick={onExportStats}
+              aria-label={t('atlas.exportStats')}
+              title={t('atlas.exportStats')}
+              data-testid="atlas-export-stats"
+              className="flex h-7 w-7 flex-none items-center justify-center rounded-full text-content-secondary transition-colors hover:bg-surface-hover hover:text-content"
+            >
+              <Download size={15} strokeWidth={1.9} />
+            </button>
+            <span className="h-5 w-px flex-none bg-edge" />
+          </>
+        )}
         {plannedCount > 0 && (
           <>
             <span className="whitespace-nowrap text-caption font-semibold text-content">{t('atlas.showPlanned')}</span>

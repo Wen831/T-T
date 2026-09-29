@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': 'Utazási helyek',
   'atlas.checkinEmpty': 'Még nincsenek check-inek — jelöljön meg egy látnivalót vagy utazási helyet meglátogatottként',
   'atlas.lastVisitLabel': 'Utolsó utazás',
+  'atlas.exportStats': 'Statisztikák letöltése CSV-ben',
+  'atlas.exportFailed': 'A statisztikák exportja nem sikerült',
 };
 export default atlas;

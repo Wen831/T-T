@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Η αναδιάταξη των ημερών απέτυχε',
   'dayplan.addDayError': 'Η προσθήκη ημέρας απέτυχε',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Πίνακες και δεδομένα',
+  'dayplan.csv': 'Μέρη σε πίνακα',
+  'dayplan.csvSub': 'Μία γραμμή ανά στάση, με συντεταγμένες',
+  'dayplan.geojson': 'Δεδομένα χάρτη για άλλα εργαλεία',
+  'dayplan.geojsonSub': 'Σημεία και μία γραμμή ανά ημέρα',
+  'dayplan.dataExportFailed': 'Η εξαγωγή δεδομένων απέτυχε',
 };
 export default dayplan;

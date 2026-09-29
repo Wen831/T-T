@@ -219,6 +219,66 @@ describe('getStats', () => {
   });
 });
 
+// ── The Atlas panel as a spreadsheet ─────────────────────────────────────────
+
+describe('exportStatsCsv', () => {
+  /** The two tables, split on the blank line that separates them. */
+  const blocks = (csv: string) => {
+    expect(csv.startsWith('\uFEFF')).toBe(true);
+    return csv
+      .slice(1)
+      .trimEnd()
+      .split('\r\n\r\n')
+      .map((block) => block.split('\r\n'));
+  };
+
+  it('ATLAS-CSV-001: lists every country visited, strongest and fullest first, then the totals', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id, { title: 'Grand Tour', start_date: '2023-05-01', end_date: '2023-05-10' });
+    for (let i = 0; i < 3; i++) insertPlace(testDb, trip.id, `Paris Place ${i}`, `Street ${i}, Paris, France`);
+    insertPlaceWithCoords(testDb, trip.id, 'Tokyo Place', 35.6895, 139.6917, 'Tokyo, Japan');
+
+    const [countries, totals] = blocks(await atlas.exportStatsCsv(user.id));
+
+    expect(countries[0]).toBe('country_code,continent,status,place_count,trip_count,first_visit,last_visit');
+    expect(countries[1]).toContain('FR,Europe,visited,3,1,2023-05-01,2023-05-10');
+    expect(countries[2]).toContain('JP,Asia,visited,1,1,2023-05-01,2023-05-10');
+    expect(totals[0]).toBe('metric,value');
+    expect(totals).toContain('trips,1');
+    expect(totals).toContain('places,4');
+    expect(totals).toContain('countries_visited,2');
+    expect(totals).toContain('days,10');
+    // Continents come from the same counts the map colours with.
+    expect(totals).toContain('countries_in_europe,1');
+    expect(totals).toContain('countries_in_asia,1');
+  });
+
+  // The no-trips branch of stats() leaves the planned/idea counters and the
+  // streak out altogether; the file still has to be a complete table.
+  it('ATLAS-CSV-002: a hand-marked country with no trips exports as visited, with the absent metrics at zero', async () => {
+    const { user } = createUser(testDb);
+    testDb.prepare('INSERT INTO visited_countries (user_id, country_code) VALUES (?, ?)').run(user.id, 'JP');
+
+    const [countries, totals] = blocks(await atlas.exportStatsCsv(user.id));
+
+    expect(countries).toHaveLength(2);
+    expect(countries[1]).toBe('JP,Asia,visited,0,0,,');
+    expect(totals).toContain('trips,0');
+    expect(totals).toContain('countries_planned,0');
+    expect(totals).toContain('years_in_a_row,0');
+    expect(totals).toContain('first_year,');
+  });
+
+  it('ATLAS-CSV-003: an account with nothing at all is a header and the totals, not an empty body', async () => {
+    const { user } = createUser(testDb);
+
+    const [countries, totals] = blocks(await atlas.exportStatsCsv(user.id));
+
+    expect(countries).toHaveLength(1);
+    expect(totals.length).toBeGreaterThan(1);
+  });
+});
+
 // ── #1535: the layover the role filter can't see ─────────────────────────────
 
 /**

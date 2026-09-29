@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinTab': 'Registres',
   'atlas.checkinTotal': 'Registres',
   'atlas.lastVisitLabel': 'Darrer viatge',
+  'atlas.exportStats': 'Baixa les estadístiques en CSV',
+  'atlas.exportFailed': 'Error en exportar les estadístiques',
 };
 export default atlas;

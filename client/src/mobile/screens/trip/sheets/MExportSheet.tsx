@@ -1,19 +1,20 @@
 import type { LucideIcon } from 'lucide-react';
-import { CalendarPlus, ChevronRight, FileDown, Share2 } from 'lucide-react';
+import { CalendarPlus, ChevronRight, FileDown, Map, Share2, Table } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { IcsSubscribeModal } from '../../../../components/Planner/IcsSubscribeModal';
 import { useTranslation } from '../../../../i18n';
 import { useSettingsStore } from '../../../../store/settingsStore';
 import { useTripStore } from '../../../../store/tripStore';
+import { downloadBlob } from '../../../../utils/fileDownload';
 import MSheet from '../../../components/MSheet';
 import type { MTripSheetsProps } from '../MTripShell';
 import { INNER_CLS, TileHeader } from './MTripSheetUi';
 
 /**
  * Export sheet ('export', opened from the Mehr sheet): the desktop day-plan
- * toolbar's PDF export, GPX download, ICS download and calendar subscription in
- * one place. The subscription dialog is the shared IcsSubscribeModal — it owns the
- * enable/rotate/disable token flow.
+ * toolbar's PDF export, GPX download, CSV / GeoJSON data downloads, ICS download
+ * and calendar subscription in one place. The subscription dialog is the shared
+ * IcsSubscribeModal — it owns the enable/rotate/disable token flow.
  */
 export default function MExportSheet({ planner, shell }: MTripSheetsProps) {
   const { t, locale } = useTranslation();
@@ -25,6 +26,9 @@ export default function MExportSheet({ planner, shell }: MTripSheetsProps) {
   const [pdfBusy, setPdfBusy] = useState(false);
   const [icsBusy, setIcsBusy] = useState(false);
   const [gpxBusy, setGpxBusy] = useState(false);
+  // One state for both data formats: they are the same request with a
+  // different extension, and only one download can run at a time.
+  const [dataBusy, setDataBusy] = useState<'csv' | 'geojson' | null>(null);
   // The subscription link reads the trip without an account, so it needs the
   // same permission as the public share link. The ICS download beside it does
   // not: that is a file this member may already read.
@@ -117,6 +121,28 @@ export default function MExportSheet({ planner, shell }: MTripSheetsProps) {
     }
   };
 
+  // The rows a phone cannot show on a map: a spreadsheet, or GeoJSON for a map
+  // app that takes files. Same empty-trip answer as GPX, so a 404 never reads
+  // as a broken download.
+  const downloadData = async (format: 'csv' | 'geojson') => {
+    if (dataBusy) return;
+    setDataBusy(format);
+    try {
+      const res = await fetch(`/api/trips/${planner.tripId}/places/export.${format}`, { credentials: 'include' });
+      if (res.status === 404) {
+        planner.toast.info(t('dayplan.gpxEmpty'));
+        return;
+      }
+      if (!res.ok) throw new Error();
+      downloadBlob(await res.blob(), `${planner.trip?.title || 'trip'}.${format}`);
+      shell.closeSheet();
+    } catch {
+      planner.toast.error(t('dayplan.dataExportFailed'));
+    } finally {
+      setDataBusy(null);
+    }
+  };
+
   return (
     <MSheet open={open} onClose={shell.closeSheet} variant="card" material="glass" ariaLabel={t('mobileTrip.export')}>
       <div className="flex-none px-[18px] pt-4">
@@ -147,6 +173,18 @@ export default function MExportSheet({ planner, shell }: MTripSheetsProps) {
             title={gpxBusy ? t('common.loading') : t('dayplan.gpxAll')}
             sub={t('dayplan.gpxTooltip')}
             onClick={() => void downloadGpx()}
+          />
+          <ExportRow
+            icon={Table}
+            title={dataBusy === 'csv' ? t('common.loading') : t('dayplan.csv')}
+            sub={t('dayplan.csvSub')}
+            onClick={() => void downloadData('csv')}
+          />
+          <ExportRow
+            icon={Map}
+            title={dataBusy === 'geojson' ? t('common.loading') : t('dayplan.geojson')}
+            sub={t('dayplan.geojsonSub')}
+            onClick={() => void downloadData('geojson')}
           />
           {canManageShare && (
             <ExportRow

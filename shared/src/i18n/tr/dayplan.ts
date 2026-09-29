@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Günler yeniden sıralanamadı',
   'dayplan.addDayError': 'Gün eklenemedi',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Tablolar ve veriler',
+  'dayplan.csv': 'Yerleri tablo olarak',
+  'dayplan.csvSub': 'Her durak için bir satır, koordinatlarla',
+  'dayplan.geojson': 'Başka araçlar için harita verisi',
+  'dayplan.geojsonSub': 'Noktalar ve her gün için bir çizgi',
+  'dayplan.dataExportFailed': 'Veri dışa aktarma başarısız',
 };
 export default dayplan;

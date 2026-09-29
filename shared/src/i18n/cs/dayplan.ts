@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Nepodařilo se změnit pořadí dnů',
   'dayplan.addDayError': 'Nepodařilo se přidat den',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Tabulky a data',
+  'dayplan.csv': 'Místa jako tabulka',
+  'dayplan.csvSub': 'Jeden řádek na zastávku, s souřadnicemi',
+  'dayplan.geojson': 'Mapová data pro jiné nástroje',
+  'dayplan.geojsonSub': 'Body a linie pro každý den',
+  'dayplan.dataExportFailed': 'Export dat se nezdařil',
 };
 export default dayplan;

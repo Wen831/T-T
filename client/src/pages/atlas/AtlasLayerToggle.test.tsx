@@ -56,4 +56,21 @@ describe('AtlasLayerToggle', () => {
       expect(strings[key], `${key} is missing from the en bundle`).toBeTypeOf('string');
     }
   });
+
+  // Atlas has no toolbar of its own, so the stats download rides on this pill.
+  it('FE-ATLAS-TOGGLE-005: the download appears only when the page can answer it', async () => {
+    render(<AtlasLayerToggle t={t} showPlanned onToggle={vi.fn()} plannedCount={3} />);
+    expect(screen.queryByTestId('atlas-export-stats')).not.toBeInTheDocument();
+
+    const onExportStats = vi.fn();
+    render(<AtlasLayerToggle t={t} showPlanned onToggle={vi.fn()} plannedCount={3} onExportStats={onExportStats} />);
+    const button = screen.getByRole('button', { name: 'atlas.exportStats' });
+    expect(button).toHaveAttribute('data-testid', 'atlas-export-stats');
+    fireEvent.click(button);
+    expect(onExportStats).toHaveBeenCalledTimes(1);
+
+    // Identity `t` above only proves the key is requested; this proves it resolves.
+    const en = (await import('@trek/shared/i18n/en')).default as unknown as Record<string, string>;
+    expect(en['atlas.exportStats'], 'atlas.exportStats is missing from the en bundle').toBeTypeOf('string');
+  });
 });

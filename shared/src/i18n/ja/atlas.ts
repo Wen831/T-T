@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': '旅行先の地点',
   'atlas.checkinEmpty': 'まだチェックインはありません — ランドマークや旅行先の地点を訪問済みとして記録しましょう',
   'atlas.lastVisitLabel': '最後の旅行',
+  'atlas.exportStats': '統計をCSVでダウンロード',
+  'atlas.exportFailed': '統計の書き出しに失敗しました',
 };
 export default atlas;

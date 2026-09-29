@@ -41,6 +41,16 @@ describe('AtlasController (parity with the legacy /api/addons/atlas route)', () 
     expect(stats).toHaveBeenCalledWith(8);
   });
 
+  it('GET /stats.csv sends the spreadsheet with an attachment name', async () => {
+    const res = makeRes();
+    const exportStatsCsv = vi.fn().mockResolvedValue('metric,value\r\n');
+    await makeController({ exportStatsCsv }).statsCsv(user, res);
+    expect(exportStatsCsv).toHaveBeenCalledWith(8);
+    expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv; charset=utf-8');
+    expect(res.setHeader).toHaveBeenCalledWith('Content-Disposition', 'attachment; filename="atlas-stats.csv"');
+    expect(res.send).toHaveBeenCalledWith('metric,value\r\n');
+  });
+
   describe('GET /regions/geo', () => {
     it('returns an empty FeatureCollection without a cache header when no countries given', async () => {
       const regionGeo = vi.fn();

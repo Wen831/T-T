@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinTab': 'Check-innar',
   'atlas.checkinTotal': 'Check-innar',
   'atlas.lastVisitLabel': 'Den senaste resan',
+  'atlas.exportStats': 'Ladda ner statistiken som CSV',
+  'atlas.exportFailed': 'Statistikexporten misslyckades',
 };
 export default atlas;

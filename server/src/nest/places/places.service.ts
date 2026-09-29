@@ -1,6 +1,7 @@
 import type { Place, User } from '../../types';
 import { checkSsrf, safeFetchFollow, SsrfBlockedError } from '../../utils/ssrfGuard';
 import { type UpdateConflict, isUpdateConflict } from '../common/conflictResult';
+import { exportFilename } from '../common/export-filename';
 import { ratingAggregate } from '../common/rowShape';
 import { DatabaseService, type TripAccess } from '../database/database.service';
 import type { PlaceWithTags } from '../database/database.service';
@@ -12,6 +13,8 @@ import { QueryHelpersService } from '../query-helpers/query-helpers.service';
 import { RealtimeService } from '../realtime/realtime.service';
 import { StorageService } from '../storage/storage.service';
 import { UnsplashService } from '../unsplash/unsplash.service';
+import { buildTripCsv, buildTripGeoJson } from './export-formats.helpers';
+import type { ExportPlaceRow, ExportStopRow } from './export-formats.helpers';
 import { buildGpx, gpxFilename } from './gpx-export.helpers';
 import type { GpxExportDay, GpxExportOptions, GpxExportPlace } from './gpx-export.helpers';
 import {
@@ -801,6 +804,59 @@ export class PlacesService {
 
     const gpx = buildGpx({ tripTitle: trip.title, places, days: [...days.values()] }, opts);
     return gpx ? { gpx, filename: gpxFilename(trip.title) } : null;
+  }
+
+  /**
+   * Places and day stops for the formats that are not GPX. One row set, two
+   * writers, so a spreadsheet and a GeoJSON file cannot disagree about what the
+   * trip contained while the GPX of the same trip says something else.
+   */
+  private exportRows(tripId: string): { title: string; places: ExportPlaceRow[]; stops: ExportStopRow[] } | null {
+    const trip = this.dbs.get<{ title: string }>('SELECT title FROM trips WHERE id = ?', tripId);
+    if (!trip) return null;
+
+    const places = this.dbs.all<ExportPlaceRow>(
+      `
+      SELECT p.id, p.name, p.description, p.address, p.lat, p.lng, c.name AS category
+        FROM places p
+        LEFT JOIN categories c ON c.id = p.category_id
+       WHERE p.trip_id = ?
+       ORDER BY p.id
+    `,
+      tripId,
+    );
+
+    const stops = this.dbs.all<ExportStopRow>(
+      `
+      SELECT da.place_id, d.day_number, d.date, d.title, da.order_index
+        FROM days d
+        JOIN day_assignments da ON da.day_id = d.id
+       WHERE d.trip_id = ?
+       ORDER BY d.day_number, da.order_index
+    `,
+      tripId,
+    );
+
+    return { title: trip.title, places, stops };
+  }
+
+  /** The trip as a spreadsheet. Null when it has no places, so the caller 404s. */
+  exportCsv(tripId: string): { csv: string; filename: string } | null {
+    const rows = this.exportRows(tripId);
+    if (!rows || rows.places.length === 0) return null;
+    return { csv: buildTripCsv(rows.places, rows.stops), filename: exportFilename(rows.title, 'csv') };
+  }
+
+  /**
+   * The trip as GeoJSON. Null when nothing has coordinates: a collection of
+   * nameless points is not worth opening, and a place with no position cannot be
+   * mapped by anything that reads this.
+   */
+  exportGeoJson(tripId: string): { geojson: string; filename: string } | null {
+    const rows = this.exportRows(tripId);
+    if (!rows) return null;
+    const geojson = buildTripGeoJson(rows.title, rows.places, rows.stops);
+    return geojson ? { geojson, filename: exportFilename(rows.title, 'geojson') } : null;
   }
 
   private importGpxRows(tripId: string, fileBuffer: Buffer, opts: GpxImportOptions = {}): GpxImportResult | null {

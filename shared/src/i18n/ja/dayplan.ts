@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': '日付の並べ替えに失敗しました',
   'dayplan.addDayError': '日付の追加に失敗しました',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'スプレッドシートとデータ',
+  'dayplan.csv': '場所の一覧表',
+  'dayplan.csvSub': '停泊地ごとに1行、座標つき',
+  'dayplan.geojson': '他のツール用の地図データ',
+  'dayplan.geojsonSub': '地点と1日ごとのルート',
+  'dayplan.dataExportFailed': 'データの書き出しに失敗しました',
 };
 export default dayplan;

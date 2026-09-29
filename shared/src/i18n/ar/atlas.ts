@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': 'أماكن الرحلة',
   'atlas.checkinEmpty': 'لا توجد تسجيلات زيارة بعد — حدّد معلمًا أو مكانًا في الرحلة كمُزار',
   'atlas.lastVisitLabel': 'آخر رحلة',
+  'atlas.exportStats': 'تنزيل الإحصاءات بصيغة CSV',
+  'atlas.exportFailed': 'فشل تصدير الإحصاءات',
 };
 export default atlas;

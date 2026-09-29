@@ -233,6 +233,40 @@ export class PlacesController {
     res.send(result.gpx);
   }
 
+  /**
+   * The trip as a spreadsheet, for budgeting or a shareable summary. One row per
+   * day stop and one for every place that has no day yet. Read, not edit, like
+   * GPX above.
+   */
+  @Get('export.csv')
+  exportCsv(@CurrentUser() user: User, @Param('tripId') tripId: string, @Res() res: Response) {
+    this.requireTrip(tripId, user);
+    const result = this.places.exportCsv(tripId);
+    if (!result) {
+      throw new HttpException({ error: 'Nothing to export' }, 404);
+    }
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', contentDisposition(result.filename, 'attachment'));
+    res.send(result.csv);
+  }
+
+  /**
+   * The trip as GeoJSON: a point per place that has coordinates, and a line per
+   * planned day. The format QGIS, Google My Maps and most web map tooling read,
+   * where GPX is a device format and a browser cannot open either.
+   */
+  @Get('export.geojson')
+  exportGeoJson(@CurrentUser() user: User, @Param('tripId') tripId: string, @Res() res: Response) {
+    this.requireTrip(tripId, user);
+    const result = this.places.exportGeoJson(tripId);
+    if (!result) {
+      throw new HttpException({ error: 'Nothing to export' }, 404);
+    }
+    res.setHeader('Content-Type', 'application/geo+json; charset=utf-8');
+    res.setHeader('Content-Disposition', contentDisposition(result.filename, 'attachment'));
+    res.send(result.geojson);
+  }
+
   @Post('import/map')
   @UseInterceptors(FileInterceptor('file', UPLOAD))
   async importMap(

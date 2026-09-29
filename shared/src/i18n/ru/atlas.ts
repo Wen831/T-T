@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': 'Места поездки',
   'atlas.checkinEmpty': 'Пока нет отметок — отметьте достопримечательность или место поездки как посещённое',
   'atlas.lastVisitLabel': 'Последняя поездка',
+  'atlas.exportStats': 'Скачать статистику в CSV',
+  'atlas.exportFailed': 'Не удалось экспортировать статистику',
 };
 export default atlas;

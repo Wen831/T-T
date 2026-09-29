@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': 'Τοποθεσίες ταξιδιού',
   'atlas.checkinEmpty': 'Δεν υπάρχουν check-in ακόμη — επισημάνετε ορόσημο ή τοποθεσία ταξιδιού ως επισκεφθείσα',
   'atlas.lastVisitLabel': 'Τελευταίο ταξίδι',
+  'atlas.exportStats': 'Λήψη στατιστικών ως CSV',
+  'atlas.exportFailed': 'Η εξαγωγή στατιστικών απέτυχε',
 };
 export default atlas;

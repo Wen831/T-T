@@ -460,6 +460,89 @@ describe('Places e2e (real auth guard + temp SQLite)', () => {
     });
   });
 
+  // ── Spreadsheet and GeoJSON export ────────────────────────────────────────
+  describe('GET export.csv and export.geojson', () => {
+    const seedTrip = () => {
+      db.prepare("INSERT INTO trips (id, title) VALUES (5, 'Alpine week')").run();
+      db.prepare("INSERT INTO places (id, trip_id, name, lat, lng) VALUES (1, 5, 'Trailhead', 47.1, 11.2)").run();
+      db.prepare("INSERT INTO places (id, trip_id, name, lat, lng) VALUES (2, 5, 'Hut', 47.2, 11.3)").run();
+      db.prepare("INSERT INTO places (id, trip_id, name, lat, lng) VALUES (3, 5, 'Spare', NULL, NULL)").run();
+      db.prepare(
+        "INSERT INTO days (id, trip_id, day_number, date, title) VALUES (1, 5, 1, '2026-05-01', 'Warm up')",
+      ).run();
+      db.prepare('INSERT INTO day_assignments (day_id, place_id, order_index) VALUES (1, 1, 0), (1, 2, 1)').run();
+    };
+
+    it('answers 401 without a cookie, and 404 for a trip the caller cannot reach', async () => {
+      seedTrip();
+      expect((await request(server).get('/api/trips/5/places/export.csv')).status).toBe(401);
+
+      canAccessTrip.mockReturnValue(undefined);
+      for (const path of ['export.csv', 'export.geojson']) {
+        const res = await request(server).get(`/api/trips/5/places/${path}`).set('Cookie', sessionCookie(1));
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual({ error: 'Trip not found' });
+      }
+    });
+
+    it('serves the trip as a spreadsheet: a row per stop, then the place with no day', async () => {
+      seedTrip();
+      const res = await request(server).get('/api/trips/5/places/export.csv').set('Cookie', sessionCookie(1));
+
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toContain('text/csv');
+      expect(res.headers['content-disposition']).toBe('attachment; filename="Alpine-week.csv"');
+
+      const lines = res.text.replace('﻿', '').trimEnd().split('\r\n');
+      expect(lines[0]).toBe('day,date,place_name,category,address,latitude,longitude,description');
+      // Split rather than matched literally: eight empty-trailing columns are
+      // impossible to count by eye, and the header above pins the order.
+      expect(lines[1].split(',')).toEqual(['1', '2026-05-01', 'Trailhead', '', '', '47.1', '11.2', '']);
+      expect(lines[2].split(',')).toEqual(['1', '2026-05-01', 'Hut', '', '', '47.2', '11.3', '']);
+      expect(lines[3].split(',')).toEqual(['', '', 'Spare', '', '', '', '', '']);
+    });
+
+    it('serves the trip as GeoJSON: a point per mapped place and a line for the planned day', async () => {
+      seedTrip();
+      const res = await request(server).get('/api/trips/5/places/export.geojson').set('Cookie', sessionCookie(1));
+
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toContain('application/geo+json');
+      expect(res.headers['content-disposition']).toBe('attachment; filename="Alpine-week.geojson"');
+
+      const collection = JSON.parse(res.text) as {
+        type: string;
+        features: {
+          geometry: { type: string; coordinates: number[][] | number[] };
+          properties: Record<string, unknown>;
+        }[];
+      };
+      expect(collection.type).toBe('FeatureCollection');
+      const points = collection.features.filter((f) => f.geometry.type === 'Point');
+      const lines = collection.features.filter((f) => f.geometry.type === 'LineString');
+      // The place without coordinates is in the CSV and not here: it has no position.
+      expect(points.map((p) => p.properties.name)).toEqual(['Trailhead', 'Hut']);
+      expect(points[0].geometry.coordinates).toEqual([11.2, 47.1]);
+      expect(lines).toHaveLength(1);
+      expect(lines[0].geometry.coordinates).toEqual([
+        [11.2, 47.1],
+        [11.3, 47.2],
+      ]);
+    });
+
+    it('404s when there is nothing to export, in either format', async () => {
+      db.prepare("INSERT INTO trips (id, title) VALUES (5, 'Nothing here')").run();
+      expect((await request(server).get('/api/trips/5/places/export.csv').set('Cookie', sessionCookie(1))).status).toBe(
+        404,
+      );
+
+      db.prepare("INSERT INTO places (id, trip_id, name) VALUES (1, 5, 'No coordinates')").run();
+      const res = await request(server).get('/api/trips/5/places/export.geojson').set('Cookie', sessionCookie(1));
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ error: 'Nothing to export' });
+    });
+  });
+
   // The reason places keeps its inline checks on the write routes: a guard runs
   // before the pipe, so guarding create would answer 404 where the suite above
   // pins a 400. This is the non-regression pin for that decision.

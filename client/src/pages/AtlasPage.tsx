@@ -12,6 +12,7 @@ import { useTranslation } from '../i18n';
 import type { TranslationFn } from '../types';
 import { getApiErrorMessage } from '../types';
 import { getCheckedPlaces } from '../utils/checkinStorage';
+import { downloadBlob } from '../utils/fileDownload';
 import { getLandmarkColor } from '../utils/landmarkIcons';
 import { getLandmarkVisitedAt, getVisitedLandmarks, isLandmarkVisited } from '../utils/landmarkStorage';
 import AtlasCountrySearch from './atlas/AtlasCountrySearch';
@@ -119,6 +120,17 @@ function AtlasPageDesktop(): React.ReactElement {
     toggleLandmarkVisit,
   } = useAtlas();
   const toast = useToast();
+  // The numbers on this panel are worth a file: the server assembles the whole
+  // country list and the totals as one CSV, so the download is a single request.
+  const exportAtlasStats = async () => {
+    try {
+      const res = await fetch('/api/addons/atlas/stats.csv', { credentials: 'include' });
+      if (!res.ok) throw new Error(String(res.status));
+      downloadBlob(await res.blob(), 'atlas-stats.csv');
+    } catch {
+      toast.error(t('atlas.exportFailed'));
+    }
+  };
   // Solid surfaces when the user disabled transparency (read at render — the
   // attribute is already set by applyAppearance before navigating here).
   const noTransparency =
@@ -218,6 +230,7 @@ function AtlasPageDesktop(): React.ReactElement {
           plannedCount={stats.totalCountriesPlanned || 0}
           showLandmarks={showLandmarks}
           onToggleLandmarks={() => setShowLandmarks((v) => !v)}
+          onExportStats={() => void exportAtlasStats()}
         />
 
         {/* Mobile: Bottom bar */}

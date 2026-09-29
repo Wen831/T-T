@@ -1,6 +1,7 @@
 import type { User } from '../../types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { contentDisposition } from '../common/content-disposition';
 import { AtlasMarkRegionDto, AtlasCreateBucketItemDto, AtlasUpdateBucketItemDto } from './atlas.dto';
 import { AtlasService, BucketItemExistsError } from './atlas.service';
 import {
@@ -46,6 +47,18 @@ export class AtlasController {
   @Get('stats')
   stats(@CurrentUser() user: User) {
     return this.atlas.stats(user.id);
+  }
+
+  /**
+   * The same numbers as a spreadsheet: every country the map colours, then the
+   * headline totals the panel adds up to. A read of the user's own data, so the
+   * guard above is the only permission check it needs.
+   */
+  @Get('stats.csv')
+  async statsCsv(@CurrentUser() user: User, @Res() res: Response): Promise<void> {
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', contentDisposition('atlas-stats.csv', 'attachment'));
+    res.send(await this.atlas.exportStatsCsv(user.id));
   }
 
   @Get('regions')

@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Gagal mengatur ulang hari',
   'dayplan.addDayError': 'Gagal menambah hari',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Tabel dan data',
+  'dayplan.csv': 'Tempat dalam tabel',
+  'dayplan.csvSub': 'Satu baris per pemberhentian, dengan koordinat',
+  'dayplan.geojson': 'Data peta untuk aplikasi lain',
+  'dayplan.geojsonSub': 'Titik dan satu garis per hari',
+  'dayplan.dataExportFailed': 'Ekspor data gagal',
 };
 export default dayplan;

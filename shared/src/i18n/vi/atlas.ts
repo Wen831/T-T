@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinTab': 'Check-in',
   'atlas.checkinTotal': 'Check-in',
   'atlas.lastVisitLabel': 'Chuyến đi cuối cùng',
+  'atlas.exportStats': 'Tải thống kê dạng CSV',
+  'atlas.exportFailed': 'Xuất thống kê thất bại',
 };
 export default atlas;

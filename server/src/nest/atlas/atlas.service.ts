@@ -1,4 +1,6 @@
 import { Trip, Place } from '../../types';
+import type { CsvValue } from '../common/csv';
+import { CSV_BOM, toCsv } from '../common/csv';
 import { haversineKm } from '../common/geo';
 import { DatabaseService } from '../database/database.service';
 import {
@@ -17,7 +19,14 @@ import { KNOWN_COUNTRIES } from './known-countries';
 import { transferEndpointIds } from './transfer-endpoints';
 import type { FlightEndpointRow } from './transfer-endpoints';
 import { Injectable } from '@nestjs/common';
-import { CONTINENT_MAP, strongerVisitStatus, todayUtc, tripVisitStatus, VisitStatus } from '@trek/shared';
+import {
+  CONTINENT_MAP,
+  strongerVisitStatus,
+  todayUtc,
+  tripVisitStatus,
+  VISIT_STATUS_RANK,
+  VisitStatus,
+} from '@trek/shared';
 import type { AtlasLocateResponse } from '@trek/shared';
 
 /**
@@ -54,6 +63,19 @@ type BucketIdentity = {
   lng: number | null;
   country_code: string | null;
   target_date: string | null;
+};
+
+/**
+ * One country of the `stats()` result, as the CSV writer sees it. `status` is
+ * absent on the no-trips branch, where every row came from a manual mark.
+ */
+type StatsCountryRow = {
+  code: string;
+  placeCount: number;
+  tripCount: number;
+  firstVisit: string | null;
+  lastVisit: string | null;
+  status?: VisitStatus;
 };
 
 // Bundled/geocoded region codes are always "<countryCode>-<rest>" (ISO 3166-2 format, and
@@ -473,6 +495,77 @@ export class AtlasService {
       firstYear,
       tripsThisYear: trips.filter((t) => t.start_date && t.start_date.startsWith(String(currentYear))).length,
     };
+  }
+
+  /**
+   * The Atlas panel as a spreadsheet: one row per country, then the headline
+   * numbers it adds up to.
+   *
+   * Two tables in one file with a blank line between them, because the panel shows
+   * both and splitting them over two downloads would make the summary the half
+   * nobody gets. Excel opens this as it stands; a script should stop at the blank
+   * line.
+   */
+  async exportStatsCsv(userId: number): Promise<string> {
+    const data = await this.stats(userId);
+    // The no-trips branch of stats() leaves out the planned and idea counters, the
+    // continents and the streak. Every one of them is zero for that user, which is
+    // exactly what reading an absent key gives.
+    const summary = data.stats as Record<string, number | undefined>;
+    const extras = data as unknown as {
+      streak?: number;
+      firstYear?: number | null;
+      tripsThisYear?: number;
+      continents?: Record<string, number>;
+    };
+    // Same branch: a hand-marked country with no trips has no status field, and a
+    // mark by hand means visited.
+    const rows = (data.countries as unknown as StatsCountryRow[]).map((c) => ({
+      ...c,
+      status: c.status ?? 'visited',
+    }));
+
+    const ordered = [...rows].sort(
+      (a, b) =>
+        VISIT_STATUS_RANK[a.status] - VISIT_STATUS_RANK[b.status] ||
+        b.placeCount - a.placeCount ||
+        a.code.localeCompare(b.code),
+    );
+
+    const countries: CsvValue[][] = ordered.map((c) => [
+      c.code,
+      CONTINENT_MAP[c.code] || 'Other',
+      c.status,
+      c.placeCount,
+      c.tripCount,
+      c.firstVisit,
+      c.lastVisit,
+    ]);
+
+    const totals: CsvValue[][] = [
+      ['trips', summary.totalTrips ?? 0],
+      ['places', summary.totalPlaces ?? 0],
+      ['countries_visited', summary.totalCountries ?? 0],
+      ['countries_planned', summary.totalCountriesPlanned ?? 0],
+      ['countries_idea', summary.totalCountriesIdea ?? 0],
+      ['days', summary.totalDays ?? 0],
+      ['cities', summary.totalCities ?? 0],
+      ['years_in_a_row', extras.streak ?? 0],
+      ['first_year', extras.firstYear ?? ''],
+      ['trips_this_year', extras.tripsThisYear ?? 0],
+      ...Object.entries(extras.continents ?? {}).map(
+        ([continent, count]) =>
+          [`countries_in_${continent.toLowerCase().replace(/[^a-z]+/g, '_')}`, count] as CsvValue[],
+      ),
+    ];
+
+    const table = toCsv(
+      ['country_code', 'continent', 'status', 'place_count', 'trip_count', 'first_visit', 'last_visit'],
+      countries,
+      { bom: false },
+    );
+    const headline = toCsv(['metric', 'value'], totals, { bom: false });
+    return `${CSV_BOM}${table}\r\n${headline}`;
   }
 
   // ── Country places ────────────────────────────────────────────────────────

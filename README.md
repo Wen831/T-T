@@ -32,7 +32,7 @@ A powerful self-hosted travel planning platform with real-time collaboration, in
 - **Place Search**: Integrated search with Google Places, OpenStreetMap, and Amap
 - **Smart Routes**: Auto-sort days, multiple transport modes, direct navigation app integration
 - **Weather Forecasts**: 16-day forecasts and historical weather data
-- **Import/Export**: Support for Google Maps lists, GPX, KML, KMZ, and ICS formats
+- **Import/Export**: Support for Google Maps lists, GPX, KML, KMZ, ICS, CSV and GeoJSON formats
 
 ### 🗓️ Activity & Day Planning
 

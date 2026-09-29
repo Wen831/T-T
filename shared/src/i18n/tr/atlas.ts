@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.checkinPlaces': 'Seyahat yerleri',
   'atlas.checkinEmpty': 'Henüz ziyaret yok — bir simge yapıyı veya seyahat yerini ziyaret edildi olarak işaretleyin',
   'atlas.lastVisitLabel': 'Son yolculuk',
+  'atlas.exportStats': 'İstatistikleri CSV olarak indir',
+  'atlas.exportFailed': 'İstatistik dışa aktarma başarısız',
 };
 export default atlas;

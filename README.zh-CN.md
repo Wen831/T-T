@@ -32,7 +32,7 @@
 - **地点搜索**：集成 Google Places、OpenStreetMap 和高德地图
 - **智能路线**：自动排序、多种交通方式和导航应用跳转
 - **天气预报**：16 天预报和历史天气
-- **导入导出**：支持 Google Maps 列表、GPX、KML、KMZ 和 ICS
+- **导入导出**：支持 Google Maps 列表、GPX、KML、KMZ、ICS、CSV 和 GeoJSON
 
 ### 🗓️ 活动与日程
 

@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Dagen herordenen mislukt',
   'dayplan.addDayError': 'Dag toevoegen mislukt',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Tabellen en gegevens',
+  'dayplan.csv': 'Plekken als tabel',
+  'dayplan.csvSub': 'Eén rij per stop, met coördinaten',
+  'dayplan.geojson': 'Kaartgegevens voor andere tools',
+  'dayplan.geojsonSub': 'Punten en een lijn per dag',
+  'dayplan.dataExportFailed': 'Gegevens exporteren mislukt',
 };
 export default dayplan;

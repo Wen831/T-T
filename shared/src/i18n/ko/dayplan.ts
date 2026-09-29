@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': '날짜 순서를 변경하지 못했습니다',
   'dayplan.addDayError': '날짜를 추가하지 못했습니다',
   'export.gpx': 'GPX',
+  'dayplan.exportData': '스프레드시트 및 데이터',
+  'dayplan.csv': '장소 표로 내보내기',
+  'dayplan.csvSub': '경유지당 한 행, 좌표 포함',
+  'dayplan.geojson': '다른 도구용 지도 데이터',
+  'dayplan.geojsonSub': '지점과 하루별 경로',
+  'dayplan.dataExportFailed': '데이터 내보내기 실패',
 };
 export default dayplan;

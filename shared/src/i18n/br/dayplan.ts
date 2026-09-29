@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Falha ao reordenar os dias',
   'dayplan.addDayError': 'Falha ao adicionar o dia',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Tabelas e dados',
+  'dayplan.csv': 'Lugares em tabela',
+  'dayplan.csvSub': 'Uma linha por parada, com coordenadas',
+  'dayplan.geojson': 'Dados de mapa para outras ferramentas',
+  'dayplan.geojsonSub': 'Pontos e uma linha por dia',
+  'dayplan.dataExportFailed': 'Falha ao exportar os dados',
 };
 export default dayplan;

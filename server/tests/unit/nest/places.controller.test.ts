@@ -284,6 +284,52 @@ describe('PlacesController (parity with the legacy /api/trips/:tripId/places rou
     });
   });
 
+  describe('GET /export.csv and /export.geojson', () => {
+    const makeRes = () => ({ setHeader: vi.fn(), send: vi.fn() });
+
+    it('sends the CSV with its own content type and an attachment name', () => {
+      const res = makeRes();
+      const exportCsv = vi.fn().mockReturnValue({ csv: 'day,date\r\n', filename: 'Kyoto.csv' });
+      const s = svc({ exportCsv } as Partial<PlacesService>);
+      new PlacesController(s, new RuntimeEnvService(), storageStub).exportCsv(user, '5', res as never);
+      expect(exportCsv).toHaveBeenCalledWith('5');
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv; charset=utf-8');
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Disposition', 'attachment; filename="Kyoto.csv"');
+      expect(res.send).toHaveBeenCalledWith('day,date\r\n');
+    });
+
+    it('answers 404 when the trip has no places, rather than an empty file', () => {
+      const res = makeRes();
+      const s = svc({ exportCsv: vi.fn().mockReturnValue(null) } as Partial<PlacesService>);
+      expect(
+        thrown(() => new PlacesController(s, new RuntimeEnvService(), storageStub).exportCsv(user, '5', res as never)),
+      ).toEqual({ status: 404, body: { error: 'Nothing to export' } });
+      expect(res.send).not.toHaveBeenCalled();
+    });
+
+    it('sends GeoJSON under the type the spec registers', () => {
+      const res = makeRes();
+      const geojson = '{"type":"FeatureCollection","features":[]}';
+      const s = svc({
+        exportGeoJson: vi.fn().mockReturnValue({ geojson, filename: 'Kyoto.geojson' }),
+      } as Partial<PlacesService>);
+      new PlacesController(s, new RuntimeEnvService(), storageStub).exportGeoJson(user, '5', res as never);
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/geo+json; charset=utf-8');
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Disposition', 'attachment; filename="Kyoto.geojson"');
+      expect(res.send).toHaveBeenCalledWith(geojson);
+    });
+
+    it('answers 404 when no place has coordinates', () => {
+      const res = makeRes();
+      const s = svc({ exportGeoJson: vi.fn().mockReturnValue(null) } as Partial<PlacesService>);
+      expect(
+        thrown(() =>
+          new PlacesController(s, new RuntimeEnvService(), storageStub).exportGeoJson(user, '5', res as never),
+        ),
+      ).toEqual({ status: 404, body: { error: 'Nothing to export' } });
+    });
+  });
+
   describe('POST /import/google-list + naver-list', () => {
     // The legacy 'URL is required' 400 is gone: placeImportListRequestSchema
     // pins `url`, so the ZodValidationPipe rejects a urlless body before the

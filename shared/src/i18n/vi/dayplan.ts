@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Không thể sắp xếp lại ngày',
   'dayplan.addDayError': 'Không thể thêm ngày',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Bảng và dữ liệu',
+  'dayplan.csv': 'Địa điểm dạng bảng',
+  'dayplan.csvSub': 'Mỗi điểm dừng một dòng, kèm tọa độ',
+  'dayplan.geojson': 'Dữ liệu bản đồ cho công cụ khác',
+  'dayplan.geojsonSub': 'Các điểm và tuyến mỗi ngày',
+  'dayplan.dataExportFailed': 'Xuất dữ liệu thất bại',
 };
 export default dayplan;

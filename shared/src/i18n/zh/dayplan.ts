@@ -90,5 +90,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': '调整日期顺序失败',
   'dayplan.addDayError': '添加一天失败',
   'export.gpx': 'GPX',
+  'dayplan.exportData': '表格与原始数据',
+  'dayplan.csv': '地点表格',
+  'dayplan.csvSub': '每个停留点一行，含经纬度',
+  'dayplan.geojson': '可导入其他工具的地图数据',
+  'dayplan.geojsonSub': '地点与每日路线',
+  'dayplan.dataExportFailed': '数据导出失败',
 };
 export default dayplan;

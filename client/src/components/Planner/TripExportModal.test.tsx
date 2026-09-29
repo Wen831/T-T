@@ -1,4 +1,4 @@
-// FE-PLANNER-EXPORTMODAL-001 to FE-PLANNER-EXPORTMODAL-014
+// FE-PLANNER-EXPORTMODAL-001 to FE-PLANNER-EXPORTMODAL-017
 import userEvent from '@testing-library/user-event';
 import { buildDay, buildDayNote, buildTrip } from '../../../tests/helpers/factories';
 import { render, screen, waitFor } from '../../../tests/helpers/render';
@@ -80,6 +80,7 @@ describe('TripExportModal', () => {
     expect(screen.getByText('dayplan.exportDocument')).toBeInTheDocument();
     expect(screen.getByText('dayplan.exportCalendar')).toBeInTheDocument();
     expect(screen.getByText('dayplan.exportMaps · GPX')).toBeInTheDocument();
+    expect(screen.getByText('dayplan.exportData · CSV / GeoJSON')).toBeInTheDocument();
     for (const label of [
       'dayplan.pdf',
       'mobileTrip.icsDownload',
@@ -87,6 +88,8 @@ describe('TripExportModal', () => {
       'dayplan.gpxAll',
       'dayplan.gpxPlaces',
       'dayplan.gpxDays',
+      'dayplan.csv',
+      'dayplan.geojson',
     ]) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
@@ -238,5 +241,55 @@ describe('TripExportModal', () => {
     render(<TripExportModal {...makeProps({ toast })} />);
     await user.click(screen.getByText('dayplan.gpxAll'));
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('dayplan.gpxFailed'));
+  });
+
+  // ── CSV / GeoJSON ─────────────────────────────────────────────────────────
+
+  it('FE-PLANNER-EXPORTMODAL-015: each data row asks for exactly its own extension', async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn(async () => okResponse());
+    vi.stubGlobal('fetch', fetchMock);
+    for (const [label, expected] of [
+      ['dayplan.csv', '/api/trips/1/places/export.csv'],
+      ['dayplan.geojson', '/api/trips/1/places/export.geojson'],
+    ] as const) {
+      const view = render(<TripExportModal {...makeProps()} />);
+      await user.click(screen.getByText(label));
+      await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(expected, { credentials: 'include' }));
+      await waitFor(() => expect(clickedHref).toBe('blob:mock'));
+      fetchMock.mockClear();
+      clickedHref = null;
+      view.unmount();
+    }
+  });
+
+  // The server answers 404 for a trip with no places, and the dialog keeps the
+  // GPX wording for it: a silent button and a broken download look the same.
+  it('FE-PLANNER-EXPORTMODAL-016: an empty trip on the CSV row says so and stays open', async () => {
+    const user = userEvent.setup();
+    const toast = makeToast();
+    const onClose = vi.fn();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok: false, status: 404 }) as unknown as Response)
+    );
+    render(<TripExportModal {...makeProps({ toast, onClose })} />);
+    await user.click(screen.getByText('dayplan.csv'));
+    await waitFor(() => expect(toast.info).toHaveBeenCalledWith('dayplan.gpxEmpty'));
+    expect(toast.error).not.toHaveBeenCalled();
+    expect(clickedHref).toBeNull();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('FE-PLANNER-EXPORTMODAL-017: a failed data export toasts its own message', async () => {
+    const user = userEvent.setup();
+    const toast = makeToast();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok: false, status: 500 }) as unknown as Response)
+    );
+    render(<TripExportModal {...makeProps({ toast })} />);
+    await user.click(screen.getByText('dayplan.geojson'));
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('dayplan.dataExportFailed'));
   });
 });

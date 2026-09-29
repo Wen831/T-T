@@ -90,5 +90,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'تعذّر إعادة ترتيب الأيام',
   'dayplan.addDayError': 'تعذّر إضافة يوم',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'الجداول والبيانات',
+  'dayplan.csv': 'الأماكن في جدول',
+  'dayplan.csvSub': 'صف لكل محطة مع الإحداثيات',
+  'dayplan.geojson': 'بيانات الخرائط لأدوات أخرى',
+  'dayplan.geojsonSub': 'نقاط وخط لكل يوم',
+  'dayplan.dataExportFailed': 'فشل تصدير البيانات',
 };
 export default dayplan;

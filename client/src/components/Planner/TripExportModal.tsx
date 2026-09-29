@@ -6,8 +6,10 @@ import {
   Download,
   FileText,
   Loader2,
+  Map,
   MapPin,
   Route as RouteIcon,
+  Table,
 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -52,8 +54,9 @@ interface TripExportModalProps {
 
 /**
  * Every way a trip leaves TREK, in one dialog: the day plan as a PDF, the
- * bookings as a calendar (a one-off .ics or a live subscription) and the map
- * data as GPX in the three scopes a device actually wants.
+ * bookings as a calendar (a one-off .ics or a live subscription), the map data
+ * as GPX in the three scopes a device actually wants, and the plan itself as
+ * CSV or GeoJSON for someone who will do something with the rows.
  *
  * It replaces three separate toolbar buttons, two of which opened hover menus of
  * their own. On a narrow sidebar that row simply ran out of width and the
@@ -168,6 +171,27 @@ export function TripExportModal({
     }
   };
 
+  const downloadData = async (format: 'csv' | 'geojson') => {
+    if (busy) return;
+    setBusy(format);
+    try {
+      const res = await fetch(`/api/trips/${tripId}/places/export.${format}`, { credentials: 'include' });
+      // The same empty-selection case as GPX: a trip with no places has nothing
+      // for either format to describe.
+      if (res.status === 404) {
+        toast.info(t('dayplan.gpxEmpty'));
+        return;
+      }
+      if (!res.ok) throw new Error();
+      saveBlob(await res.blob(), `${fileBase}.${format}`);
+      onClose();
+    } catch {
+      toast.error(t('dayplan.dataExportFailed'));
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -230,6 +254,28 @@ export function TripExportModal({
               onClick={() => downloadGpx(scope.key, scope.query)}
             />
           ))}
+        </Section>
+
+        {/* CSV and GeoJSON — the two formats for someone who wants the data
+            rather than a printable plan: a spreadsheet they can sort, or a
+            file QGIS and map sites read. */}
+        <Section label={`${t('dayplan.exportData')} · CSV / GeoJSON`}>
+          <ExportRow
+            icon={Table}
+            title={t('dayplan.csv')}
+            sub={t('dayplan.csvSub')}
+            busy={busy === 'csv'}
+            disabled={busy != null}
+            onClick={() => void downloadData('csv')}
+          />
+          <ExportRow
+            icon={Map}
+            title={t('dayplan.geojson')}
+            sub={t('dayplan.geojsonSub')}
+            busy={busy === 'geojson'}
+            disabled={busy != null}
+            onClick={() => void downloadData('geojson')}
+          />
         </Section>
       </Modal>
 

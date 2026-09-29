@@ -67,5 +67,7 @@ const atlas: TranslationStrings = {
   'atlas.plannedFor': '计划于',
   'atlas.antarctica': '南极洲',
   'atlas.lastVisitLabel': '最近旅行',
+  'atlas.exportStats': '下载统计 CSV',
+  'atlas.exportFailed': '统计导出失败',
 };
 export default atlas;

@@ -91,5 +91,11 @@ const dayplan: TranslationStrings = {
   'dayplan.reorderError': 'Nem sikerült átrendezni a napokat',
   'dayplan.addDayError': 'Nem sikerült napot hozzáadni',
   'export.gpx': 'GPX',
+  'dayplan.exportData': 'Táblázatok és adatok',
+  'dayplan.csv': 'Helyek táblázatban',
+  'dayplan.csvSub': 'Egy sor állásonként, koordinátákkal',
+  'dayplan.geojson': 'Térképadatok más eszközöknek',
+  'dayplan.geojsonSub': 'Pontok és naponta egy vonal',
+  'dayplan.dataExportFailed': 'Az adatexport nem sikerült',
 };
 export default dayplan;
