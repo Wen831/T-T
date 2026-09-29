@@ -25,7 +25,7 @@ Invalid environment configuration:
 
 在 Docker 中，这会让容器反复崩溃重启，直到该值被修正或移除。布尔开关接受`true`/`false`、`1`/`0`、`on`/`off`、`yes`/`no`（不区分大小写）—— 其他任何写法都算格式错误。Tourism-Team不认识的变量会原样透传。
 
-`TREK_DB_JOURNAL_MODE` 和 `TREK_DB_SYNCHRONOUS` 是例外：它们会记录一条警告并回退，而不是中止启动，因为 `reset-admin.js` —— 在被锁在实例之外时恢复访问的途径 —— 会读取同样的两个变量，必须保持可用。三个插件上限 `TREK_PLUGIN_AI_PER_DAY`、`TREK_PLUGIN_NOTIFY_PER_DAY` 和`TREK_PLUGIN_AUDIT_MAX_ROWS` 由插件宿主而非启动 schema 读取，因此其中格式错误的值会静默回退到默认值，不产生警告。`NODE_ENV` 和 `TZ` 完全不做校验，所以像`NODE_ENV=staging` 这样的非标准取值仍能启动。
+`TREK_DB_JOURNAL_MODE` 和 `TREK_DB_SYNCHRONOUS` 是例外：它们会记录一条警告并回退，而不是中止启动，因为 `reset-admin.js` —— 在被锁在实例之外时恢复访问的途径 —— 会读取同样的两个变量，必须保持可用。`TREK_DB_MMAP_SIZE`、`TREK_DB_CACHE_SIZE_KIB` 和 `TREK_DB_TEMP_STORE` 也会记录警告并回退，但原因不同：性能参数填错不该让实例起不来。三个插件上限 `TREK_PLUGIN_AI_PER_DAY`、`TREK_PLUGIN_NOTIFY_PER_DAY` 和`TREK_PLUGIN_AUDIT_MAX_ROWS` 由插件宿主而非启动 schema 读取，因此其中格式错误的值会静默回退到默认值，不产生警告。`NODE_ENV` 和 `TZ` 完全不做校验，所以像`NODE_ENV=staging` 这样的非标准取值仍能启动。
 
 ---
 
@@ -287,6 +287,9 @@ Tourism-Team 可以在 [Unsplash](https://unsplash.com/) 中搜索**旅行封面
 | `BACKUP_MAX_DECOMPRESSED_MB` | 恢复备份归档的**解压后**大小上限（MB）—— 用于防范 zip 炸弹。与 `BACKUP_UPLOAD_LIMIT_MB` 相互独立，并在两条恢复路径上都会强制执行，因此一个符合上传上限的恢复仍可能被拒绝，提示 `Backup exceeds the maximum decompressed size.`。恢复超大实例时请同时调高两者。 | `5120`（5 GB） |
 | `TREK_DB_JOURNAL_MODE` | SQLite [日志模式](https://sqlite.org/pragma.html#pragma_journal_mode)：`DELETE`、`TRUNCATE`、`PERSIST`、`MEMORY`、`WAL` 或 `OFF`。当数据目录位于网络存储上时请设为 `DELETE` —— 见下方。SQLite 不认识的值会记录警告并回退。 | `WAL` |
 | `TREK_DB_SYNCHRONOUS` | SQLite [synchronous](https://sqlite.org/pragma.html#pragma_synchronous) 级别：`OFF`、`NORMAL`、`FULL` 或 `EXTRA`。默认值随日志模式而定 —— WAL 下为 `NORMAL`（SQLite 自身在该模式下使用的值），其他情况为 `FULL`，因为回滚日志在 `NORMAL` 级别下断电时可能丢失已提交的事务。 | `NORMAL` / `FULL` |
+| `TREK_DB_MMAP_SIZE` | 单个连接可以映射进内存的数据库文件字节数 —— SQLite 的 [mmap_size](https://sqlite.org/pragma.html#pragma_mmap_size)。`0` 表示关闭映射。这是虚拟地址空间而非常驻内存，所以对内存很小的容器来说，给大一些也不会多占内存。 | `268435456`（256 MiB） |
+| `TREK_DB_CACHE_SIZE_KIB` | **每个连接**的页缓存，单位 KiB —— SQLite 的 [cache_size](https://sqlite.org/pragma.html#pragma_cache_size)，以负数（KiB）形式应用，因此不随页大小变化。足迹读取是长顺序扫描，这个参数对它们影响最大。超过 2 GiB 的值会告警并拒绝。 | `20480`（20 MiB） |
+| `TREK_DB_TEMP_STORE` | SQLite 在何处物化临时表 —— `DEFAULT`、`FILE`、`PERSIST` 或 `MEMORY`。内存紧张的实例可设为 `FILE`。 | `MEMORY` |
 
 ### 在网络存储上运行数据库
 
@@ -299,8 +302,11 @@ TREK_DB_JOURNAL_MODE=DELETE
 日志模式会写入数据库文件头，而不是按连接保存，因此它能跨重启保留，并从下次启动起生效。启动日志会打印实际生效的设置：
 
 ```
-[DB] journal_mode=DELETE, synchronous=FULL
+[DB] journal_mode=DELETE, synchronous=FULL, mmap_size=268435456, cache_size=-20480, temp_store=MEMORY
 ```
+
+那行日志的后半部分是三个读取调优参数。与 `journal_mode` 不同，它们是按连接生效的：不会写进文件，所以下面那些维护工具
+无需与它们保持一致，参数填错也只是慢一点，并不会带来安全风险。
 
 打开同一文件的维护工具 —— `reset-admin.js` 和 `scripts/migrate-encryption.ts` —— 会读取同样的两个变量，因此请用相同的环境运行它们（`docker exec` 进入容器即可自动做到）。否则下一次密钥轮换或管理员重置会悄悄把文件切回 WAL。
 

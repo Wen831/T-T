@@ -35,3 +35,37 @@ export function applyDurabilityPragmas(db: Database.Database): ActiveDurability 
     synchronous: synchronousName(db.pragma('synchronous', { simple: true })),
   };
 }
+
+export interface ActiveReadTuning {
+  /** Bytes of the database file this connection may map into memory. */
+  mmapSize: number;
+  /** Pages this connection caches; SQLite's own default is ~2 MiB worth. */
+  cacheSize: number;
+  /** The name the operator asked for — `PRAGMA temp_store` reads back as an unnamed integer. */
+  tempStore: string;
+}
+
+/**
+ * Applies the per-connection read tuning (mmap window, page cache, temp store) to
+ * a freshly opened connection and reports what SQLite settled on.
+ *
+ * These are connection-scoped, so unlike journal_mode there is no cross-process
+ * agreement to keep — a script that opens the file without them is merely slower,
+ * not unsafe.
+ */
+export function applyReadTuningPragmas(db: Database.Database): ActiveReadTuning {
+  const { mmapSize, cacheSizeKiB, tempStore, readTuningWarnings } = readEnv().db;
+  readTuningWarnings.forEach((warning) => console.warn(`[DB] ${warning}`));
+
+  db.exec(`PRAGMA mmap_size = ${mmapSize}`);
+  // Negative cache_size is SQLite's "size in KiB" form; a page count would make
+  // the setting depend on the page size instead.
+  db.exec(`PRAGMA cache_size = ${-cacheSizeKiB}`);
+  db.exec(`PRAGMA temp_store = ${tempStore}`);
+
+  return {
+    mmapSize: Number(db.pragma('mmap_size', { simple: true })),
+    cacheSize: Number(db.pragma('cache_size', { simple: true })),
+    tempStore,
+  };
+}

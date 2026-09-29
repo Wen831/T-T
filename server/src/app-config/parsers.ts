@@ -182,3 +182,81 @@ export function resolveDurability(rawJournalMode: string | undefined, rawSynchro
 export function synchronousName(level: unknown): string {
   return SYNCHRONOUS_LEVELS[Number(level)] ?? String(level);
 }
+
+/** PRAGMA temp_store vocabulary: where SQLite materializes temporary tables. */
+const TEMP_STORES = ['DEFAULT', 'FILE', 'PERSIST', 'MEMORY'];
+
+/** A 256 MiB mapping window. mmap is virtual address space, not resident memory, so this costs a small container nothing it does not already have. */
+export const DEFAULT_MMAP_SIZE = 268_435_456;
+
+/** Per-connection page cache, in KiB. SQLite's own default is 2 MiB, which a footprint-sized scan refills constantly. */
+export const DEFAULT_CACHE_SIZE_KIB = 20_480;
+
+/** Negative `cache_size` is how SQLite spells "KiB rather than pages", so this is the KiB figure above. */
+export const MAX_CACHE_SIZE_KIB = 2_097_152;
+
+export const DEFAULT_TEMP_STORE = 'MEMORY';
+
+export interface ReadTuning {
+  mmapSize: number;
+  cacheSizeKiB: number;
+  tempStore: string;
+  /** Same contract as {@link Durability.warnings}: a typo is reported, never fatal. */
+  warnings: string[];
+}
+
+/**
+ * TREK_DB_MMAP_SIZE / TREK_DB_CACHE_SIZE_KIB / TREK_DB_TEMP_STORE → the
+ * per-connection read tuning.
+ *
+ * Unlike journal_mode none of this is written into the file header: it only ever
+ * applies to the connection that sets it, which is why the standalone scripts
+ * that open travel.db do not need to agree here the way they must on durability.
+ *
+ * The defaults are the ones a footprint archive wants — reads are big sequential
+ * scans over `location_points`, and the cost of getting it wrong is RAM held per
+ * connection, so the cache is raised to a still-modest 20 MiB rather than to
+ * whatever a desktop box could take.
+ */
+export function resolveReadTuning(
+  rawMmapSize: string | undefined,
+  rawCacheSizeKiB: string | undefined,
+  rawTempStore: string | undefined,
+): ReadTuning {
+  const warnings: string[] = [];
+
+  const nonNegativeBytes = (raw: string | undefined, fallback: number, name: string): number => {
+    const trimmed = raw?.trim();
+    if (!trimmed) return fallback;
+    const parsed = Number(trimmed);
+    if (!Number.isSafeInteger(parsed) || parsed < 0) {
+      warnings.push(`${name}="${raw}" is not a non-negative whole number — using ${fallback}.`);
+      return fallback;
+    }
+    return parsed;
+  };
+
+  const mmapSize = nonNegativeBytes(rawMmapSize, DEFAULT_MMAP_SIZE, 'TREK_DB_MMAP_SIZE');
+
+  let cacheSizeKiB = nonNegativeBytes(rawCacheSizeKiB, DEFAULT_CACHE_SIZE_KIB, 'TREK_DB_CACHE_SIZE_KIB');
+  if (cacheSizeKiB > MAX_CACHE_SIZE_KIB) {
+    warnings.push(
+      `TREK_DB_CACHE_SIZE_KIB="${rawCacheSizeKiB}" exceeds the ${MAX_CACHE_SIZE_KIB} KiB ceiling (per connection) — using ${DEFAULT_CACHE_SIZE_KIB}.`,
+    );
+    cacheSizeKiB = DEFAULT_CACHE_SIZE_KIB;
+  }
+
+  let tempStore = DEFAULT_TEMP_STORE;
+  const wantedStore = rawTempStore?.trim().toUpperCase();
+  if (wantedStore) {
+    if (TEMP_STORES.includes(wantedStore)) {
+      tempStore = wantedStore;
+    } else {
+      warnings.push(
+        `TREK_DB_TEMP_STORE="${rawTempStore}" is not a SQLite temp store (${TEMP_STORES.join(', ')}) — using ${DEFAULT_TEMP_STORE}.`,
+      );
+    }
+  }
+
+  return { mmapSize, cacheSizeKiB, tempStore, warnings };
+}

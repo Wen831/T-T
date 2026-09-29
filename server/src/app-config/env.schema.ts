@@ -136,6 +136,12 @@ export const envSchema = z.object({
   // this schema at all. Resolution lives in parsers.resolveDurability().
   TREK_DB_JOURNAL_MODE: anyString,
   TREK_DB_SYNCHRONOUS: anyString,
+  // Same deliberately-unvalidated treatment as the two above: read tuning is a
+  // performance knob, and a typo in it must not stop the server booting.
+  // Resolution lives in parsers.resolveReadTuning().
+  TREK_DB_MMAP_SIZE: anyString,
+  TREK_DB_CACHE_SIZE_KIB: anyString,
+  TREK_DB_TEMP_STORE: anyString,
   TREK_WIKI_DIR: anyString,
   TREK_PLACE_PHOTO_DIR: anyString,
   BACKUP_UPLOAD_LIMIT_MB: positiveNumber,

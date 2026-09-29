@@ -1,5 +1,5 @@
-import { resolveDurability } from '../../../src/app-config/parsers';
-import { applyDurabilityPragmas } from '../../../src/db/durability';
+import { resolveDurability, resolveReadTuning } from '../../../src/app-config/parsers';
+import { applyDurabilityPragmas, applyReadTuningPragmas } from '../../../src/db/durability';
 
 import Database from 'better-sqlite3';
 import { execFileSync } from 'child_process';
@@ -29,16 +29,24 @@ function readModes(file: string): { journalMode: string; synchronous: number } {
   }
 }
 
+const READ_TUNING_ENV = ['TREK_DB_MMAP_SIZE', 'TREK_DB_CACHE_SIZE_KIB', 'TREK_DB_TEMP_STORE'] as const;
+
+function clearReadTuningEnv(): void {
+  READ_TUNING_ENV.forEach((key) => delete process.env[key]);
+}
+
 beforeEach(() => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'trek-durability-'));
   dbPath = path.join(tmpDir, 'travel.db');
   delete process.env.TREK_DB_JOURNAL_MODE;
   delete process.env.TREK_DB_SYNCHRONOUS;
+  clearReadTuningEnv();
 });
 
 afterEach(() => {
   delete process.env.TREK_DB_JOURNAL_MODE;
   delete process.env.TREK_DB_SYNCHRONOUS;
+  clearReadTuningEnv();
   vi.restoreAllMocks();
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
@@ -165,6 +173,93 @@ describe('applyDurabilityPragmas', () => {
     const db = new Database(':memory:');
     expect(applyDurabilityPragmas(db).journalMode).toBe('MEMORY');
     db.close();
+  });
+});
+
+describe('resolveReadTuning', () => {
+  it('defaults to a 256 MiB mapping window, a 20 MiB cache and an in-memory temp store', () => {
+    expect(resolveReadTuning(undefined, undefined, undefined)).toEqual({
+      mmapSize: 268_435_456,
+      cacheSizeKiB: 20_480,
+      tempStore: 'MEMORY',
+      warnings: [],
+    });
+    expect(resolveReadTuning('', '', '')).toEqual(resolveReadTuning(undefined, undefined, undefined));
+  });
+
+  it('takes an explicit zero mmap as "stop mapping the file"', () => {
+    expect(resolveReadTuning('0', undefined, undefined)).toMatchObject({ mmapSize: 0, warnings: [] });
+  });
+
+  it('reads every value case- and padding-insensitively', () => {
+    expect(resolveReadTuning(' 1048576 ', ' 40960 ', ' file ')).toEqual({
+      mmapSize: 1_048_576,
+      cacheSizeKiB: 40_960,
+      tempStore: 'FILE',
+      warnings: [],
+    });
+  });
+
+  it('falls back and reports instead of rejecting an unusable value', () => {
+    const result = resolveReadTuning('huge', '-5', 'DISK');
+    expect(result).toMatchObject({ mmapSize: 268_435_456, cacheSizeKiB: 20_480, tempStore: 'MEMORY' });
+    expect(result.warnings).toHaveLength(3);
+    expect(result.warnings[0]).toContain('TREK_DB_MMAP_SIZE="huge"');
+    expect(result.warnings[1]).toContain('TREK_DB_CACHE_SIZE_KIB="-5"');
+    expect(result.warnings[2]).toContain('TREK_DB_TEMP_STORE="DISK"');
+  });
+
+  it('rejects a fractional cache size instead of silently rounding it', () => {
+    // 1.5 KiB is not a page count SQLite can store, and a silently rounded value
+    // is a worse surprise than a reported one.
+    const result = resolveReadTuning(undefined, '1.5', undefined);
+    expect(result.cacheSizeKiB).toBe(20_480);
+    expect(result.warnings[0]).toContain('TREK_DB_CACHE_SIZE_KIB="1.5"');
+  });
+
+  it('caps an absurd cache rather than honouring it per connection', () => {
+    const result = resolveReadTuning(undefined, String(4 * 1024 * 1024), undefined);
+    expect(result.cacheSizeKiB).toBe(20_480);
+    expect(result.warnings[0]).toContain('exceeds the 2097152 KiB ceiling');
+  });
+});
+
+describe('applyReadTuningPragmas', () => {
+  it('hands the connection the tuned cache and mapping window', () => {
+    const db = new Database(dbPath);
+    const tuning = applyReadTuningPragmas(db);
+    const cacheSize = Number(db.pragma('cache_size', { simple: true }));
+    const mmapSize = Number(db.pragma('mmap_size', { simple: true }));
+    db.close();
+
+    // Negative is SQLite's own spelling of "KiB, not pages" — the point of the
+    // setting is that it does not move with the page size.
+    expect(tuning).toEqual({ mmapSize: 268_435_456, cacheSize: -20_480, tempStore: 'MEMORY' });
+    expect(cacheSize).toBe(-20_480);
+    expect(mmapSize).toBeGreaterThan(0);
+  });
+
+  it('honours an operator who switches mapping off', () => {
+    process.env.TREK_DB_MMAP_SIZE = '0';
+    process.env.TREK_DB_CACHE_SIZE_KIB = '4096';
+    process.env.TREK_DB_TEMP_STORE = 'file';
+
+    const db = new Database(dbPath);
+    expect(applyReadTuningPragmas(db)).toEqual({ mmapSize: 0, cacheSize: -4_096, tempStore: 'FILE' });
+    db.close();
+  });
+
+  it('warns about a bad value and still opens on the defaults', () => {
+    process.env.TREK_DB_TEMP_STORE = 'RAMDISK';
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const db = new Database(dbPath);
+    const tuning = applyReadTuningPragmas(db);
+    db.close();
+
+    expect(tuning.tempStore).toBe('MEMORY');
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(String(warn.mock.calls[0][0])).toContain('TREK_DB_TEMP_STORE="RAMDISK"');
   });
 });
 

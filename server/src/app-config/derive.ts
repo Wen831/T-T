@@ -24,6 +24,7 @@ import {
   positiveNumberOr,
   resolveDurability,
   resolveKeepaliveMs,
+  resolveReadTuning,
   resolveSessionTtlMs,
   stripTrailingSlashes,
 } from './parsers';
@@ -290,6 +291,7 @@ export function deriveBackup(raw: RawEnv) {
 
 export function deriveDb(raw: RawEnv) {
   const durability = resolveDurability(raw.TREK_DB_JOURNAL_MODE, raw.TREK_DB_SYNCHRONOUS);
+  const readTuning = resolveReadTuning(raw.TREK_DB_MMAP_SIZE, raw.TREK_DB_CACHE_SIZE_KIB, raw.TREK_DB_TEMP_STORE);
   return {
     trekDbFile: raw.TREK_DB_FILE,
     /** Resolved journal_mode — WAL unless the operator asked for something else (network storage needs DELETE/TRUNCATE). */
@@ -298,6 +300,11 @@ export function deriveDb(raw: RawEnv) {
     synchronous: durability.synchronous,
     /** Complaints about unusable values; derivation stays side-effect free, so db/durability.ts logs them when it opens the file. */
     durabilityWarnings: durability.warnings,
+    /** Per-connection read tuning (mapped file window, page cache, temp store). Not persisted in the file header. */
+    mmapSize: readTuning.mmapSize,
+    cacheSizeKiB: readTuning.cacheSizeKiB,
+    tempStore: readTuning.tempStore,
+    readTuningWarnings: readTuning.warnings,
   };
 }
 

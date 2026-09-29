@@ -32,10 +32,11 @@ does not know are passed through untouched.
 
 `TREK_DB_JOURNAL_MODE` and `TREK_DB_SYNCHRONOUS` are exceptions: they log a warning and fall back instead of
 aborting, because `reset-admin.js` — the way back into a locked-out instance — reads the same two variables and has
-to keep working. The three plugin caps `TREK_PLUGIN_AI_PER_DAY`, `TREK_PLUGIN_NOTIFY_PER_DAY` and
-`TREK_PLUGIN_AUDIT_MAX_ROWS` are read by the plugin host rather than by the boot schema, so a malformed value there
-falls back to the default without a warning. `NODE_ENV` and `TZ` are not validated at all, so a non-standard value
-like `NODE_ENV=staging` still boots.
+to keep working. `TREK_DB_MMAP_SIZE`, `TREK_DB_CACHE_SIZE_KIB` and `TREK_DB_TEMP_STORE` fall back with a warning for
+a different reason: a typo in a performance knob must not stop the instance booting. The three plugin caps
+`TREK_PLUGIN_AI_PER_DAY`, `TREK_PLUGIN_NOTIFY_PER_DAY` and `TREK_PLUGIN_AUDIT_MAX_ROWS` are read by the plugin host
+rather than by the boot schema, so a malformed value there falls back to the default without a warning.
+`NODE_ENV` and `TZ` are not validated at all, so a non-standard value like `NODE_ENV=staging` still boots.
 
 ---
 
@@ -345,6 +346,9 @@ through environment variables. `TREK_PLACE_PHOTO_DIR` below is unaffected.
 | `BACKUP_MAX_DECOMPRESSED_MB` | Maximum **decompressed** size (in MB) of a restore-backup archive — the zip-bomb guard. Independent of `BACKUP_UPLOAD_LIMIT_MB` and enforced on both restore paths, so a restore that fits the upload cap can still be refused with `Backup exceeds the maximum decompressed size.` Raise both when restoring a very large instance. | `5120` (5 GB)          |
 | `TREK_DB_JOURNAL_MODE`       | SQLite [journal mode](https://sqlite.org/pragma.html#pragma_journal_mode): `DELETE`, `TRUNCATE`, `PERSIST`, `MEMORY`, `WAL` or `OFF`. Set `DELETE` when the data directory lives on network storage — see below. Values SQLite doesn't know log a warning and fall back. | `WAL`                   |
 | `TREK_DB_SYNCHRONOUS`        | SQLite [synchronous](https://sqlite.org/pragma.html#pragma_synchronous) level: `OFF`, `NORMAL`, `FULL` or `EXTRA`. The default follows the journal mode — `NORMAL` under WAL (what SQLite itself uses there), `FULL` otherwise, because a rollback journal at `NORMAL` can lose committed transactions on a power cut. | `NORMAL` / `FULL`       |
+| `TREK_DB_MMAP_SIZE`          | Bytes of the database file a connection may map into memory — SQLite's [mmap_size](https://sqlite.org/pragma.html#pragma_mmap_size). `0` switches mapping off. This is address space rather than resident memory, so a generous value costs a small container nothing. | `268435456` (256 MiB)   |
+| `TREK_DB_CACHE_SIZE_KIB`     | Page cache **per connection**, in KiB — SQLite's [cache_size](https://sqlite.org/pragma.html#pragma_cache_size), which is applied as the negative (KiB) form so it does not move with the page size. Footprint reads are long sequential scans, so this is the knob that affects them most. Values above 2 GiB are refused with a warning. | `20480` (20 MiB)        |
+| `TREK_DB_TEMP_STORE`         | Where SQLite materializes temporary tables — `DEFAULT`, `FILE`, `PERSIST` or `MEMORY`. Set `FILE` when the instance is short on RAM. | `MEMORY`                |
 
 ### Running the database on network storage
 
@@ -361,11 +365,15 @@ The journal mode is written into the database file header, not held per connecti
 from the next boot onward. The startup log prints what is actually in effect:
 
 ```
-[DB] journal_mode=DELETE, synchronous=FULL
+[DB] journal_mode=DELETE, synchronous=FULL, mmap_size=268435456, cache_size=-20480, temp_store=MEMORY
 ```
 
+The three read-tuning variables are the other half of that line, and unlike `journal_mode` they are per connection:
+they are not written into the file, so the maintenance tools below don't have to agree on them and a wrong value is
+merely slower rather than unsafe.
+
 The maintenance tools that open the same file — `reset-admin.js` and `scripts/migrate-encryption.ts` — read the same two
-variables, so run them with the same environment (`docker exec` into the container does this for you). Otherwise the
+durability variables, so run them with the same environment (`docker exec` into the container does this for you). Otherwise the
 next key rotation or admin reset would quietly switch the file back to WAL.
 
 ---

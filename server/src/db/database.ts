@@ -1,6 +1,6 @@
 import { readEnv } from '../app-config';
 import { Place, Tag } from '../types';
-import { applyDurabilityPragmas } from './durability';
+import { applyDurabilityPragmas, applyReadTuningPragmas } from './durability';
 import { runMigrations } from './migrations';
 import { createTables } from './schema';
 import { runSeeds } from './seeds';
@@ -53,11 +53,14 @@ function initDb(): void {
   // lock, which a sibling process (reset-admin, the rotation script) may hold.
   _db.exec('PRAGMA busy_timeout = 5000');
   const durability = applyDurabilityPragmas(_db);
+  const tuning = applyReadTuningPragmas(_db);
   _db.exec('PRAGMA foreign_keys = ON');
   // Reported so an operator can see whether their setting took — the test DB is
   // :memory: and has no journal file, so there is nothing to report there.
   if (dbPath !== ':memory:') {
-    console.log(`[DB] journal_mode=${durability.journalMode}, synchronous=${durability.synchronous}`);
+    console.log(
+      `[DB] journal_mode=${durability.journalMode}, synchronous=${durability.synchronous}, mmap_size=${tuning.mmapSize}, cache_size=${tuning.cacheSize}, temp_store=${tuning.tempStore}`,
+    );
   }
 
   createTables(_db);

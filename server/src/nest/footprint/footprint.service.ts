@@ -54,6 +54,10 @@ export interface PointsInRange {
   capped: boolean;
 }
 
+/** Guards the missing-RTREE warning: every ingest batch asks the question, and
+ * repeating the same unmovable fact once a process is enough. */
+let rtreeAbsenceLogged = false;
+
 @Injectable()
 export class FootprintService {
   constructor(
@@ -141,8 +145,9 @@ export class FootprintService {
    * the (user, timestamp, lat, lon) unique index — trackers resend the current
    * fix on every reconnect, and Dawarich dedupes the same way. The RTREE row
    * rides along inside the same transaction when the SQLite build has RTREE;
-   * otherwise the spatial index simply does not exist and the bbox query
-   * below degrades to absent.
+   * otherwise the spatial index simply does not exist, and preparing against it
+   * would throw for every single batch — so the statement is only built when the
+   * index is there.
    */
   ingest(userId: number, fixes: IngestPoint[]): IngestResult {
     if (fixes.length === 0) return { received: 0, inserted: 0 };
@@ -151,10 +156,12 @@ export class FootprintService {
       `INSERT OR IGNORE INTO location_points (user_id, lat, lon, timestamp, accuracy, battery, altitude, velocity)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     );
-    const insertRtree = this.db.prepare(
-      'INSERT INTO location_points_rtree (id, min_lat, max_lat, min_lon, max_lon, user_id) VALUES (?, ?, ?, ?, ?, ?)',
-    );
     const rtree = this.rtreeAvailable();
+    const insertRtree = rtree
+      ? this.db.prepare(
+          'INSERT INTO location_points_rtree (id, min_lat, max_lat, min_lon, max_lon, user_id) VALUES (?, ?, ?, ?, ?, ?)',
+        )
+      : null;
 
     const inserted = this.db.transaction(() => {
       let count = 0;
@@ -171,7 +178,7 @@ export class FootprintService {
         );
         if (result.changes === 1) {
           count += 1;
-          if (rtree) insertRtree.run(result.lastInsertRowid, fix.lat, fix.lat, fix.lon, fix.lon, userId);
+          insertRtree?.run(result.lastInsertRowid, fix.lat, fix.lat, fix.lon, fix.lon, userId);
         }
       }
       return count;
@@ -214,32 +221,6 @@ export class FootprintService {
       })),
       capped,
     };
-  }
-
-  /** Points inside a bounding box, via the RTREE spatial index. Empty when this
-   * SQLite build has no RTREE — the bbox query degrades rather than failing. */
-  pointsNear(
-    userId: number,
-    lat: number,
-    lon: number,
-    radiusMeters: number,
-    limit = 500,
-  ): Array<{ id: number; lat: number; lon: number; timestamp: number; accuracy: number | null }> {
-    if (!this.rtreeAvailable()) return [];
-    const latDeg = radiusMeters / 111_320;
-    const lonDeg = radiusMeters / (111_320 * Math.max(Math.cos((lat * Math.PI) / 180), 0.01));
-    return this.db.all(
-      `SELECT p.id, p.lat, p.lon, p.timestamp, p.accuracy
-       FROM location_points_rtree r JOIN location_points p ON p.id = r.id
-       WHERE r.user_id = ? AND r.min_lat <= ? AND r.max_lat >= ? AND r.min_lon <= ? AND r.max_lon >= ?
-       LIMIT ?`,
-      userId,
-      lat + latDeg,
-      lat - latDeg,
-      lon + lonDeg,
-      lon - lonDeg,
-      limit,
-    );
   }
 
   countPoints(userId: number): number {
@@ -342,13 +323,21 @@ export class FootprintService {
   }
 
   /** Computed once per connection — better-sqlite3 bundles SQLite with RTREE,
-   * but a source build compiled without it must not take the server down. */
+   * but a source build compiled without it must not take the server down. Once
+   * per process it says so out loud: the spatial index then stays empty, and a
+   * silent absence reads exactly like "no data" to whoever asks next. */
   private rtreeAvailable(): boolean {
     if (this.rtreeFlag === undefined) {
       const row = this.db.get<{ rtree_on: number }>(
         "SELECT sqlite_compileoption_used('ENABLE_RTREE') AS rtree_on",
       );
       this.rtreeFlag = row?.rtree_on === 1;
+      if (!this.rtreeFlag && !rtreeAbsenceLogged) {
+        rtreeAbsenceLogged = true;
+        console.warn(
+          '[footprint] This SQLite build has no ENABLE_RTREE, so location_points_rtree stays empty and spatial lookups cannot work. Points and trails are unaffected.',
+        );
+      }
     }
     return this.rtreeFlag;
   }
