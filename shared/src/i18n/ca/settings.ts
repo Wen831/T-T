@@ -276,6 +276,20 @@ const settings: TranslationStrings = {
     'Introdueix el teu tema de Ntfy per rebre notificacions push. Deixa el servidor en blanc per utilitzar el predeterminat configurat pel teu administrador.',
   'settings.ntfyUrl.tokenLabel': "Token d'accés (opcional)",
   'settings.ntfyUrl.tokenHint': 'Requerit per a temes protegits amb contrasenya.',
+  'settings.push.title': 'Push del navegador (Web Push)',
+  'settings.push.hint':
+    'Notificacions del sistema directament des del navegador — sense apps de tercers. Funciona a qualsevol dispositiu on les permetis.',
+  'settings.push.enable': 'Activa el push',
+  'settings.push.disable': 'Desactiva',
+  'settings.push.subscribedHere': 'Aquest dispositiu està subscrit',
+  'settings.push.enabledToast': 'Notificacions push activades en aquest dispositiu',
+  'settings.push.unsubscribedToast': 'Notificacions push desactivades en aquest dispositiu',
+  'settings.push.denied':
+    'Les notificacions estan blocades per a aquest lloc — permet-les primer a la configuració del navegador.',
+  'settings.push.unsupported': 'Aquest navegador no és compatible amb Web Push.',
+  'settings.push.errorToast': "No s'han pogut activar les notificacions push",
+  'settings.push.iosHint':
+    "A l'iPhone/iPad, el push només funciona quan es fa obrir el TT des de la pantalla d'inici (Compartir → Afegeix a la pantalla d'inici).",
   'settings.ntfyUrl.saved': 'Configuració de Ntfy desada',
   'settings.ntfyUrl.test': 'Prova',
   'settings.ntfyUrl.testSuccess': 'Notificació de prova de Ntfy enviada correctament',
@@ -285,6 +299,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Correu electrònic',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.passkey.title': 'Passkeys',
   'settings.passkey.description':
     'Inicia la sessió més ràpidament i amb protecció contra el phishing utilitzant una passkey: la teva empremta, la teva cara, el teu PIN o una clau de seguretat física. La teva contrasenya continua disponible com a alternativa.',

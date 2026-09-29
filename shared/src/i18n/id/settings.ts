@@ -101,6 +101,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.testFailed': 'Tes gagal.',
   'settings.notificationPreferences.pluginConfigured': 'Sudah diatur. Kelola kredensial di halaman pengaturan plugin.',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationPreferences.noChannels':
     'Belum ada saluran notifikasi yang dikonfigurasi. Minta admin untuk mengatur notifikasi email atau webhook.',
   'settings.webhookUrl.label': 'Webhook URL',
@@ -118,6 +119,19 @@ const settings: TranslationStrings = {
     'Masukkan topik Ntfy Anda untuk menerima notifikasi push. Kosongkan bidang server untuk menggunakan default yang dikonfigurasi oleh admin Anda.',
   'settings.ntfyUrl.tokenLabel': 'Token Akses (opsional)',
   'settings.ntfyUrl.tokenHint': 'Diperlukan untuk topik yang dilindungi kata sandi.',
+  'settings.push.title': 'Dorongan peramban (Web Push)',
+  'settings.push.hint':
+    'Notifikasi sistem langsung dari peramban — tanpa aplikasi pihak ketiga. Berfungsi di perangkat mana pun yang Anda izinkan.',
+  'settings.push.enable': 'Aktifkan notifikasi',
+  'settings.push.disable': 'Nonaktifkan',
+  'settings.push.subscribedHere': 'Perangkat ini berlangganan',
+  'settings.push.enabledToast': 'Notifikasi push diaktifkan di perangkat ini',
+  'settings.push.unsubscribedToast': 'Notifikasi push dinonaktifkan di perangkat ini',
+  'settings.push.denied': 'Notifikasi diblokir untuk situs ini — izinkan dulu di pengaturan peramban Anda.',
+  'settings.push.unsupported': 'Peramban ini tidak mendukung Web Push.',
+  'settings.push.errorToast': 'Gagal mengaktifkan notifikasi push',
+  'settings.push.iosHint':
+    'Di iPhone/iPad, push hanya berfungsi saat TT dibuka dari Layar Utama (Bagikan → Tambahkan ke Layar Utama).',
   'settings.ntfyUrl.saved': 'Pengaturan Ntfy tersimpan',
   'settings.ntfyUrl.test': 'Uji',
   'settings.ntfyUrl.testSuccess': 'Notifikasi uji Ntfy berhasil dikirim',

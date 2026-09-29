@@ -293,6 +293,19 @@ const settings: TranslationStrings = {
     'Введите тему Ntfy для получения push-уведомлений. Оставьте поле сервера пустым, чтобы использовать настройку по умолчанию, заданную администратором.',
   'settings.ntfyUrl.tokenLabel': 'Токен доступа (необязательно)',
   'settings.ntfyUrl.tokenHint': 'Требуется для тем, защищённых паролем.',
+  'settings.push.title': 'Push браузера (Web Push)',
+  'settings.push.hint':
+    'Системные уведомления прямо из браузера — без сторонних приложений. Работают на любом устройстве, где вы их разрешите.',
+  'settings.push.enable': 'Включить push',
+  'settings.push.disable': 'Отключить',
+  'settings.push.subscribedHere': 'Это устройство подписано',
+  'settings.push.enabledToast': 'Push-уведомления включены на этом устройстве',
+  'settings.push.unsubscribedToast': 'Push-уведомления отключены на этом устройстве',
+  'settings.push.denied': 'Уведомления заблокированы для этого сайта — сначала разрешите их в настройках браузера.',
+  'settings.push.unsupported': 'Этот браузер не поддерживает Web Push.',
+  'settings.push.errorToast': 'Не удалось включить push-уведомления',
+  'settings.push.iosHint':
+    'На iPhone/iPad push работает, только если TT открыт с домашнего экрана (Поделиться → На экран «Домой»).',
   'settings.ntfyUrl.saved': 'Настройки Ntfy сохранены',
   'settings.ntfyUrl.test': 'Тест',
   'settings.ntfyUrl.testSuccess': 'Тестовое уведомление Ntfy успешно отправлено',
@@ -310,6 +323,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': 'Валюта отображения',
   'settings.currencyHint':
     'Суммы в разделе «Расходы» отображаются в этой валюте только для просмотра — исходные суммы не изменяются.',

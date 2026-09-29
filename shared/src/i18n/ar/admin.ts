@@ -727,6 +727,9 @@ const admin: TranslationStrings = {
   'admin.tabs.permissions': 'الصلاحيات',
   'admin.notifications.webhook': 'Webhook', // en-fallback,
   'admin.notifications.ntfy': 'Ntfy', // en-fallback,
+  'admin.notifications.push': 'إشعارات الويب',
+  'admin.notifications.pushHint':
+    'إشعارات نظام المتصفح، موقّعة بزوج مفاتيح VAPID يُنشئه TT بنفسه — لا يوجد شيء لتكوينه هنا. يشترك المستخدمون من إعدادات الإشعارات الخاصة بهم.',
   'admin.notifications.emailPanel.title': 'Email (SMTP)', // en-fallback,
   'admin.notifications.webhookPanel.title': 'Webhook', // en-fallback,
   'admin.notifications.inappPanel.title': 'In-App', // en-fallback,
@@ -751,6 +754,15 @@ const admin: TranslationStrings = {
     'Trip tracking & travel journal with check-ins, photos, and daily stories', // en-fallback
   'admin.addons.catalog.collections.name': 'المجموعات',
   'admin.addons.catalog.collections.description': 'اجمع الأماكن من أي رحلة في قوائم مسماة وأعد استخدامها',
+  'admin.addons.catalog.roadtrip.name': 'رحلة برية',
+  'admin.addons.catalog.roadtrip.description':
+    'رحلات بالسيارة مع توقفات على الطريق، وأزمنة قيادة، وأزمنة وصول تتحدّث ذاتيًا',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'اقرأ الزيارات والمسارات المسجّلة من نسخة Dawarich الخاصة بك — اقتراحات لمداخل اليومية والأماكن والدول التي تؤكّدها بنفسك',
+  'admin.addons.catalog.footprint.name': 'الأثر',
+  'admin.addons.catalog.footprint.description':
+    'سجّل تاريخ موقعك الخاص داخل TT — يقوم تطبيق التتبع على الهاتف بإرسال النقاط، ويخزّنها TT، ويكشف الإقامات ويرسم المسار على رحلاتك',
   'admin.passkey.title': 'تسجيل الدخول بمفتاح المرور',
   'admin.passkey.cardHint': 'اسمح للمستخدمين بتسجيل الدخول باستخدام مفاتيح المرور (WebAuthn). معطّل افتراضيًا.',
   'admin.passkey.login': 'تفعيل تسجيل الدخول بمفتاح المرور',
@@ -774,6 +786,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'قياسي (مجاني)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (ثلاثي الأبعاد)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'مفتاح AMap المشترك',
+  'admin.defaultSettings.amapTokenHint':
+    'يُستخدم لكل مستخدم لم يُدخل مفتاحه الخاص. تحتاج AMap إلى مفتاح Web JS خاص بها لعرض أي شيء، لذا لا يستحق الاختيار كافتراضي إلا بعد حفظ مفتاح. يُخزَّن مشفّرًا.',
   'admin.defaultSettings.mapboxToken': 'رمز Mapbox المشترك',
   'admin.defaultSettings.mapboxTokenHint':
     'يُستخدم لكل مستخدم لم يُدخل رمزه الخاص — حتى يحصل الخادم بأكمله على Mapbox دون مشاركة المفتاح بشكل فردي. يُخزَّن مشفّرًا.',

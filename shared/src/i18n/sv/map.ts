@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'Platsåtkomst är blockerad. Kontrollera enhetens inställningar; en installerad app har ett eget platstillstånd, skilt från webbläsaren.',
   'map.location.unavailable': 'Din plats kunde inte fastställas.',
   'map.location.timeout': 'Platsbestämningen tog för lång tid. Försök igen med friare sikt mot himlen.',
+  'map.amapPreviewNeedsKey': 'Ange din AMap Web JS-nyckel ovan för att förhandsvisa kartan.',
+  'map.amapPreviewFailed': 'Den här nyckeln kunde inte ladda AMap SDK. Kontrollera nyckeln och domänkopplingen.',
 };
 export default map;

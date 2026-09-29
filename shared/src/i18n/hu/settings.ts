@@ -294,6 +294,20 @@ const settings: TranslationStrings = {
     'Add meg az Ntfy témádat push értesítések fogadásához. Hagyd üresen a szervert a rendszergazda által beállított alapértelmezett használatához.',
   'settings.ntfyUrl.tokenLabel': 'Hozzáférési token (opcionális)',
   'settings.ntfyUrl.tokenHint': 'Jelszóval védett témákhoz szükséges.',
+  'settings.push.title': 'Böngésző-értesítések (Web Push)',
+  'settings.push.hint':
+    'Rendszerértesítések közvetlenül a böngészőből — harmadik fél appja nélkül. Minden olyan eszközön működik, ahol engedélyezi.',
+  'settings.push.enable': 'Push engedélyezése',
+  'settings.push.disable': 'Letiltás',
+  'settings.push.subscribedHere': 'Ez az eszköz feliratkozott',
+  'settings.push.enabledToast': 'A push értesítések engedélyezve ezen az eszközön',
+  'settings.push.unsubscribedToast': 'A push értesítések letiltva ezen az eszközön',
+  'settings.push.denied':
+    'Az értesítések le vannak tiltva ezen a helyen — először engedélyezze a böngésző beállításaiban.',
+  'settings.push.unsupported': 'Ez a böngésző nem támogatja a Web Push-t.',
+  'settings.push.errorToast': 'Nem sikerült engedélyezni a push értesítéseket',
+  'settings.push.iosHint':
+    'iPhone/iPad esetén a push csak akkor működik, ha a TT-t a Kezdőképernyőről nyitja meg (Megosztás → Hozzáadás a kezdőképernyőhöz).',
   'settings.ntfyUrl.saved': 'Ntfy beállítások mentve',
   'settings.ntfyUrl.test': 'Teszt',
   'settings.ntfyUrl.testSuccess': 'Teszt Ntfy értesítés sikeresen elküldve',
@@ -312,6 +326,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': 'Megjelenítési pénznem',
   'settings.currencyHint':
     'A Költségek részben az összegek csak a megjelenítéshez lesznek erre a pénznemre átszámítva – az eredeti összegek nem változnak.',

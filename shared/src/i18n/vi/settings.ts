@@ -112,6 +112,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.pluginConfigured':
     'Đã cấu hình. Quản lý thông tin đăng nhập ở trang cài đặt của plugin.',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationPreferences.noChannels':
     'Không có kênh thông báo nào được cấu hình. Yêu cầu quản trị viên thiết lập thông báo qua email hoặc webhook.',
   'settings.webhookUrl.label': 'Webhook URL',
@@ -129,6 +130,19 @@ const settings: TranslationStrings = {
     'Nhập chủ đề ntfy của bạn để nhận thông báo đẩy. Để trống máy chủ để sử dụng cài đặt mặc định do quản trị viên của bạn định cấu hình.',
   'settings.ntfyUrl.tokenLabel': 'Mã thông báo truy cập (tùy chọn)',
   'settings.ntfyUrl.tokenHint': 'Cần thiết cho các chủ đề được bảo vệ bằng mật khẩu.',
+  'settings.push.title': 'Push trình duyệt (Web Push)',
+  'settings.push.hint':
+    'Thông báo hệ thống trực tiếp từ trình duyệt — không cần ứng dụng bên thứ ba. Hoạt động trên mọi thiết bị bạn cho phép.',
+  'settings.push.enable': 'Bật push',
+  'settings.push.disable': 'Tắt',
+  'settings.push.subscribedHere': 'Thiết bị này đã đăng ký',
+  'settings.push.enabledToast': 'Đã bật thông báo push trên thiết bị này',
+  'settings.push.unsubscribedToast': 'Đã tắt thông báo push trên thiết bị này',
+  'settings.push.denied': 'Thông báo bị chặn với trang này — hãy cho phép trong cài đặt trình duyệt trước.',
+  'settings.push.unsupported': 'Trình duyệt này không hỗ trợ Web Push.',
+  'settings.push.errorToast': 'Không bật được thông báo push',
+  'settings.push.iosHint':
+    'Trên iPhone/iPad, push chỉ hoạt động khi TT được mở từ Màn hình chính (Chia sẻ → Thêm vào Màn hình chính).',
   'settings.ntfyUrl.saved': 'Ntfy đã lưu cài đặt',
   'settings.ntfyUrl.test': 'Bài kiểm tra',
   'settings.ntfyUrl.testSuccess': 'Kiểm tra thông báo ntfy đã được gửi thành công',

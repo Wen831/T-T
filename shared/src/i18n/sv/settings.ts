@@ -111,6 +111,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.pluginConfigured':
     'Konfigurerat. Hantera dina uppgifter på pluginets inställningssida.',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationPreferences.noChannels':
     'Inga meddelandekanaler har konfigurerats. Be en administratör att ställa in e-post- eller webhook-meddelanden.',
   'settings.webhookUrl.label': 'Webhook URL',
@@ -128,6 +129,20 @@ const settings: TranslationStrings = {
     'Ange ditt ntfy-ämne för att få push-meddelanden. Lämna fältet ”server” tomt om du vill använda standardinställningen som din administratör har konfigurerat.',
   'settings.ntfyUrl.tokenLabel': 'Åtkomsttoken (valfritt)',
   'settings.ntfyUrl.tokenHint': 'Krävs för lösenordsskyddade ämnen.',
+  'settings.push.title': 'Bläddrarpush (Web Push)',
+  'settings.push.hint':
+    'Systemaviseringar direkt från webbläsaren — ingen tredjepartsapp. Fungerar på varje enhet du tillåter det.',
+  'settings.push.enable': 'Aktivera push',
+  'settings.push.disable': 'Inaktivera',
+  'settings.push.subscribedHere': 'Den här enheten prenumererar',
+  'settings.push.enabledToast': 'Pushaviseringar aktiverade på den här enheten',
+  'settings.push.unsubscribedToast': 'Pushaviseringar inaktiverade på den här enheten',
+  'settings.push.denied':
+    'Aviseringar är blockerade för den här platsen — tillåt dem i webbläsarinställningarna först.',
+  'settings.push.unsupported': 'Den här webbläsaren stöder inte Web Push.',
+  'settings.push.errorToast': 'Kunde inte aktivera pushaviseringar',
+  'settings.push.iosHint':
+    'På iPhone/iPad fungerar push bara när TT öppnas från hemskärmen (Dela → Lägg till på hemskärmen).',
   'settings.ntfyUrl.saved': 'Ntfy inställningar sparade',
   'settings.ntfyUrl.test': 'Test',
   'settings.ntfyUrl.testSuccess': 'Test av ntfy meddelande skickades utan problem',

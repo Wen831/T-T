@@ -23,5 +23,8 @@ const map: TranslationStrings = {
     'A helyhozzáférés le van tiltva. Ellenőrizd a készülék beállításait; a telepített alkalmazásnak saját helyengedélye van, a böngészőtől függetlenül.',
   'map.location.unavailable': 'A tartózkodási helyed nem határozható meg.',
   'map.location.timeout': 'A helymeghatározás túl sokáig tartott. Próbáld újra szabad ég alatt.',
+  'map.amapPreviewNeedsKey': 'Adja meg fent az AMap Web JS kulcsát a térkép előnézetéhez.',
+  'map.amapPreviewFailed':
+    'Ezzel a kulccsal nem sikerült betölteni az AMap SDK-t. Ellenőrizze a kulcsot és a domainhozzárendelést.',
 };
 export default map;

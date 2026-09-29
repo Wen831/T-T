@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': 'メール（SMTP）',
   'admin.notifications.webhook': 'Webhook',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'TT 自身が生成した VAPID キーペアで署名するブラウザのシステム通知です。ここで設定することは何もありません。ユーザーは各自の通知設定で有効にします。',
   'admin.ntfy.hint': 'ユーザーが独自のntfyトピックを設定できるようにします。下で既定サーバーを設定してください。',
   'admin.notifications.save': '通知設定を保存',
   'admin.notifications.saved': '通知設定を保存しました',
@@ -741,6 +744,14 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.journey.description': 'チェックイン、写真、日ごとのストーリーで旅を記録',
   'admin.addons.catalog.collections.name': 'コレクション',
   'admin.addons.catalog.collections.description': 'どの旅行の場所も名前付きリストにまとめて再利用',
+  'admin.addons.catalog.roadtrip.name': 'ロードトリップ',
+  'admin.addons.catalog.roadtrip.description': 'ルート沿いの寄り道、走行時間、自動更新される到着時刻を備えたドライブ',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    '自分の Dawarich インスタンスから訪問と記録された経路を読み込み — ログロー、場所、国を提案し、確定はあなた自身が行います',
+  'admin.addons.catalog.footprint.name': 'フットプリント',
+  'admin.addons.catalog.footprint.description':
+    '自分の位置履歴を TT に記録 — スマホのトラッカーが地点を送り、TT が保存して滞在を検出し、旅のルートとして描画します',
   'admin.passkey.title': 'パスキーログイン',
   'admin.passkey.cardHint': 'ユーザーがパスキー（WebAuthn）でサインインできるようにします。既定では無効です。',
   'admin.passkey.login': 'パスキーログインを有効化',
@@ -765,6 +776,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': '標準（無料）',
   'admin.defaultSettings.providerMapbox': 'Mapbox（3D）',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': '共有 AMap キー',
+  'admin.defaultSettings.amapTokenHint':
+    '独自のキーを入力していないすべてのユーザーに使われます。AMap は何かを表示するのに Web JS キーが必須なので、キーを登録済みの場合のみ既定に選ぶ価値があります。暗号化して保存されます。',
   'admin.defaultSettings.mapboxToken': '共有 Mapbox トークン',
   'admin.defaultSettings.mapboxTokenHint':
     '自分のトークンを入力していないすべてのユーザーに使用されます。これにより、キーを個別に共有しなくてもインスタンス全体で Mapbox を利用できます。暗号化して保存されます。',

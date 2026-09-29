@@ -128,6 +128,9 @@ const admin: TranslationStrings = {
   'admin.placesEnrich.title': 'Enriquiment de llocs',
   'admin.placesEnrich.subtitle':
     "Mostra imatges i una descripció en afegir un lloc. Wikipedia i OpenStreetMap s'usen sempre; Google s'hi afegeix si Fotos de llocs o Detalls de llocs estan actius.",
+  'admin.placeShadow.title': 'Registre de cerques de llocs',
+  'admin.placeShadow.subtitle':
+    "Registra quin resultat de cerca s'ha triat, de manera que més endavant es pugui comparar un altre índex de llocs amb cerques reals. Res no surt d'aquesta instància, i un administrador pot exportar o suprimir el registre quan vulgui.",
   'admin.bagTracking.title': "Seguiment d'equipatge",
   'admin.bagTracking.subtitle': "Activar pes i assignació d'equipatge per a articles de la llista",
   'admin.collab.chat.title': 'Xat',
@@ -294,6 +297,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collab.description': 'Notes, enquestes, xat i suggeriments per planificar en grup',
   'admin.addons.catalog.collections.name': 'Col·leccions',
   'admin.addons.catalog.collections.description': 'Recull llocs de qualsevol viatge en llistes amb nom i reutilitza’ls',
+  'admin.addons.catalog.roadtrip.name': 'Viatge per carretera',
+  'admin.addons.catalog.roadtrip.description':
+    "Conduccions amb parades al llarg de la ruta, temps de conducció i hores d'arribada que s'actualitzen soles",
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Llegeix visites i rutes gravades de la teva instància de Dawarich — entrades de diari, llocs i països suggerits que confirmes tu mateix',
+  'admin.addons.catalog.footprint.name': 'Petjada',
+  'admin.addons.catalog.footprint.description':
+    "Registra el teu propi historial d'ubicació al TT — un seguidor al telèfon envia punts, el TT els desa, detecta estades i dibuixa el recorregut als teus viatges",
   'admin.oidcOnlyMode': 'Desactivar autenticació per contrasenya',
   'admin.oidcOnlyModeHint':
     "Si està activat, només es permet l'inici de sessió amb SSO. L'inici de sessió i registre amb contrasenya es bloquegen.",
@@ -316,6 +328,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.alwaysOnHint':
     "El webhook d'administrador s'activa automàticament si hi ha una URL configurada",
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Notificacions del sistema del navegador, signades amb un parell de claus VAPID que el mateix TT genera — no hi ha res a configurar aquí. Els usuaris es subscriuen des dels seus propis ajustos de notificacions.',
   'admin.ntfy.hint':
     "Permet als usuaris configurar els seus propis temes ntfy per a notificacions push. Estableix el servidor per defecte a continuació per omplir automàticament els ajustos de l'usuari.",
   'admin.notifications.testNtfy': 'Enviar Ntfy de prova',
@@ -374,6 +389,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Estàndard (gratuït)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': "Clau d'AMap compartida",
+  'admin.defaultSettings.amapTokenHint':
+    "S'usa per a qualsevol usuari que no hagi introduït la seva pròpia clau. AMap necessita una clau Web JS pròpia per renderitzar res, així que només val la pena triar-la com a per defecte quan hi ha una clau desada. S'emmagatzema xifrada.",
   'admin.defaultSettings.mapboxToken': 'Token de Mapbox compartit',
   'admin.defaultSettings.mapboxTokenHint':
     "S'utilitza per a cada usuari que no hagi introduït el seu propi token, de manera que tota la instància obtingui Mapbox sense compartir la clau individualment. S'emmagatzema xifrat.",

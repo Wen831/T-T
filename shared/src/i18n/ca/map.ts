@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'L’accés a la ubicació està bloquejat. Revisa la configuració del dispositiu; una app instal·lada té el seu propi permís d’ubicació, separat del navegador.',
   'map.location.unavailable': 'No s’ha pogut determinar la teva ubicació.',
   'map.location.timeout': 'La localització ha trigat massa. Torna-ho a provar amb una vista més clara del cel.',
+  'map.amapPreviewNeedsKey': "Introdueix dalt la teva clau Web JS d'AMap per previsualitzar el mapa.",
+  'map.amapPreviewFailed': "Aquesta clau no ha pogut carregar l'SDK d'AMap. Comprova la clau i el vincle de domini.",
 };
 export default map;

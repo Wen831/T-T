@@ -1,6 +1,28 @@
 import type { TranslationStrings } from '../types';
 
 const vacay: TranslationStrings = {
+  'schoolCatalog.refreshError': 'Đã lưu thay đổi nhưng không tải lại được danh sách. Hãy thử tải lại.',
+  'schoolCatalog.title': 'Kỳ nghỉ của trường',
+  'schoolCatalog.hint':
+    'Quản lý các khu vực nghỉ lễ của trường được chia sẻ. Mọi người đều có thể chọn chúng trong cài đặt kỳ nghỉ.',
+  'schoolCatalog.periodHint': 'Ngày được tính cả ngày đầu và ngày cuối. Hãy thêm khoảng thời gian cho mỗi năm học.',
+  'schoolCatalog.region': 'Khu vực hoặc học khu',
+  'schoolCatalog.name': 'Tên kỳ nghỉ',
+  'schoolCatalog.start': 'Ngày bắt đầu',
+  'schoolCatalog.end': 'Ngày kết thúc',
+  'schoolCatalog.addPeriod': 'Thêm khoảng nghỉ',
+  'schoolCatalog.invalid': 'Hãy kiểm tra tên và ngày tháng.',
+  'schoolCatalog.discard': 'Huỷ các thay đổi chưa lưu?',
+  'schoolCatalog.country': 'Quốc gia',
+  'schoolCatalog.deleteHint': 'Hãy xóa các khu vực trước. Khu vực mà lịch đang dùng không thể xóa.',
+  'schoolCatalog.deleteCountry': 'Xóa quốc gia',
+  'schoolCatalog.addCountry': 'Thêm quốc gia',
+  'schoolCatalog.code': 'Mã quốc gia (vd. US)',
+  'schoolCatalog.empty': 'Chưa có khu vực nào.',
+  'schoolCatalog.addRegion': 'Thêm khu vực',
+  'schoolCatalog.offline': 'Kết nối internet để quản lý kỳ nghỉ của trường.',
+  'schoolCatalog.loadError': 'Không tải được các khu vực nghỉ của trường. Hãy mở lại cài đặt để thử lại.',
+  'schoolCatalog.retry': 'Thử lại',
   'vacay.subtitle': 'Lập kế hoạch và quản lý ngày nghỉ',
   'vacay.settings': 'Cài đặt',
   'vacay.year': 'Năm',

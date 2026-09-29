@@ -24,5 +24,7 @@ const map: TranslationStrings = {
   'map.location.unavailable': 'Не удалось определить ваше местоположение.',
   'map.location.timeout':
     'Определение местоположения заняло слишком много времени. Попробуйте ещё раз под открытым небом.',
+  'map.amapPreviewNeedsKey': 'Введите выше свой ключ AMap Web JS, чтобы предпросмотреть карту.',
+  'map.amapPreviewFailed': 'Этот ключ не загрузил SDK AMap. Проверьте ключ и его привязку к домену.',
 };
 export default map;

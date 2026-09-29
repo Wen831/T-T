@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'El acceso a la ubicación está bloqueado. Revisa los ajustes del dispositivo; una app instalada tiene su propio permiso de ubicación, independiente del navegador.',
   'map.location.unavailable': 'No se pudo determinar tu ubicación.',
   'map.location.timeout': 'La localización tardó demasiado. Inténtalo de nuevo con una vista más despejada del cielo.',
+  'map.amapPreviewNeedsKey': 'Introduce tu clave Web JS de AMap arriba para previsualizar el mapa.',
+  'map.amapPreviewFailed': 'Esta clave no pudo cargar el SDK de AMap. Revisa la clave y su vinculación de dominio.',
 };
 export default map;

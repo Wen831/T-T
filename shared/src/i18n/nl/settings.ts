@@ -292,6 +292,19 @@ const settings: TranslationStrings = {
     'Voer je Ntfy-onderwerp in om pushmeldingen te ontvangen. Laat het serverveld leeg om de standaard te gebruiken die door je beheerder is ingesteld.',
   'settings.ntfyUrl.tokenLabel': 'Toegangstoken (optioneel)',
   'settings.ntfyUrl.tokenHint': 'Vereist voor onderwerpen die met een wachtwoord zijn beveiligd.',
+  'settings.push.title': 'Browserpush (Web Push)',
+  'settings.push.hint':
+    'Systeemmeldingen rechtstreeks vanuit de browser — geen app van derden. Werkt op elk apparaat waartoe je het toestaat.',
+  'settings.push.enable': 'Push inschakelen',
+  'settings.push.disable': 'Uitschakelen',
+  'settings.push.subscribedHere': 'Dit apparaat is geabonneerd',
+  'settings.push.enabledToast': 'Pushmeldingen ingeschakeld op dit apparaat',
+  'settings.push.unsubscribedToast': 'Pushmeldingen uitgeschakeld op dit apparaat',
+  'settings.push.denied': 'Meldingen zijn geblokkeerd voor deze site — sta ze eerst toe in je browserinstellingen.',
+  'settings.push.unsupported': 'Deze browser ondersteunt Web Push niet.',
+  'settings.push.errorToast': 'Kon pushmeldingen niet inschakelen',
+  'settings.push.iosHint':
+    'Op iPhone/iPad werkt push alleen als TT vanaf het thuisscherm wordt geopend (Delen → Zet op thuisscherm).',
   'settings.ntfyUrl.saved': 'Ntfy-instellingen opgeslagen',
   'settings.ntfyUrl.test': 'Testen',
   'settings.ntfyUrl.testSuccess': 'Test-Ntfy-melding succesvol verzonden',
@@ -311,6 +324,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': 'Weergavevaluta',
   'settings.currencyHint':
     'Bedragen onder Onkosten worden alleen ter weergave naar deze valuta omgerekend — de oorspronkelijke bedragen blijven ongewijzigd.',

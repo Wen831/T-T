@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     '位置情報へのアクセスがブロックされています。端末の設定を確認してください。インストールしたアプリにはブラウザとは別の位置情報の許可があります。',
   'map.location.unavailable': '現在地を特定できませんでした。',
   'map.location.timeout': '位置情報の取得に時間がかかりすぎました。空がよく見える場所でもう一度お試しください。',
+  'map.amapPreviewNeedsKey': '上部に AMap Web JS キーを入力すると地図をプレビューできます。',
+  'map.amapPreviewFailed': 'このキーでは AMap SDK を読み込めませんでした。キーとドメイン設定を確認してください。',
 };
 export default map;

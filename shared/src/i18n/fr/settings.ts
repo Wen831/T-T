@@ -298,6 +298,20 @@ const settings: TranslationStrings = {
     'Entrez votre sujet Ntfy pour recevoir des notifications push. Laissez le serveur vide pour utiliser la valeur par défaut configurée par votre administrateur.',
   'settings.ntfyUrl.tokenLabel': "Jeton d'accès (optionnel)",
   'settings.ntfyUrl.tokenHint': 'Requis pour les sujets protégés par mot de passe.',
+  'settings.push.title': 'Notifications du navigateur (Web Push)',
+  'settings.push.hint':
+    'Notifications système directement depuis le navigateur — aucune application tierce. Fonctionne sur tout appareil où vous les autorisez.',
+  'settings.push.enable': 'Activer les notifications',
+  'settings.push.disable': 'Désactiver',
+  'settings.push.subscribedHere': 'Cet appareil est abonné',
+  'settings.push.enabledToast': 'Notifications push activées sur cet appareil',
+  'settings.push.unsubscribedToast': 'Notifications push désactivées sur cet appareil',
+  'settings.push.denied':
+    "Les notifications sont bloquées pour ce site — autorisez-les d'abord dans les réglages du navigateur.",
+  'settings.push.unsupported': 'Ce navigateur ne prend pas en charge Web Push.',
+  'settings.push.errorToast': "Impossible d'activer les notifications push",
+  'settings.push.iosHint':
+    "Sur iPhone/iPad, les notifications push ne fonctionnent que si TT est ouvert depuis l'écran d'accueil (Partager → Sur l'écran d'accueil).",
   'settings.ntfyUrl.saved': 'Paramètres Ntfy enregistrés',
   'settings.ntfyUrl.test': 'Tester',
   'settings.ntfyUrl.testSuccess': 'Notification de test Ntfy envoyée avec succès',
@@ -316,6 +330,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': "Devise d'affichage",
   'settings.currencyHint':
     "Les montants dans Coûts sont convertis dans cette devise uniquement pour l'affichage — les montants d'origine restent inchangés.",

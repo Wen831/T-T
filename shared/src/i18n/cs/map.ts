@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'Přístup k poloze je zablokován. Zkontrolujte nastavení zařízení; nainstalovaná aplikace má vlastní oprávnění k poloze, nezávislé na prohlížeči.',
   'map.location.unavailable': 'Vaši polohu se nepodařilo zjistit.',
   'map.location.timeout': 'Zjišťování polohy trvalo příliš dlouho. Zkuste to znovu s volným výhledem na oblohu.',
+  'map.amapPreviewNeedsKey': 'Nahoře zadejte svůj klíč AMap Web JS pro náhled mapy.',
+  'map.amapPreviewFailed': 'SDK AMap se s tímto klíčem nepodařilo načíst. Zkontrolujte klíč a jeho vazbu na doménu.',
 };
 export default map;

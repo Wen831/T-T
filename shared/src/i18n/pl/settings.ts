@@ -287,6 +287,20 @@ const settings: TranslationStrings = {
     'Wprowadź swój temat Ntfy, aby otrzymywać powiadomienia push. Pozostaw pole serwera puste, aby użyć domyślnego ustawienia skonfigurowanego przez administratora.',
   'settings.ntfyUrl.tokenLabel': 'Token dostępu (opcjonalne)',
   'settings.ntfyUrl.tokenHint': 'Wymagane dla tematów chronionych hasłem.',
+  'settings.push.title': 'Powiadomienia przeglądarki (Web Push)',
+  'settings.push.hint':
+    'Powiadomienia systemowe prosto z przeglądarki — bez aplikacji zewnętrznych. Działają na każdym urządzeniu, które na nie zezwoli.',
+  'settings.push.enable': 'Włącz powiadomienia',
+  'settings.push.disable': 'Wyłącz',
+  'settings.push.subscribedHere': 'To urządzenie subskrybuje powiadomienia',
+  'settings.push.enabledToast': 'Włączono powiadomienia push na tym urządzeniu',
+  'settings.push.unsubscribedToast': 'Wyłączono powiadomienia push na tym urządzeniu',
+  'settings.push.denied':
+    'Powiadomienia są zablokowane dla tej witryny — najpierw zezwól na nie w ustawieniach przeglądarki.',
+  'settings.push.unsupported': 'Ta przeglądarka nie obsługuje Web Push.',
+  'settings.push.errorToast': 'Nie udało się włączyć powiadomień push',
+  'settings.push.iosHint':
+    'Na iPhonie/iPadzie powiadomienia push działają tylko, gdy TT jest otwierany z ekranu głównego (Udostępnij → Dodaj do ekranu głównego).',
   'settings.ntfyUrl.saved': 'Ustawienia Ntfy zapisane',
   'settings.ntfyUrl.test': 'Testuj',
   'settings.ntfyUrl.testSuccess': 'Testowe powiadomienie Ntfy wysłane pomyślnie',
@@ -305,6 +319,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationsActive': 'Aktywny kanał',
   'settings.notificationsManagedByAdmin': 'Zdarzenia konfigurowane przez administratora.',
   'settings.mustChangePassword': 'Musisz zmienić hasło przed kontynuowaniem.',

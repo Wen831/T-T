@@ -24,5 +24,7 @@ const map: TranslationStrings = {
   'map.location.unavailable': 'Lokasi Anda tidak dapat ditentukan.',
   'map.location.timeout':
     'Penentuan lokasi terlalu lama. Coba lagi di tempat dengan pandangan langit yang lebih terbuka.',
+  'map.amapPreviewNeedsKey': 'Masukkan kunci Web JS AMap Anda di atas untuk pratinjau peta.',
+  'map.amapPreviewFailed': 'Kunci ini tidak dapat memuat SDK AMap. Periksa kunci dan pengikatan domainnya.',
 };
 export default map;

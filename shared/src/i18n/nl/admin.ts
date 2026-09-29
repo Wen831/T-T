@@ -742,6 +742,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.alwaysOnHint':
     'Admin-webhook verstuurt automatisch als er een URL is ingesteld',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Systeemmeldingen van de browser, ondertekend met een VAPID-sleutelpaar dat TT zelf aanmaakt — hier is niets in te stellen. Gebruikers abonneren zich via hun eigen meldingsinstellingen.',
   'admin.ntfy.hint':
     'Hiermee kunnen gebruikers hun eigen ntfy-onderwerpen instellen voor pushmeldingen. Stel de standaardserver hieronder in om de gebruikersinstellingen vooraf in te vullen.',
   'admin.notifications.testNtfy': 'Test-Ntfy verzenden',
@@ -777,6 +780,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Collecties',
   'admin.addons.catalog.collections.description':
     'Verzamel plaatsen uit al je reizen in benoemde lijsten en gebruik ze opnieuw',
+  'admin.addons.catalog.roadtrip.name': 'Roadtrip',
+  'admin.addons.catalog.roadtrip.description':
+    'Ritten met stops langs de route, rijtijden en aankomsttijden die zichzelf bijwerken',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Leest bezoeken en vastgelegde routes uit je Dawarich-instantie — voorgestelde journaalitems, plaatsen en landen die je zelf bevestigt',
+  'admin.addons.catalog.footprint.name': 'Voetafdruk',
+  'admin.addons.catalog.footprint.description':
+    'Leg je eigen locatiegeschiedenis vast in TT — een tracker op je telefoon stuurt punten, TT bewaart ze, herkent verblijven en tekent het spoor op je reizen',
   'admin.passkey.title': 'Inloggen met passkey',
   'admin.passkey.cardHint': 'Laat gebruikers inloggen met passkeys (WebAuthn). Standaard uit.',
   'admin.passkey.login': 'Inloggen met passkey inschakelen',
@@ -801,6 +813,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standaard (gratis)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Gedeelde AMap-sleutel',
+  'admin.defaultSettings.amapTokenHint':
+    'Gebruikt voor elke gebruiker die geen eigen sleutel heeft ingevoerd. AMap heeft een eigen Web JS-sleutel nodig om iets te tonen, dus stel dit pas als standaard in als er een sleutel bekend is. Versleuteld opgeslagen.',
   'admin.defaultSettings.mapboxToken': 'Gedeeld Mapbox-token',
   'admin.defaultSettings.mapboxTokenHint':
     'Wordt gebruikt voor elke gebruiker die nog geen eigen token heeft ingevoerd — zo krijgt de hele instantie Mapbox zonder de sleutel apart te delen. Versleuteld opgeslagen.',

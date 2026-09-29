@@ -728,6 +728,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.testFailed': 'Testovací webhook selhal',
   'admin.notifications.adminWebhookPanel.alwaysOnHint': 'Admin webhook odesílá automaticky, pokud je nastavena URL',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Systémová oznámení prohlížeče podepsaná párem klíčů VAPID, který si TT generuje sám — tady není co nastavovat. Uživatelé se přihlásí k odběru ve svých nastavení oznámení.',
   'admin.ntfy.hint':
     'Umožňuje uživatelům nakonfigurovat vlastní témata ntfy pro přijímání push notifikací. Níže nastavte výchozí server pro předvyplnění nastavení uživatelů.',
   'admin.notifications.testNtfy': 'Odeslat testovací Ntfy',
@@ -762,6 +765,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Sbírky',
   'admin.addons.catalog.collections.description':
     'Sbírejte místa ze všech cest do pojmenovaných seznamů a znovu je používejte',
+  'admin.addons.catalog.roadtrip.name': 'Road trip',
+  'admin.addons.catalog.roadtrip.description':
+    'Jízdy se zastávkami podél trasy, dobami jízdy a časy příjezdu, které se aktualizují samy',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Čtěte návštěvy a zaznamenané trasy z vaší instance Dawarich — navržené deníkové záznamy, místa a země, které potvrdíte sami',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    'Zaznamenávejte vlastní historii polohy přímo v TT — telefonní sledovač posílá body, TT je ukládá, detekuje pobyty a kreslí trasu do vašich cest',
   'admin.passkey.title': 'Přihlášení přístupovým klíčem',
   'admin.passkey.cardHint':
     'Umožněte uživatelům přihlašovat se pomocí přístupových klíčů (WebAuthn). Ve výchozím nastavení vypnuto.',
@@ -787,6 +799,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standardní (zdarma)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Sdílený klíč AMap',
+  'admin.defaultSettings.amapTokenHint':
+    'Používá se pro každého uživatele, který nezadal vlastní klíč. AMap ke zobrazení čehokoli potřebuje vlastní Web JS klíč, takže za výchozí ho stojí zvolit až poté, co nějaký klíč existuje. Ukládá se šifrovaně.',
   'admin.defaultSettings.mapboxToken': 'Sdílený token Mapbox',
   'admin.defaultSettings.mapboxTokenHint':
     'Použije se pro každého uživatele, který nezadal vlastní token — takže celá instance získá Mapbox, aniž byste klíč sdíleli s každým zvlášť. Ukládá se šifrovaně.',

@@ -742,6 +742,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.alwaysOnHint':
     'Вебхук администратора отправляется автоматически при наличии URL',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Системные уведомления браузера, подписываемые парой ключей VAPID, которые TT генерирует сам, — здесь настраивать нечего. Пользователи подписываются в своих настройках уведомлений.',
   'admin.ntfy.hint':
     'Позволяет пользователям настраивать собственные темы ntfy для push-уведомлений. Установите сервер по умолчанию ниже, чтобы предварительно заполнить настройки пользователей.',
   'admin.notifications.testNtfy': 'Отправить тестовое Ntfy',
@@ -778,6 +781,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Коллекции',
   'admin.addons.catalog.collections.description':
     'Собирайте места из любых поездок в именованные списки и используйте их снова',
+  'admin.addons.catalog.roadtrip.name': 'Автопутешествие',
+  'admin.addons.catalog.roadtrip.description':
+    'Поездки с остановками по маршруту, временем в пути и временем прибытия, которое обновляется само',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Читает визиты и записанные маршруты из вашего экземпляра Dawarich — предложенные записи журнала, места и страны, которые вы подтверждаете сами',
+  'admin.addons.catalog.footprint.name': 'Следы',
+  'admin.addons.catalog.footprint.description':
+    'Записывайте собственную историю местоположений в TT — трекер на телефоне присылает точки, TT хранит их, определяет остановки и рисует маршрут в ваших поездках',
   'admin.passkey.title': 'Вход по passkey',
   'admin.passkey.cardHint': 'Разрешите пользователям входить с помощью passkeys (WebAuthn). По умолчанию выключено.',
   'admin.passkey.login': 'Включить вход по passkey',
@@ -802,6 +814,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Стандартная (бесплатно)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Общий ключ AMap',
+  'admin.defaultSettings.amapTokenHint':
+    'Используется для всех пользователей, не указавших свой ключ. AMap требует собственный ключ Web JS, чтобы вообще что-то отобразить, поэтому выбирать его по умолчанию стоит только при наличии ключа. Хранится в зашифрованном виде.',
   'admin.defaultSettings.mapboxToken': 'Общий токен Mapbox',
   'admin.defaultSettings.mapboxTokenHint':
     'Используется для каждого пользователя, который не ввёл собственный токен — так весь сервер получает Mapbox без необходимости делиться ключом по отдельности. Хранится в зашифрованном виде.',

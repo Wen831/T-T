@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': 'E-posta (SMTP)',
   'admin.notifications.webhook': 'Web kancası',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    "TT'nin kendisinin ürettiği bir VAPID anahtar çiftiyle imzalanan tarayıcı sistem bildirimleri — burada yapılandırılacak bir şey yok. Kullanıcılar kendi bildirim ayarlarından abone olur.",
   'admin.ntfy.hint':
     'Kullanıcıların kendi ntfy konularını yapılandırmasına izin verin. Aşağıdaki varsayılan sunucu kullanıcı ayarlarında ön doldurma için kullanılır.',
   'admin.notifications.save': 'Bildirim ayarlarını kaydet',
@@ -781,6 +784,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Koleksiyonlar',
   'admin.addons.catalog.collections.description':
     'Her geziden yerleri adlandırılmış listelerde toplayın ve yeniden kullanın',
+  'admin.addons.catalog.roadtrip.name': 'Karayolu gezisi',
+  'admin.addons.catalog.roadtrip.description':
+    'Rota boyunca duraklarla, sürüş süreleriyle ve kendi kendini güncelleyen varış saatleriyle karayolu gezileri',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Kendi Dawarich örneğinizden ziyaretleri ve kaydedilmiş rotaları okur — günlüğün önerilen girdilerini, yerleri ve ülkeleri kendiniz onaylarsınız',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    'Kendi konum geçmişinizi TT içinde kaydedin — telefondaki bir izleyici noktalar gönderir, TT bunları saklar, kalışları algılar ve gezilerinizde rotayı çizer',
   'admin.passkey.title': 'Passkey ile oturum açma',
   'admin.passkey.cardHint':
     'Kullanıcıların passkey (WebAuthn) ile oturum açmasına izin verin. Varsayılan olarak kapalı.',
@@ -806,6 +818,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standart (ücretsiz)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Paylaşılan AMap anahtarı',
+  'admin.defaultSettings.amapTokenHint':
+    "Kendi anahtarını girmemiş her kullanıcı için kullanılır. AMap'in herhangi bir şey görüntüleyebilmesi için kendi Web JS anahtarına gereksinimi var, bu yüzden bir anahtar kaydedildikten sonra varsayılan olarak seçmeye değer. Şifreli saklanır.",
   'admin.defaultSettings.mapboxToken': 'Paylaşılan Mapbox jetonu',
   'admin.defaultSettings.mapboxTokenHint':
     "Kendi jetonunu girmemiş her kullanıcı için kullanılır — böylece anahtarı tek tek paylaşmadan tüm örnek Mapbox'ı kullanır. Şifrelenmiş olarak saklanır.",

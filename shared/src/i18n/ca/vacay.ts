@@ -1,6 +1,30 @@
 import type { TranslationStrings } from '../types';
 
 const vacay: TranslationStrings = {
+  'schoolCatalog.refreshError': "El canvi s'ha desat, però no s'ha pogut actualitzar la llista. Torna-la a carregar.",
+  'schoolCatalog.title': 'Vacances escolars',
+  'schoolCatalog.hint':
+    'Gestiona regions compartides de vacances escolars. Tothom les pot seleccionar a la configuració de vacances.',
+  'schoolCatalog.periodHint': 'Les dates inclouen ambdós dies. Afegeix períodes per a cada curs escolar.',
+  'schoolCatalog.region': 'Regió o districte escolar',
+  'schoolCatalog.name': 'Nom de les vacances',
+  'schoolCatalog.start': "Data d'inici",
+  'schoolCatalog.end': 'Data final',
+  'schoolCatalog.addPeriod': 'Afegeix un període de vacances',
+  'schoolCatalog.invalid': 'Comprova els noms i les dates.',
+  'schoolCatalog.discard': 'Vols descartar els canvis sense desar?',
+  'schoolCatalog.country': 'País',
+  'schoolCatalog.deleteHint':
+    'Suprimeix primer les regions. Les regions que fan servir els calendaris no es poden suprimir.',
+  'schoolCatalog.deleteCountry': 'Suprimeix el país',
+  'schoolCatalog.addCountry': 'Afegeix un país',
+  'schoolCatalog.code': 'Codi de país (p. ex. US)',
+  'schoolCatalog.empty': 'Encara no hi ha regions.',
+  'schoolCatalog.addRegion': 'Afegeix una regió',
+  'schoolCatalog.offline': 'Connecta a internet per gestionar les vacances escolars.',
+  'schoolCatalog.loadError':
+    "No s'han pogut carregar les regions de vacances escolars. Torna a obrir la configuració per provar-ho.",
+  'schoolCatalog.retry': 'Torna-ho a provar',
   'vacay.subtitle': 'Planifica i gestiona dies de vacances',
   'vacay.settings': 'Configuració',
   'vacay.year': 'Any',

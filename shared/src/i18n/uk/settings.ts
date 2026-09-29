@@ -287,6 +287,19 @@ const settings: TranslationStrings = {
     'Введіть тему Ntfy для отримання push-сповіщень. Залиште поле сервера пустим, щоб використовувати налаштування за замовчуванням, задані адміністратором.',
   'settings.ntfyUrl.tokenLabel': 'Токен доступу (необов’язково)',
   'settings.ntfyUrl.tokenHint': 'Потрібно для тем, захищених паролем.',
+  'settings.push.title': 'Push браузера (Web Push)',
+  'settings.push.hint':
+    'Системні сповіщення просто з браузера — без сторонніх застосунків. Працюють на будь-якому пристрої, якому ви дозволите.',
+  'settings.push.enable': 'Увімкнути push',
+  'settings.push.disable': 'Вимкнути',
+  'settings.push.subscribedHere': 'Цей пристрій підписаний',
+  'settings.push.enabledToast': 'Push-сповіщення ввімкнено на цьому пристрої',
+  'settings.push.unsubscribedToast': 'Push-сповіщення вимкнено на цьому пристрої',
+  'settings.push.denied': 'Сповіщення заблоковані для цього сайту — спершу дозвольте їх у налаштуваннях браузера.',
+  'settings.push.unsupported': 'Цей браузер не підтримує Web Push.',
+  'settings.push.errorToast': 'Не вдалося ввімкнути push-сповіщення',
+  'settings.push.iosHint':
+    'На iPhone/iPad push працює лише коли TT відкрито з домашнього екрана (Споділитися → На домашній екран).',
   'settings.ntfyUrl.saved': 'Налаштування Ntfy збережені',
   'settings.ntfyUrl.test': 'Тест',
   'settings.ntfyUrl.testSuccess': 'Тестове сповіщення Ntfy успішно надіслано',
@@ -304,6 +317,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.oauth.modal.machineClient': 'Машинний клієнт (без входу через браузер)',
   'settings.oauth.modal.machineClientHint':
     'Використовуйте надання client_credentials — URI перенаправлення не потрібні. Токен видається безпосередньо через client_id + client_secret і діє від вашого імені в межах вибраних областей.',

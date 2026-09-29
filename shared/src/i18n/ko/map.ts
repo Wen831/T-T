@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     '위치 접근이 차단되어 있습니다. 기기 설정을 확인하세요. 설치된 앱은 브라우저와 별도의 위치 권한을 사용합니다.',
   'map.location.unavailable': '현재 위치를 확인할 수 없습니다.',
   'map.location.timeout': '위치를 확인하는 데 시간이 너무 오래 걸렸습니다. 하늘이 잘 보이는 곳에서 다시 시도하세요.',
+  'map.amapPreviewNeedsKey': '위쪽에 AMap Web JS 키를 입력하면 지도를 미리볼 수 있습니다.',
+  'map.amapPreviewFailed': '이 키로는 AMap SDK를 불러올 수 없습니다. 키와 도메인 연결을 확인하세요.',
 };
 export default map;

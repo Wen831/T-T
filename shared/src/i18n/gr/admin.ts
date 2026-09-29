@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': 'Email (SMTP)',
   'admin.notifications.webhook': 'Webhook',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Ειδοποιήσεις συστήματος περιηγητή, υπογεγραμμένες με ένα ζευγάρι κλειδιών VAPID που δημιουργεί ο ίδιος το TT — δεν υπάρχει τίποτα να ρυθμίσετε εδώ. Οι χρήστες εγγράφονται στις δικές τους ρυθμίσεις ειδοποιήσεων.',
   'admin.ntfy.hint':
     'Επιτρέψτε στους χρήστες να διαμορφώνουν τα δικά τους θέματα ntfy για push ειδοποιήσεις. Ορίστε τον προεπιλεγμένο server παρακάτω για να προ-συμπληρώνει τις ρυθμίσεις χρηστών.',
   'admin.notifications.save': 'Αποθήκευση ρυθμίσεων ειδοποιήσεων',
@@ -792,6 +795,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Συλλογές',
   'admin.addons.catalog.collections.description':
     'Συγκεντρώστε τοποθεσίες από κάθε ταξίδι σε λίστες με όνομα και χρησιμοποιήστε τις ξανά',
+  'admin.addons.catalog.roadtrip.name': 'Οδικό ταξίδι',
+  'admin.addons.catalog.roadtrip.description':
+    'Διαδρομές με στάσεις κατά μήκος της διαδρομής, χρόνοι οδήγησης και ώρες άφιξης που ενημερώνονται μόνες τους',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Διαβάζει επισκέψεις και κατεγραμμένες διαδρομές από το δικό σας Dawarich — προτεινόμενες καταχωρήσεις ημερολογίου, μέρη και χώρες που επιβεβαιώνετε μόνοι σας',
+  'admin.addons.catalog.footprint.name': 'Αποτυπώματα',
+  'admin.addons.catalog.footprint.description':
+    'Καταγράψτε το δικό σας ιστορικό τοποθεσίας στο TT — ένας ιχνηλάτης στο κινητό στέλνει σημεία, το TT τα αποθηκεύει, εντοπίζει διαμονές και σχεδιάζει τη διαδρομή στα ταξίδια σας',
   'admin.passkey.title': 'Σύνδεση με passkey',
   'admin.passkey.cardHint':
     'Επιτρέψτε στους χρήστες να συνδέονται με passkeys (WebAuthn). Απενεργοποιημένο από προεπιλογή.',
@@ -817,6 +829,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Τυπικός (δωρεάν)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Κοινόχρηστο κλειδί AMap',
+  'admin.defaultSettings.amapTokenHint':
+    'Χρησιμοποιείται για κάθε χρήστη που δεν έχει εισάγει το δικό του κλειδί. Η AMap χρειάζεται δικό της κλειδί Web JS για να εμφανίσει οτιδήποτε, οπότε αξίζει να οριστεί ως προεπιλογή μόνο αφού υπάρχει κλειδί. Αποθηκεύεται κρυπτογραφημένο.',
   'admin.defaultSettings.mapboxToken': 'Κοινόχρηστο διακριτικό Mapbox',
   'admin.defaultSettings.mapboxTokenHint':
     'Χρησιμοποιείται για κάθε χρήστη που δεν έχει εισαγάγει το δικό του διακριτικό — έτσι ολόκληρη η εγκατάσταση αποκτά Mapbox χωρίς να μοιράζεται το κλειδί ξεχωριστά. Αποθηκεύεται κρυπτογραφημένο.',

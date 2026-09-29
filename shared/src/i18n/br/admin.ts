@@ -735,6 +735,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.alwaysOnHint':
     'O webhook de admin dispara automaticamente quando uma URL está configurada',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Notificações do sistema do navegador, assinadas com um par de chaves VAPID que o próprio TT gera — não há nada para configurar aqui. Os usuários se inscrevem nas próprias configurações de notificação.',
   'admin.ntfy.hint':
     'Permite que os usuários configurem seus próprios tópicos ntfy para notificações push. Configure o servidor padrão abaixo para preencher as configurações do usuário.',
   'admin.notifications.testNtfy': 'Enviar Ntfy de teste',
@@ -769,6 +772,15 @@ const admin: TranslationStrings = {
     'Rastreamento de viagens e diário de viajante com check-ins, fotos e histórias diárias',
   'admin.addons.catalog.collections.name': 'Coleções',
   'admin.addons.catalog.collections.description': 'Reúna lugares de qualquer viagem em listas nomeadas e reutilize-os',
+  'admin.addons.catalog.roadtrip.name': 'Road trip',
+  'admin.addons.catalog.roadtrip.description':
+    'Viagens de carro com paradas ao longo da rota, tempos de direção e horários de chegada que se atualizam sozinhos',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Leia visitas e rotas gravadas da sua instância Dawarich — entradas de diário, lugares e países sugeridos que você mesmo confirma',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    'Registre seu próprio histórico de localização no TT — um rastreador no celular envia pontos, o TT os armazena, detecta estadias e desenha a trilha nas suas viagens',
   'admin.passkey.title': 'Login com passkey',
   'admin.passkey.cardHint': 'Permite que os usuários entrem com passkeys (WebAuthn). Desativado por padrão.',
   'admin.passkey.login': 'Ativar login com passkey',
@@ -793,6 +805,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Padrão (gratuito)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Chave AMap compartilhada',
+  'admin.defaultSettings.amapTokenHint':
+    'Usado por todo usuário que não informou a própria chave. A AMap precisa de uma chave Web JS própria para exibir qualquer coisa, então vale escolher como padrão só depois que houver uma chave salva. Armazenada criptografada.',
   'admin.defaultSettings.mapboxToken': 'Token compartilhado do Mapbox',
   'admin.defaultSettings.mapboxTokenHint':
     'Usado para todos os usuários que não inseriram o próprio token — assim toda a instância usa o Mapbox sem compartilhar a chave individualmente. Armazenado de forma criptografada.',

@@ -744,6 +744,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.alwaysOnHint':
     'Il webhook admin si attiva automaticamente quando è configurato un URL',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    "Notifiche di sistema del browser, firmate con una coppia di chiavi VAPID generata dallo stesso TT — qui non c'è nulla da configurare. Gli utenti si abbonano dalle proprie impostazioni di notifica.",
   'admin.ntfy.hint':
     'Consente agli utenti di configurare i propri argomenti ntfy per le notifiche push. Imposta il server predefinito di seguito per precompilare le impostazioni utente.',
   'admin.notifications.testNtfy': 'Invia Ntfy di test',
@@ -778,6 +781,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Raccolte',
   'admin.addons.catalog.collections.description':
     'Raccogli luoghi da tutti i viaggi in elenchi con nome e riutilizzali',
+  'admin.addons.catalog.roadtrip.name': 'Road trip',
+  'admin.addons.catalog.roadtrip.description':
+    'Viaggi in auto con soste lungo il percorso, tempi di guida e orari di arrivo che si aggiornano da soli',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Legge visite e percorsi registrati dalla tua istanza Dawarich — voci di diario, luoghi e paesi suggeriti che confermi tu',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    'Registra la tua cronologia delle posizioni in TT — un tracciatore sul telefono invia punti, TT li salva, rileva le soste e disegna il percorso nei tuoi viaggi',
   'admin.passkey.title': 'Accesso con passkey',
   'admin.passkey.cardHint':
     'Consenti agli utenti di accedere con le passkey (WebAuthn). Disattivato per impostazione predefinita.',
@@ -803,6 +815,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standard (gratuito)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Chiave AMap condivisa',
+  'admin.defaultSettings.amapTokenHint':
+    'Usata per ogni utente che non ha inserito la propria chiave. AMap ha bisogno di una propria chiave Web JS per mostrare qualsiasi cosa, quindi vale sceglierla come predefinita solo quando una chiave è salvata. Archiviata cifrata.',
   'admin.defaultSettings.mapboxToken': 'Token Mapbox condiviso',
   'admin.defaultSettings.mapboxTokenHint':
     "Usato per ogni utente che non ha inserito un proprio token — così tutta l'istanza ottiene Mapbox senza dover condividere la chiave individualmente. Archiviato in forma crittografata.",

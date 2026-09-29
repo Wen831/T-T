@@ -105,6 +105,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.pluginConfigured':
     'Yapılandırıldı. Kimlik bilgilerini eklentinin ayarlar sayfasından yönetin.',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationPreferences.noChannels':
     'Bildirim kanalı yapılandırılmadı. Yöneticiden e-posta veya webhook kurmasını isteyin.',
   'settings.webhookUrl.label': "Web kancası URL'si",
@@ -122,6 +123,19 @@ const settings: TranslationStrings = {
     'Anlık bildirim için ntfy konusunu girin. Sunucuyu boş bırakırsanız yöneticinin varsayılanı kullanılır.',
   'settings.ntfyUrl.tokenLabel': 'Erişim anahtarı (isteğe bağlı)',
   'settings.ntfyUrl.tokenHint': 'Parola korumalı konular için gerekli.',
+  'settings.push.title': 'Tarayıcı bildirimi (Web Push)',
+  'settings.push.hint':
+    'Sistem bildirimleri doğrudan tarayıcıdan — üçüncü taraf uygulama yok. İzin verdiğiniz her cihazda çalışır.',
+  'settings.push.enable': 'Bildirimleri aç',
+  'settings.push.disable': 'Kapat',
+  'settings.push.subscribedHere': 'Bu cihaz abone',
+  'settings.push.enabledToast': 'Anlık bildirimler bu cihazda açıldı',
+  'settings.push.unsubscribedToast': 'Anlık bildirimler bu cihazda kapatıldı',
+  'settings.push.denied': 'Bu site için bildirimler engellendi — önce tarayıcı ayarlarından izin verin.',
+  'settings.push.unsupported': 'Bu tarayıcı Web Push desteklemiyor.',
+  'settings.push.errorToast': 'Anlık bildirimler açılamadı',
+  'settings.push.iosHint':
+    "iPhone/iPad'te bildirimler yalnızca TT Ana Ekran'dan açıldığında çalışır (Paylaş → Ana Ekrana Ekle).",
   'settings.ntfyUrl.saved': 'Ntfy ayarları kaydedildi',
   'settings.ntfyUrl.test': 'Dene',
   'settings.ntfyUrl.testSuccess': 'Test ntfy bildirimi gönderildi',

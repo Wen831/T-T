@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': 'Email (SMTP)',
   'admin.notifications.webhook': 'Webhook',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Thông báo hệ thống của trình duyệt, ký bằng cặp khóa VAPID do chính TT tạo — ở đây không có gì phải cấu hình. Người dùng đăng ký trong phần cài đặt thông báo của họ.',
   'admin.ntfy.hint':
     'Cho phép người dùng định cấu hình chủ đề thú vị của riêng họ cho thông báo đẩy. Đặt máy chủ mặc định bên dưới để điền trước cài đặt người dùng.',
   'admin.notifications.save': 'Lưu cài đặt thông báo',
@@ -169,6 +172,9 @@ const admin: TranslationStrings = {
   'admin.placesEnrich.title': 'Làm giàu địa điểm',
   'admin.placesEnrich.subtitle':
     'Hiển thị hình ảnh và mô tả khi thêm địa điểm. Wikipedia và OpenStreetMap luôn được dùng; Google được thêm vào khi bật Ảnh địa điểm hoặc Chi tiết địa điểm.',
+  'admin.placeShadow.title': 'Nhật ký tìm kiếm địa điểm',
+  'admin.placeShadow.subtitle':
+    'Ghi lại kết quả tìm kiếm nào đã được chọn, để sau này có thể đo một chỉ mục địa điểm khác với các tìm kiếm thực tế. Không gì rời khỏi phiên bản này và quản trị viên có thể xuất hoặc xóa nhật ký bất kỳ lúc nào.',
   'admin.bagTracking.title': 'Theo dõi túi',
   'admin.bagTracking.subtitle': 'Cho phép phân bổ trọng lượng và túi để đóng gói các mặt hàng',
   'admin.collab.chat.title': 'Trò chuyện',
@@ -193,6 +199,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Tiêu chuẩn (miễn phí)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Khóa AMap được chia sẻ',
+  'admin.defaultSettings.amapTokenHint':
+    'Dùng cho mọi người dùng chưa nhập khóa của riêng họ. AMap cần khóa Web JS riêng mới hiển thị được bất cứ gì, nên chỉ nên chọn làm mặc định khi đã có khóa được lưu. Lưu dưới dạng mã hóa.',
   'admin.defaultSettings.mapboxToken': 'Mã thông báo Mapbox được chia sẻ',
   'admin.defaultSettings.mapboxTokenHint':
     'Được sử dụng cho mọi người dùng chưa nhập mã thông báo của riêng họ — vì vậy toàn bộ phiên bản sẽ nhận được Mapbox mà không chia sẻ khóa riêng lẻ. Được lưu trữ được mã hóa.',
@@ -729,6 +739,15 @@ const admin: TranslationStrings = {
     'Theo dõi chuyến đi & nhật ký du lịch với nhận phòng, ảnh và câu chuyện hàng ngày',
   'admin.addons.catalog.collections.name': 'Bộ sưu tập',
   'admin.addons.catalog.collections.description': 'Gom địa điểm từ mọi chuyến đi vào danh sách có tên và dùng lại',
+  'admin.addons.catalog.roadtrip.name': 'Đi đường bộ',
+  'admin.addons.catalog.roadtrip.description':
+    'Chuyến đi ô tô với các điểm dừng dọc tuyến, thời gian lái và giờ đến tự cập nhật',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Đọc các điểm đến và tuyến đường đã ghi từ phiên bản Dawarich của bạn — các mục nhật ký, địa điểm và quốc gia được gợi ý để bạn tự xác nhận',
+  'admin.addons.catalog.footprint.name': 'Dấu chân',
+  'admin.addons.catalog.footprint.description':
+    'Ghi lại lịch sử vị trí của chính bạn vào TT — một trình theo dõi trên điện thoại gửi các điểm, TT lưu chúng, phát hiện thời gian lưu trú và vẽ tuyến trên chuyến đi của bạn',
   'admin.passkey.title': 'Đăng nhập bằng mật mã',
   'admin.passkey.cardHint': 'Cho phép người dùng đăng nhập bằng mật mã (WebAuthn). Tắt theo mặc định.',
   'admin.passkey.login': 'Kích hoạt đăng nhập bằng mật mã',

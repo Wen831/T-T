@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'تم حظر الوصول إلى الموقع. تحقق من إعدادات الجهاز؛ فالتطبيق المثبت لديه إذن موقع خاص به منفصل عن المتصفح.',
   'map.location.unavailable': 'تعذر تحديد موقعك.',
   'map.location.timeout': 'استغرق تحديد موقعك وقتًا طويلًا. حاول مرة أخرى تحت سماء مكشوفة.',
+  'map.amapPreviewNeedsKey': 'أدخل مفتاح AMap Web JS أعلاه لمعاينة الخريطة.',
+  'map.amapPreviewFailed': 'تعذّر تحميل حزمة AMap باستخدام هذا المفتاح. تحقق من المفتاح ومن ربط النطاق.',
 };
 export default map;

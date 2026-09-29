@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'Locatietoegang is geblokkeerd. Controleer de apparaatinstellingen; een geïnstalleerde app heeft een eigen locatiemachtiging, los van de browser.',
   'map.location.unavailable': 'Je locatie kon niet worden bepaald.',
   'map.location.timeout': 'Het bepalen van je locatie duurde te lang. Probeer het opnieuw met vrij zicht op de lucht.',
+  'map.amapPreviewNeedsKey': 'Voer hierboven je AMap Web JS-sleutel in om de kaart te bekijken.',
+  'map.amapPreviewFailed': 'Deze sleutel kon de AMap-SDK niet laden. Controleer de sleutel en de domeinkoppeling.',
 };
 export default map;

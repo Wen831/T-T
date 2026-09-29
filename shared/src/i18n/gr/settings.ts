@@ -112,6 +112,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.pluginConfigured':
     'Ρυθμίστηκε. Διαχειριστείτε τα διαπιστευτήρια στη σελίδα ρυθμίσεων του πρόσθετου.',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationPreferences.noChannels':
     'Δεν έχουν διαμορφωθεί κανάλια ειδοποιήσεων. Ζητήστε από έναν διαχειριστή να ρυθμίσει ειδοποιήσεις email ή webhook.',
   'settings.webhookUrl.label': 'Webhook URL',
@@ -130,6 +131,20 @@ const settings: TranslationStrings = {
     'Εισάγετε το ntfy topic σας για να λαμβάνετε push ειδοποιήσεις. Αφήστε τον server κενό για χρήση του προεπιλεγμένου από τον διαχειριστή.',
   'settings.ntfyUrl.tokenLabel': 'Access Token (προαιρετικό)',
   'settings.ntfyUrl.tokenHint': 'Απαιτείται για θέματα προστατευμένα με κωδικό.',
+  'settings.push.title': 'Ωθήσεις προγράμματος περιήγησης (Web Push)',
+  'settings.push.hint':
+    'Ειδοποιήσεις συστήματος απευθείας από το πρόγραμμα περιήγησης — χωρίς εφαρμογή τρίτων. Λειτουργεί σε κάθε συσκευή που το επιτρέπετε.',
+  'settings.push.enable': 'Ενεργοποίηση push',
+  'settings.push.disable': 'Απενεργοποίηση',
+  'settings.push.subscribedHere': 'Αυτή η συσκευή είναι εγγεγραμμένη',
+  'settings.push.enabledToast': 'Οι ειδοποιήσεις push ενεργοποιήθηκαν σε αυτή τη συσκευή',
+  'settings.push.unsubscribedToast': 'Οι ειδοποιήσεις push απενεργοποιήθηκαν σε αυτή τη συσκευή',
+  'settings.push.denied':
+    'Οι ειδοποιήσεις είναι μπλοκαρισμένες για αυτόν τον ιστότοπο — επιτρέψτε τες πρώτα στις ρυθμίσεις του προγράμματος περιήγησης.',
+  'settings.push.unsupported': 'Αυτό το πρόγραμμα περιήγησης δεν υποστηρίζει Web Push.',
+  'settings.push.errorToast': 'Δεν ήταν δυνατή η ενεργοποίηση των ειδοποιήσεων push',
+  'settings.push.iosHint':
+    'Σε iPhone/iPad, το push λειτουργεί μόνο όταν το TT ανοίγει από την αρχική οθόνη (Κοινοποίηση → Προσθήκη στην αρχική οθόνη).',
   'settings.ntfyUrl.saved': 'Οι ρυθμίσεις Ntfy αποθηκεύτηκαν',
   'settings.ntfyUrl.test': 'Δοκιμή',
   'settings.ntfyUrl.testSuccess': 'Η δοκιμαστική ειδοποίηση ntfy στάλθηκε επιτυχώς',

@@ -24,5 +24,8 @@ const map: TranslationStrings = {
   'map.location.unavailable': 'Dein Standort konnte nicht ermittelt werden.',
   'map.location.timeout':
     'Die Standortbestimmung hat zu lange gedauert. Versuche es mit freier Sicht zum Himmel erneut.',
+  'map.amapPreviewNeedsKey': 'Geben Sie oben Ihren AMap-Web-JS-Schlüssel ein, um die Karte zu sehen.',
+  'map.amapPreviewFailed':
+    'Mit diesem Schlüssel ließ sich das AMap-SDK nicht laden. Prüfen Sie den Schlüssel und seine Domain-Bindung.',
 };
 export default map;

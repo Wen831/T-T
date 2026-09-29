@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': '이메일 (SMTP)',
   'admin.notifications.webhook': '웹훅',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'TT가 직접 생성한 VAPID 키 쌍으로 서명되는 브라우저 시스템 알림입니다 — 여기서 설정할 것은 없습니다. 사용자가 자신의 알림 설정에서 구독합니다.',
   'admin.ntfy.hint':
     '사용자가 자신의 ntfy 토픽을 설정하여 푸시 알림을 받을 수 있습니다. 아래에 기본 서버를 설정하면 사용자 설정에 미리 채워집니다.',
   'admin.notifications.save': '알림 설정 저장',
@@ -739,6 +742,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.journey.description': '체크인, 사진, 일별 이야기가 있는 여행 기록 및 여행 일지',
   'admin.addons.catalog.collections.name': '컬렉션',
   'admin.addons.catalog.collections.description': '어떤 여행의 장소든 이름 붙인 목록에 모아 다시 사용',
+  'admin.addons.catalog.roadtrip.name': '로드트립',
+  'admin.addons.catalog.roadtrip.description':
+    '경로변 경유지와 운전 시간, 자동으로 갱신되는 도착 시각을 지원하는 자동차 여행',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    '자기 Dawarich 인스턴스에서 방문 기록과 저장된 이동 경로를 읽습니다 — 일지 항목, 장소, 국가 제시는 직접 확정합니다',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    '자기 위치 기록을 TT에 저장 — 폰의 추적기가 지점을 보내면 TT가 이를 저장하고 체류를 감지해 여행에 경로를 그립니다',
   'admin.passkey.title': '패스키 로그인',
   'admin.passkey.cardHint': '사용자가 패스키(WebAuthn)로 로그인할 수 있게 합니다. 기본값은 꺼짐입니다.',
   'admin.passkey.login': '패스키 로그인 활성화',
@@ -762,6 +774,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': '표준 (무료)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': '공유 AMap 키',
+  'admin.defaultSettings.amapTokenHint':
+    '자기 키를 입력하지 않은 모든 사용자에게 사용됩니다. AMap은 무언가를 렌더링하려면 자체 Web JS 키가 꼭 필요하므로 키가 등록된 뒤에 기본값으로 고르는 게 좋습니다. 암호화되어 저장됩니다.',
   'admin.defaultSettings.mapboxToken': '공유 Mapbox 토큰',
   'admin.defaultSettings.mapboxTokenHint':
     '자신의 토큰을 입력하지 않은 모든 사용자에게 사용됩니다 — 키를 개별적으로 공유하지 않아도 인스턴스 전체에서 Mapbox를 사용할 수 있습니다. 암호화하여 저장됩니다.',

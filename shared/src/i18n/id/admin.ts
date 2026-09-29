@@ -23,6 +23,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.testFailed': 'Test webhook gagal',
   'admin.notifications.adminWebhookPanel.alwaysOnHint': 'Admin webhook selalu berjalan jika URL dikonfigurasi',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Notifikasi sistem peramban, ditandatangani dengan pasangan kunci VAPID yang dibuat sendiri oleh TT — tidak ada yang perlu dikonfigurasi di sini. Pengguna berlangganan dari pengaturan notifikasi mereka sendiri.',
   'admin.ntfy.hint':
     'Memungkinkan pengguna mengonfigurasi topik ntfy mereka sendiri untuk notifikasi push. Tetapkan server default di bawah untuk mengisi setelan pengguna secara otomatis.',
   'admin.notifications.testNtfy': 'Kirim uji Ntfy',
@@ -780,6 +783,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Koleksi',
   'admin.addons.catalog.collections.description':
     'Kumpulkan tempat dari perjalanan mana pun ke dalam daftar bernama dan gunakan lagi',
+  'admin.addons.catalog.roadtrip.name': 'Perjalanan darat',
+  'admin.addons.catalog.roadtrip.description':
+    'Perjalanan mobil dengan pemberhentian di sepanjang rute, waktu mengemudi, dan waktu tiba yang memperbarui dirinya sendiri',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Baca kunjungan dan rute tercatat dari instansi Dawarich Anda — entri jurnal, tempat, dan negara yang Anda konfirmasi sendiri',
+  'admin.addons.catalog.footprint.name': 'Jejak',
+  'admin.addons.catalog.footprint.description':
+    'Rekam riwayat lokasi Anda sendiri di TT — pelacak di ponsel mengirim titik, TT menyimpannya, mendeteksi singgahan, dan menggambar jejak pada perjalanan Anda',
   'admin.passkey.title': 'Login dengan passkey',
   'admin.passkey.cardHint': 'Izinkan pengguna masuk dengan passkey (WebAuthn). Nonaktif secara default.',
   'admin.passkey.login': 'Aktifkan login dengan passkey',
@@ -804,6 +816,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standar (gratis)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Kunci AMap bersama',
+  'admin.defaultSettings.amapTokenHint':
+    'Dipakai untuk setiap pengguna yang belum memasukkan kunci mereka sendiri. AMap memerlukan kunci Web JS sendiri untuk menampilkan apa pun, jadi hanya layak dipilih sebagai bawaan setelah ada kunci tersimpan. Disimpan terenkripsi.',
   'admin.defaultSettings.mapboxToken': 'Token Mapbox bersama',
   'admin.defaultSettings.mapboxTokenHint':
     'Digunakan untuk setiap pengguna yang belum memasukkan token mereka sendiri — sehingga seluruh instance mendapatkan Mapbox tanpa perlu membagikan kunci satu per satu. Disimpan dalam bentuk terenkripsi.',

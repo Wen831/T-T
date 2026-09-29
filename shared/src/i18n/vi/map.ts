@@ -24,5 +24,7 @@ const map: TranslationStrings = {
   'map.location.unavailable': 'Không thể xác định vị trí của bạn.',
   'map.location.timeout':
     'Việc xác định vị trí mất quá nhiều thời gian. Hãy thử lại ở nơi nhìn thấy bầu trời thoáng hơn.',
+  'map.amapPreviewNeedsKey': 'Nhập khóa AMap Web JS ở trên để xem trước bản đồ.',
+  'map.amapPreviewFailed': 'Khóa này không tải được SDK AMap. Hãy kiểm tra khóa và liên kết tên miền.',
 };
 export default map;

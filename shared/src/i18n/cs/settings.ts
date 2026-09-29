@@ -287,6 +287,19 @@ const settings: TranslationStrings = {
     'Zadejte své téma Ntfy pro příjem push notifikací. Pole serveru ponechte prázdné pro použití výchozího nastavení správce.',
   'settings.ntfyUrl.tokenLabel': 'Přístupový token (volitelné)',
   'settings.ntfyUrl.tokenHint': 'Vyžadováno pro témata chráněná heslem.',
+  'settings.push.title': 'Push prohlížeče (Web Push)',
+  'settings.push.hint':
+    'Systémová oznámení přímo z prohlížeče — bez aplikace třetí strany. Funguje na každém zařízení, kde je povolíte.',
+  'settings.push.enable': 'Povolit push',
+  'settings.push.disable': 'Zakázat',
+  'settings.push.subscribedHere': 'Toto zařízení je přihlášeno k odběru',
+  'settings.push.enabledToast': 'Push oznámení na tomto zařízení povolena',
+  'settings.push.unsubscribedToast': 'Push oznámení na tomto zařízení zakázána',
+  'settings.push.denied': 'Oznámení jsou pro tyto stránky zablokovaná — nejprve je povolte v nastavení prohlížeče.',
+  'settings.push.unsupported': 'Tento prohlížeč nepodporuje Web Push.',
+  'settings.push.errorToast': 'Nepodařilo se povolit push oznámení',
+  'settings.push.iosHint':
+    'Na iPhonu/iPadu push funguje jen tehdy, když se TT otevírá z domovské obrazovky (Sdílet → Přidat na domovskou obrazovku).',
   'settings.ntfyUrl.saved': 'Nastavení Ntfy uloženo',
   'settings.ntfyUrl.test': 'Otestovat',
   'settings.ntfyUrl.testSuccess': 'Testovací notifikace Ntfy byla úspěšně odeslána',
@@ -304,6 +317,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': 'Zobrazovaná měna',
   'settings.currencyHint':
     'Částky v Nákladech se do této měny přepočítávají pouze pro zobrazení – původní částky zůstávají beze změny.',

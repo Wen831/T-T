@@ -103,6 +103,18 @@ const settings: TranslationStrings = {
     'أدخل موضوع Ntfy الخاص بك لتلقي الإشعارات الفورية. اترك حقل الخادم فارغاً لاستخدام الإعداد الافتراضي الذي حدده المسؤول.',
   'settings.ntfyUrl.tokenLabel': 'رمز الوصول (اختياري)',
   'settings.ntfyUrl.tokenHint': 'مطلوب للمواضيع المحمية بكلمة مرور.',
+  'settings.push.title': 'إشعارات المتصفح (إشعارات الويب)',
+  'settings.push.hint': 'إشعارات النظام مباشرة من المتصفح — بدون تطبيق خارجي. تعمل على أي جهاز تسمح له بذلك.',
+  'settings.push.enable': 'تفعيل الإشعارات',
+  'settings.push.disable': 'إيقاف',
+  'settings.push.subscribedHere': 'هذا الجهاز مشترك',
+  'settings.push.enabledToast': 'تم تشغيل إشعارات الويب على هذا الجهاز',
+  'settings.push.unsubscribedToast': 'تم إيقاف إشعارات الويب على هذا الجهاز',
+  'settings.push.denied': 'الإشعارات محظورة لهذا الموقع — اسمح بها أولاً في إعدادات المتصفح.',
+  'settings.push.unsupported': 'هذا المتصفح لا يدعم إشعارات الويب.',
+  'settings.push.errorToast': 'تعذّر تشغيل إشعارات الويب',
+  'settings.push.iosHint':
+    'على iPhone/iPad، لا تعمل الإشعارات إلا عند فتح TT من الشاشة الرئيسية (مشاركة → إضافة إلى الشاشة الرئيسية).',
   'settings.ntfyUrl.saved': 'تم حفظ إعدادات Ntfy',
   'settings.ntfyUrl.test': 'اختبار',
   'settings.ntfyUrl.testSuccess': 'تم إرسال إشعار Ntfy التجريبي بنجاح',
@@ -299,6 +311,7 @@ const settings: TranslationStrings = {
   'settings.about.supporter.tier.budgetTraveller': 'Budget Traveller', // en-fallback
   'settings.about.supporter.tier.hostelBunkmate': 'Hostel Bunkmate', // en-fallback
   'settings.currency': 'عملة العرض',
+  'settings.notificationPreferences.push': 'إشعارات الويب',
   'settings.currencyHint':
     'تُعرض المبالغ في التكاليف محوّلة إلى هذه العملة للعرض فقط — تبقى المبالغ الأصلية دون تغيير.',
   'settings.currencyTrip': 'عملة الرحلة',

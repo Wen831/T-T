@@ -23,5 +23,7 @@ const map: TranslationStrings = {
     'Konum erişimi engellendi. Cihaz ayarlarını kontrol edin; yüklü bir uygulamanın tarayıcıdan ayrı kendi konum izni vardır.',
   'map.location.unavailable': 'Konumunuz belirlenemedi.',
   'map.location.timeout': 'Konum belirleme çok uzun sürdü. Gökyüzünü daha iyi gören bir yerde tekrar deneyin.',
+  'map.amapPreviewNeedsKey': 'Haritayı önizlemek için yukarıya AMap Web JS anahtarınızı girin.',
+  'map.amapPreviewFailed': "Bu anahtar AMap SDK'yı yükleyemedi. Anahtarı ve alan adı bağını kontrol edin.",
 };
 export default map;

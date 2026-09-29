@@ -292,6 +292,19 @@ const settings: TranslationStrings = {
     "Inserisci il tuo argomento Ntfy per ricevere notifiche push. Lascia il server vuoto per usare il valore predefinito configurato dall'amministratore.",
   'settings.ntfyUrl.tokenLabel': 'Token di accesso (opzionale)',
   'settings.ntfyUrl.tokenHint': 'Richiesto per gli argomenti protetti da password.',
+  'settings.push.title': 'Notifiche del browser (Web Push)',
+  'settings.push.hint':
+    'Notifiche di sistema direttamente dal browser, senza app di terze parti. Funziona su ogni dispositivo in cui le consenti.',
+  'settings.push.enable': 'Attiva le notifiche',
+  'settings.push.disable': 'Disattiva',
+  'settings.push.subscribedHere': 'Questo dispositivo è abbonato',
+  'settings.push.enabledToast': 'Notifiche push attivate su questo dispositivo',
+  'settings.push.unsubscribedToast': 'Notifiche push disattivate su questo dispositivo',
+  'settings.push.denied': 'Le notifiche sono bloccate per questo sito: concedile prima nelle impostazioni del browser.',
+  'settings.push.unsupported': 'Questo browser non supporta Web Push.',
+  'settings.push.errorToast': 'Impossibile attivare le notifiche push',
+  'settings.push.iosHint':
+    'Su iPhone/iPad le notifiche push funzionano solo se TT viene aperto dalla Schermata Home (Condividi → Aggiungi a Schermata Home).',
   'settings.ntfyUrl.saved': 'Impostazioni Ntfy salvate',
   'settings.ntfyUrl.test': 'Testa',
   'settings.ntfyUrl.testSuccess': 'Notifica di test Ntfy inviata con successo',
@@ -310,6 +323,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': 'Valuta di visualizzazione',
   'settings.currencyHint':
     'Gli importi in Costi vengono mostrati convertiti in questa valuta solo per la visualizzazione — gli importi originali restano invariati.',

@@ -748,6 +748,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.testFailed': 'Teszt webhook sikertelen',
   'admin.notifications.adminWebhookPanel.alwaysOnHint': 'Az admin webhook automatikusan küld, ha URL van beállítva',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Böngésző rendszerértesítések, a TT által maga előállított VAPID kulcspárral aláírva — itt nincs mit beállítani. A felhasználók a saját értesítési beállításaikban iratkoznak fel.',
   'admin.ntfy.hint':
     'Lehetővé teszi a felhasználóknak, hogy saját ntfy-témáikat konfigurálják push értesítésekhez. Állítsa be az alapértelmezett szervert alább a felhasználói beállítások előre kitöltéséhez.',
   'admin.notifications.testNtfy': 'Teszt Ntfy küldése',
@@ -783,6 +786,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.collections.name': 'Gyűjtemények',
   'admin.addons.catalog.collections.description':
     'Gyűjtsd össze bármely utazás helyeit elnevezett listákba, és használd fel őket újra',
+  'admin.addons.catalog.roadtrip.name': 'Road trip',
+  'admin.addons.catalog.roadtrip.description':
+    'Autós utak az útvonal mentén elhelyezkedő megállókkal, vezetési időkkel és maguktól frissülő érkezési időkkel',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Látogatások és rögzített útvonalak beolvasása a saját Dawarich-példányodból — javasolt naplóbejegyzések, helyek és országok, amelyeket maga erősít meg',
+  'admin.addons.catalog.footprint.name': 'Footprint',
+  'admin.addons.catalog.footprint.description':
+    'Saját tartózkodási előzmények rögzítése a TT-ben — egy telefonos követő pontokat küld, a TT elmenti őket, felismeri a tartózkodásokat és berajzolja az útvonalat az utazásaidra',
   'admin.passkey.title': 'Passkey-bejelentkezés',
   'admin.passkey.cardHint':
     'Engedélyezd a felhasználóknak a bejelentkezést passkey-vel (WebAuthn). Alapból kikapcsolva.',
@@ -808,6 +820,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Alapértelmezett (ingyenes)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Megosztott AMap-kulcs',
+  'admin.defaultSettings.amapTokenHint':
+    'Minden olyan felhasználóhoz használjuk, aki nem adta meg a saját kulcsát. Az AMapnek saját Web JS kulcsra van szüksége bárminek a megjelenítéséhez, ezért csak akkor érdemes alapértelmezettnek választani, ha már van kulcs rögzítve. Titkosítva tárolódik.',
   'admin.defaultSettings.mapboxToken': 'Megosztott Mapbox-token',
   'admin.defaultSettings.mapboxTokenHint':
     'Minden olyan felhasználóhoz használatos, aki nem adta meg a saját tokenjét — így az egész példány eléri a Mapboxot anélkül, hogy egyenként kellene megosztani a kulcsot. Titkosítva tárolódik.',

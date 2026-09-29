@@ -294,6 +294,20 @@ const settings: TranslationStrings = {
     'Introduce tu tema de Ntfy para recibir notificaciones push. Deja el servidor en blanco para usar el predeterminado configurado por tu administrador.',
   'settings.ntfyUrl.tokenLabel': 'Token de acceso (opcional)',
   'settings.ntfyUrl.tokenHint': 'Requerido para temas protegidos con contraseña.',
+  'settings.push.title': 'Notificaciones del navegador (Web Push)',
+  'settings.push.hint':
+    'Notificaciones del sistema directamente desde el navegador, sin apps de terceros. Funciona en cualquier dispositivo donde las permitas.',
+  'settings.push.enable': 'Activar notificaciones',
+  'settings.push.disable': 'Desactivar',
+  'settings.push.subscribedHere': 'Este dispositivo está suscrito',
+  'settings.push.enabledToast': 'Notificaciones push activadas en este dispositivo',
+  'settings.push.unsubscribedToast': 'Notificaciones push desactivadas en este dispositivo',
+  'settings.push.denied':
+    'Las notificaciones están bloqueadas para este sitio; permítelas primero en la configuración del navegador.',
+  'settings.push.unsupported': 'Este navegador no admite Web Push.',
+  'settings.push.errorToast': 'No se pudieron activar las notificaciones push',
+  'settings.push.iosHint':
+    'En iPhone/iPad, las notificaciones push solo funcionan cuando TT se abre desde la pantalla de inicio (Compartir → Añadir a pantalla de inicio).',
   'settings.ntfyUrl.saved': 'Configuración de Ntfy guardada',
   'settings.ntfyUrl.test': 'Probar',
   'settings.ntfyUrl.testSuccess': 'Notificación de prueba de Ntfy enviada correctamente',
@@ -312,6 +326,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.webhook': 'Webhook',
   'settings.notificationPreferences.email': 'Email',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.currency': 'Moneda de visualización',
   'settings.currencyHint':
     'Los importes en Costes se muestran convertidos a esta moneda solo a efectos de visualización — los importes originales no se modifican.',

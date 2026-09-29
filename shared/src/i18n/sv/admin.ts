@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': 'E-post (SMTP)',
   'admin.notifications.webhook': 'Webhook',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Webbläsarens systemaviseringar, signerade med ett VAPID-nyckelpar som TT självt genererar — det finns ingenting att konfigurera här. Användare prenumererar från sina egna aviseringsinställningar.',
   'admin.ntfy.hint':
     'Låt användarna ställa in sina egna ntfy-ämnen för push-meddelanden. Ange standardservern nedan för att förifyllda användarinställningarna.',
   'admin.notifications.save': 'Spara inställningarna för aviseringar',
@@ -170,6 +173,9 @@ const admin: TranslationStrings = {
   'admin.placesEnrich.title': 'Platsberikning',
   'admin.placesEnrich.subtitle':
     'Visar bilder och en beskrivning när du lägger till en plats. Wikipedia och OpenStreetMap används alltid; Google tillkommer när Platsfoton eller Platsdetaljer är på.',
+  'admin.placeShadow.title': 'Logg för platsökningar',
+  'admin.placeShadow.subtitle':
+    'Spelar in vilket sökresultat som valdes, så att ett annat platsindex kan mätas mot verkliga sökningar senare. Inget lämnar den här instansen, och en admin kan exportera eller ta bort loggen när som helst.',
   'admin.bagTracking.title': 'Spårning av väskor',
   'admin.bagTracking.subtitle': 'Aktivera vikt- och väskfördelning för packningsartiklar',
   'admin.collab.chat.title': 'Chatt',
@@ -194,6 +200,10 @@ const admin: TranslationStrings = {
   'admin.defaultSettings.providerLeaflet': 'Standard (gratis)',
   'admin.defaultSettings.providerMapbox': 'Mapbox (3D)',
   'admin.defaultSettings.providerMapLibre': 'MapLibre (OpenFreeMap)',
+  'admin.defaultSettings.providerAmap': 'AMap (高德)',
+  'admin.defaultSettings.amapToken': 'Delad AMap-nyckel',
+  'admin.defaultSettings.amapTokenHint':
+    'Används för varje användare som inte angett egen nyckel. AMap behöver en egen Web JS-nyckel för att visa någonting, så det lönar sig att välja som standard först när en nyckel finns sparad. Lagras krypterad.',
   'admin.defaultSettings.mapboxToken': 'Delat Mapbox-token',
   'admin.defaultSettings.mapboxTokenHint':
     'Används för alla användare som inte har angett sin egen token – på så sätt får hela instansen tillgång till Mapbox utan att nyckeln behöver delas ut individuellt. Lagras i krypterad form.',
@@ -787,6 +797,15 @@ const admin: TranslationStrings = {
   'admin.addons.catalog.journey.description': 'Resespårning och resedagbok med incheckningar, foton och dagliga inlägg',
   'admin.addons.catalog.collections.name': 'Samlingar',
   'admin.addons.catalog.collections.description': 'Samla platser från alla resor i namngivna listor och återanvänd dem',
+  'admin.addons.catalog.roadtrip.name': 'Roadtrip',
+  'admin.addons.catalog.roadtrip.description':
+    'Bilresor med stopp längs rutten, körtider och ankomsttider som uppdaterar sig själva',
+  'admin.addons.catalog.dawarich.name': 'Dawarich',
+  'admin.addons.catalog.dawarich.description':
+    'Läser besök och inspelade rutiner från din Dawarich-instans — föreslagna journalposter, platser och länder som du bekräftar själv',
+  'admin.addons.catalog.footprint.name': 'Spår',
+  'admin.addons.catalog.footprint.description':
+    'Spela in din egen platshistorik i TT — en spårare på mobilen skickar punkter, TT lagrar dem, upptäcker vistelser och ritar spåren på dina resor',
   'admin.passkey.title': 'Inloggningsnyckel',
   'admin.passkey.cardHint': 'Låter användare att logga in med inloggningsnyckel (WebAuthn). Avstängt som standard.',
   'admin.passkey.login': 'Aktivera inloggningsnyckel',
