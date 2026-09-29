@@ -26,6 +26,16 @@ export const SCHEDULED_TRANSIT_MODES = [
   'SUBURBAN',
 ] as const;
 
+/**
+ * The rail tokens that name one thing at two levels of detail. MOTIS knows a
+ * train by its service, so the client's train filter asks for the fine modes
+ * and never for the umbrella RAIL; keyed providers label legs at either level.
+ * Response-side mode filtering treats the family as one mode. SUBWAY stays
+ * outside it: a subway-only search must not be handed a train. Shared by the
+ * Google and AMap providers (each coarser than MOTIS in a different way).
+ */
+export const RAIL_FAMILY = new Set(['RAIL', 'HIGHSPEED_RAIL', 'LONG_DISTANCE', 'NIGHT_RAIL', 'REGIONAL_RAIL', 'SUBURBAN']);
+
 export interface TransitPlace {
   name: string;
   lat: number;

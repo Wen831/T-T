@@ -6,11 +6,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
  * Which backend answers a transit request (#1699).
  *
  * Transitous is free and keyless and stays the fallback; Google is used only when
- * an admin picked it AND a key resolves for the caller. Getting this backwards
- * means either billing a key nobody asked to spend, or silently answering from
- * the wrong index.
+ * an admin picked it AND a key resolves for the caller; AMap activates on its own
+ * when the instance has a Web服务 key and nobody pinned a backend, but an
+ * out-of-coverage AMap plan falls back to Transitous rather than answering empty.
  */
-function makeService(opts: { active: boolean }) {
+function makeService(opts: { active: boolean; amapActive?: boolean; amapPlan?: 'routes' | 'empty' | 'throws' }) {
   const calls: string[] = [];
   const google = {
     isActive: vi.fn(() => opts.active),
@@ -23,8 +23,35 @@ function makeService(opts: { active: boolean }) {
       return { itineraries: [] };
     }),
   };
-  const svc = new TransitService(google as unknown as ConstructorParameters<typeof TransitService>[0]);
-  return { svc, google, calls };
+  const amapItinerary = {
+    startTime: '2026-09-29T01:00:00.000Z',
+    endTime: '2026-09-29T02:00:00.000Z',
+    duration: 3600,
+    transfers: 0,
+    walkSeconds: 0,
+    legs: [],
+  };
+  const amap = {
+    isActive: vi.fn(() => opts.amapActive === true),
+    geocode: vi.fn(async () => {
+      calls.push('amap.geocode');
+      return { results: [{ name: 'AMap hit', lat: 3, lng: 4, type: 'STOP', area: null }] };
+    }),
+    plan: vi.fn(async () => {
+      calls.push('amap.plan');
+      if (opts.amapPlan === 'throws') {
+        const err = new Error('Transit provider error (AMap: INVALID_USER_KEY)') as Error & { status: number };
+        err.status = 502;
+        throw err;
+      }
+      return { itineraries: opts.amapPlan === 'routes' ? [amapItinerary] : [] };
+    }),
+  };
+  const svc = new TransitService(
+    google as unknown as ConstructorParameters<typeof TransitService>[0],
+    amap as unknown as ConstructorParameters<typeof TransitService>[1],
+  );
+  return { svc, google, amap, calls };
 }
 
 const fetchMock = vi.fn();
@@ -86,5 +113,51 @@ describe('transit backend dispatch', () => {
     const { svc, calls } = makeService({ active: true });
     await expect(svc.plan({ from: 'nope', to: '3,4' }, 7)).rejects.toThrow();
     expect(calls).toEqual([]);
+  });
+
+  it('TRANSIT-DISPATCH-007: an AMap key with no pinned backend routes through AMap', async () => {
+    const { svc, calls } = makeService({ active: false, amapActive: true });
+    const result = await svc.geocode('Paris', 'en', undefined, 7);
+    expect(result.provider).toBe('amap');
+    expect(calls).toEqual(['amap.geocode']);
+  });
+
+  it('TRANSIT-DISPATCH-008: an active Google pin beats the AMap auto-activation', async () => {
+    const { svc, calls, amap } = makeService({ active: true, amapActive: true });
+    const result = await svc.geocode('Kyoto', 'en', undefined, 7);
+    expect(result.provider).toBe('google');
+    expect(calls).toEqual(['google.geocode']);
+    expect(amap.geocode).not.toHaveBeenCalled();
+  });
+
+  it('TRANSIT-DISPATCH-009: an AMap plan with routes answers as amap', async () => {
+    const { svc, calls } = makeService({ active: false, amapActive: true, amapPlan: 'routes' });
+    const result = await svc.plan({ from: '31.2,121.4', to: '31.3,121.5' }, 7);
+    expect(result.provider).toBe('amap');
+    expect(result.itineraries).toHaveLength(1);
+    expect(calls).toEqual(['amap.plan']);
+  });
+
+  it('TRANSIT-DISPATCH-010: an empty AMap plan falls back to Transitous', async () => {
+    const { svc, calls } = makeService({ active: false, amapActive: true, amapPlan: 'empty' });
+    // Fresh coordinates: the Transitous response cache is module-level and a
+    // shared key would let the preceding test's entry answer this one.
+    const result = await svc.plan({ from: '39.9,116.4', to: '39.95,116.45' }, 7);
+    // Out-of-coverage (e.g. a European journey) keeps working on the MOTIS index.
+    expect(calls).toEqual(['amap.plan']);
+    expect(result.provider).toBe('transitous');
+    expect(fetchMock).toHaveBeenCalled();
+  });
+
+  it('TRANSIT-DISPATCH-011: an AMap error falls back to Transitous too', async () => {
+    const { svc } = makeService({ active: false, amapActive: true, amapPlan: 'throws' });
+    const result = await svc.plan({ from: '48.2,16.3', to: '48.3,16.4' }, 7);
+    expect(result.provider).toBe('transitous');
+  });
+
+  it('TRANSIT-DISPATCH-012: both providers failing surfaces the AMap failure', async () => {
+    const { svc } = makeService({ active: false, amapActive: true, amapPlan: 'throws' });
+    fetchMock.mockRejectedValue(new Error('motis down'));
+    await expect(svc.plan({ from: '52.1,13.2', to: '52.2,13.4' }, 7)).rejects.toThrow('HTTP 502');
   });
 });

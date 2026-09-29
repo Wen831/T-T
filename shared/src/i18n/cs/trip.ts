@@ -52,6 +52,7 @@ const trip: TranslationStrings = {
   'transit.depart': 'Odjezd',
   'transit.arrive': 'Příjezd',
   'transit.mode.rail': 'Vlak',
+  'transit.mode.highspeed': 'Rychlovlak',
   'transit.mode.subway': 'Metro',
   'transit.mode.tram': 'Tramvaj',
   'transit.mode.bus': 'Autobus',

@@ -52,6 +52,7 @@ const trip: TranslationStrings = {
   'transit.depart': 'Αναχώρηση',
   'transit.arrive': 'Άφιξη',
   'transit.mode.rail': 'Τρένο',
+  'transit.mode.highspeed': 'Τρένο υψηλής ταχύτητας',
   'transit.mode.subway': 'Μετρό',
   'transit.mode.tram': 'Τραμ',
   'transit.mode.bus': 'Λεωφορείο',

@@ -51,6 +51,7 @@ const trip: TranslationStrings = {
   'transit.depart': '出发',
   'transit.arrive': '到达',
   'transit.mode.rail': '火车',
+  'transit.mode.highspeed': '高铁',
   'transit.mode.subway': '地铁',
   'transit.mode.tram': '有轨电车',
   'transit.mode.bus': '公交车',

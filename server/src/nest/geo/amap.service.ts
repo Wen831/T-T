@@ -46,7 +46,8 @@ function toGcj(p: { lat: number; lng: number }): string {
   return `${g.lng.toFixed(6)},${g.lat.toFixed(6)}`;
 }
 
-async function amapFetchV3(path: string, params: URLSearchParams, key: string): Promise<any> {
+/** Shared with the transit provider — v3 and v5 both answer `status: '1'`. */
+export async function amapFetchV3(path: string, params: URLSearchParams, key: string): Promise<any> {
   params.set('key', key);
   const res = await fetch(`${BASE}${path}?${params.toString()}`, {
     signal: AbortSignal.timeout(TIMEOUT_MS),

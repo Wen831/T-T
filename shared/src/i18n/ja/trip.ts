@@ -52,6 +52,7 @@ const trip: TranslationStrings = {
   'transit.depart': '出発',
   'transit.arrive': '到着',
   'transit.mode.rail': '電車',
+  'transit.mode.highspeed': '新幹線',
   'transit.mode.subway': '地下鉄',
   'transit.mode.tram': '路面電車',
   'transit.mode.bus': 'バス',

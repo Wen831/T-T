@@ -52,6 +52,7 @@ const trip: TranslationStrings = {
   'transit.depart': 'Khởi hành',
   'transit.arrive': 'Đến nơi',
   'transit.mode.rail': 'Tàu hỏa',
+  'transit.mode.highspeed': 'Tàu cao tốc',
   'transit.mode.subway': 'Tàu điện ngầm',
   'transit.mode.tram': 'Tàu điện',
   'transit.mode.bus': 'Xe buýt',

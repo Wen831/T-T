@@ -113,8 +113,12 @@ export type AdminTestNotificationRequest = z.infer<typeof adminTestNotificationR
 // ── Transit backend ─────────────────────────────────────────────────────────
 // Which service answers /api/transit. Transitous is the default and the
 // fallback: free and keyless, so an install that never opens this switch — or
-// that picks Google without a key — keeps costing nothing.
-export const TRANSIT_PROVIDERS = ['transitous', 'google'] as const;
+// that picks Google without a key — keeps costing nothing. AMap is the
+// China-coverage answer: unlike Google it does NOT need an explicit pick —
+// an instance with an AMap Web服务 key configured routes transit through it
+// automatically (an absent/`amap` setting), because Transitous has no GTFS
+// for mainland China at all.
+export const TRANSIT_PROVIDERS = ['transitous', 'google', 'amap'] as const;
 export type TransitProvider = (typeof TRANSIT_PROVIDERS)[number];
 
 export const adminTransitProviderRequestSchema = z.object({

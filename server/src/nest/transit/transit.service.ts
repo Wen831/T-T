@@ -1,5 +1,6 @@
 import { getAppUrl, readEnv } from '../../app-config';
 import { buildUserAgent } from '../maps/maps.helpers';
+import { AmapTransitProvider } from './amap-transit.provider';
 import { GoogleTransitProvider } from './google-transit.provider';
 import {
   deriveTransitStats,
@@ -141,16 +142,23 @@ function mapStop(p: MotisPlaceRaw | undefined, kind: 'departure' | 'arrival'): T
 
 @Injectable()
 export class TransitService {
-  constructor(private readonly google: GoogleTransitProvider) {}
+  constructor(
+    private readonly google: GoogleTransitProvider,
+    private readonly amap: AmapTransitProvider,
+  ) {}
 
   /**
-   * Which backend answers this request (#1699): Google when an admin has picked
-   * it AND a key resolves for this caller, Transitous otherwise. Transitous is
-   * free and keyless, so an install that never opens the setting — or that picks
-   * Google without a key — keeps costing nothing.
+   * Which backend answers this request (#1699): Google only when an admin has
+   * picked it AND a key resolves for this caller; AMap when the instance has an
+   * AMap Web服务 key and nobody pinned a backend (auto-activation — Transitous
+   * has no GTFS for mainland China at all, so a configured key is the signal);
+   * Transitous otherwise. Transitous is free and keyless, so an install that
+   * never opens the setting keeps costing nothing.
    */
   private backendFor(userId: number): TransitProvider {
-    return this.google.isActive(userId) ? 'google' : 'transitous';
+    if (this.google.isActive(userId)) return 'google';
+    if (this.amap.isActive()) return 'amap';
+    return 'transitous';
   }
 
   /** Station/place search for the from/to pickers. `near` biases results. */
@@ -161,17 +169,37 @@ export class TransitService {
     userId = 0,
   ): Promise<{ results: TransitPlace[]; provider: TransitProvider }> {
     const text = (query || '').trim();
-    if (text.length < 2) return { results: [], provider: this.backendFor(userId) };
+    const backend = this.backendFor(userId);
+    if (text.length < 2) return { results: [], provider: backend };
     if (text.length > 200) {
       const e = new Error('Query too long') as Error & { status: number };
       e.status = 400;
       throw e;
     }
 
-    if (this.backendFor(userId) === 'google') {
+    if (backend === 'google') {
       return { ...(await this.google.geocode(text, language, near, userId)), provider: 'google' };
     }
 
+    // AMap's POI index stops at the border, so an empty answer out of
+    // coverage and a genuine "no results" look identical — ask Transitous.
+    if (backend === 'amap') {
+      const amapResults = await this.amap
+        .geocode(text, near)
+        .then((r) => r.results)
+        .catch(() => [] as TransitPlace[]);
+      if (amapResults.length > 0) return { results: amapResults, provider: 'amap' };
+      return this.geocodeTransitous(text, language, near);
+    }
+
+    return this.geocodeTransitous(text, language, near);
+  }
+
+  private async geocodeTransitous(
+    text: string,
+    language?: string,
+    near?: string,
+  ): Promise<{ results: TransitPlace[]; provider: TransitProvider }> {
     const params = new URLSearchParams({ text });
     if (language) params.set('language', language.slice(0, 5));
     if (near && isCoord(near)) params.set('place', near);
@@ -209,10 +237,54 @@ export class TransitService {
     if (!q.from || !isCoord(q.from)) bad('from must be "lat,lng"');
     if (!q.to || !isCoord(q.to)) bad('to must be "lat,lng"');
 
-    if (this.backendFor(userId) === 'google') {
+    const backend = this.backendFor(userId);
+    if (backend === 'google') {
       return { ...(await this.google.plan(q, undefined, userId)), provider: 'google' };
     }
+    if (backend === 'amap') {
+      return this.planAmapWithFallback(q);
+    }
+    return this.planTransitous(q);
+  }
 
+  /**
+   * AMap route planning with a Transitous safety net: a key configured for
+   * place search does not imply the journey is inside AMap's coverage, and
+   * both failure shapes (provider error, empty result set) are exactly what
+   * an out-of-coverage query produces. The fallback re-runs the full MOTIS
+   * validation, so an `amap` provider token always means the itineraries
+   * really came from AMap.
+   */
+  private async planAmapWithFallback(
+    q: PlanQuery,
+  ): Promise<{ itineraries: TransitItinerary[]; provider: TransitProvider }> {
+    const amapPlan = await this.amap
+      .plan(q)
+      .then((r) => ({ ok: true as const, itineraries: r.itineraries }))
+      .catch(() => ({ ok: false as const, itineraries: [] as TransitItinerary[] }));
+    if (amapPlan.ok && amapPlan.itineraries.length > 0) {
+      return { itineraries: amapPlan.itineraries, provider: 'amap' };
+    }
+    try {
+      return await this.planTransitous(q);
+    } catch (err) {
+      // MOTIS cannot serve it either. If AMap itself only came back empty,
+      // surface the Transitous error as-is; if AMap errored, its status is
+      // swallowed by the catch, so report the provider failure.
+      if (amapPlan.ok) throw err;
+      const status = (err as { status?: number }).status || 502;
+      throw new Error(`Transit provider error (HTTP ${status})`, { cause: err });
+    }
+  }
+
+  private async planTransitous(
+    q: PlanQuery,
+  ): Promise<{ itineraries: TransitItinerary[]; provider: TransitProvider }> {
+    const bad = (msg: string) => {
+      const e = new Error(msg) as Error & { status: number };
+      e.status = 400;
+      throw e;
+    };
     const params = new URLSearchParams({ fromPlace: q.from, toPlace: q.to, numItineraries: '8' });
 
     if (q.time) {

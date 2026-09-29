@@ -48,6 +48,7 @@ const trip: TranslationStrings = {
   'transit.depart': 'Sortida',
   'transit.arrive': 'Arribada',
   'transit.mode.rail': 'Tren',
+  'transit.mode.highspeed': "Tren d'alta velocitat",
   'transit.mode.subway': 'Metro',
   'transit.mode.tram': 'Tramvia',
   'transit.mode.bus': 'Autobús',

@@ -51,6 +51,7 @@ const trip: TranslationStrings = {
   'transit.depart': '出發',
   'transit.arrive': '抵達',
   'transit.mode.rail': '火車',
+  'transit.mode.highspeed': '高鐵',
   'transit.mode.subway': '捷運',
   'transit.mode.tram': '路面電車',
   'transit.mode.bus': '公車',

@@ -12,6 +12,7 @@ import {
   Search,
   TrainFront,
   TrainFrontTunnel,
+  TrainTrack,
   TramFront,
 } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -90,13 +91,20 @@ const MODE_GROUPS: {
   Icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
   modes: string;
 }[] = [
-  // lucide's `Train` is an alias of TramFront, so rail keeps TrainFront and the
-  // subway takes the tunnel variant — otherwise the chips share a glyph.
+  // lucide's `Train` is an alias of TramFront, so the two rail chips take the
+  // front-facing glyph for high-speed (the fast streamliner read) and the
+  // tracks glyph for conventional rail; the subway gets the tunnel variant.
+  {
+    key: 'highspeed',
+    labelKey: 'transit.mode.highspeed',
+    Icon: TrainFront,
+    modes: 'HIGHSPEED_RAIL',
+  },
   {
     key: 'rail',
     labelKey: 'transit.mode.rail',
-    Icon: TrainFront,
-    modes: 'HIGHSPEED_RAIL,LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,SUBURBAN',
+    Icon: TrainTrack,
+    modes: 'LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,SUBURBAN',
   },
   { key: 'subway', labelKey: 'transit.mode.subway', Icon: TrainFrontTunnel, modes: 'SUBWAY' },
   { key: 'tram', labelKey: 'transit.mode.tram', Icon: TramFront, modes: 'TRAM' },
@@ -112,7 +120,8 @@ function legIcon(mode: string) {
   if (mode === 'SUBWAY') return TrainFrontTunnel;
   if (mode === 'FERRY') return Sailboat;
   if (mode === 'FUNICULAR' || mode === 'AERIAL_LIFT') return CableCar;
-  return TrainFront;
+  if (mode === 'HIGHSPEED_RAIL') return TrainFront;
+  return TrainTrack;
 }
 
 function tzAt(lat: number, lng: number): string {
@@ -681,6 +690,9 @@ export default function TransitSearchPanel({
   const [activeModes, setActiveModes] = useState<Set<string>>(() => new Set(MODE_GROUPS.map((m) => m.key)));
   const [pref, setPref] = useState<'best' | 'transfers' | 'walking'>('best');
   const [itineraries, setItineraries] = useState<TransitItinerary[] | null>(null);
+  // Which backend answered the last search — stamped into metadata.transit so a
+  // saved journey records where its itinerary actually came from.
+  const [lastProvider, setLastProvider] = useState('transitous');
   const [loading, setLoading] = useState(false);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [addingIdx, setAddingIdx] = useState<number | null>(null);
@@ -761,9 +773,11 @@ export default function TransitSearchPanel({
       // connection last (#1479) — flip so the itinerary arriving closest to the
       // requested time leads the list, mirroring depart-by.
       if (arriveBy) cleaned.sort((a, b) => Date.parse(b.endTime) - Date.parse(a.endTime));
+      setLastProvider(d.provider || 'transitous');
       setItineraries(cleaned);
     } catch {
       toast.error(t('transit.searchError'));
+      setLastProvider('transitous');
       setItineraries([]);
     } finally {
       setLoading(false);
@@ -856,7 +870,7 @@ export default function TransitSearchPanel({
         notes: null,
         metadata: {
           transit: {
-            provider: 'transitous',
+            provider: lastProvider,
             duration: it.duration,
             transfers: it.transfers,
             walk_seconds: it.walkSeconds,

@@ -52,6 +52,7 @@ const trip: TranslationStrings = {
   'transit.depart': 'Indulás',
   'transit.arrive': 'Érkezés',
   'transit.mode.rail': 'Vonat',
+  'transit.mode.highspeed': 'Nagysebességű vonat',
   'transit.mode.subway': 'Metró',
   'transit.mode.tram': 'Villamos',
   'transit.mode.bus': 'Busz',

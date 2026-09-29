@@ -52,6 +52,7 @@ const trip: TranslationStrings = {
   'transit.depart': '출발 시각',
   'transit.arrive': '도착 시각',
   'transit.mode.rail': '기차',
+  'transit.mode.highspeed': '고속열차',
   'transit.mode.subway': '지하철',
   'transit.mode.tram': '트램',
   'transit.mode.bus': '버스',

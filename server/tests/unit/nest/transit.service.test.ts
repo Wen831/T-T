@@ -23,11 +23,17 @@ vi.mock('../../../src/nest/maps/maps.helpers', () => ({ buildUserAgent: () => 'T
 const fetchMock = vi.fn();
 // These cases are all about the Transitous path, so the Google backend is
 // injected inactive — it would otherwise try to resolve a key and take over.
-const svc = new TransitService({
-  isActive: () => false,
-  geocode: async () => ({ results: [] }),
-  plan: async () => ({ itineraries: [] }),
-} as unknown as ConstructorParameters<typeof TransitService>[0]);
+const svc = new TransitService(
+  {
+    isActive: () => false,
+    geocode: async () => ({ results: [] }),
+    plan: async () => ({ itineraries: [] }),
+  } as unknown as ConstructorParameters<typeof TransitService>[0],
+  // AMap off: these cases pin the Transitous/MOTIS path itself.
+  { isActive: () => false, geocode: async () => ({ results: [] }), plan: async () => ({ itineraries: [] }) } as unknown as ConstructorParameters<
+    typeof TransitService
+  >[1]
+);
 
 beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock);

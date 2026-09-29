@@ -3,6 +3,7 @@ import { RateLimitModule } from '../common/rate-limit.module';
 import { DaysModule } from '../days/days.module';
 import { McpSharedModule } from '../mcp-shared/mcp-shared.module';
 import { ReservationsModule } from '../reservations/reservations.module';
+import { AmapTransitProvider } from './amap-transit.provider';
 import { GoogleTransitProvider } from './google-transit.provider';
 import { TransitController } from './transit.controller';
 import { TransitMcp } from './transit.mcp';
@@ -18,8 +19,9 @@ import { Module } from '@nestjs/common';
   // DaysModule + ReservationsModule: TransitMcp's create_transit_journey injects both.
   imports: [McpSharedModule, RateLimitModule, DaysModule, ReservationsModule, AuthModule],
   controllers: [TransitController],
-  // GoogleTransitProvider is injected by TransitService; it resolves its own key.
-  providers: [TransitService, TransitMcp, GoogleTransitProvider],
+  // GoogleTransitProvider and AmapTransitProvider are injected by TransitService;
+  // each resolves its own key (DatabaseService is global).
+  providers: [TransitService, TransitMcp, GoogleTransitProvider, AmapTransitProvider],
   exports: [TransitService],
 })
 export class TransitModule {}

@@ -7,6 +7,7 @@ import {
   decodePolyline,
   deriveTransitStats,
   encodePolyline,
+  RAIL_FAMILY,
   type PlanQuery,
   type TransitItinerary,
   type TransitLeg,
@@ -149,17 +150,6 @@ const VEHICLE_MODES: Record<string, string> = {
   FUNICULAR: 'FUNICULAR',
   GONDOLA_LIFT: 'AERIAL_LIFT',
 };
-
-/**
- * The rail tokens that name one thing at two levels of detail. MOTIS knows a
- * train by its service, so the client's train filter asks for the five fine
- * modes and never for the umbrella; Google knows it by its vehicle, and
- * HEAVY_RAIL (any conventional train) lands on the umbrella. A request may
- * come at either level and a leg may be labelled at either, so the response
- * filter treats the family as one mode. SUBWAY stays outside it: a subway-only
- * search must not be handed a train, and a train-only search not a subway.
- */
-const RAIL_FAMILY = new Set(['RAIL', 'HIGHSPEED_RAIL', 'LONG_DISTANCE', 'NIGHT_RAIL', 'REGIONAL_RAIL', 'SUBURBAN']);
 
 /** '600s' → 600. Google's Duration JSON encoding; anything else is 0. */
 function parseDuration(value: unknown): number {

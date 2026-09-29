@@ -24,11 +24,21 @@ function isTransitProvider(value: unknown): value is TransitProvider {
  * admin's Google key because a string did not parse.
  */
 export function readTransitProvider(db: DatabaseService): TransitProvider {
+  return readTransitProviderSetting(db) ?? DEFAULT_TRANSIT_PROVIDER;
+}
+
+/**
+ * The raw admin choice, or null when nothing was ever picked. AMap's
+ * auto-activation needs this distinction — "unset" means auto (AMap when a
+ * key exists), while an explicit `transitous` means "stay keyless" — where
+ * readTransitProvider's default cannot tell the two apart.
+ */
+export function readTransitProviderSetting(db: DatabaseService): TransitProvider | null {
   const row = db.get<{ value: string | null }>(
     'SELECT value FROM app_settings WHERE key = ?',
     TRANSIT_PROVIDER_SETTING,
   );
-  return isTransitProvider(row?.value) ? row.value : DEFAULT_TRANSIT_PROVIDER;
+  return isTransitProvider(row?.value) ? row.value : null;
 }
 
 export function writeTransitProvider(db: DatabaseService, provider: TransitProvider): TransitProvider {
