@@ -88,6 +88,7 @@ describe('SaveToCollectionModal', () => {
     expect(collectionsApi.membership).toHaveBeenCalledWith({
       google_place_id: 'gp-1',
       google_ftid: 'ft-1',
+      osm_id: 'osm-1',
       name: 'Colosseum',
       lat: 41.89,
       lng: 12.49,

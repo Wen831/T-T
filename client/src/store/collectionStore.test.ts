@@ -632,6 +632,7 @@ describe('collectionStore — place mutations', () => {
       google_place_id: 'g1',
       google_ftid: 'f1',
       osm_id: 'o1',
+      amap_id: null,
       website: 'https://example.com',
       phone: '+81',
       status: 'visited',
