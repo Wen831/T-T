@@ -9,6 +9,7 @@ import { NotificationsService } from './notifications.service';
 import { ReminderJobsService } from './reminder-jobs.service';
 import { StorageHealthNotifierService } from './storage-health-notifier.service';
 import { NtfyService } from './transports/ntfy.service';
+import { PushService } from './transports/push.service';
 import { WebhookService } from './transports/webhook.service';
 import { Module } from '@nestjs/common';
 
@@ -30,6 +31,7 @@ import { Module } from '@nestjs/common';
     NotificationPreferencesService,
     WebhookService,
     NtfyService,
+    PushService,
     NotificationsMcp,
     ReminderJobsService,
     StorageHealthNotifierService,

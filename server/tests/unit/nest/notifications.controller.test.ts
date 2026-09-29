@@ -1,6 +1,7 @@
 import { NotificationsController } from '../../../src/nest/notifications/notifications.controller';
-import { NotificationRespondDto } from '../../../src/nest/notifications/notifications.dto';
+import { NotificationRespondDto, PushSubscribeDto, PushUnsubscribeDto } from '../../../src/nest/notifications/notifications.dto';
 import type { NotificationsService } from '../../../src/nest/notifications/notifications.service';
+import type { PushService } from '../../../src/nest/notifications/transports/push.service';
 import type { User } from '../../../src/types';
 import { HttpException } from '@nestjs/common';
 
@@ -10,8 +11,8 @@ const MASKED = '••••••••';
 const user = { id: 4, role: 'user', email: 'u@example.test' } as User;
 const admin = { id: 1, role: 'admin', email: 'admin@example.test' } as User;
 
-function makeController(svc: Partial<NotificationsService>) {
-  return new NotificationsController(svc as NotificationsService);
+function makeController(svc: Partial<NotificationsService>, push: Partial<PushService> = {}) {
+  return new NotificationsController(svc as NotificationsService, push as PushService);
 }
 
 async function thrown(fn: () => unknown): Promise<{ status: number; body: unknown }> {
@@ -258,6 +259,53 @@ describe('NotificationsController (parity with the legacy /api/notifications rou
         notification: { id: 5, response: 'positive' },
       });
       expect(respond).toHaveBeenCalledWith(5, 4, 'positive');
+    });
+  });
+
+  describe('push routes', () => {
+    it('public-key returns only the VAPID public half', () => {
+      const getPublicKey = vi.fn().mockReturnValue('PUB');
+      expect(makeController({}, { getPublicKey }).pushPublicKey()).toEqual({ publicKey: 'PUB' });
+    });
+
+    it('PUT subscription stores the caller\'s own row and falls back to the request UA', () => {
+      const saveSubscription = vi.fn();
+      const body = { endpoint: 'https://push.example/a', keys: { p256dh: 'P', auth: 'A' } };
+      const req = { headers: { 'user-agent': 'TestBrowser/1.0' } } as never;
+      expect(makeController({}, { saveSubscription }).subscribe(user, body, req)).toEqual({ success: true });
+      expect(saveSubscription).toHaveBeenCalledWith(4, { endpoint: body.endpoint, p256dh: 'P', auth: 'A' }, 'TestBrowser/1.0');
+    });
+
+    it('PUT subscription lets an explicit userAgent win over the header', () => {
+      const saveSubscription = vi.fn();
+      const body = { endpoint: 'https://push.example/a', keys: { p256dh: 'P', auth: 'A' }, userAgent: 'Explicit/2' };
+      const req = { headers: { 'user-agent': 'TestBrowser/1.0' } } as never;
+      makeController({}, { saveSubscription }).subscribe(user, body, req);
+      expect(saveSubscription).toHaveBeenCalledWith(4, expect.objectContaining({}), 'Explicit/2');
+    });
+
+    it('POST unsubscribe reports whether the row existed', () => {
+      const removeSubscription = vi.fn().mockReturnValueOnce(true).mockReturnValueOnce(false);
+      const push = { removeSubscription };
+      const body = { endpoint: 'https://push.example/a' };
+      expect(makeController({}, push).unsubscribe(user, body)).toEqual({ success: true });
+      expect(makeController({}, push).unsubscribe(user, body)).toEqual({ success: false });
+      expect(removeSubscription).toHaveBeenCalledWith(4, body.endpoint);
+    });
+
+    it('the DTOs enforce the subscription contract', () => {
+      expect(
+        PushSubscribeDto.schema.safeParse({ endpoint: 'https://push.example/a', keys: { p256dh: 'P', auth: 'A' } })
+          .success,
+      ).toBe(true);
+      expect(PushSubscribeDto.schema.safeParse({ endpoint: 'not a url', keys: { p256dh: 'P', auth: 'A' } }).success).toBe(
+        false,
+      );
+      expect(PushSubscribeDto.schema.safeParse({ endpoint: 'https://push.example/a', keys: { p256dh: '' } }).success).toBe(
+        false,
+      );
+      expect(PushUnsubscribeDto.schema.safeParse({ endpoint: 'https://push.example/a' }).success).toBe(true);
+      expect(PushUnsubscribeDto.schema.safeParse({}).success).toBe(false);
     });
   });
 });

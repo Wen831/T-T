@@ -1986,6 +1986,14 @@ export const notificationsApi = {
     apiClient
       .post(`/notifications/test/${encodeURIComponent(channelId)}`, undefined, { timeout: CHANNEL_TEST_TIMEOUT })
       .then((r) => checkInDev(channelTestResultSchema, r.data, 'notifications.testChannel')),
+
+  // ── Web Push (the `push` channel) ──────────────────────────────────────────
+  getPushPublicKey: (): Promise<{ publicKey: string }> =>
+    apiClient.get('/notifications/push/public-key').then((r) => r.data),
+  subscribePush: (body: { endpoint: string; keys: { p256dh: string; auth: string }; userAgent?: string }) =>
+    apiClient.put('/notifications/push/subscription', body).then((r) => r.data),
+  unsubscribePush: (body: { endpoint: string }) =>
+    apiClient.post('/notifications/push/unsubscribe', body).then((r) => r.data),
 };
 
 export const inAppNotificationsApi = {

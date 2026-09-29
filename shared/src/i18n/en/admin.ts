@@ -7,6 +7,9 @@ const admin: TranslationStrings = {
   'admin.notifications.email': 'Email (SMTP)',
   'admin.notifications.webhook': 'Webhook',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': 'Web Push',
+  'admin.notifications.pushHint':
+    'Browser system notifications, signed with a VAPID key pair TT generates itself — there is nothing to configure here. Users subscribe from their own notification settings.',
   'admin.ntfy.hint':
     'Allow users to configure their own ntfy topics for push notifications. Set the default server below to pre-fill user settings.',
   'admin.notifications.save': 'Save notification settings',

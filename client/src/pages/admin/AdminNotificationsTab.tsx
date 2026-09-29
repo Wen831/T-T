@@ -23,21 +23,26 @@ export default function AdminNotificationsTab({ admin, t }: AdminNotificationsTa
   const emailActive = activeChans.includes('email');
   const webhookActive = activeChans.includes('webhook');
   const ntfyActive = activeChans.includes('ntfy');
+  const pushActive = activeChans.includes('push');
   const tripRemindersActive = smtpValues.notify_trip_reminder !== 'false';
 
-  const setChannels = async (email: boolean, webhook: boolean, ntfy: boolean) => {
+  const setChannels = async (email: boolean, webhook: boolean, ntfy: boolean, push: boolean = pushActive) => {
     // Preserve any id this toggle doesn't know about instead of rebuilding the CSV from
-    // just these three booleans — that used to silently DROP anything else stored here.
-    const others = activeChans.filter((c: string) => c !== 'email' && c !== 'webhook' && c !== 'ntfy');
+    // just these booleans — that used to silently DROP anything else stored here.
+    const others = activeChans.filter(
+      (c: string) => c !== 'email' && c !== 'webhook' && c !== 'ntfy' && c !== 'push',
+    );
     const chans =
-      [email && 'email', webhook && 'webhook', ntfy && 'ntfy', ...others].filter(Boolean).join(',') || 'none';
+      [email && 'email', webhook && 'webhook', ntfy && 'ntfy', push && 'push', ...others]
+        .filter(Boolean)
+        .join(',') || 'none';
     setSmtpValues((prev) => ({ ...prev, notification_channels: chans }));
     try {
       await authApi.updateAppSettings({ notification_channels: chans });
     } catch {
       // Revert state on failure
       const reverted =
-        [emailActive && 'email', webhookActive && 'webhook', ntfyActive && 'ntfy', ...others]
+        [emailActive && 'email', webhookActive && 'webhook', ntfyActive && 'ntfy', pushActive && 'push', ...others]
           .filter(Boolean)
           .join(',') || 'none';
       setSmtpValues((prev) => ({ ...prev, notification_channels: reverted }));
@@ -221,6 +226,26 @@ export default function AdminNotificationsTab({ admin, t }: AdminNotificationsTa
               <span
                 className="absolute left-0.5 h-5 w-5 rounded-full bg-white transition-transform duration-200"
                 style={{ transform: ntfyActive ? 'translateX(20px)' : 'translateX(0)' }}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* Web Push Panel — no credentials card: the browser subscribes itself. */}
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div>
+              <h2 className="font-semibold text-slate-900">{t('admin.notifications.push')}</h2>
+              <p className="mt-1 text-xs text-slate-400">{t('admin.notifications.pushHint')}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setChannels(emailActive, webhookActive, ntfyActive, !pushActive)}
+              className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${pushActive ? 'bg-content' : 'bg-edge'}`}
+            >
+              <span
+                className="absolute left-0.5 h-5 w-5 rounded-full bg-white transition-transform duration-200"
+                style={{ transform: pushActive ? 'translateX(20px)' : 'translateX(0)' }}
               />
             </button>
           </div>

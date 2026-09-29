@@ -11,8 +11,11 @@ import {
   TestWebhookDto,
   TestNtfyDto,
   NotificationRespondDto,
+  PushSubscribeDto,
+  PushUnsubscribeDto,
 } from './notifications.dto';
 import { NotificationsService } from './notifications.service';
+import { PushService } from './transports/push.service';
 import { resolveNtfyToken } from './transports/ntfy.service';
 import {
   Body,
@@ -25,8 +28,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import type { ChannelTestResult, UnreadCountResult } from '@trek/shared';
 
 // The masked placeholder the client sends instead of a stored secret (8× U+2022).
@@ -51,7 +56,10 @@ const MASKED = '••••••••';
 @Controller('api/notifications')
 @UseGuards(JwtAuthGuard)
 export class NotificationsController {
-  constructor(private readonly notifications: NotificationsService) {}
+  constructor(
+    private readonly notifications: NotificationsService,
+    private readonly push: PushService,
+  ) {}
 
   @Get('preferences')
   getPreferences(@CurrentUser() user: User) {
@@ -62,6 +70,33 @@ export class NotificationsController {
   setPreferences(@CurrentUser() user: User, @Body() body: PreferencesUpdateDto) {
     this.notifications.setPreferences(user.id, body);
     return this.notifications.getPreferences(user.id, user.role);
+  }
+
+  // ── Web Push (the `push` channel) ─────────────────────────────────────────
+
+  /** The VAPID public key the browser's `pushManager.subscribe` call needs. */
+  @Get('push/public-key')
+  pushPublicKey(): { publicKey: string } {
+    return { publicKey: this.push.getPublicKey() };
+  }
+
+  /** Store (or refresh) one of the caller's push subscriptions. */
+  @Put('push/subscription')
+  @HttpCode(200)
+  subscribe(@CurrentUser() user: User, @Body() body: PushSubscribeDto, @Req() req: Request) {
+    this.push.saveSubscription(
+      user.id,
+      { endpoint: body.endpoint, p256dh: body.keys.p256dh, auth: body.keys.auth },
+      body.userAgent ?? req.headers['user-agent'],
+    );
+    return { success: true };
+  }
+
+  /** Remove one subscription — the browser calls this on unsubscribe. */
+  @Post('push/unsubscribe')
+  @HttpCode(200)
+  unsubscribe(@CurrentUser() user: User, @Body() body: PushUnsubscribeDto) {
+    return { success: this.push.removeSubscription(user.id, body.endpoint) };
   }
 
   @ManagedForbidden('the relay is the operator credential; a test send would use their reputation')

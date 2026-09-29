@@ -116,6 +116,7 @@ const settings: TranslationStrings = {
   'settings.notificationPreferences.testFailed': 'Test failed.',
   'settings.notificationPreferences.pluginConfigured': 'Configured. Manage credentials on the plugin’s settings page.',
   'settings.notificationPreferences.ntfy': 'Ntfy',
+  'settings.notificationPreferences.push': 'Web Push',
   'settings.notificationPreferences.noChannels':
     'No notification channels are configured. Ask an admin to set up email or webhook notifications.',
   'settings.webhookUrl.label': 'Webhook URL',
@@ -133,6 +134,19 @@ const settings: TranslationStrings = {
     'Enter your ntfy topic to receive push notifications. Leave server blank to use the default configured by your admin.',
   'settings.ntfyUrl.tokenLabel': 'Access Token (optional)',
   'settings.ntfyUrl.tokenHint': 'Required for password-protected topics.',
+  'settings.push.title': 'Browser push (Web Push)',
+  'settings.push.hint':
+    'System notifications straight from the browser — no third-party app. Works on every device where you allow it.',
+  'settings.push.enable': 'Enable push',
+  'settings.push.disable': 'Disable',
+  'settings.push.subscribedHere': 'This device is subscribed',
+  'settings.push.enabledToast': 'Push notifications enabled on this device',
+  'settings.push.unsubscribedToast': 'Push notifications disabled on this device',
+  'settings.push.denied': 'Notifications are blocked for this site — allow them in your browser settings first.',
+  'settings.push.unsupported': 'This browser does not support Web Push.',
+  'settings.push.errorToast': 'Could not enable push notifications',
+  'settings.push.iosHint':
+    'On iPhone/iPad, push only works when TT is opened from the Home Screen (Share → Add to Home Screen).',
   'settings.ntfyUrl.saved': 'Ntfy settings saved',
   'settings.ntfyUrl.test': 'Test',
   'settings.ntfyUrl.testSuccess': 'Test ntfy notification sent successfully',

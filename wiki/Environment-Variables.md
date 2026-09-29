@@ -221,6 +221,24 @@ optional (for unauthenticated relays).
 
 ---
 
+## Web Push
+
+The built-in `push` notification channel (browser system notifications via the Web Push protocol) needs no operator
+credentials: TT mints a VAPID key pair on first use and keeps it in the database (private key encrypted at rest).
+Operators who prefer the pair in their secret store can pin it with environment variables, which take priority over the
+stored one.
+
+| Variable                  | Description                                                                    | Default              |
+|---------------------------|--------------------------------------------------------------------------------|----------------------|
+| `PUSH_VAPID_PUBLIC_KEY`   | VAPID public key (base64url). Must be set together with the private key.       | auto-minted to DB    |
+| `PUSH_VAPID_PRIVATE_KEY` | VAPID private key. Must be set together with the public key.                   | auto-minted to DB    |
+
+Setting only one of the two is ignored. Changing the pair after browsers have subscribed orphans those subscriptions
+(they are bound to the public key they were created with), and the push services will then reject sends until each
+device re-subscribes.
+
+---
+
 ## Initial Setup
 
 These variables only take effect on first boot, before any user exists.

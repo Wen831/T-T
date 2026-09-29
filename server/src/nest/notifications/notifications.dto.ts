@@ -4,6 +4,8 @@ import {
   testWebhookRequestSchema,
   testNtfyRequestSchema,
   notificationRespondRequestSchema,
+  pushSubscribeRequestSchema,
+  pushUnsubscribeRequestSchema,
 } from '@trek/shared';
 
 import { createZodDto } from 'nestjs-zod';
@@ -20,3 +22,5 @@ export class TestSmtpDto extends createZodDto(testSmtpRequestSchema) {}
 export class TestWebhookDto extends createZodDto(testWebhookRequestSchema) {}
 export class TestNtfyDto extends createZodDto(testNtfyRequestSchema) {}
 export class NotificationRespondDto extends createZodDto(notificationRespondRequestSchema) {}
+export class PushSubscribeDto extends createZodDto(pushSubscribeRequestSchema) {}
+export class PushUnsubscribeDto extends createZodDto(pushUnsubscribeRequestSchema) {}

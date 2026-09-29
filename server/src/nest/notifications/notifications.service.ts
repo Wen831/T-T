@@ -17,6 +17,7 @@ import {
 } from './notification-events';
 import { NotificationPreferencesService, type PreferencesMatrix } from './notification-preferences.service';
 import { NtfyService, type NtfyConfig } from './transports/ntfy.service';
+import { PushService } from './transports/push.service';
 import { WebhookService } from './transports/webhook.service';
 import { Injectable } from '@nestjs/common';
 import type { ChannelTestResult } from '@trek/shared';
@@ -315,13 +316,14 @@ export class NotificationsService {
     private readonly mailer: MailerService,
     private readonly webhook: WebhookService,
     private readonly ntfy: NtfyService,
+    private readonly push: PushService,
     private readonly prefs: NotificationPreferencesService,
   ) {
     // The registry is a module singleton shared with the plugin runtime and any
     // separately-constructed instance (which never runs onModuleInit), so
     // registering from here means every path that can dispatch has the
     // built-ins. registerChannel is an idempotent Map.set.
-    registerBuiltinChannels({ mailer, webhook, ntfy });
+    registerBuiltinChannels({ mailer, webhook, ntfy, push });
   }
 
   getPreferences(userId: number, role: string): PreferencesMatrix {

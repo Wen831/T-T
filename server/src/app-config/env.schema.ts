@@ -94,6 +94,10 @@ export const envSchema = z.object({
   SMTP_FROM: anyString,
   SMTP_SKIP_TLS_VERIFY: boolStr,
 
+  // Web Push (VAPID pair; unset → TT mints and persists one in app_settings)
+  PUSH_VAPID_PUBLIC_KEY: anyString,
+  PUSH_VAPID_PRIVATE_KEY: anyString,
+
   // WebAuthn
   WEBAUTHN_RP_ID: anyString,
   WEBAUTHN_ORIGINS: anyString,

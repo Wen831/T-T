@@ -193,6 +193,18 @@ export function deriveSmtp(raw: RawEnv) {
   };
 }
 
+/**
+ * Web Push (the `push` channel). Both halves must be set to override the
+ * VAPID pair TT self-mints into app_settings; one without the other is
+ * ignored (a public key alone can't sign anything).
+ */
+export function derivePush(raw: RawEnv) {
+  return {
+    vapidPublicKey: raw.PUSH_VAPID_PUBLIC_KEY,
+    vapidPrivateKey: raw.PUSH_VAPID_PRIVATE_KEY,
+  };
+}
+
 export function deriveMcp(raw: RawEnv) {
   return {
     sessionTtlMs: resolveSessionTtlMs(raw.MCP_SESSION_TTL),
@@ -313,6 +325,7 @@ export function deriveAll(raw: RawEnv) {
     adminBootstrap: deriveAdminBootstrap(raw),
     oidc: deriveOidc(raw),
     smtp: deriveSmtp(raw),
+    push: derivePush(raw),
     mcp: deriveMcp(raw),
     plugins: derivePlugins(raw),
     webauthn: deriveWebauthn(raw),

@@ -43,6 +43,36 @@ export const notificationRespondRequestSchema = z.object({
 });
 export type NotificationRespondRequest = z.infer<typeof notificationRespondRequestSchema>;
 
+// ── Web Push (the `push` channel) ────────────────────────────────────────────
+
+/**
+ * One browser's push subscription, exactly as `pushManager.subscribe` hands it
+ * over: the push service's endpoint URL plus the per-subscription encryption
+ * keys the server needs before it may send anything. `userAgent` is optional
+ * provenance so a subscription list can read "this is the phone, this is the
+ * laptop".
+ */
+export const pushSubscribeRequestSchema = z.object({
+  endpoint: z.string().url().max(2048),
+  keys: z.object({
+    p256dh: z.string().min(1).max(512),
+    auth: z.string().min(1).max(512),
+  }),
+  userAgent: z.string().max(512).optional(),
+});
+export type PushSubscribeRequest = z.infer<typeof pushSubscribeRequestSchema>;
+
+export const pushUnsubscribeRequestSchema = z.object({
+  endpoint: z.string().max(2048),
+});
+export type PushUnsubscribeRequest = z.infer<typeof pushUnsubscribeRequestSchema>;
+
+/** The instance's VAPID public key — the only half a browser may see. */
+export const pushPublicKeySchema = z.object({
+  publicKey: z.string().min(1),
+});
+export type PushPublicKey = z.infer<typeof pushPublicKeySchema>;
+
 /** A single in-app notification row (DB-shaped; kept open). */
 export const notificationRowSchema = z.record(z.string(), z.unknown());
 

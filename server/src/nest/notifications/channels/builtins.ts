@@ -1,10 +1,11 @@
 import { registerChannel } from '../channel-registry';
 import type { MailerService } from '../mailer/mailer.service';
 import type { ChannelMessage, ExternalChannel } from '../notification-events';
+import type { PushService } from '../transports/push.service';
 import { resolveAdminNtfyUrl, resolveNtfyToken, resolveNtfyUrl, type NtfyService } from '../transports/ntfy.service';
 import type { WebhookService } from '../transports/webhook.service';
 
-// The three built-in external channels, wrapping the transports that were free
+// The four built-in external channels, wrapping the transports that were free
 // functions in services/notifications.ts before the fold. No delivery logic is
 // rewritten here - it is only relocated behind the ExternalChannel interface so
 // NotificationsService.send() can iterate instead of branching.
@@ -17,6 +18,7 @@ export interface BuiltinChannelDeps {
   mailer: MailerService;
   webhook: WebhookService;
   ntfy: NtfyService;
+  push: PushService;
 }
 
 /**
@@ -32,7 +34,7 @@ export interface BuiltinChannelDeps {
  * preferences; dropping that import would have silenced email, webhook and ntfy
  * without a single error.
  */
-export function buildBuiltinChannels({ mailer, webhook, ntfy }: BuiltinChannelDeps): ExternalChannel[] {
+export function buildBuiltinChannels({ mailer, webhook, ntfy, push }: BuiltinChannelDeps): ExternalChannel[] {
   const emailChannel: ExternalChannel = {
     id: 'email',
     source: 'builtin',
@@ -125,7 +127,34 @@ export function buildBuiltinChannels({ mailer, webhook, ntfy }: BuiltinChannelDe
     },
   };
 
-  return [emailChannel, webhookChannel, ntfyChannel];
+  const pushChannel: ExternalChannel = {
+    id: 'push',
+    source: 'builtin',
+    labelKey: 'settings.notificationPreferences.push',
+    // Web Push needs no admin-global copy: an admin who subscribed their own
+    // browser receives the admin-scoped events through the ordinary per-recipient
+    // path, rendered in their language — strictly better than one English global
+    // send, and it means there is no operator credential for this channel at all
+    // (the VAPID pair is TT's own, minted on first use).
+    supportsAdminGlobal: false,
+    supportsEvent: supportsAllButSynology,
+    // The VAPID pair self-mints on first use, so instance readiness is a given;
+    // the recipient-side half (a subscribed browser) is what can be missing.
+    isConfiguredFor: (userId) => push.hasSubscription(userId),
+    async sendToUser(userId, msg) {
+      return push.sendToUser(userId, {
+        title: msg.title,
+        body: msg.body,
+        navigateTarget: msg.navigateTarget,
+        event: msg.event,
+      });
+    },
+    async test(userId) {
+      return push.test(userId);
+    },
+  };
+
+  return [emailChannel, webhookChannel, ntfyChannel, pushChannel];
 }
 
 /** Idempotent - safe to call from every entry point that needs the registry populated. */

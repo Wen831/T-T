@@ -5247,6 +5247,40 @@ function runMigrations(db: Database.Database): void {
         db.exec("ALTER TABLE dawarich_connections ADD COLUMN source TEXT NOT NULL DEFAULT 'external'");
       }
     },
+
+    /**
+     * Web Push subscriptions for the `push` notification channel.
+     *
+     * One row per (user, browser): the endpoint URL is the push service's
+     * per-subscription mailbox (UNIQUE — a browser re-subscribing to the same
+     * service upserts rather than duplicates), and `p256dh`/`auth` are the
+     * per-subscription encryption keys the Web Push protocol encrypts each
+     * payload against. There is no secret here in the app_settings sense —
+     * these keys are public by design (the server needs them to encrypt, the
+     * browser generated them for exactly this endpoint) — so no encryption
+     * column dance, unlike the settings tables.
+     *
+     * Rows are pruned lazily: a push that answers 404/410 (subscription expired
+     * or revoked at the push service) deletes its row on the spot.
+     *
+     * Appended as the LAST element on purpose: this array is index-addressed
+     * against schema_version, so inserting in the middle would replay the wrong
+     * step against an existing database.
+     */
+    () => {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS push_subscriptions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          endpoint TEXT NOT NULL UNIQUE,
+          p256dh TEXT NOT NULL,
+          auth TEXT NOT NULL,
+          user_agent TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      db.exec('CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user ON push_subscriptions(user_id)');
+    },
   ];
 
   if (currentVersion < migrations.length) {

@@ -16,6 +16,7 @@ import type { MailerService } from '../../../src/nest/notifications/mailer/maile
 // The channel contract lives in notification-events; channel-registry only consumes it.
 import type { ChannelMessage, ExternalChannel } from '../../../src/nest/notifications/notification-events';
 import type { NtfyService } from '../../../src/nest/notifications/transports/ntfy.service';
+import type { PushService } from '../../../src/nest/notifications/transports/push.service';
 import type { WebhookService } from '../../../src/nest/notifications/transports/webhook.service';
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -30,6 +31,7 @@ const stubTransports = {
     getUserNtfyConfig: () => null,
     getAdminNtfyConfig: () => ({ server: null, topic: null, token: null }),
   } as unknown as NtfyService,
+  push: { hasSubscription: () => false } as unknown as PushService,
 };
 
 function fakeChannel(id: string, over: Partial<ExternalChannel> = {}): ExternalChannel {
@@ -56,8 +58,8 @@ afterEach(() => {
 });
 
 describe('channelRegistry', () => {
-  it('CHREG-001 — the three built-in external channels are registered; in-app is not', () => {
-    expect(listChannels().map((c) => c.id)).toEqual(['email', 'webhook', 'ntfy']);
+  it('CHREG-001 — the four built-in external channels are registered; in-app is not', () => {
+    expect(listChannels().map((c) => c.id)).toEqual(['email', 'webhook', 'ntfy', 'push']);
     expect(getChannel('inapp')).toBeUndefined();
   });
 
@@ -75,14 +77,14 @@ describe('channelRegistry', () => {
     expect(getChannel('plugin:gotify')).toBeDefined();
     live = false;
     expect(getChannel('plugin:gotify')).toBeUndefined();
-    expect(listChannels().map((c) => c.id)).toEqual(['email', 'webhook', 'ntfy']);
+    expect(listChannels().map((c) => c.id)).toEqual(['email', 'webhook', 'ntfy', 'push']);
   });
 
   it('CHREG-004 — a throwing plugin source cannot take notifications down', () => {
     setPluginChannelSource(() => {
       throw new Error('runtime exploded');
     });
-    expect(listChannels().map((c) => c.id)).toEqual(['email', 'webhook', 'ntfy']);
+    expect(listChannels().map((c) => c.id)).toEqual(['email', 'webhook', 'ntfy', 'push']);
   });
 
   it('CHREG-005 — a plugin can never claim a built-in id', () => {
@@ -105,7 +107,7 @@ describe('channelRegistry', () => {
   });
 
   it('CHREG-008 — built-ins carry every event except synology_session_cleared', () => {
-    for (const id of ['email', 'webhook', 'ntfy']) {
+    for (const id of ['email', 'webhook', 'ntfy', 'push']) {
       expect(getChannel(id)!.supportsEvent('trip_invite')).toBe(true);
       expect(getChannel(id)!.supportsEvent('version_available')).toBe(true);
       expect(getChannel(id)!.supportsEvent('synology_session_cleared')).toBe(false);
@@ -125,7 +127,7 @@ describe('channelRegistry', () => {
     });
     setPluginChannelSource(() => [boom]);
     await expect(getChannel('plugin:boom')!.sendToUser(1, MSG)).rejects.toThrow('nope');
-    // and the registry is unharmed
-    expect(listChannels()).toHaveLength(4);
+    // and the registry is unharmed (four built-ins + the fake plugin channel)
+    expect(listChannels()).toHaveLength(5);
   });
 });

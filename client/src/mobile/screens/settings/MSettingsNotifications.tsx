@@ -1,9 +1,15 @@
 import { Bell, Link2, Send } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { notificationsApi, settingsApi } from '../../../api/client';
 import { useToast } from '../../../components/shared/Toast';
 import { useTranslation } from '../../../i18n';
+import {
+  pushState,
+  subscribeToPush,
+  unsubscribeFromPush,
+  type PushSubscriptionState,
+} from '../../../utils/pushNotifications';
 import MChip from '../../components/MChip';
 import { MSetButton, MSetCard, MSetEyebrow, MSetHint, MSetInput } from './MSettingsUi';
 
@@ -299,6 +305,8 @@ export default function MSettingsNotifications() {
             </div>
           )}
 
+          {hasChannel('push') && <MPushCard />}
+
           {pluginChannels.map((ch) => (
             <div
               key={ch.id}
@@ -357,5 +365,83 @@ export default function MSettingsNotifications() {
         </>
       )}
     </MSetCard>
+  );
+}
+
+/**
+ * The `push` channel on the phone — the one this card is really for: an
+ * installed PWA here can hold a Web Push subscription, so TT reaches the lock
+ * screen without the ntfy app. Same flow as the desktop card (permission →
+ * pushManager → server row), reshaped onto the mobile design system.
+ */
+function MPushCard(): React.ReactElement {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const [state, setState] = useState<PushSubscriptionState | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const refresh = useCallback(() => {
+    pushState()
+      .then(setState)
+      .catch(() => setState(null));
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const enable = async () => {
+    setBusy(true);
+    try {
+      const result = await subscribeToPush();
+      if (result.ok) toast.success(t('settings.push.enabledToast'));
+      else if (result.error === 'denied') toast.error(t('settings.push.denied'));
+      else if (result.error === 'unsupported') toast.error(t('settings.push.unsupported'));
+      else toast.error(t('settings.push.errorToast'));
+    } finally {
+      setBusy(false);
+      refresh();
+    }
+  };
+
+  const disable = async () => {
+    setBusy(true);
+    try {
+      await unsubscribeFromPush();
+      toast.success(t('settings.push.unsubscribedToast'));
+    } finally {
+      setBusy(false);
+      refresh();
+    }
+  };
+
+  const unsupported = state !== null && !state.supported;
+  const denied = state?.permission === 'denied';
+  const subscribed = !!state?.subscribed;
+
+  return (
+    <div className="mb-3 rounded-xl border border-[color:var(--m-rowbr)] bg-[color:var(--m-sheet)] p-3">
+      <MSetEyebrow className="mb-1">{t('settings.push.title')}</MSetEyebrow>
+      <MSetHint className="mb-2 mt-0">{t('settings.push.hint')}</MSetHint>
+      {subscribed ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-[color:var(--m-rowbr)] bg-[color:var(--m-ic)] px-3 py-[7px] text-[0.75rem] font-semibold text-m-ink">
+            {t('settings.push.subscribedHere')}
+          </span>
+          <MSetButton variant="danger" onClick={disable} disabled={busy}>
+            {t('settings.push.disable')}
+          </MSetButton>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-2">
+          <MSetButton onClick={enable} disabled={busy || unsupported || denied}>
+            {t('settings.push.enable')}
+          </MSetButton>
+          {unsupported && <MSetHint className="mb-0 mt-0">{t('settings.push.unsupported')}</MSetHint>}
+          {denied && <MSetHint className="mb-0 mt-0">{t('settings.push.denied')}</MSetHint>}
+        </div>
+      )}
+      <MSetHint className="mb-0 mt-2">{t('settings.push.iosHint')}</MSetHint>
+    </div>
   );
 }

@@ -38,6 +38,11 @@ export default defineConfig(({ mode }) => ({
         navigateFallback: undefined,
       },
       workbox: {
+        // The Web Push handlers (push + notificationclick) live in their own file,
+        // imported here rather than folded into the generated worker — the offline
+        // strategy in this block is the delicate half of the SW and stays
+        // declarative; the push file only adds two plain event listeners.
+        importScripts: ['/push-sw.js'],
         // Anything above this is dropped from the precache manifest. The build does
         // not fail over it, it only prints "won't be precached", so the ceiling has
         // to sit close to the real bundle or an accidental heavyweight goes

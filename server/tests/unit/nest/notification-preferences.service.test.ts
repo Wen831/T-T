@@ -10,6 +10,7 @@ import { registerBuiltinChannels } from '../../../src/nest/notifications/channel
 import { MailerService } from '../../../src/nest/notifications/mailer/mailer.service';
 import { NotificationPreferencesService } from '../../../src/nest/notifications/notification-preferences.service';
 import { NtfyService } from '../../../src/nest/notifications/transports/ntfy.service';
+import { PushService } from '../../../src/nest/notifications/transports/push.service';
 import { WebhookService } from '../../../src/nest/notifications/transports/webhook.service';
 import {
   createUser,
@@ -52,7 +53,7 @@ vi.mock('../../../src/nest/common/crypto/apiKeyCrypto', () => ({
 
 const dbs = new DatabaseService(testDb);
 const mailer = new MailerService(dbs);
-registerBuiltinChannels({ mailer, webhook: new WebhookService(dbs), ntfy: new NtfyService(dbs) });
+registerBuiltinChannels({ mailer, webhook: new WebhookService(dbs), ntfy: new NtfyService(dbs), push: new PushService(dbs) });
 const svc = new NotificationPreferencesService(dbs, mailer);
 
 // Legacy free-function names bound to the service, so the moved cases read as before.
@@ -175,10 +176,10 @@ describe('getPreferencesMatrix', () => {
     expect(channels.find((c) => c.id === 'email')?.active).toBe(false);
   });
 
-  it('NPREF-011 — implemented_combos maps version_available to [inapp, email, webhook, ntfy]', () => {
+  it('NPREF-011 — implemented_combos maps version_available to [inapp, email, webhook, ntfy, push]', () => {
     const { user } = createAdmin(testDb);
     const { implemented_combos } = getPreferencesMatrix(user.id, 'admin', 'admin');
-    expect(implemented_combos['version_available']).toEqual(['inapp', 'email', 'webhook', 'ntfy']);
+    expect(implemented_combos['version_available']).toEqual(['inapp', 'email', 'webhook', 'ntfy', 'push']);
     // All events now support all four channels
     expect(implemented_combos['trip_invite']).toContain('inapp');
     expect(implemented_combos['trip_invite']).toContain('email');

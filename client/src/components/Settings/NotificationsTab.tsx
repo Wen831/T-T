@@ -1,8 +1,14 @@
 import { Lock } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { notificationsApi, settingsApi } from '../../api/client';
 import { useTranslation } from '../../i18n';
+import {
+  pushState,
+  subscribeToPush,
+  unsubscribeFromPush,
+  type PushSubscriptionState,
+} from '../../utils/pushNotifications';
 import { useToast } from '../shared/Toast';
 import Section from './Section';
 import ToggleSwitch from './ToggleSwitch';
@@ -506,6 +512,7 @@ export default function NotificationsTab(): React.ReactElement {
             </div>
           </div>
         )}
+        {hasChannel('push') && <PushNotificationsCard />}
         {pluginChannels.map((ch) => (
           <div
             key={ch.id}
@@ -660,5 +667,164 @@ export default function NotificationsTab(): React.ReactElement {
     <Section title={t('settings.notifications')} icon={Lock}>
       {renderContent()}
     </Section>
+  );
+}
+
+/**
+ * The `push` channel's own card: browser permission + subscription in one
+ * toggle. Unlike the credential cards above it there is nothing to type — the
+ * browser generates everything, and the server's VAPID public key is fetched
+ * at subscribe time.
+ */
+function PushNotificationsCard(): React.ReactElement {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const [state, setState] = useState<PushSubscriptionState | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const refresh = useCallback(() => {
+    pushState()
+      .then(setState)
+      .catch(() => setState(null));
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const enable = async () => {
+    setBusy(true);
+    try {
+      const result = await subscribeToPush();
+      if (result.ok) {
+        toast.success(t('settings.push.enabledToast'));
+      } else if (result.error === 'denied') {
+        toast.error(t('settings.push.denied'));
+      } else if (result.error === 'unsupported') {
+        toast.error(t('settings.push.unsupported'));
+      } else {
+        toast.error(t('settings.push.errorToast'));
+      }
+    } finally {
+      setBusy(false);
+      refresh();
+    }
+  };
+
+  const disable = async () => {
+    setBusy(true);
+    try {
+      await unsubscribeFromPush();
+      toast.success(t('settings.push.unsubscribedToast'));
+    } finally {
+      setBusy(false);
+      refresh();
+    }
+  };
+
+  const cardStyle: React.CSSProperties = {
+    marginBottom: 16,
+    padding: '12px',
+    background: 'var(--bg-secondary)',
+    borderRadius: 8,
+    border: '1px solid var(--border-primary)',
+  };
+
+  const unsupported = state !== null && !state.supported;
+  const denied = state?.permission === 'denied';
+  const subscribed = !!state?.subscribed;
+
+  return (
+    <div style={cardStyle}>
+      <label
+        style={{
+          display: 'block',
+          fontSize: 'calc(12px * var(--fs-scale-body, 1))',
+          fontWeight: 600,
+          color: 'var(--text-secondary)',
+          marginBottom: 4,
+        }}
+      >
+        {t('settings.push.title')}
+      </label>
+      <p style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)', marginBottom: 8 }}>
+        {t('settings.push.hint')}
+      </p>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        {subscribed ? (
+          <>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: 'calc(12px * var(--fs-scale-body, 1))',
+                color: 'var(--color-success, #38a169)',
+              }}
+            >
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-success, #38a169)' }} />
+              {t('settings.push.subscribedHere')}
+            </span>
+            <button
+              type="button"
+              onClick={disable}
+              disabled={busy}
+              style={{
+                fontSize: 'calc(12px * var(--fs-scale-body, 1))',
+                padding: '6px 12px',
+                background: 'transparent',
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--border-primary)',
+                borderRadius: 6,
+                cursor: busy ? 'not-allowed' : 'pointer',
+                opacity: busy ? 0.5 : 1,
+              }}
+            >
+              {t('settings.push.disable')}
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={enable}
+              disabled={busy || unsupported || denied}
+              style={{
+                fontSize: 'calc(12px * var(--fs-scale-body, 1))',
+                padding: '6px 12px',
+                background: 'var(--text-primary)',
+                color: 'var(--bg-primary)',
+                border: 'none',
+                borderRadius: 6,
+                cursor: busy || unsupported || denied ? 'not-allowed' : 'pointer',
+                opacity: busy || unsupported || denied ? 0.5 : 1,
+              }}
+            >
+              {t('settings.push.enable')}
+            </button>
+            {unsupported && (
+              <span style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)' }}>
+                {t('settings.push.unsupported')}
+              </span>
+            )}
+            {denied && (
+              <span
+                style={{
+                  fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
+                  color: 'var(--color-danger, #e53e3e)',
+                }}
+              >
+                {t('settings.push.denied')}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+      {/* iOS gate: Web Push only works for an installed PWA there, and the user
+          needs to know that before deciding this card is broken. */}
+      <p style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)', marginBottom: 0 }}>
+        {t('settings.push.iosHint')}
+      </p>
+    </div>
   );
 }

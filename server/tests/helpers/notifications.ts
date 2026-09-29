@@ -3,13 +3,15 @@ import { MailerService } from '../../src/nest/notifications/mailer/mailer.servic
 import { NotificationPreferencesService } from '../../src/nest/notifications/notification-preferences.service';
 import { NotificationsService } from '../../src/nest/notifications/notifications.service';
 import { NtfyService } from '../../src/nest/notifications/transports/ntfy.service';
+import { PushService } from '../../src/nest/notifications/transports/push.service';
 import { WebhookService } from '../../src/nest/notifications/transports/webhook.service';
 import { RealtimeService } from '../../src/nest/realtime/realtime.service';
 
 /**
  * A NotificationsService wired the way Nest wires it.
  *
- * The domain takes six providers since the fold, and eight places used to build
+ * The domain takes seven providers since the push channel landed, and eight
+ * places used to build
  * it by hand — every added constructor parameter was an eight-file diff. One
  * helper keeps that at one.
  */
@@ -21,6 +23,7 @@ export function makeNotificationsService(dbs: DatabaseService, realtime = new Re
     mailer,
     new WebhookService(dbs),
     new NtfyService(dbs),
+    new PushService(dbs),
     new NotificationPreferencesService(dbs, mailer),
   );
 }

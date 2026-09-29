@@ -685,6 +685,9 @@ const admin: TranslationStrings = {
   'admin.notifications.adminWebhookPanel.testFailed': '测试 Webhook 失败',
   'admin.notifications.adminWebhookPanel.alwaysOnHint': '配置 URL 后管理员 Webhook 自动触发',
   'admin.notifications.ntfy': 'Ntfy',
+  'admin.notifications.push': '浏览器推送',
+  'admin.notifications.pushHint':
+    '浏览器系统通知，使用 TT 自行生成的 VAPID 密钥对签名——此处无需任何配置。用户在自己的通知设置中订阅。',
   'admin.ntfy.hint': '允许用户配置自己的 ntfy 主题以接收推送通知。在下方设置默认服务器以预填充用户设置。',
   'admin.notifications.testNtfy': '发送测试 Ntfy',
   'admin.notifications.testNtfySuccess': '测试 Ntfy 发送成功',
