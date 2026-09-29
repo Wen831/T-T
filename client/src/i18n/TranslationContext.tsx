@@ -135,8 +135,17 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
   }, [language]);
 
   const value = useMemo((): TranslationContextValue => {
+    // A locale can hold a key whose translation is still pending as an empty
+    // value. Falling through to English beats rendering a blank label.
+    function resolve(key: string): string {
+      for (const candidate of [strings[key], en[key]]) {
+        if (typeof candidate === 'string' && candidate.trim() !== '') return candidate;
+      }
+      return key;
+    }
+
     function t(key: string, params?: Record<string, string | number>): string {
-      let val: string = (strings[key] ?? en[key] ?? key) as string;
+      let val = resolve(key);
       if (params) {
         Object.entries(params).forEach(([k, v]) => {
           // Function replacement: a value carrying `$&` or `$1` (a trip named
@@ -148,7 +157,7 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
     }
 
     function tHtml(key: string, params?: Record<string, string | number>): string {
-      let val: string = (strings[key] ?? en[key] ?? key) as string;
+      let val = resolve(key);
       if (params) {
         Object.entries(params).forEach(([k, v]) => {
           // Escape BEFORE substitution so a user-controlled value with `<` or

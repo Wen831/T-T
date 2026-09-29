@@ -1,4 +1,4 @@
-// FE-COMP-I18NCTX-001 to FE-COMP-I18NCTX-017 (plus -003b / -013b)
+// FE-COMP-I18NCTX-001 to FE-COMP-I18NCTX-017 (plus -003b / -012a / -012b / -013b)
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { SUPPORTED_LANGUAGES, TranslationProvider, useTranslation } from '../../../src/i18n/TranslationContext';
 import { TransHtml } from '../../../src/i18n/TransHtml';
@@ -144,6 +144,35 @@ describe('TranslationProvider', () => {
     render(<Probe tKey="common.save" />);
     expect(screen.getByTestId('value').textContent).toBe('common.save');
     expect(screen.getByTestId('locale').textContent).toBe('en-US');
+  });
+
+  // A locale file keys every entry for parity but can leave the value blank while
+  // the translation is pending, so blank must behave like absent rather than
+  // rendering an empty button or label.
+  it('FE-COMP-I18NCTX-012a: a locale value left blank falls through to English', async () => {
+    const de = (await import('@trek/shared/i18n/de')).default as Record<string, string>;
+    const original = de['common.save'];
+    de['common.save'] = '';
+    try {
+      withLanguage('de');
+      render(<TranslationProvider><Probe tKey="common.save" /></TranslationProvider>);
+      await waitFor(() => expect(screen.getByTestId('value').textContent).toBe('Save'));
+    } finally {
+      de['common.save'] = original;
+    }
+  });
+
+  it('FE-COMP-I18NCTX-012b: tHtml treats a whitespace-only locale value as blank', async () => {
+    const de = (await import('@trek/shared/i18n/de')).default as Record<string, string>;
+    const original = de['common.save'];
+    de['common.save'] = '   ';
+    try {
+      withLanguage('de');
+      render(<TranslationProvider><HtmlProbe tKey="common.save" /></TranslationProvider>);
+      await waitFor(() => expect(screen.getByTestId('raw').textContent).toBe('Save'));
+    } finally {
+      de['common.save'] = original;
+    }
   });
 });
 
