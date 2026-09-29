@@ -158,10 +158,10 @@ describe('createMockHost', () => {
   it('enforces the granted permission set', async () => {
     const { ctx } = createMockHost({ grants: ['db:own'] });
     await expect(ctx.db.migrate('1', 'CREATE TABLE t (x)')).resolves.toEqual({ applied: true });
-    await expect(ctx.trips.getById(1, 1)).rejects.toThrow(/PERMISSION_DENIED/);
+    await expect(ctx.trips.getById(1)).rejects.toThrow(/PERMISSION_DENIED/);
   });
 
-  it('membership-checks trip reads against the ACTING user (asUserId is ignored, like the real host) and records broadcasts', async () => {
+  it('membership-checks trip reads against the ACTING user (like the real host) and records broadcasts', async () => {
     const member = createMockHost({
       grants: ['db:read:trips', 'ws:broadcast:trip'],
       actingUserId: 42,
@@ -170,14 +170,14 @@ describe('createMockHost', () => {
     expect(await member.ctx.trips.getById(1)).toEqual({ id: 1, name: 'Japan' });
     await member.ctx.ws.broadcastToTrip(1, 'ping', { a: 1 });
     expect(member.broadcasts).toEqual([{ kind: 'trip', target: 1, event: 'ping', data: { a: 1 } }]);
-    // asUserId is accepted for source-compat but IGNORED: a non-member acting user is
-    // refused even when it passes a member id as asUserId (the #13 divergence, now fixed).
+    // A trip read is bound to the acting user and nothing else — the mock takes no
+    // identity argument at all, so it cannot diverge from the host on this (#13).
     const outsider = createMockHost({
       grants: ['db:read:trips'],
       actingUserId: 99,
       trips: { 1: { members: [42], data: { id: 1, name: 'Japan' } } },
     });
-    await expect(outsider.ctx.trips.getById(1, 42)).rejects.toThrow(/RESOURCE_FORBIDDEN/);
+    await expect(outsider.ctx.trips.getById(1)).rejects.toThrow(/RESOURCE_FORBIDDEN/);
   });
 
   it('returns canned db.query results + records logs', async () => {

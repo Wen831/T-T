@@ -302,9 +302,8 @@ the host doesn't expose at all returns `UNKNOWN_METHOD`.
 **`ctx.trips` only works inside a route handler.** The host binds the acting user
 from the authenticated request and membership-checks every trip read against it.
 `onLoad` and `jobs` have **no user**, so their trip reads are refused with
-`RESOURCE_FORBIDDEN`. The SDK's `getById(tripId, asUserId?)` signature keeps an
-`asUserId` parameter for source compatibility, but **the host ignores it** — you
-cannot read another user's trips by passing an id.
+`RESOURCE_FORBIDDEN`. No trip read takes an identity argument — you cannot read
+another user's trips by passing an id.
 
 **Writes (`ctx.trips.update` / `ctx.places` / `ctx.days` / `ctx.itinerary` /
 `ctx.costs.create`) are route-context only too, and doubly gated:** the host checks

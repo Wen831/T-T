@@ -35,15 +35,13 @@ export interface PluginContext {
     ): Promise<{ results: Array<{ changes?: number; rows?: unknown[] }> }>;
   };
   trips: {
-    // `asUserId` is accepted for source compatibility but IGNORED by the host —
-    // trip reads are always membership-checked against the authenticated user of
-    // the current invocation (the request's `req.user`), which the plugin cannot
-    // override. Only reachable from a route handler (a user context); a job has
-    // no user and its trip reads are refused.
-    getById(tripId: number, asUserId?: number): Promise<unknown>;
-    getPlaces(tripId: number, asUserId?: number): Promise<unknown[]>;
+    // Trip reads are membership-checked against the authenticated user of the
+    // current invocation, which the plugin cannot override. Only reachable from a
+    // route handler (a user context); a job has no user and its trip reads are refused.
+    getById(tripId: number): Promise<unknown>;
+    getPlaces(tripId: number): Promise<unknown[]>;
     /** Hydrated like the REST list: each row carries `endpoints`, `day_positions` + the day/place joins. */
-    getReservations(tripId: number, asUserId?: number): Promise<unknown[]>;
+    getReservations(tripId: number): Promise<unknown[]>;
     /** The trip's days with their `assignments` + `notes_items` (the planner GET's shape). Needs 'db:read:trips'. */
     getDays(tripId: number): Promise<unknown[]>;
     /** The trip's lodging blocks (day_accommodations) with joined place fields. Needs 'db:read:trips'. */

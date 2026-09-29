@@ -283,9 +283,8 @@ module.exports = definePlugin({
 
 **`ctx.trips` 只在路由处理函数内有效。** 主机从已认证的请求绑定操作用户，并对每一次
 旅行读取针对他做成员校验。`onLoad` 和 `jobs` **没有用户**，因此它们的旅行读取会以
-`RESOURCE_FORBIDDEN` 被拒绝。SDK 的 `getById(tripId, asUserId?)` 签名出于源码兼容
-保留了一个 `asUserId` 参数，但**主机会忽略它**——你无法通过传一个 id 来读取另一个
-用户的旅行。
+`RESOURCE_FORBIDDEN` 被拒绝。任何旅行读取都不接受身份参数——你无法通过传一个 id 来
+读取另一个用户的旅行。
 
 **写入（`ctx.trips.update` / `ctx.places` / `ctx.days` / `ctx.itinerary` /
 `ctx.costs.create`）同样只在路由上下文中有效，并且受双重门控：** 主机会检查操作用户

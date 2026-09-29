@@ -22,7 +22,7 @@ module.exports = {
         const tripId = Number(req.query.tripId);
         if (!tripId) return { status: 200, headers: json, body: JSON.stringify({ days: null, ongoing: false, title: null }) };
 
-        const t = await ctx.trips.getById(tripId, req.user.id);
+        const t = await ctx.trips.getById(tripId);
         if (!t) return { status: 200, headers: json, body: JSON.stringify({ days: null, ongoing: false, title: null }) };
 
         const now = new Date();

@@ -108,7 +108,7 @@ describe('PluginSupervisor — isolated runtime', () => {
           await ctx.db.exec('INSERT INTO kv (k, v) VALUES (?, ?)', ['greeting', ctx.config.greeting || 'none']);
           const rows = await ctx.db.query('SELECT v FROM kv WHERE k = ?', 'greeting');
           let tripsDenied = false;
-          try { await ctx.trips.getById(1, 42); } catch (e) { tripsDenied = /PERMISSION_DENIED/.test(e.message); }
+          try { await ctx.trips.getById(1); } catch (e) { tripsDenied = /PERMISSION_DENIED/.test(e.message); }
           ctx.log.info('selftest complete');
           ctx.log.info('diag', { value: rows[0] && rows[0].v, tripsDenied });
         }

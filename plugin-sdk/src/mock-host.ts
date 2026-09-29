@@ -474,15 +474,15 @@ export function createMockHost(opts: MockHostOptions = {}): MockHost {
         },
       },
       trips: {
-        async getById(tripId, _asUserId) {
+        async getById(tripId) {
           need('db:read:trips', 'trips.getById');
           return (assertMember(tripId, requireActingUser()).data ?? null) as Trip | null;
         },
-        async getPlaces(tripId, _asUserId) {
+        async getPlaces(tripId) {
           need('db:read:trips', 'trips.getPlaces');
           return (assertMember(tripId, requireActingUser()).places ?? []) as Place[];
         },
-        async getReservations(tripId, _asUserId) {
+        async getReservations(tripId) {
           need('db:read:trips', 'trips.getReservations');
           return (assertMember(tripId, requireActingUser()).reservations ?? []) as Reservation[];
         },
