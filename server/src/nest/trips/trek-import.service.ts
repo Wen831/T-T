@@ -132,9 +132,12 @@ export class TrekImportService implements OnModuleDestroy {
       });
       this.previews.set(token, { dir, dbPath, expiresAt: Date.now() + PREVIEW_TTL_MS });
       this.scheduleExpiry(token);
+      // Windows refuses to delete a directory that still holds an open file, and
+      // the snapshot db lives inside `dir`, so the handle goes before the sweep.
+      src.close();
       return { token, trips: summaries };
     } catch (err) {
-      src?.close();
+      if (src !== null) src.close();
       this.rmDir(dir);
       throw err;
     }
@@ -169,6 +172,9 @@ export class TrekImportService implements OnModuleDestroy {
         imported.push(this.db.get('SELECT id, title FROM trips WHERE id = ?', newId) as { id: number; title: string });
       }
       this.previews.delete(token);
+      // close() is idempotent; the explicit call below just has to happen first,
+      // because Windows will not delete a directory that still holds an open file.
+      src.close();
       this.rmDir(entry.dir);
       return { imported };
     } finally {
