@@ -134,9 +134,9 @@ const places: TranslationStrings = {
   'places.removeImage': 'Elimina la imatge',
   'places.imageUploadError': "No s'ha pogut pujar la imatge",
   'places.imageRemoveError': "No s'ha pogut eliminar la imatge",
-  'places.searchProvider': '',
-  'places.searchProviderAmap': '',
-  'places.searchProviderNative': '',
+  'places.searchProvider': 'Cerca:',
+  'places.searchProviderAmap': 'AMap',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;

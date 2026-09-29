@@ -61,11 +61,11 @@ const atlas: TranslationStrings = {
   'atlas.showPlanned': 'Mostra els països planificats',
   'atlas.plannedFor': 'Planificat per a',
   'atlas.antarctica': 'Antàrtida',
-  'atlas.checkinEmpty': '',
-  'atlas.checkinLandmarks': '',
-  'atlas.checkinPlaces': '',
-  'atlas.checkinTab': '',
-  'atlas.checkinTotal': '',
+  'atlas.checkinEmpty': 'Encara no hi ha registres: marca un monument o un lloc del viatge com a visitat',
+  'atlas.checkinLandmarks': 'Monuments',
+  'atlas.checkinPlaces': 'Llocs del viatge',
+  'atlas.checkinTab': 'Registres',
+  'atlas.checkinTotal': 'Registres',
   'atlas.lastVisitLabel': 'Darrer viatge',
 };
 export default atlas;

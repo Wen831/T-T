@@ -13,15 +13,16 @@ const trips: TranslationStrings = {
   'trips.reminderDaysBefore': 'dagar innan avresa',
   'trips.reminderDisabledHint':
     'Resepåminnelser är inaktiverade. Aktivera dem under Admin > Inställningar > Meddelanden.',
-  'trips.importTrekTab': '',
-  'trips.importTrekIntro': '',
-  'trips.importTrekPick': '',
-  'trips.importTrekScanning': '',
-  'trips.importTrekImport': '',
+  'trips.importTrekTab': 'Importera från TREK',
+  'trips.importTrekIntro':
+    'Ladda upp en TREK-säkerhetskopia (.zip) och välj de resor som ska kopieras till TT — dagar, platser, bokningar, budget och foton följer med.',
+  'trips.importTrekPick': 'Välj en TREK-säkerhetskopia (.zip)',
+  'trips.importTrekScanning': 'Läser säkerhetskopian…',
+  'trips.importTrekImport': 'Importera valda resor',
   'trips.importTrekSuccess': 'Imported {count} trip(s)',
-  'trips.importTrekNone': '',
-  'trips.importTrekFailed': '',
+  'trips.importTrekNone': 'Inga resor hittades i den här kopian',
+  'trips.importTrekFailed': 'Importen misslyckades. Är detta en säkerhetskopia från TREK?',
   'trips.importTrekStats': '{days} days · {places} places · {photos} photos · {budget} budget items',
-  'trips.importTrekUntitled': '',
+  'trips.importTrekUntitled': 'Resa utan titel',
 };
 export default trips;

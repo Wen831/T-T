@@ -61,11 +61,11 @@ const atlas: TranslationStrings = {
   'atlas.showPlanned': 'Hiện các quốc gia đã lên kế hoạch',
   'atlas.plannedFor': 'Dự kiến',
   'atlas.antarctica': 'Nam Cực',
-  'atlas.checkinEmpty': '',
-  'atlas.checkinLandmarks': '',
-  'atlas.checkinPlaces': '',
-  'atlas.checkinTab': '',
-  'atlas.checkinTotal': '',
+  'atlas.checkinEmpty': 'Chưa có check-in — hãy đánh dấu một địa danh hoặc địa điểm trong chuyến đi đã ghé',
+  'atlas.checkinLandmarks': 'Địa danh',
+  'atlas.checkinPlaces': 'Địa điểm chuyến đi',
+  'atlas.checkinTab': 'Check-in',
+  'atlas.checkinTotal': 'Check-in',
   'atlas.lastVisitLabel': 'Chuyến đi cuối cùng',
 };
 export default atlas;

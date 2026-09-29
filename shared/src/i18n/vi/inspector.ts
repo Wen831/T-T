@@ -26,7 +26,7 @@ const inspector: TranslationStrings = {
   'inspector.trackColor': 'Màu đường đi',
   'inspector.trackColorAuto': 'Màu tự động',
   'inspector.trackColorCustom': 'Chọn màu tùy chỉnh',
-  'inspector.checkin': '',
-  'inspector.checkinDone': '',
+  'inspector.checkin': 'Check in',
+  'inspector.checkinDone': 'Đã check in',
 };
 export default inspector;

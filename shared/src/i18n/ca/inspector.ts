@@ -27,7 +27,7 @@ const inspector: TranslationStrings = {
   'inspector.openStreetMap': 'OpenStreetMap',
   'inspector.saveToCollection': 'Desar a la col·lecció',
   'inspector.savedToCollection': 'Desat',
-  'inspector.checkin': '',
-  'inspector.checkinDone': '',
+  'inspector.checkin': 'Registrar',
+  'inspector.checkinDone': 'Registrat',
 };
 export default inspector;

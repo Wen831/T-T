@@ -133,9 +133,9 @@ const places: TranslationStrings = {
   'places.removeImage': 'Ta bort bild',
   'places.imageUploadError': 'Det gick inte att ladda upp bilden',
   'places.imageRemoveError': 'Det gick inte att ta bort bilden',
-  'places.searchProvider': '',
-  'places.searchProviderAmap': '',
-  'places.searchProviderNative': '',
+  'places.searchProvider': 'Sök:',
+  'places.searchProviderAmap': 'AMap',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;

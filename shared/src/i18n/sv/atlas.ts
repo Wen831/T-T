@@ -61,11 +61,11 @@ const atlas: TranslationStrings = {
   'atlas.showPlanned': 'Visa planerade länder',
   'atlas.plannedFor': 'Planerat till',
   'atlas.antarctica': 'Antarktis',
-  'atlas.checkinEmpty': '',
-  'atlas.checkinLandmarks': '',
-  'atlas.checkinPlaces': '',
-  'atlas.checkinTab': '',
-  'atlas.checkinTotal': '',
+  'atlas.checkinEmpty': 'Inga check-innar än — markera en sevärdhet eller en plats på resan som besökt',
+  'atlas.checkinLandmarks': 'Sevärdheter',
+  'atlas.checkinPlaces': 'Platser på resan',
+  'atlas.checkinTab': 'Check-innar',
+  'atlas.checkinTotal': 'Check-innar',
   'atlas.lastVisitLabel': 'Den senaste resan',
 };
 export default atlas;

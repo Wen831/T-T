@@ -133,9 +133,9 @@ const places: TranslationStrings = {
   'places.removeImage': 'Xóa ảnh',
   'places.imageUploadError': 'Không thể tải ảnh lên',
   'places.imageRemoveError': 'Không thể xóa ảnh',
-  'places.searchProvider': '',
-  'places.searchProviderAmap': '',
-  'places.searchProviderNative': '',
+  'places.searchProvider': 'Tìm:',
+  'places.searchProviderAmap': 'AMap',
+  'places.searchProviderNative': 'TT',
   'places.source.amap': 'Amap',
 };
 export default places;
