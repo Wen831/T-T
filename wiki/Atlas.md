@@ -74,6 +74,10 @@ Your Atlas statistics panel shows:
 - **Travel streak** — number of consecutive years in which you have taken at least one trip.
 - **Trips this year** — number of trips in the current calendar year.
 
+### Exporting the numbers
+
+**Export CSV** (in the statistics panel) writes both tables into one file: a row per country — code, name, continent, visit status — followed by the headline totals the panel adds up to. It opens directly in a spreadsheet, so the numbers survive the panel they were rendered in.
+
 ## Visual effect
 
 The desktop glass panel at the bottom of the map uses a liquid-glass visual effect — a dynamic inner glow and border highlight that follows your cursor across the panel.

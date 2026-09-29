@@ -12,7 +12,7 @@ Tourism-Team generates a structured **Trip Plan PDF** from your trip data. It re
 
 ### How to generate
 
-Open the Day Plan sidebar in the trip planner and click the **Export** button in the toolbar at the top of the sidebar. The Export dialog opens with three groups — **Document**, **Calendar**, and **Maps & GPS**. Pick the PDF row under **Document**: a preview modal opens, and **Save as PDF** hands the document to your browser's print dialog.
+Open the Day Plan sidebar in the trip planner and click the **Export** button in the toolbar at the top of the sidebar. The Export dialog opens with four groups — **Document**, **Calendar**, **Maps & GPS**, and **Tables & raw data**. Pick the PDF row under **Document**: a preview modal opens, and **Save as PDF** hands the document to your browser's print dialog.
 
 ### Cover page
 
@@ -52,6 +52,15 @@ Poppins, loaded from Google Fonts at render time.
 Installed plugins can append their own sections to the Trip Plan PDF via the `pdfSectionProvider` hook. A plugin returns plain text — a title, paragraphs, and an optional simple table (headers plus rows) — and Tourism-Team escapes and lays it out itself. Sections are text-only and additive: a plugin never renders into the document, and one that errors or is slow contributes nothing.
 
 > **Plugins:** requires the `hook:pdf-section-provider` permission. See [Plugin-Development](Plugin-Development) for the hook contract.
+
+## Tables & raw data
+
+The fourth group of the Export dialog is for taking the trip's data somewhere else entirely — a spreadsheet to sort, or a map file other tools read.
+
+- **Places as a table (CSV)** — one row per stop with coordinates: the day it belongs to, name, address, and position, then every place that has no day yet, so an unassigned place is never silently dropped. Opens directly in Excel, Numbers or Google Sheets.
+- **Map data for other tools (GeoJSON)** — a Point per place plus one LineString per planned day, so both the stops and the routes between them survive the trip out. QGIS, Google My Maps and browser map tooling read it natively; GPX remains the format for devices.
+
+Both read the same rows the GPX export reads, so a table, a map file and a device track cannot disagree about what the trip contained. The Atlas panel has its own **Export CSV** under Statistics — see [Atlas](Atlas#exporting-the-numbers).
 
 ---
 

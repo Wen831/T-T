@@ -23,6 +23,10 @@ The mode switch only appears when the trip has a **start date and an end date** 
 
 Self-hosters can point the `TRANSIT_API_URL` environment variable at their own MOTIS instance.
 
+### The transit provider behind the search
+
+Which service actually answers the Automated search is chosen per instance, in this order: an explicit `transit_provider` setting wins; otherwise an instance with an AMap (高德) key routes through **AMap**; everything else falls back to **Transitous**. Nothing needs to be picked by hand — the AMap branch activates the moment the instance has the same `amap_api_key` web-service key that place search and driving routing already use, because Transitous has no mainland-China coverage at all and the journeys that most need a transit search were the ones it answered empty. AMap covers 地铁/公交/轮渡/索道 and trains including 高铁, with every coordinate converted back out of GCJ-02 for the map. To pin a provider deliberately — staying on Transitous while holding an AMap key, for instance — set `transit_provider` in the database to `transitous` or `google` and that choice wins over the automatic one.
+
 ## Transport types
 
 Nine types are available: **Flight**, **Train**, **Bus**, **Car**, **Taxi**, **Bicycle**, **Cruise**, **Ferry**, and **Other**.

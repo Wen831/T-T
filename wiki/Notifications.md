@@ -6,7 +6,7 @@ The Notifications tab (Settings → Notifications) lets you choose which events 
 
 ## Notification channels
 
-Tourism-Team ships four delivery channels, and a plugin can add more. Which channels appear depends on what the admin has enabled server-side.
+Tourism-Team ships five delivery channels, and a plugin can add more. Which channels appear depends on what the admin has enabled server-side.
 
 | Channel | Description |
 |---------|-------------|
@@ -14,6 +14,7 @@ Tourism-Team ships four delivery channels, and a plugin can add more. Which chan
 | **Email** | Delivered to your account email. Requires the admin to configure SMTP. |
 | **Webhook** | Tourism-Team POSTs a JSON payload to a URL you specify. Discord and Slack webhook URLs are auto-detected and receive a natively formatted payload. |
 | **ntfy** | Push notifications via [ntfy.sh](https://ntfy.sh) or a self-hosted ntfy server. |
+| **Push** | Web Push straight to your browser — a system notification even when the tab is closed. No third-party service or account. |
 
 ### Plugin channels
 
@@ -88,6 +89,12 @@ Tourism-Team auto-detects the webhook destination and adjusts the payload format
 ## ntfy configuration
 
 Enter your ntfy **topic** and optionally a custom **server URL** (defaults to the server-wide ntfy server set by the admin) and an **access token** for private topics. The token is stored encrypted and displayed as `••••••••` after saving. Use the **Test** button to verify delivery.
+
+## Web Push configuration
+
+The Push channel rides on the standard Web Push protocol: your browser's own push service wakes the service worker, so a notification arrives even when Tourism-Team is not open. Because it is the browser itself receiving the message, it needs no third-party account, no topic name and no webhook URL — enable the channel, then subscribe from the device you want notified (the desktop settings tab, the mobile settings screen and the admin notifications panel each carry the subscription control).
+
+The browser only allows a subscription from a secure context, so the instance must be reached over HTTPS (or from `localhost`). Each browser binds its subscription to the instance's VAPID key pair at subscribe time, and the pair is minted on first use and stored encrypted — see `PUSH_VAPID_PUBLIC_KEY` / `PUSH_VAPID_PRIVATE_KEY` in [Environment Variables](Environment-Variables) for a stable pair across reinstalls. The pair is deliberately never rotated automatically: a rotated key silently orphans every existing subscription, so treat those two variables as pinned once set. Dead endpoints (the browser reporting the subscription gone, or expired after four hours undelivered) are pruned on their next failure.
 
 ## In-app notification center
 

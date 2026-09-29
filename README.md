@@ -18,7 +18,7 @@
 A powerful self-hosted travel planning platform with real-time collaboration, interactive maps, and AI-powered features. Plan your journeys with day-by-day itineraries, track expenses, manage bookings, and explore the world with an integrated atlas.
 
 [![License](https://img.shields.io/badge/license-AGPL_v3-6B7280?style=flat-square)](LICENSE)
-![Version](https://img.shields.io/badge/version-0.8.2-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.4-blue?style=flat-square)
 
 ---
 
@@ -78,7 +78,34 @@ A powerful self-hosted travel planning platform with real-time collaboration, in
 
 ---
 
-## 🆕 What's New in v0.8.2
+## 🆕 What's New in v0.8.4
+
+Three new capabilities, one new notification channel, and a security release on top.
+
+### Notifications to the browser itself
+
+Email, webhook and ntfy reach a phone, but never the one client that needs no third-party setup: the browser. The new **Push** channel rides the standard Web Push protocol — the browser's push service wakes the service worker and TT raises a system notification even with the tab closed. Subscribe from the desktop settings tab, the mobile settings screen or the admin notifications panel; the VAPID pair is minted on first use and stored encrypted, with `PUSH_VAPID_PUBLIC_KEY` / `PUSH_VAPID_PRIVATE_KEY` to pin a stable pair across reinstalls. See [Notifications](https://github.com/bhxnms/T-T/wiki/Notifications#web-push-configuration).
+
+### Public transit through AMap
+
+The transit search ran on Transitous, whose open data has **no mainland-China coverage** — the journeys that most need a transit search were the ones it answered empty. An instance holding the AMap key that place search already uses now routes transit through 高德: 地铁, 公交, 轮渡, 索道 and trains including 高铁, with every coordinate converted back out of GCJ-02. It activates automatically the moment the key exists; an explicit `transitous` or `google` setting still wins. See [Transport](https://github.com/bhxnms/T-T/wiki/Transport-Flights-Trains-Cars#the-transit-provider-behind-the-search).
+
+### Take the data out
+
+A trip could leave as a PDF, an .ics or a GPX file, and the Atlas panel showed its numbers with no way to keep them. The Export dialog grew a **Tables & raw data** group — **Places as a table (CSV)**, one row per stop with coordinates and the unassigned places nothing else would have told you about, and **Map data for other tools (GeoJSON)**, a Point per place plus a LineString per planned day for QGIS and Google My Maps — and the Atlas statistics panel gained **Export CSV**. See [PDF Export](https://github.com/bhxnms/T-T/wiki/PDF-Export#tables--raw-data).
+
+### Security
+
+A Docker Scout pass counted **85 open CVEs** on the 0.8.2 image, in two families:
+
+- **npm**: multer (3 high), qs (2 medium) and dompurify (1 medium) were vulnerable, while `package.json` already declared ranges admitting the fixes — the lockfile had never been re-resolved to them. multer 2.4.0, qs 6.16.0, dompurify 3.4.16 and hono 4.13.10.
+- **Base image**: the runtime layer installed its Debian packages without ever running `apt-get upgrade`, freezing libxml2, libtiff, poppler, Qt6, Mesa and the rest at the repos' snapshot from build day. The build now upgrades them, so a rebuild is a security refresh rather than a re-freeze. The remaining findings are majors (nodemailer 10, @simplewebauthn 14) or advisories upstream has not patched yet.
+
+The authenticated `/api/auth/me` payload is also restricted to an allowlist of columns.
+
+---
+
+## 0.8.2 (detail)
 
 **TT now records your location history itself.** Dawarich's core — the archive,
 the stay detection, the trail — runs inside TT on the map engines TT already

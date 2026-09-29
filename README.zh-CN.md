@@ -18,7 +18,7 @@
 一个支持自托管、实时协作、交互式地图和 AI 功能的旅行规划平台。你可以按天规划行程、管理费用和预订、记录旅行日志，并通过 Atlas 探索和记录去过的地方。
 
 [![License](https://img.shields.io/badge/license-AGPL_v3-6B7280?style=flat-square)](LICENSE)
-![Version](https://img.shields.io/badge/version-0.8.2-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-0.8.4-blue?style=flat-square)
 
 ---
 
@@ -75,7 +75,34 @@
 
 ---
 
-## 🆕 v0.8.2 更新
+## 🆕 v0.8.4 更新
+
+三项新能力、一条新的通知渠道，外加一次安全修复。
+
+### 通知直达浏览器本身
+
+邮件、webhook 和 ntfy 都能到达手机，却永远到不了那个**不需要任何第三方配置**的客户端：浏览器。新增的 **推送** 渠道基于标准 Web Push 协议——由浏览器自己的推送服务唤醒 Service Worker，即使标签页已关闭，TT 也能弹出系统通知。在桌面设置页、移动端设置页或管理员通知面板订阅即可；VAPID 密钥对在首次使用时自动生成并加密存储，`PUSH_VAPID_PUBLIC_KEY` / `PUSH_VAPID_PRIVATE_KEY` 可固定一对跨重装使用的密钥。详见 [通知](https://github.com/bhxnms/T-T/wiki/Notifications)。
+
+### 公共交通走高德
+
+公共交通搜索此前由 Transitous 驱动，而它的开放数据**完全没有中国大陆的覆盖**——最需要公交搜索的那段旅程恰恰是它应答为空的部分。持有高德密钥的实例（地点搜索已经在用的同一把 `amap_api_key`）现在会走 **高德** 完成公交路线规划：地铁、公交、轮渡、索道，以及含高铁在内的火车，且每个坐标都会从 GCJ-02 转换回地图所需坐标系。密钥一存在即自动激活；显式设置的 `transitous` 或 `google` 仍然优先。详见 [交通](https://github.com/bhxnms/T-T/wiki/Transport-Flights-Trains-Cars)。
+
+### 把数据带走
+
+行程此前能以 PDF、.ics 或 GPX 离开，足迹面板的数字却只能停留在屏幕上。导出对话框新增了 **表格与原始数据** 分组——**地点表格（CSV）**，每个停靠点一行、含坐标，连那些其他导出不会提到的未安排地点也包含在内；**可导入其他工具的地图数据（GeoJSON）**，每个地点一个 Point、每个已规划日期一条 LineString，供 QGIS 与 Google My Maps 使用。足迹统计面板也新增了 **导出 CSV**。详见 [导出](https://github.com/bhxnms/T-T/wiki/PDF-Export)。
+
+### 安全
+
+Docker Scout 在 0.8.2 镜像上扫描出 **85 个未修复 CVE**，分两类：
+
+- **npm**：multer（3 个 high）、qs（2 个 medium）与 dompurify（1 个 medium）存在漏洞，而 `package.json` 早已声明了容许修复版本的范围——lockfile 却从未重新解析到那里。现已升至 multer 2.4.0、qs 6.16.0、dompurify 3.4.16、hono 4.13.10。
+- **基础镜像**：运行时层安装 Debian 包后从未执行过 `apt-get upgrade`，libxml2、libtiff、poppler、Qt6、Mesa 等全部冻结在构建当天的仓库快照。构建时现在会执行升级，重建即是一次安全刷新。其余条目属于 major 升级（nodemailer 10、@simplewebauthn 14）或上游尚未发布补丁的公告。
+
+已登录的 `/api/auth/me` 负载也改为只返回白名单内的字段。
+
+---
+
+## 0.8.2（详情）
 
 **TT 现在可以自己记录你的位置历史了。** Dawarich 的核心——档案、停留判定、
 轨迹——搬进了 TT，跑在 TT 已有的地图引擎上，因此**不需要再单独部署一台服务器**。
