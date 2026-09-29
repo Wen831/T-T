@@ -111,6 +111,16 @@ describe('stripUserForClient', () => {
     expect(result).not.toHaveProperty('mfa_backup_codes');
   });
 
+  // The block above lists what the old denylist knew about. This is the whole
+  // point of the allowlist: a column the function has never heard of is
+  // withheld, not leaked by default. tests/unit/db/user-payload-columns.test.ts
+  // walks the live schema for the same property.
+  it('SEC-020: omits a column the function has never heard of', () => {
+    const result = stripUserForClient(makeUser({ feed_token: 'plain-feed-token', brand_new_secret: 'x' } as any));
+    expect(result).not.toHaveProperty('feed_token');
+    expect(result).not.toHaveProperty('brand_new_secret');
+  });
+
   it('preserves non-sensitive fields', () => {
     const result = stripUserForClient(makeUser({ username: 'alice', email: 'alice@example.com', role: 'user' }));
     expect(result.id).toBe(1);

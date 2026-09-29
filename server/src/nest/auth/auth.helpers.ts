@@ -64,21 +64,39 @@ export function utcSuffix(ts: string | null | undefined): string | null {
   return ts.endsWith('Z') ? ts : ts.replace(' ', 'T') + 'Z';
 }
 
+/**
+ * The only `users` columns an auth response may carry.
+ *
+ * An allowlist, deliberately. The previous version of this function listed the
+ * secrets it knew about and spread everything else, and the table has grown
+ * since then: `feed_token` is a working bearer credential
+ * (`feeds.service.ts` accepts it in a URL), and the immich / synology /
+ * airtrail / oidc columns all arrived after the denylist was written. Under a
+ * denylist every new column leaks on day one; under an allowlist it stays in
+ * the database until a client demonstrably reads it.
+ */
+export const PUBLIC_USER_FIELDS = [
+  'id',
+  'username',
+  'email',
+  'role',
+  'oidc_issuer',
+  'created_at',
+  'updated_at',
+  'last_login',
+] as const;
+
 export function stripUserForClient(user: User): Record<string, unknown> {
-  const {
-    password_hash: _p,
-    maps_api_key: _m,
-    openweather_api_key: _o,
-    unsplash_api_key: _u,
-    mfa_secret: _mf,
-    mfa_backup_codes: _mbc,
-    ...rest
-  } = user;
+  const row = user as unknown as Record<string, unknown>;
+  const safe: Record<string, unknown> = {};
+  for (const field of PUBLIC_USER_FIELDS) {
+    if (field in row) safe[field] = row[field];
+  }
   return {
-    ...rest,
-    created_at: utcSuffix(rest.created_at),
-    updated_at: utcSuffix(rest.updated_at),
-    last_login: utcSuffix(rest.last_login),
+    ...safe,
+    created_at: utcSuffix(user.created_at),
+    updated_at: utcSuffix(user.updated_at),
+    last_login: utcSuffix(user.last_login),
     mfa_enabled: !!(user.mfa_enabled === 1 || user.mfa_enabled === true),
     must_change_password: !!(user.must_change_password === 1 || user.must_change_password === true),
   };
