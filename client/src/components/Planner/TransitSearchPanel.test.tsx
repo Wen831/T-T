@@ -457,7 +457,7 @@ describe('TransitSearchPanel', () => {
     transitApiMock.plan.mockResolvedValueOnce({ itineraries: [] });
     render(<TransitSearchPanel {...makeProps()} />);
     await pickFromAndTo(user);
-    for (const label of ['Train', 'Subway', 'Tram', 'Ferry', 'Cable car']) {
+    for (const label of ['High-speed train', 'Train', 'Subway', 'Tram', 'Ferry', 'Cable car']) {
       await user.click(screen.getByText(label));
     }
     // Only "Bus" is left — clicking it must not empty the selection.
@@ -465,6 +465,34 @@ describe('TransitSearchPanel', () => {
     await user.click(screen.getByRole('button', { name: /^Search$/ }));
     await waitFor(() => expect(transitApiMock.plan).toHaveBeenCalled());
     expect(transitApiMock.plan.mock.calls[0][0].modes).toBe('BUS,COACH');
+  });
+
+  it('FE-PLANNER-TRANSIT-031: 高铁 is its own chip — deselecting it does not drop conventional rail', async () => {
+    const user = userEvent.setup();
+    transitApiMock.plan.mockResolvedValueOnce({ itineraries: [] });
+    render(<TransitSearchPanel {...makeProps()} />);
+    await pickFromAndTo(user);
+    await user.click(screen.getByText('High-speed train'));
+    await user.click(screen.getByRole('button', { name: /^Search$/ }));
+    await waitFor(() => expect(transitApiMock.plan).toHaveBeenCalled());
+    // HIGHSPEED_RAIL left the rail group's list; the rail chip still carries
+    // the conventional classes.
+    expect(transitApiMock.plan.mock.calls[0][0].modes).toBe(
+      'LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,SUBURBAN,SUBWAY,TRAM,BUS,COACH,FERRY,FUNICULAR,AERIAL_LIFT'
+    );
+  });
+
+  it('FE-PLANNER-TRANSIT-032: the answering provider is stamped into metadata, not hardcoded', async () => {
+    const user = userEvent.setup();
+    const onAdd = vi.fn().mockResolvedValue({});
+    transitApiMock.plan.mockResolvedValueOnce({ itineraries: [ITINERARY], provider: 'amap' });
+    render(<TransitSearchPanel {...makeProps({ onAdd })} />);
+    await pickFromAndTo(user);
+    await user.click(screen.getByRole('button', { name: /^Search$/ }));
+    await user.click(await screen.findByText(/08:30 – 09:00/));
+    await user.click(await screen.findByRole('button', { name: 'Add to day' }));
+    await waitFor(() => expect(onAdd).toHaveBeenCalled());
+    expect(onAdd.mock.calls[0][0].metadata.transit.provider).toBe('amap');
   });
 
   it('FE-PLANNER-TRANSIT-015: re-enabling every mode sends no mode filter at all', async () => {
