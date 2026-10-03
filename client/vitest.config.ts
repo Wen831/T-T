@@ -16,9 +16,9 @@ export default defineConfig({
     pool: 'forks',
     // Default is one fork per core minus one — on a 12-core dev box that is 11
     // jsdom forks each running the setup file at once, which pins every core
-    // and freezes the machine mid-run. Four keeps the box responsive. (Vitest 4:
+    // and freezes the machine mid-run. Three keeps the box responsive. (Vitest 4:
     // `maxWorkers` is the knob; the old test.poolOptions is removed.)
-    maxWorkers: 4,
+    maxWorkers: 3,
     silent: false,
     reporters: ['verbose'],
     // A component whose request outlives its test dispatches setState after the
