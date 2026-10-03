@@ -3472,6 +3472,91 @@ describe('resolveGoogleMapsUrl — AMap ?p= payload', () => {
   });
 });
 
+// ── AMap share links: the ?q= coordinate payload (navigation destination) ────
+//
+// A navigation/destination share lands on `http://www.amap.com/?q=<lat>,<lng>,
+// <label>` (verified live: https://surl.amap.com/fkjSPZ4y9Q8 → wb.amap.com →
+// www.amap.com with q=22.6279…,114.0751…,终点). Unlike ?p= there is no POI id
+// and no address, and the label can be a route endpoint name like 终点. The
+// coordinates are inline, so these links resolve with no Web-Service key at all
+// — and a ?q= that is a plain text search query must keep refusing.
+
+describe('resolveGoogleMapsUrl — AMap ?q= coordinate payload', () => {
+  const navShareUrl =
+    'https://www.amap.com/?q=22.627927713513376,114.07514333724973,%E7%BB%88%E7%82%B9';
+
+  afterEach(() => {
+    mockInstanceGet.mockReset();
+  });
+
+  it('MAPS-AMAP-009: resolves a navigation share with name and GCJ-02 conversion, no key needed', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    mockInstanceGet.mockReturnValue({ value: '' });
+
+    const result = await svc.resolveGoogleMapsUrl(navShareUrl);
+
+    expect(result.name).toBe('终点');
+    expect(result.amap_id).toBeNull();
+    expect(result.address).toBeNull();
+    const expected = gcj02ToWgs84(114.07514333724973, 22.627927713513376);
+    expect(result.lng).toBeCloseTo(expected.lng, 9);
+    expect(result.lat).toBeCloseTo(expected.lat, 9);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('MAPS-AMAP-010: reads a ?q= short link from its first redirect, without following it', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 302,
+      headers: new Headers({ location: navShareUrl }),
+      url: 'https://surl.amap.com/fkjSPZ4y9Q8',
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    mockInstanceGet.mockReturnValue({ value: '' });
+
+    const result = await svc.resolveGoogleMapsUrl('https://surl.amap.com/fkjSPZ4y9Q8');
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(result.name).toBe('终点');
+    expect(result.amap_id).toBeNull();
+  });
+
+  it('MAPS-AMAP-011: a ?q= that is a text search query is not a coordinate share', async () => {
+    // A text query carries no inline payload, so the resolver still tries the
+    // short-link hop; a plain 200 with no redirect target means nothing to read,
+    // and the call refuses instead of inventing a place from the query text.
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      url: 'https://www.amap.com/?q=%E9%A4%90%E5%8E%85',
+      headers: new Headers(),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    mockInstanceGet.mockReturnValue({ value: 'amap-key' });
+
+    await expect(
+      svc.resolveGoogleMapsUrl('https://www.amap.com/?q=%E9%A4%90%E5%8E%85'),
+    ).rejects.toMatchObject({ status: 400 });
+    expect(fetchMock.mock.calls.some((c: unknown[]) => String(c[0]).includes('/v5/place/detail'))).toBe(false);
+  });
+
+  it('MAPS-AMAP-012: a swapped lng,lat pair is recovered by the range check', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    mockInstanceGet.mockReturnValue({ value: '' });
+
+    // 114.07 cannot be a latitude, so the pair reorders before validation.
+    const result = await svc.resolveGoogleMapsUrl(
+      'https://www.amap.com/?q=114.07514333724973,22.627927713513376,终点',
+    );
+
+    const expected = gcj02ToWgs84(114.07514333724973, 22.627927713513376);
+    expect(result.lat).toBeCloseTo(expected.lat, 9);
+    expect(result.lng).toBeCloseTo(expected.lng, 9);
+  });
+});
+
 // ── AMap share links: the intermediate hop that mangles the name ─────────────
 //
 // Reproduced against the live shortener. surl.amap.com answers a 302 whose

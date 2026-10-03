@@ -471,6 +471,40 @@ export function parseAmapSharePayload(url: string): AmapSharePayload | null {
   };
 }
 
+/**
+ * Navigation / route-endpoint share links carry a `?q=` payload instead of
+ * `?p=`: `q=<lat>,<lng>[,<label>]` with no POI id and no address (verified
+ * against a live navigation share, which landed on
+ * `http://www.amap.com/?q=22.6279…,114.0751…,终点`). The two leading numbers
+ * must both parse and be in range, so a plain text search query (`?q=餐厅`)
+ * declines and keeps refusing rather than resolving to garbage.
+ */
+export function parseAmapCoordinatePayload(url: string): AmapSharePayload | null {
+  let raw: string | null;
+  try {
+    raw = new URL(url).searchParams.get('q');
+  } catch {
+    return null;
+  }
+  if (!raw) return null;
+  const parts = raw.split(',');
+  if (parts.length < 2) return null;
+  let lat = Number.parseFloat(parts[0]);
+  let lng = Number.parseFloat(parts[1]);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  // Both p= and q= put latitude first, but a swapped pair is still recoverable:
+  // |longitude| can exceed 90 while |latitude| never can. Only reorder when the
+  // numbers force it — an in-range pair keeps the documented order.
+  if (Math.abs(lat) > 90 && Math.abs(lng) <= 90) {
+    [lat, lng] = [lng, lat];
+  }
+  if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+  // A label may legitimately contain a comma, so everything after the
+  // coordinates rejoins instead of silently truncating at the first one.
+  const name = parts.length > 2 ? parts.slice(2).join(',').trim() || null : null;
+  return { amapId: null, lat, lng, name, address: null };
+}
+
 const WIKI_TIMEOUT_MS = 6000;
 
 // Tighter than the wiki calls, because this one sits at the FRONT of a chain:
@@ -2591,7 +2625,7 @@ export class MapsService {
       poiId = target;
     }
 
-    let inline = parseAmapSharePayload(target);
+    let inline = parseAmapSharePayload(target) ?? parseAmapCoordinatePayload(target);
 
     // Short link (surl/uri): read its FIRST redirect target and stop there.
     //
@@ -2622,7 +2656,7 @@ export class MapsService {
           // Read the payload out of the Location header only; the hop itself is
           // never fetched, because that is where the text is mangled.
           if (isAmapHost(safeHostname(hop))) {
-            inline = parseAmapSharePayload(hop);
+            inline = parseAmapSharePayload(hop) ?? parseAmapCoordinatePayload(hop);
             poiId = amapPoiIdFrom(hop);
           }
         }
