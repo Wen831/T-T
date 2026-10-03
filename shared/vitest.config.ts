@@ -4,9 +4,8 @@ export default defineConfig({
   test: {
     // Same cap as server/client: the default (one fork per core minus one)
     // pins a 12-core dev box for a suite this small for no good reason.
-    poolOptions: {
-      forks: { maxForks: 4, minForks: 1 },
-    },
+    // (Vitest 4: `maxWorkers` is the knob; the old test.poolOptions is removed.)
+    maxWorkers: 4,
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text'],

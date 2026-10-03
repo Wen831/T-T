@@ -23,11 +23,9 @@ export default defineConfig({
     pool: 'forks',
     // Default is one fork per core minus one — on a 12-core dev box that is 11
     // Node processes each running setup at once, which pins every core and
-    // freezes the machine mid-run. Four keeps the box responsive; CI (2-4
-    // cores on Linux) is unaffected since it never had more than this.
-    poolOptions: {
-      forks: { maxForks: 4, minForks: 1 },
-    },
+    // freezes the machine mid-run. Four keeps the box responsive. (Vitest 4:
+    // `maxWorkers` is the knob; the old test.poolOptions is removed.)
+    maxWorkers: 4,
     silent: false,
     reporters: ['verbose'],
     coverage: {
