@@ -5,14 +5,14 @@ import { SUPPORTED_LANGUAGES, useTranslation } from '../../i18n';
 import { DEFAULT_SETTINGS, useSettingsStore } from '../../store/settingsStore';
 import type { DistanceUnit } from '../../types';
 import { DEFAULT_START_PAGE, DEFAULT_START_TRIP_TAB } from '../../utils/startDestination';
-import { SYMBOLS, currenciesWith } from '../Budget/BudgetPanel.constants';
+import { SYMBOLS, currenciesWith, currencyLabel } from '../Budget/BudgetPanel.constants';
 import CustomSelect from '../shared/CustomSelect';
 import { useToast } from '../shared/Toast';
 import Section from './Section';
 
 export default function DisplaySettingsTab(): React.ReactElement {
   const { settings, updateSetting } = useSettingsStore();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const toast = useToast();
   const [tempUnit, setTempUnit] = useState<string>(settings.temperature_unit || DEFAULT_SETTINGS.temperature_unit);
   const [distanceUnit, setDistanceUnit] = useState<DistanceUnit>(
@@ -129,7 +129,7 @@ export default function DisplaySettingsTab(): React.ReactElement {
               { value: '', label: t('settings.currencyTrip') },
               ...currenciesWith(settings.default_currency || '').map((c) => ({
                 value: c,
-                label: `${c} — ${SYMBOLS[c] || c}`,
+                label: `${currencyLabel(c, locale)} — ${SYMBOLS[c] || c}`,
               })),
             ]}
             searchable

@@ -2,7 +2,7 @@ import type { Trip, TripCreateRequest } from '@trek/shared';
 import { Archive, ArchiveRestore, Camera, FileUp, Search, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { tripsApi, type TrekImportTripSummary } from '../../../api/client';
-import { currenciesWith, SYMBOLS } from '../../../components/Budget/BudgetPanel.constants';
+import { currenciesWith, currencyLabel, SYMBOLS } from '../../../components/Budget/BudgetPanel.constants';
 import { CustomDatePicker } from '../../../components/shared/CustomDateTimePicker';
 import CustomSelect from '../../../components/shared/CustomSelect';
 import { useToast } from '../../../components/shared/Toast';
@@ -56,7 +56,7 @@ export default function MNewTripSheet({
   onImported,
 }: MNewTripSheetProps): React.ReactElement {
   const isEditing = !!trip;
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const toast = useToast();
   const can = useCanDo();
   const defaultCurrency = useSettingsStore((s) => s.settings.default_currency) || 'EUR';
@@ -495,7 +495,7 @@ export default function MNewTripSheet({
             disabled={!canEditTrip}
             searchable
             size="sm"
-            options={currenciesWith(currency).map((c) => ({ value: c, label: `${c} (${SYMBOLS[c] || c})` }))}
+            options={currenciesWith(currency).map((c) => ({ value: c, label: `${currencyLabel(c, locale)} (${SYMBOLS[c] || c})` }))}
             style={{ width: '100%', marginTop: 5 }}
           />
         </div>

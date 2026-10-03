@@ -1,6 +1,6 @@
 import { ChevronDown, Languages, Map, Rocket } from 'lucide-react';
 import { useState } from 'react';
-import { SYMBOLS, currenciesWith } from '../../../components/Budget/BudgetPanel.constants';
+import { SYMBOLS, currenciesWith, currencyLabel as currencyLabelFn } from '../../../components/Budget/BudgetPanel.constants';
 import { useToast } from '../../../components/shared/Toast';
 import { TRIP_TAB_IDS, TRIP_TAB_LABEL_KEYS, isTripTabId } from '../../../constants/tripTabs';
 import { SUPPORTED_LANGUAGES, useTranslation } from '../../../i18n';
@@ -16,7 +16,7 @@ import { MSetCard, MSetEyebrow, MSetRow, MSetSegments, MSetSelectRow } from './M
  * cards, wired to the real user preferences (DisplaySettingsTab parity).
  */
 export default function MSettingsGeneral() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const toast = useToast();
   const { settings, updateSetting } = useSettingsStore();
   const [currencyOpen, setCurrencyOpen] = useState(false);
@@ -34,7 +34,7 @@ export default function MSettingsGeneral() {
   const startPage: StartPage = settings.start_page === 'active_trip' ? 'active_trip' : DEFAULT_START_PAGE;
   const startTripTab = isTripTabId(settings.start_trip_tab) ? settings.start_trip_tab : DEFAULT_START_TRIP_TAB;
   const currency = settings.default_currency || '';
-  const currencyLabel = currency ? `${currency} — ${SYMBOLS[currency] || currency}` : t('settings.currencyTrip');
+  const currencyLabel = currency ? `${currencyLabelFn(currency, locale)} — ${SYMBOLS[currency] || currency}` : t('settings.currencyTrip');
   const language = SUPPORTED_LANGUAGES.find((l) => l.value === settings.language) || SUPPORTED_LANGUAGES[0];
 
   const mapPoiHint = settings.map_provider === 'amap' ? t('settings.mapPoiPillHintAmap') : t('settings.mapPoiPillHint');
@@ -163,7 +163,7 @@ export default function MSettingsGeneral() {
         onSelect={(v) => save('default_currency', v)}
         options={[
           { value: '', label: t('settings.currencyTrip') },
-          ...currenciesWith(currency).map((c) => ({ value: c, label: `${c} — ${SYMBOLS[c] || c}` })),
+          ...currenciesWith(currency).map((c) => ({ value: c, label: `${currencyLabelFn(c, locale)} — ${SYMBOLS[c] || c}` })),
         ]}
       />
 

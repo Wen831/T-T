@@ -43,7 +43,7 @@ import GuestBadge from '../shared/GuestBadge';
 import Modal from '../shared/Modal';
 import { NumericInput } from '../shared/NumericInput';
 import { useToast } from '../shared/Toast';
-import { currenciesWith, SPLIT_COLORS, SYMBOLS } from './BudgetPanel.constants';
+import { currenciesWith, currencyLabel, SPLIT_COLORS, SYMBOLS } from './BudgetPanel.constants';
 import type { TripMember } from './BudgetPanelMemberChips';
 import {
   amountPattern,
@@ -2328,18 +2328,24 @@ function SummaryCard({
         }}
       >
         {parts ? (
-          parts.map((p, i) => (
-            <span
-              key={i}
-              style={
-                big(p)
-                  ? undefined
-                  : { fontSize: 'calc(26px * var(--fs-scale-title, 1))', fontWeight: 500, color: muted }
-              }
-            >
-              {p.value}
-            </span>
-          ))
+          parts.map((p, i) => {
+            const localized = p.type === 'currency' ? currencyLabel(currency, locale) : undefined;
+            const nameOverride = localized && localized !== currency.toUpperCase() ? localized : undefined;
+            return (
+              <span
+                key={i}
+                style={
+                  nameOverride
+                    ? { fontSize: 'calc(26px * var(--fs-scale-title, 1))', fontWeight: 500, color: muted, marginRight: 4 }
+                    : big(p)
+                      ? undefined
+                      : { fontSize: 'calc(26px * var(--fs-scale-title, 1))', fontWeight: 500, color: muted }
+                }
+              >
+                {nameOverride || p.value}
+              </span>
+            );
+          })
         ) : (
           <span>{formatMoney(amount, currency, locale)}</span>
         )}
@@ -2421,7 +2427,7 @@ function SettlementModal({
   onClose: () => void;
   onSaved: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const toast = useToast();
   const otherDefault = people.find((p) => p.id !== me)?.id ?? me;
   const [fromId, setFromId] = useState<string>(String(editing?.from_user_id ?? me));
@@ -2566,7 +2572,7 @@ function SettlementModal({
               value={cur}
               onChange={(v) => setCur(String(v))}
               searchable
-              options={currenciesWith(cur).map((c) => ({ value: c, label: SYMBOLS[c] ? `${c}  ${SYMBOLS[c]}` : c }))}
+              options={currenciesWith(cur).map((c) => ({ value: c, label: currencyLabel(c, locale) + (SYMBOLS[c] ? `  ${SYMBOLS[c]}` : '') }))}
               style={{ width: '100%' }}
             />
           </div>
@@ -3067,7 +3073,7 @@ export function ExpenseModal({
                   searchable
                   options={currenciesWith(currency).map((c) => ({
                     value: c,
-                    label: SYMBOLS[c] ? `${c}  ${SYMBOLS[c]}` : c,
+                    label: SYMBOLS[c] ? `${currencyLabel(c, locale)}  ${SYMBOLS[c]}` : currencyLabel(c, locale),
                   }))}
                   style={{ width: '100%' }}
                 />

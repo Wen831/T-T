@@ -1,7 +1,7 @@
 import { ChevronDown, Settings2 } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { adminApi } from '../../../api/client';
-import { SYMBOLS, currenciesWith } from '../../../components/Budget/BudgetPanel.constants';
+import { SYMBOLS, currenciesWith, currencyLabel as currencyLabelFn } from '../../../components/Budget/BudgetPanel.constants';
 import {
   MAPBOX_DEFAULT_STYLE,
   defaultStyleForProvider,
@@ -82,7 +82,7 @@ function styleForProvider(provider: MapProvider, style?: string | null): string 
 // layer (adminApi defaults, per-change auto-save, reset-to-built-in) — only the
 // presentation is relaid on the admin mobile design system.
 export default function MAdminDefaultUserSettings(): React.ReactElement {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const toast = useToast();
   const [defaults, setDefaults] = useState<Defaults>({});
   const [loaded, setLoaded] = useState(false);
@@ -250,8 +250,8 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
 
   const currencyLabel = defaults.default_currency
     ? SYMBOLS[defaults.default_currency]
-      ? `${defaults.default_currency}  ${SYMBOLS[defaults.default_currency]}`
-      : defaults.default_currency
+      ? `${currencyLabelFn(defaults.default_currency, locale)}  ${SYMBOLS[defaults.default_currency]}`
+      : currencyLabelFn(defaults.default_currency, locale)
     : t('settings.currency');
   const tilePresetLabel =
     MAP_PRESETS.find((p) => p.url === mapTileUrl)?.name || t('settings.mapTemplatePlaceholder.select');
@@ -564,7 +564,7 @@ export default function MAdminDefaultUserSettings(): React.ReactElement {
         }}
         options={currenciesWith(defaults.default_currency).map((c) => ({
           value: c,
-          label: SYMBOLS[c] ? `${c}  ${SYMBOLS[c]}` : c,
+          label: SYMBOLS[c] ? `${currencyLabelFn(c, locale)}  ${SYMBOLS[c]}` : currencyLabelFn(c, locale),
         }))}
       />
 

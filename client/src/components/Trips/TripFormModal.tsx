@@ -8,7 +8,7 @@ import { useCanDo } from '../../store/permissionsStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { getApiErrorMessage, type Trip } from '../../types';
 import { normalizeImageFile } from '../../utils/convertHeic';
-import { currenciesWith, SYMBOLS } from '../Budget/BudgetPanel.constants';
+import { currenciesWith, currencyLabel, SYMBOLS } from '../Budget/BudgetPanel.constants';
 import { CustomDatePicker } from '../shared/CustomDateTimePicker';
 import CustomSelect from '../shared/CustomSelect';
 import Modal from '../shared/Modal';
@@ -52,7 +52,7 @@ export default function TripFormModal({
   // The staged cover lives on as an object URL until it is replaced or the modal goes.
   const previewUrlRef = useRef<string | null>(null);
   const toast = useToast();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const currentUser = useAuthStore((s) => s.user);
   const defaultCurrency = useSettingsStore((s) => s.settings.default_currency) || 'EUR';
   const tripRemindersEnabled = useAuthStore((s) => s.tripRemindersEnabled);
@@ -919,7 +919,7 @@ export default function TripFormModal({
                   disabled={!canEditTrip}
                   options={currenciesWith(formData.currency).map((c) => ({
                     value: c,
-                    label: `${c} (${SYMBOLS[c] || c})`,
+                    label: `${currencyLabel(c, locale)} (${SYMBOLS[c] || c})`,
                   }))}
                   searchable
                 />

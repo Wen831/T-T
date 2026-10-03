@@ -5,7 +5,7 @@ import { useTranslation } from '../../i18n';
 import { useAuthStore } from '../../store/authStore';
 import type { DistanceUnit, Place } from '../../types';
 import { normalizeTileUrl, withTileApiKey } from '../../utils/tileUrl';
-import { SYMBOLS, currenciesWith } from '../Budget/BudgetPanel.constants';
+import { SYMBOLS, currenciesWith, currencyLabel } from '../Budget/BudgetPanel.constants';
 import {
   MAPBOX_DEFAULT_STYLE,
   defaultStyleForProvider,
@@ -119,7 +119,7 @@ function OptionButton({
 }
 
 export default function DefaultUserSettingsTab(): React.ReactElement {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const toast = useToast();
   const [defaults, setDefaults] = useState<Defaults>({});
   const [loaded, setLoaded] = useState(false);
@@ -372,7 +372,7 @@ export default function DefaultUserSettingsTab(): React.ReactElement {
           searchable
           options={currenciesWith(defaults.default_currency).map((c) => ({
             value: c,
-            label: SYMBOLS[c] ? `${c}  ${SYMBOLS[c]}` : c,
+            label: SYMBOLS[c] ? `${currencyLabel(c, locale)}  ${SYMBOLS[c]}` : currencyLabel(c, locale),
           }))}
           size="sm"
           style={{ maxWidth: 240 }}

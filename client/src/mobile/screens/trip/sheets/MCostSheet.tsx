@@ -1,6 +1,6 @@
 import { Check, ChevronDown, Plus, Trash2, Wallet } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { SPLIT_COLORS, SYMBOLS, currenciesWith } from '../../../../components/Budget/BudgetPanel.constants';
+import { SPLIT_COLORS, SYMBOLS, currenciesWith, currencyLabel } from '../../../../components/Budget/BudgetPanel.constants';
 import type { TripMember } from '../../../../components/Budget/BudgetPanelMemberChips';
 import { COST_CATEGORY_LIST, catMeta } from '../../../../components/Budget/costsCategories';
 import type { ExpensePrefill } from '../../../../components/Budget/CostsPanel';
@@ -445,7 +445,7 @@ export default function MCostSheet({ tripId, base, people, me, editing, prefill,
               size="sm"
               options={currenciesWith(currency).map((c) => ({
                 value: c,
-                label: SYMBOLS[c] ? `${c}  ${SYMBOLS[c]}` : c,
+                label: SYMBOLS[c] ? `${currencyLabel(c, locale)}  ${SYMBOLS[c]}` : currencyLabel(c, locale),
               }))}
               style={{ width: '100%' }}
             />

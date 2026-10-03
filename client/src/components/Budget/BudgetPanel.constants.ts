@@ -58,6 +58,37 @@ export const SYMBOLS: Record<string, string> = {
   XPT: 'oz t', YER: '﷼', ZAR: 'R', ZMW: 'K', ZWG: 'ZiG',
 }
 
+// Display-name overrides for the Chinese UI (ICU may not know non-standard
+// codes like CNH). Currencies not listed here fall through to Intl.DisplayNames.
+export const CURRENCY_LABELS: Record<string, string> = {
+  CNY: '人民币',
+  CNH: '离岸人民币',
+}
+
+const currencyDisplayNames = new Map<string, Intl.DisplayNames>()
+
+/**
+ * Display name for a currency code. On Chinese UIs the localized Chinese name
+ * is returned (e.g. EUR → 欧元); any other UI language keeps the ISO code, so
+ * nothing changes for non-Chinese users.
+ */
+export function currencyLabel(code: string, uiLocale?: string): string {
+  const cur = (code || '').toUpperCase();
+  if (!cur || !uiLocale || !/^zh/i.test(uiLocale)) return cur;
+  const manual = CURRENCY_LABELS[cur];
+  if (manual) return manual;
+  try {
+    let dn = currencyDisplayNames.get(uiLocale);
+    if (!dn) {
+      dn = new Intl.DisplayNames([uiLocale], { type: 'currency' });
+      currencyDisplayNames.set(uiLocale, dn);
+    }
+    const name = dn.of(cur);
+    if (name && name.toUpperCase() !== cur) return name;
+  } catch { /* fall back to the code */ }
+  return cur;
+}
+
 // Keep a currency the user already saved selectable even after it leaves the
 // supported set (e.g. archived BGN/HRK), so opening an existing item or settings
 // row doesn't silently blank the field and wipe the value on the next save.

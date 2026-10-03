@@ -10,7 +10,7 @@ import {
 import type { Dispatch, SetStateAction } from 'react';
 import type { BudgetItem } from '../../types';
 import { currencyDecimals } from '../../utils/formatters';
-import { SYMBOLS } from './BudgetPanel.constants';
+import { SYMBOLS, currencyLabel } from './BudgetPanel.constants';
 import { hexLighten, widgetTheme } from './BudgetPanel.helpers';
 import PerPersonInline from './BudgetPanelPerPersonInline';
 import RingAvatar from './BudgetPanelRingAvatar';
@@ -139,7 +139,7 @@ export default function BudgetSummary({
             gap: 6,
           }}
         >
-          <span>{currency}</span>
+          <span>{currencyLabel(currency, locale)}</span>
         </div>
 
         {hasMultipleMembers && (budgetItems || []).some((i) => (i.members?.length ?? 0) > 0) && (
@@ -529,7 +529,7 @@ export default function BudgetSummary({
                       marginTop: 2,
                     }}
                   >
-                    {currency}
+                    {currencyLabel(currency, locale)}
                   </div>
                 </div>
               </div>
