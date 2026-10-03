@@ -17,13 +17,32 @@
 // resolves maps.helpers against that mock and throws.
 import { setGeoThrottleInterval } from '../src/nest/geo/nominatim.client';
 
-import { afterEach } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterAll, afterEach } from 'vitest';
 
 // Fixed encryption key (64 hex chars = 32 bytes) for at-rest crypto in tests
 process.env.ENCRYPTION_KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2';
 process.env.NODE_ENV = 'test';
 process.env.COOKIE_SECURE = 'false';
 process.env.LOG_LEVEL = 'error'; // suppress info/debug logs in test output
+
+// Redirect the data dir per test file. config.ts (secret persistence),
+// backup.impl.ts (archive/restore) and auto-backup.settings.ts all anchor
+// server/data through __dirname, which under vitest resolves to the REAL
+// install's data dir — a suite run used to overwrite data/.encryption_key
+// with the test key here, silently orphaning every at-rest-encrypted secret
+// (the instance's AMap keys died exactly this way on 2026-10-03). Each fork
+// gets its own throwaway dir, removed when the file's tests are done.
+process.env.TREK_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'trek-test-data-'));
+afterAll(() => {
+  try {
+    fs.rmSync(process.env.TREK_DATA_DIR!, { recursive: true, force: true });
+  } catch {
+    // Best-effort: a leaked temp dir in %TEMP% is harmless.
+  }
+});
 
 // Several services fire notification sends as unawaited dynamic-import chains
 // (`import('…/notificationService').then(({ send }) => send(…).catch(…))`).

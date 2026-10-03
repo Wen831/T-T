@@ -4,7 +4,14 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const dataDir = path.resolve(__dirname, '../data');
+// TREK_DATA_DIR redirects the whole data directory (secrets, tmp). It exists
+// so the vitest suite can run against a throwaway dir: __dirname anchors at
+// src/ under vitest, i.e. the REAL install's data dir, and a suite run used
+// to overwrite data/.encryption_key with the test key — silently orphaning
+// every at-rest-encrypted secret (the AMap keys died exactly this way).
+const dataDir = process.env.TREK_DATA_DIR
+  ? path.resolve(process.env.TREK_DATA_DIR)
+  : path.resolve(__dirname, '../data');
 const jwtSecretFile = path.join(dataDir, '.jwt_secret');
 
 // ENCRYPTION_KEY is used to derive at-rest encryption keys for stored secrets

@@ -20,7 +20,11 @@ import unzipper from 'unzipper';
 // Paths
 // ---------------------------------------------------------------------------
 
-const dataDir = path.join(__dirname, '../../../data');
+// TREK_DATA_DIR redirects the data dir for the vitest suite: under vitest this
+// __dirname anchor resolves to the REAL install's server/data, and the backup
+// tests would otherwise write archives into it and copy a fixture
+// .encryption_key / travel.db over the live ones on restore.
+const dataDir = process.env.TREK_DATA_DIR ? path.resolve(process.env.TREK_DATA_DIR) : path.join(__dirname, '../../../data');
 
 // Compressed upload cap for restore archives. Defaults to 500 MB, raisable via
 // BACKUP_UPLOAD_LIMIT_MB for instances whose backups (uploads/ included) grow

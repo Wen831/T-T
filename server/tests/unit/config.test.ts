@@ -4,8 +4,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // config.ts resolves its key material at import time, so every case here has to
 // reset the module registry and re-import it with the file system stubbed out.
-const ENC_KEY_FILE = path.resolve(__dirname, '../../data/.encryption_key');
-const JWT_SECRET_FILE = path.resolve(__dirname, '../../data/.jwt_secret');
+// The two paths must be the SAME ones config.ts resolves under the test env —
+// setup.ts redirects the data dir (TREK_DATA_DIR), so stubbing the install's
+// real paths would let the import read the (real) filesystem and succeed.
+const dataDir = process.env.TREK_DATA_DIR ? path.resolve(process.env.TREK_DATA_DIR) : path.resolve(__dirname, '../../data');
+const ENC_KEY_FILE = path.join(dataDir, '.encryption_key');
+const JWT_SECRET_FILE = path.join(dataDir, '.jwt_secret');
 
 const enoent = (): NodeJS.ErrnoException => {
   const err = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException;

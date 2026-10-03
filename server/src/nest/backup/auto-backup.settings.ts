@@ -14,7 +14,9 @@ import path from 'node:path';
  * replicas too.
  */
 
-const dataDir = path.join(__dirname, '../../../data');
+// Same redirect as backup.impl.ts: keep the vitest suite out of the real
+// install's data dir.
+const dataDir = process.env.TREK_DATA_DIR ? path.resolve(process.env.TREK_DATA_DIR) : path.join(__dirname, '../../../data');
 const settingsFile = path.join(dataDir, 'backup-settings.json');
 
 export const VALID_INTERVALS = ['hourly', 'daily', 'weekly', 'monthly'];

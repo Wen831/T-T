@@ -724,7 +724,11 @@ export class AdminService {
   rotateJwtSecret(): { error?: string; status?: number } {
     const newSecret = crypto.randomBytes(32).toString('hex');
     // Re-anchored one directory deeper for nest/admin/ (was '../../data' in services/).
-    const dataDir = path.resolve(__dirname, '../../../data');
+    // TREK_DATA_DIR redirect: without it the vitest suite's rotate test (ADMIN-018)
+    // rewrites the REAL install's .jwt_secret on every run.
+    const dataDir = process.env.TREK_DATA_DIR
+      ? path.resolve(process.env.TREK_DATA_DIR)
+      : path.resolve(__dirname, '../../../data');
     const secretFile = path.join(dataDir, '.jwt_secret');
     try {
       if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
