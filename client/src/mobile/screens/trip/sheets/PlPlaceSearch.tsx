@@ -10,6 +10,7 @@ import {
   isGoogleMapsUrl,
 } from '../../../../components/Planner/PlaceFormModal.helpers';
 import { getApiErrorMessage } from '../../../../utils/apiError';
+import { pointFromBox } from '../../../../hooks/useLocationBias';
 import { PlacesSession } from '../../../../utils/placesSession';
 import type { TripPlanner } from '../MTripShell';
 import { FIELD_CLS } from './PlSheetChrome';
@@ -253,7 +254,7 @@ export default function PlPlaceSearch({
         toast.error(t('places.amapImportFailed'));
         return;
       }
-      const result = await mapsApi.search(trimmed, language, provider);
+      const result = await mapsApi.search(trimmed, language, provider, pointFromBox(locationBias));
       searchMetaRef.current = { query: trimmed, source: result.places?.[0]?.source || 'unknown' };
       setResults(result.places || []);
     } catch (err: unknown) {
@@ -283,7 +284,7 @@ export default function PlPlaceSearch({
       }
       if (!place) {
         const fullQuery = [suggestion.mainText, suggestion.secondaryText].filter(Boolean).join(', ');
-        const search = await mapsApi.search(fullQuery, language, provider);
+        const search = await mapsApi.search(fullQuery, language, provider, pointFromBox(locationBias));
         place = (search.places?.[0] as MapsPlace | undefined) ?? null;
       }
       if (place) {

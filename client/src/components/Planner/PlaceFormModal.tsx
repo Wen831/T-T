@@ -3,7 +3,7 @@ import { AlertTriangle, ImageOff, Loader2, Paperclip, Plus, Search, Star, X } fr
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { mapsApi } from '../../api/client';
 import { recordPlacePick } from '../../api/placeShadow';
-import { useLocationBias } from '../../hooks/useLocationBias';
+import { useLocationBias, pointFromBox } from '../../hooks/useLocationBias';
 import { useTranslation } from '../../i18n';
 import { useAddonStore } from '../../store/addonStore';
 import { useAuthStore } from '../../store/authStore';
@@ -432,7 +432,7 @@ function usePlaceFormModal(props: PlaceFormModalProps) {
         toast.error(t('places.amapImportFailed'));
         return;
       }
-      const result = await mapsApi.search(mapsSearch, language, mapSearchProvider);
+      const result = await mapsApi.search(mapsSearch, language, mapSearchProvider, pointFromBox(locationBias));
       searchMetaRef.current = { query: mapsSearch.trim(), source: result.places?.[0]?.source || 'unknown' };
       setMapsResults(result.places || []);
     } catch (err: unknown) {

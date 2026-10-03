@@ -1524,13 +1524,21 @@ async function withCachedPlaces<T>(
 }
 
 export const mapsApi = {
-  search: (query: string, lang?: string, provider?: 'amap' | 'native') =>
+  // `bias` is the point form of useLocationBias (pointFromBox). Without it the
+  // full search is national: identically named POIs in other provinces outrank
+  // the one next to the day being planned (啤酒小镇 → 菏泽 instead of 深圳).
+  search: (
+    query: string,
+    lang?: string,
+    provider?: 'amap' | 'native',
+    bias?: { lat: number; lng: number; radius?: number }
+  ) =>
     withCachedPlaces(
       query,
       (places) => ({ places, source: 'offline-cache' }),
       async () =>
         apiClient
-          .post(`/maps/search?lang=${lang || 'en'}`, { query, provider })
+          .post(`/maps/search?lang=${lang || 'en'}`, { query, provider, locationBias: bias })
           .then((r) => checkInDev(mapsSearchResultSchema, r.data, 'maps.search'))
     ),
   autocomplete: (
