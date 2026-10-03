@@ -80,6 +80,16 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
     handleValidateKey,
   } = admin;
 
+  // The search source the place features actually draw from, as this page shows
+  // it: the AMap path needs its search switch on AND a Web key saved; a Google
+  // key means Google; neither means the OpenStreetMap fallback.
+  const placesSourceName = amapSearchEnabledState && amapKey
+    ? t('places.source.amap')
+    : mapsKey
+      ? 'Google Places'
+      : 'OpenStreetMap';
+  const placesDataSourceHint = t('admin.placesDataSource', { source: placesSourceName });
+
   return (
     <div className="space-y-6">
       {/* Authentication Methods */}
@@ -465,7 +475,7 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
               <div className="flex items-center justify-between gap-4 border-t border-slate-100 py-3">
                 <div>
                   <p className="text-sm font-medium text-slate-700">{t('admin.placesPhotos.title')}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesPhotos.subtitle')}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesPhotos.subtitle')} {placesDataSourceHint}</p>
                 </div>
                 <ToggleSwitch
                   on={placesPhotosEnabled}
@@ -488,7 +498,7 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
               <div className="flex items-center justify-between gap-4 border-t border-slate-100 py-3">
                 <div>
                   <p className="text-sm font-medium text-slate-700">{t('admin.placesAutocomplete.title')}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesAutocomplete.subtitle')}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesAutocomplete.subtitle')} {placesDataSourceHint}</p>
                 </div>
                 <ToggleSwitch
                   on={placesAutocompleteEnabled}
@@ -511,7 +521,7 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
               <div className="flex items-center justify-between gap-4 border-t border-slate-100 py-3">
                 <div>
                   <p className="text-sm font-medium text-slate-700">{t('admin.placesDetails.title')}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesDetails.subtitle')}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesDetails.subtitle')} {placesDataSourceHint}</p>
                 </div>
                 <ToggleSwitch
                   on={placesDetailsEnabled}
@@ -534,7 +544,7 @@ export default function AdminSettingsTab({ admin, t }: AdminSettingsTabProps): R
               <div className="flex items-center justify-between gap-4 border-t border-slate-100 py-3">
                 <div>
                   <p className="text-sm font-medium text-slate-700">{t('admin.placesEnrich.title')}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesEnrich.subtitle')}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">{t('admin.placesEnrich.subtitle')} {placesDataSourceHint}</p>
                 </div>
                 <ToggleSwitch
                   on={placesEnrichEnabled}

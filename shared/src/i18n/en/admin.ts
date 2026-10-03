@@ -163,17 +163,16 @@ const admin: TranslationStrings = {
   'admin.fileTypesFormat': 'Comma-separated extensions (e.g. jpg,png,pdf,doc). Use * to allow all types.',
   'admin.fileTypesSaved': 'File type settings saved',
   'admin.placesPhotos.title': 'Place Photos',
-  'admin.placesPhotos.subtitle':
-    'Fetch place photos from the current search source: AMap (when an AMap key is configured) or Google Places (when a Google key is configured). Wikimedia photos are unaffected. Disable to save API quota.',
+  'admin.placesPhotos.subtitle': 'Fetch place photos. Wikimedia photos are unaffected. Disable to save API quota.',
   'admin.placesAutocomplete.title': 'Place Autocomplete',
-  'admin.placesAutocomplete.subtitle':
-    'Live suggestions in the search box, from the current search source: AMap (when an AMap key is configured), Google Places (when a Google key is configured), or OpenStreetMap as the fallback when neither is set. Disable to save API quota.',
+  'admin.placesAutocomplete.subtitle': 'Live suggestions while typing in the search box. Disable to save API quota.',
   'admin.placesDetails.title': 'Place Details',
   'admin.placesDetails.subtitle':
-    'Fetch detailed place information (address, phone, rating, hours) from the current search source: AMap (when an AMap key is configured) or Google Places (when a Google key is configured). Disable to save API quota.',
+    'Fetch detailed place information (address, phone, rating, hours). Disable to save API quota.',
+  'admin.placesDataSource': 'Data comes from {source}.',
   'admin.placesEnrich.title': 'Place Enrichment',
   'admin.placesEnrich.subtitle':
-    'Show pictures and a description while adding a place. Wikipedia and OpenStreetMap are always used; the current search source (AMap or Google) is added on top when Place Photos or Place Details are on.',
+    'Show pictures and a description while adding a place. Wikipedia and OpenStreetMap are always used; the current search source is added on top when Place Photos or Place Details are on.',
   'admin.placeShadow.title': 'Place Search Log',
   'admin.placeShadow.subtitle':
     'Record which search result was picked, so a different place index can be measured against real searches later. Nothing leaves this instance, and an admin can export or delete the log at any time.',

@@ -84,6 +84,15 @@ export default function MAdminSettingsSection({ admin, t }: MAdminSettingsSectio
     handleValidateKey,
   } = admin;
 
+  // Same source resolution as the desktop settings tab: the AMap path needs its
+  // search switch on AND a Web key saved, else Google, else OpenStreetMap.
+  const placesSourceName = amapSearchEnabledState && amapKey
+    ? t('places.source.amap')
+    : mapsKey
+      ? 'Google Places'
+      : 'OpenStreetMap';
+  const placesDataSourceHint = t('admin.placesDataSource', { source: placesSourceName });
+
   const saveFileTypes = async () => {
     setSavingFileTypes(true);
     try {
@@ -336,7 +345,7 @@ export default function MAdminSettingsSection({ admin, t }: MAdminSettingsSectio
           <div>
             <MAdminRow
               title={t('admin.placesPhotos.title')}
-              hint={t('admin.placesPhotos.subtitle')}
+              hint={`${t('admin.placesPhotos.subtitle')} ${placesDataSourceHint}`}
               trailing={
                 <MToggle
                   checked={placesPhotosEnabled}
@@ -356,7 +365,7 @@ export default function MAdminSettingsSection({ admin, t }: MAdminSettingsSectio
             />
             <MAdminRow
               title={t('admin.placesAutocomplete.title')}
-              hint={t('admin.placesAutocomplete.subtitle')}
+              hint={`${t('admin.placesAutocomplete.subtitle')} ${placesDataSourceHint}`}
               trailing={
                 <MToggle
                   checked={placesAutocompleteEnabled}
@@ -376,7 +385,7 @@ export default function MAdminSettingsSection({ admin, t }: MAdminSettingsSectio
             />
             <MAdminRow
               title={t('admin.placesDetails.title')}
-              hint={t('admin.placesDetails.subtitle')}
+              hint={`${t('admin.placesDetails.subtitle')} ${placesDataSourceHint}`}
               trailing={
                 <MToggle
                   checked={placesDetailsEnabled}
@@ -396,7 +405,7 @@ export default function MAdminSettingsSection({ admin, t }: MAdminSettingsSectio
             />
             <MAdminRow
               title={t('admin.placesEnrich.title')}
-              hint={t('admin.placesEnrich.subtitle')}
+              hint={`${t('admin.placesEnrich.subtitle')} ${placesDataSourceHint}`}
               trailing={
                 <MToggle
                   checked={placesEnrichEnabled}
