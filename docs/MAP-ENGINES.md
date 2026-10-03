@@ -55,6 +55,7 @@ TT 有三个地图渲染器，由设置项 `map_provider` **三选一**，互斥
 | `engines/amap.ts` | 加载 JS API、`wgs84ToGcj02` / `gcj02ToWgs84`、类型 |
 | `MapViewAMap.tsx` | 渲染器主体：标记、聚合、日路线（含透明命中线）、插件图层 |
 | `amapClusters.ts` | TT 自己的屏幕网格聚合（高德 DOM marker 无稳定聚合契约） |
+| `amapHotspots.ts` | 底图 POI 热点点击（`hotspotclick` → 详情弹窗 → 「添加为地点」；仅高德有热点，另两家无底图标注可点） |
 | `amapOverlays.ts` | 预约 / 定位覆盖层 |
 | `amapDawarichTrail.ts` | 记录轨迹（上游无高德渲染器可移植，TT 自写） |
 | `amapHandover.ts` | 导航交接（交接到高德，不是 Google Maps） |
@@ -80,6 +81,7 @@ TT 有三个地图渲染器，由设置项 `map_provider` **三选一**，互斥
 | 夜间停靠标记 | ✅ | ⬜ 待做 | ✅ |
 | 手动途径点手柄（可拖拽） | ✅ | ⬜ 缺 `attachPin` 等依赖 | ✅ `amapVias.ts` |
 | 服务区停靠录入 | ✅（表单层，与引擎无关） | ✅ | ✅ |
+| 底图 POI 热点点击 | ⬜ 栅格瓦片没有可点标注 | ⬜ OSM 矢量底图无交互 POI 标注 | ✅ `amapHotspots.ts` |
 
 **已完成（本轮）**：
 - 风险图层的高德侧：`amapHazards.ts` —— 一份独立的实现，不照搬 Leaflet 的 `<GeoJSON>`

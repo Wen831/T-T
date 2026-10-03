@@ -747,6 +747,7 @@ function TripPlannerPageDesktop(): React.ReactElement | null {
               }}
               pois={poi.pois}
               onPoiClick={openAddPlaceFromPoi}
+              onHotspotAdd={openAddPlaceFromPoi}
               onViewportChange={poi.onViewportChange}
               onMapReady={setGlMap}
             />

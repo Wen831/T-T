@@ -89,6 +89,8 @@ const places: TranslationStrings = {
   'places.searchProvider': 'Search:',
   'places.searchProviderAmap': 'AMap',
   'places.searchProviderNative': 'TT',
+  'places.amapHotspotAdd': 'Add as place',
+  'places.amapHotspotNoDetail': 'No details available',
   'places.mapsSearchError': 'Place search failed.',
   'places.loadingDetails': 'Loading place details…',
   'places.osmHint':

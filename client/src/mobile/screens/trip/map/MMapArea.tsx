@@ -97,6 +97,7 @@ export default function MMapArea({ planner, shell }: MMapAreaProps) {
         onReservationClick={(rid: number) => shell.openSheet('transport', { reservationId: rid })}
         pois={poi.pois}
         onPoiClick={(marker) => planner.openAddPlaceFromPoi(marker, planner.selectedDayId)}
+        onHotspotAdd={(poi) => planner.openAddPlaceFromPoi(poi, planner.selectedDayId)}
         onViewportChange={poi.onViewportChange}
         onMapReady={setGlMap}
       />

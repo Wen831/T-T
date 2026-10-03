@@ -87,6 +87,8 @@ const places: TranslationStrings = {
   'places.searchProvider': '搜索源：',
   'places.searchProviderAmap': '高德',
   'places.searchProviderNative': 'TT',
+  'places.amapHotspotAdd': '添加为地点',
+  'places.amapHotspotNoDetail': '暂无详细信息',
   'places.mapsSearchError': '地点搜索失败。',
   'places.loadingDetails': '正在加载地点详情…',
   'places.osmHint': '使用 OpenStreetMap 搜索（无照片、营业时间或评分）。在设置中添加 Google API 密钥以获取完整信息。',

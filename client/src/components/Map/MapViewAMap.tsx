@@ -9,6 +9,7 @@ import type { RouteVia } from '../../types';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import { MapView } from './MapView';
 import { clusterAMapPoints, type AMapPlaceCluster } from './amapClusters';
+import { attachAmapHotspots } from './amapHotspots';
 import { applyTrackAmap, type TrailMap, type TrailOverlayApi } from './amapDawarichTrail';
 import { applyHazardsAmap, type AmapHazardApi, type AmapHazardMap } from './amapHazards';
 import { ReservationAMapOverlay, attachLocationAMapOverlay } from './amapOverlays';
@@ -62,8 +63,16 @@ export function MapViewAMap(props: any) {
   const reservationOverlayRef = useRef<ReservationAMapOverlay | null>(null);
   const locationOverlayRef = useRef<ReturnType<typeof attachLocationAMapOverlay> | null>(null);
   const suppressMapClickRef = useRef(false);
-  const callbacksRef = useRef({ onMapClick: props.onMapClick, onMapContextMenu: props.onMapContextMenu });
-  callbacksRef.current = { onMapClick: props.onMapClick, onMapContextMenu: props.onMapContextMenu };
+  const callbacksRef = useRef({ onMapClick: props.onMapClick, onMapContextMenu: props.onMapContextMenu, onHotspotAdd: props.onHotspotAdd });
+  callbacksRef.current = { onMapClick: props.onMapClick, onMapContextMenu: props.onMapContextMenu, onHotspotAdd: props.onHotspotAdd };
+  // Basemap-hotspot popup labels, refreshed each render so a language switch
+  // reaches the popup without re-binding the map listener.
+  const hotspotLabelsRef = useRef({ add: '', loading: '', noDetail: '' });
+  hotspotLabelsRef.current = {
+    add: t('places.amapHotspotAdd'),
+    loading: t('places.loadingDetails'),
+    noDetail: t('places.amapHotspotNoDetail'),
+  };
   const suppressMapClick = () => {
     suppressMapClickRef.current = true;
     queueMicrotask(() => {
@@ -93,6 +102,7 @@ export function MapViewAMap(props: any) {
     let onMapClick: ((event: any) => void) | null = null;
     let onContextMenu: ((event: any) => void) | null = null;
     let onZoomEnd: (() => void) | null = null;
+    let detachHotspots: (() => void) | null = null;
     loadAmap(settingsKey)
       .then((AMap) => {
         if (cancelled || !hostRef.current) return;
@@ -132,6 +142,18 @@ export function MapViewAMap(props: any) {
         map.on('click', onMapClick);
         map.on('contextmenu', onContextMenu);
         map.on('zoomend', onZoomEnd);
+        // Basemap POI labels open a detail popup with an "add as place" action.
+        // Bound only when a consumer actually adds — other embeds keep labels inert.
+        detachHotspots = props.onHotspotAdd
+          ? attachAmapHotspots({
+              map,
+              AMap,
+              info: infoRef,
+              suppressClick: suppressMapClick,
+              getLabels: () => hotspotLabelsRef.current,
+              onAdd: (poi) => callbacksRef.current.onHotspotAdd?.(poi),
+            })
+          : null;
         setMapZoom(Number(map.getZoom?.() ?? props.zoom ?? 5));
         setReady(true);
       })
@@ -149,6 +171,7 @@ export function MapViewAMap(props: any) {
         if (onContextMenu) map.off('contextmenu', onContextMenu);
         if (onZoomEnd) map.off('zoomend', onZoomEnd);
       }
+      detachHotspots?.();
       trailRef.current?.clear();
       trailRef.current = null;
       reservationOverlayRef.current?.destroy();

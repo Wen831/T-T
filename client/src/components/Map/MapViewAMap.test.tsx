@@ -153,7 +153,7 @@ vi.mock('../../api/client', () => ({
     mapLayers: vi.fn(() => Promise.resolve({ layers: [] })),
   },
   mapsApi: {
-    // Add any mapsApi methods if needed
+    details: vi.fn(async () => ({ place: null })),
   },
 }));
 
@@ -642,5 +642,55 @@ describe('MapViewAMap camera framing', () => {
     );
 
     expect(map.setFitView.mock.calls.length).toBeGreaterThan(before);
+  });
+});
+
+describe('MapViewAMap basemap hotspots', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    currentMockInstance = null;
+  });
+
+  it('FE-COMP-MAPVIEWAMAP-042: a hotspot tap opens the popup and add hands the POI over in WGS-84', async () => {
+    const onHotspotAdd = vi.fn();
+    render(<MapViewAMap places={[]} zoom={10} center={[39.908, 116.397]} onHotspotAdd={onHotspotAdd} />);
+    await waitFor(() => expect(currentMockInstance).toBeTruthy(), { timeout: 3000 });
+    const { map, AMap } = currentMockInstance!;
+    await waitFor(() => expect(map.on).toHaveBeenCalled(), { timeout: 3000 });
+
+    map.trigger('hotspotclick', {
+      lnglat: { getLng: () => 114.06, getLat: () => 22.55 },
+      name: 'BREWTOWN啤酒小镇',
+      id: 'B777',
+    });
+
+    await waitFor(() => expect(AMap.InfoWindow).toHaveBeenCalled(), { timeout: 3000 });
+    const info = AMap.InfoWindow.mock.results[0].value;
+    expect(info.open).toHaveBeenCalled();
+    const element = info.setContent.mock.calls[0][0] as HTMLDivElement;
+    expect(element.textContent).toContain('BREWTOWN啤酒小镇');
+
+    // The add button works without waiting for the (null) detail answer.
+    (element.querySelector('button') as HTMLButtonElement).click();
+    expect(onHotspotAdd).toHaveBeenCalledTimes(1);
+    // The mocked gcj02ToWgs84 subtracts 0.006 — the datum crossing actually happened.
+    const poi = onHotspotAdd.mock.calls[0][0];
+    expect(poi.lat).toBeCloseTo(22.544, 6);
+    expect(poi.lng).toBeCloseTo(114.054, 6);
+    expect(poi).toEqual(expect.objectContaining({ name: 'BREWTOWN啤酒小镇', osm_id: 'amap:B777' }));
+    expect(info.close).toHaveBeenCalled();
+
+    const { mapsApi } = await import('../../api/client');
+    expect((mapsApi.details as any).mock.calls.some((c: unknown[]) => c[0] === 'amap:B777')).toBe(true);
+  });
+
+  it('FE-COMP-MAPVIEWAMAP-043: without onHotspotAdd the hotspot listener is never bound', async () => {
+    render(<MapViewAMap places={[]} zoom={10} center={[39.908, 116.397]} />);
+    await waitFor(() => expect(currentMockInstance).toBeTruthy(), { timeout: 3000 });
+    const { map } = currentMockInstance!;
+    await waitFor(() => expect(map.on).toHaveBeenCalled(), { timeout: 3000 });
+    const events = map.on.mock.calls.map((c: unknown[]) => c[0]);
+    expect(events).toContain('click');
+    expect(events).not.toContain('hotspotclick');
   });
 });
