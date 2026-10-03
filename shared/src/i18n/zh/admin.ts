@@ -117,15 +117,17 @@ const admin: TranslationStrings = {
   'admin.fileTypesFormat': '以逗号分隔的扩展名（如 jpg,png,pdf,doc）。使用 * 允许所有类型。',
   'admin.fileTypesSaved': '文件类型设置已保存',
   'admin.placesPhotos.title': '地点照片',
-  'admin.placesPhotos.subtitle': '从 Google Places API 获取照片。禁用可节省 API 配额。Wikimedia 照片不受影响。',
+  'admin.placesPhotos.subtitle':
+    '获取地点照片，数据来自当前搜索源：高德（配置了高德 Key 时）或 Google Places（配置了 Google Key 时）。Wikimedia 照片不受影响。禁用可节省 API 配额。',
   'admin.placesAutocomplete.title': '地点自动补全',
-  'admin.placesAutocomplete.subtitle': '使用 Google Places API 提供搜索建议。禁用可节省 API 配额。',
+  'admin.placesAutocomplete.subtitle':
+    '搜索框边输入边出联想建议，数据来自当前搜索源：高德（配置了高德 Key 时）或 Google Places（配置了 Google Key 时），未配置任何 Key 时回退 OpenStreetMap。禁用可节省 API 配额。',
   'admin.placesDetails.title': '地点详情',
   'admin.placesDetails.subtitle':
-    '从 Google Places API 获取地点详细信息（营业时间、评分、网站）。禁用可节省 API 配额。',
+    '获取地点详细信息（地址、电话、评分、营业时间），数据来自当前搜索源：高德（配置了高德 Key 时）或 Google Places（配置了 Google Key 时）。禁用可节省 API 配额。',
   'admin.placesEnrich.title': '地点信息补充',
   'admin.placesEnrich.subtitle':
-    '添加地点时显示图片和描述。始终使用维基百科和 OpenStreetMap；开启「地点照片」或「地点详情」时会额外使用 Google。',
+    '添加地点时显示图片和描述。始终使用维基百科和 OpenStreetMap；开启「地点照片」或「地点详情」时会额外使用当前搜索源（高德或 Google）。',
   'admin.placeShadow.title': '地点搜索记录',
   'admin.placeShadow.subtitle':
     '记录用户选中了哪条搜索结果，以便日后用真实的搜索来评估另一套地点索引。数据不会离开本实例，管理员随时可以导出或删除记录。',
