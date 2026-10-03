@@ -307,7 +307,16 @@ describe('resolveOidcRole', () => {
 describe('frontendUrl', () => {
   it('OIDC-SVC-015: prepends localhost:5173 in non-production', () => {
     delete process.env.NODE_ENV;
-    expect(svc.frontendUrl('/login?oidc_code=abc')).toBe('http://localhost:5173/login?oidc_code=abc');
+    // The gate is `production || hasBuiltClient()`, so the answer depends on
+    // whether server/public holds a staged client — true on a machine that
+    // deployed the build (this Windows install) and false on a dev checkout.
+    // Pin it false: this case is about the Vite prefix, not the gate.
+    const spy = vi.spyOn(fs, 'existsSync').mockReturnValue(false);
+    try {
+      expect(svc.frontendUrl('/login?oidc_code=abc')).toBe('http://localhost:5173/login?oidc_code=abc');
+    } finally {
+      spy.mockRestore();
+    }
   });
 
   it('OIDC-SVC-016: returns bare path in production', () => {

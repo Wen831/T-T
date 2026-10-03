@@ -47,7 +47,25 @@ describe('LocalDriver specifics', () => {
     while (dirs.length) fs.rmSync(dirs.pop()!, { recursive: true, force: true });
   });
 
-  it('realpaths a symlinked root and confines keys to the real directory', async () => {
+  // Windows grants symlink creation only to administrators or processes with
+  // Developer Mode enabled — everywhere else the attempt dies with EPERM before
+  // the driver is even constructed. Probe once and skip where the OS refuses:
+  // CI (Linux) and privileged machines still run the case, an unprivileged
+  // Windows box gets a skip instead of a red herring.
+  const canSymlink = (() => {
+    try {
+      const target = fs.mkdtempSync(path.join(os.tmpdir(), 'trek-symlink-probe-'));
+      const link = `${target}-link`;
+      fs.symlinkSync(target, link);
+      fs.rmSync(link);
+      fs.rmSync(target, { recursive: true, force: true });
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  it.runIf(canSymlink)('realpaths a symlinked root and confines keys to the real directory', async () => {
     // Docker symlinks BOTH storage anchors (/app/server/uploads → /app/uploads,
     // /app/server/data → /app/data), so this is the deployed shape, not an edge.
     const realdir = tmp();

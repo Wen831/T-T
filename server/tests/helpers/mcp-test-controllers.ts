@@ -322,14 +322,22 @@ export function createMcpTestRegistry(): McpRegistry {
         authService,
         addonsService,
       ),
-      // TransitService takes the Google backend now (#1699); this harness stands up the
-      // Transitous path, so the backend is injected inactive.
+      // TransitService takes the Google and AMap backends now (#1699 + the 高德
+      // transit provider); this harness stands up the Transitous path, so both
+      // are injected inactive.
       new TransitMcp(
-        new TransitService({
-          isActive: () => false,
-          geocode: async () => ({ results: [] }),
-          plan: async () => ({ itineraries: [] }),
-        } as unknown as ConstructorParameters<typeof TransitService>[0]),
+        new TransitService(
+          {
+            isActive: () => false,
+            geocode: async () => ({ results: [] }),
+            plan: async () => ({ itineraries: [] }),
+          } as unknown as ConstructorParameters<typeof TransitService>[0],
+          {
+            isActive: () => false,
+            geocode: async () => ({ results: [] }),
+            plan: async () => ({ itineraries: [] }),
+          } as unknown as ConstructorParameters<typeof TransitService>[1],
+        ),
         daysService,
         reservationsService,
         dbService,
