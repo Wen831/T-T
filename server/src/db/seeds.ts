@@ -113,17 +113,19 @@ function seedCategories(db: Database.Database): void {
   try {
     const existingCats = db.prepare('SELECT COUNT(*) as count FROM categories').get() as { count: number };
     if (existingCats.count === 0) {
+      // Chinese default names: this fork runs a zh UI, and these seed once into
+      // the DB where the user can still rename them per-trip afterwards.
       const defaultCategories = [
-        { name: 'Hotel', color: '#3b82f6', icon: '🏨' },
-        { name: 'Restaurant', color: '#ef4444', icon: '🍽️' },
-        { name: 'Attraction', color: '#8b5cf6', icon: '🏛️' },
-        { name: 'Shopping', color: '#f59e0b', icon: '🛍️' },
-        { name: 'Transport', color: '#6b7280', icon: '🚌' },
-        { name: 'Activity', color: '#10b981', icon: '🎯' },
-        { name: 'Bar/Cafe', color: '#f97316', icon: '☕' },
-        { name: 'Beach', color: '#06b6d4', icon: '🏖️' },
-        { name: 'Nature', color: '#84cc16', icon: '🌿' },
-        { name: 'Other', color: '#6366f1', icon: '📍' },
+        { name: '酒店', color: '#3b82f6', icon: '🏨' },
+        { name: '餐厅', color: '#ef4444', icon: '🍽️' },
+        { name: '景点', color: '#8b5cf6', icon: '🏛️' },
+        { name: '购物', color: '#f59e0b', icon: '🛍️' },
+        { name: '交通', color: '#6b7280', icon: '🚌' },
+        { name: '活动', color: '#10b981', icon: '🎯' },
+        { name: '酒吧/咖啡馆', color: '#f97316', icon: '☕' },
+        { name: '海滩', color: '#06b6d4', icon: '🏖️' },
+        { name: '自然', color: '#84cc16', icon: '🌿' },
+        { name: '其他', color: '#6366f1', icon: '📍' },
       ];
       const insertCat = db.prepare('INSERT INTO categories (name, color, icon) VALUES (?, ?, ?)');
       for (const cat of defaultCategories) insertCat.run(cat.name, cat.color, cat.icon);
