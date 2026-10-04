@@ -439,7 +439,7 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
     from: TransitLegStop,
     to: TransitLegStop,
     durationSec: number,
-    opts: { line?: string | null; lineColor?: string | null; headsign?: string | null; geometry?: string | null; intermediateStops?: number; explicitStartMs?: number | null } = {},
+    opts: { line?: string | null; lineColor?: string | null; headsign?: string | null; geometry?: string | null; intermediateStops?: number; intermediateStopNames?: string[]; explicitStartMs?: number | null } = {},
   ): void => {
     if (typeof opts.explicitStartMs === 'number') cursor = opts.explicitStartMs;
     const fromMs = cursor;
@@ -462,6 +462,7 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
       lineTextColor: null,
       agency: null,
       intermediateStops: opts.intermediateStops ?? 0,
+      intermediateStopNames: opts.intermediateStopNames ?? [],
       geometry: opts.geometry ?? null,
       geometryPrecision: 6,
     });
@@ -537,6 +538,11 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
       const viaCount = Array.isArray(line.via_stops)
         ? line.via_stops.length
         : num(line.via_num);
+      // v3 names the intermediate stops (via_stops[]) — carry them so the
+      // itinerary can show what is passed along the way, not just a count.
+      const viaNames = Array.isArray(line.via_stops)
+        ? line.via_stops.map((s) => String(s?.name || '').trim()).filter(Boolean)
+        : [];
       const prev = legs[legs.length - 1];
       if (prev) {
         fromStop.name = fromStop.name === 'START' && prev.to.name ? prev.to.name : fromStop.name;
@@ -547,6 +553,7 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
         line: lineName || null,
         lineColor: safeColor(line.color),
         intermediateStops: viaCount,
+        intermediateStopNames: viaNames,
         geometry,
         explicitStartMs: depMs,
       });
@@ -584,6 +591,9 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
       pushLeg(mode, fromStop, toStop, durationSec, {
         line: trip || null,
         intermediateStops: Array.isArray(rail.via_stops) ? rail.via_stops.length : 0,
+        intermediateStopNames: Array.isArray(rail.via_stops)
+          ? rail.via_stops.map((s) => String(s?.name || '').trim()).filter(Boolean)
+          : [],
         geometry,
         explicitStartMs: depHm,
       });

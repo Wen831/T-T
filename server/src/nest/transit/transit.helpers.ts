@@ -65,6 +65,8 @@ export interface TransitLeg {
   lineTextColor: string | null;
   agency: string | null;
   intermediateStops: number;
+  /** Stop names between from and to, in order — absent when the provider only counts them. */
+  intermediateStopNames?: string[];
   /** Encoded polyline of the leg's real path (Google encoding) + its precision. */
   geometry: string | null;
   geometryPrecision: number;

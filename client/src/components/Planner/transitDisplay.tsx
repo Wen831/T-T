@@ -16,6 +16,8 @@ export interface TransitLegDisplay {
   duration?: number;
   headsign?: string | null;
   stops?: number;
+  /** Names of the intermediate stops, in order — null when the provider only counts. */
+  stop_names?: (string | null)[] | null;
   from?: { name?: string; time?: string | null; track?: string | null };
   to?: { name?: string; time?: string | null; track?: string | null };
 }
@@ -76,6 +78,144 @@ export function TransitWalkDivider({
 }
 
 /**
+ * One transit leg row of the inline itinerary, with its intermediate stops
+ * folded away: the stops count is a button when the leg carries their names,
+ * clicking unfolds the list (collapsed by default — a metro leg can pass a
+ * dozen stations the reader may not care about).
+ */
+function TransitInlineLeg({
+  leg,
+  t,
+}: {
+  leg: TransitLegDisplay;
+  t: (k: string, p?: Record<string, string | number>) => string;
+}) {
+  const [showStops, setShowStops] = React.useState(false);
+  const mins = leg.duration ? Math.round(leg.duration / 60) : null;
+  const stopNames = (leg.stop_names ?? []).filter((s): s is string => !!s);
+  const stopsExpandable = stopNames.length > 0;
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}>
+      <span
+        className="text-content-muted"
+        style={{
+          width: 34,
+          flexShrink: 0,
+          textAlign: 'right',
+          fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
+          fontWeight: 600,
+          paddingTop: 1,
+        }}
+      >
+        {leg.from?.time || ''}
+      </span>
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          borderRadius: 4,
+          padding: '0 5px',
+          fontSize: 'calc(9.5px * var(--fs-scale-caption, 1))',
+          fontWeight: 700,
+          lineHeight: '15px',
+          flexShrink: 0,
+          background: leg.line_color || 'var(--bg-tertiary)',
+          color: leg.line_color ? leg.line_text_color || '#fff' : 'var(--text-primary)',
+        }}
+      >
+        {leg.line || leg.mode}
+      </span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          className="text-content"
+          style={{
+            fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
+            fontWeight: 500,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            minWidth: 0,
+          }}
+        >
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {leg.from?.name}
+          </span>
+          <MoveRight size={10} className="text-content-faint" style={{ flexShrink: 0 }} />
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {leg.to?.name}
+          </span>
+        </div>
+        <div
+          className="text-content-faint"
+          style={{ fontSize: 'calc(9.5px * var(--fs-scale-caption, 1))', marginTop: 1 }}
+        >
+          {[
+            mins ? t('transit.min', { count: mins }) : null,
+            leg.stops ? (
+              stopsExpandable ? (
+                <button
+                  key="stops"
+                  type="button"
+                  onClick={() => setShowStops((v) => !v)}
+                  title={t('transit.viaStops')}
+                  className="text-content-faint"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    font: 'inherit',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    textDecoration: 'underline dotted',
+                    textUnderlineOffset: 2,
+                  }}
+                >
+                  {t('transit.stops', { count: leg.stops })}
+                  {showStops ? ' ▲' : ' ▼'}
+                </button>
+              ) : (
+                t('transit.stops', { count: leg.stops })
+              )
+            ) : null,
+            leg.from?.track ? t('transit.platform', { track: leg.from.track }) : null,
+          ]
+            .filter(Boolean)
+            .map((part, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && <span style={{ opacity: 0.6 }}>{' · '}</span>}
+                {part}
+              </React.Fragment>
+            ))}
+        </div>
+        {showStops && stopsExpandable && (
+          <div
+            className="text-content-faint"
+            style={{
+              fontSize: 'calc(9.5px * var(--fs-scale-caption, 1))',
+              marginTop: 3,
+              padding: '4px 8px',
+              borderRadius: 6,
+              background: 'var(--bg-tertiary)',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '2px 8px',
+              lineHeight: 1.5,
+            }}
+          >
+            {stopNames.map((name, i) => (
+              <span key={i} style={{ whiteSpace: 'nowrap' }}>
+                {name}
+                {i < stopNames.length - 1 && <span style={{ opacity: 0.45 }}>{' ›'}</span>}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
  * The itinerary folded out right inside the day-plan row (#1065): one compact
  * line per leg — time, badge or foot icon, stations — sized for the sidebar.
  */
@@ -90,73 +230,7 @@ export function TransitItineraryInline({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
       {legs.map((leg, i) => {
         if (leg.mode === 'WALK') return <TransitWalkDivider key={i} leg={leg} t={t} size="sm" />;
-        const mins = leg.duration ? Math.round(leg.duration / 60) : null;
-        return (
-          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}>
-            <span
-              className="text-content-muted"
-              style={{
-                width: 34,
-                flexShrink: 0,
-                textAlign: 'right',
-                fontSize: 'calc(10px * var(--fs-scale-caption, 1))',
-                fontWeight: 600,
-                paddingTop: 1,
-              }}
-            >
-              {leg.from?.time || ''}
-            </span>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                borderRadius: 4,
-                padding: '0 5px',
-                fontSize: 'calc(9.5px * var(--fs-scale-caption, 1))',
-                fontWeight: 700,
-                lineHeight: '15px',
-                flexShrink: 0,
-                background: leg.line_color || 'var(--bg-tertiary)',
-                color: leg.line_color ? leg.line_text_color || '#fff' : 'var(--text-primary)',
-              }}
-            >
-              {leg.line || leg.mode}
-            </span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                className="text-content"
-                style={{
-                  fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
-                  fontWeight: 500,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  minWidth: 0,
-                }}
-              >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {leg.from?.name}
-                </span>
-                <MoveRight size={10} className="text-content-faint" style={{ flexShrink: 0 }} />
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {leg.to?.name}
-                </span>
-              </div>
-              <div
-                className="text-content-faint"
-                style={{ fontSize: 'calc(9.5px * var(--fs-scale-caption, 1))', marginTop: 1 }}
-              >
-                {[
-                  mins ? t('transit.min', { count: mins }) : null,
-                  leg.stops ? t('transit.stops', { count: leg.stops }) : null,
-                  leg.from?.track ? t('transit.platform', { track: leg.from.track }) : null,
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </div>
-            </div>
-          </div>
-        );
+        return <TransitInlineLeg key={i} leg={leg} t={t} />;
       })}
     </div>
   );

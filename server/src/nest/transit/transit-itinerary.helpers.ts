@@ -67,6 +67,9 @@ const transitLegSchema = z.object({
   lineTextColor: colorSchema,
   agency: z.string().max(300).nullable(),
   intermediateStops: z.number().int().nonnegative(),
+  // Optional both ways: Transitous/Google legs only count their stops, and
+  // itineraries built before AMap started naming them carry no list either.
+  intermediateStopNames: z.array(z.string().max(200)).max(100).nullable().optional(),
   geometry: z.string().max(MAX_GEOMETRY_CHARS).nullable(),
   geometryPrecision: z.number().int().min(0).max(10),
 });
@@ -292,6 +295,7 @@ export function buildTransitReservationParts(
           agency: leg.agency,
           duration: leg.duration,
           stops: leg.intermediateStops,
+          stop_names: leg.intermediateStopNames?.length ? leg.intermediateStopNames : null,
           from: {
             name: leg.from.name,
             time: fromTime ? transitLocalParts(fromTime, timezoneFor(leg.from.lat, leg.from.lng)).time : null,
