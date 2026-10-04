@@ -3,7 +3,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { pluginsApi, type PluginMapLayer, type PluginMapMarker } from '../../api/client';
 import { useGeolocation } from '../../hooks/useGeolocation';
+import { useTransportRoutes } from '../../hooks/useTransportRoutes';
 import { useTranslation } from '../../i18n';
+import { useAuthStore } from '../../store/authStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import type { RouteVia } from '../../types';
 import ErrorBoundary from '../shared/ErrorBoundary';
@@ -14,6 +16,7 @@ import { applyTrackAmap, type TrailMap, type TrailOverlayApi } from './amapDawar
 import { applyHazardsAmap, type AmapHazardApi, type AmapHazardMap } from './amapHazards';
 import { ReservationAMapOverlay, attachLocationAMapOverlay } from './amapOverlays';
 import { applyViasAmap, type AmapViaApi, type AmapViaManager, type AmapViaMap } from './amapVias';
+import { visibleRouteReservations } from '../../utils/reservationRoutes';
 import { gcj02ToWgs84, loadAmap, wgs84ToGcj02, type AMapMap, type AMapModule, type AMapOverlay } from './engines/amap';
 import { hazardPopup } from './hazardPopup';
 import { NIGHT_PAUSE_MIN_ZOOM, nightPauseMarker } from './nightPauseMarker';
@@ -62,6 +65,29 @@ export function MapViewAMap(props: any) {
   const infoRef = useRef<any>(null);
   const reservationOverlayRef = useRef<ReservationAMapOverlay | null>(null);
   const locationOverlayRef = useRef<ReturnType<typeof attachLocationAMapOverlay> | null>(null);
+
+  // Which bookings draw a line, under the same rules the Leaflet/GL maps use:
+  // transit journeys ride the day's route toggle, every other booking its own
+  // connection toggle (#1065/#2019). Before this, the AMap overlay ignored
+  // visibleConnectionIds entirely, so the per-booking toggles did nothing and
+  // every booking drew a straight endpoint-to-endpoint line whenever the day
+  // route toggle was on.
+  const visibleReservations = useMemo(
+    () =>
+      visibleRouteReservations(props.reservations || [], {
+        visibleConnectionIds: props.visibleConnectionIds,
+        showTransitRoutes: !!props.showTransitRoutes,
+        selectedDayId: props.selectedDayId,
+        days: props.days,
+      }),
+    [props.reservations, props.visibleConnectionIds, props.showTransitRoutes, props.selectedDayId, props.days]
+  );
+  // Road-network geometry for the road-based bookings among them. On an AMap
+  // instance the lines come from the server's traffic-aware proxy instead of
+  // the public OSRM servers, whose Chinese road networks are thin; a routing
+  // failure still falls back to the straight line.
+  const hasAmapKey = useAuthStore((s) => s.hasAmapKey);
+  const transportRoutes = useTransportRoutes(visibleReservations, hasAmapKey);
   const suppressMapClickRef = useRef(false);
   const callbacksRef = useRef({ onMapClick: props.onMapClick, onMapContextMenu: props.onMapContextMenu, onHotspotAdd: props.onHotspotAdd });
   callbacksRef.current = { onMapClick: props.onMapClick, onMapContextMenu: props.onMapContextMenu, onHotspotAdd: props.onHotspotAdd };
@@ -615,16 +641,18 @@ export function MapViewAMap(props: any) {
     const AMap = amapRef.current;
     if (!map || !AMap || !ready) return;
     if (!reservationOverlayRef.current) reservationOverlayRef.current = new ReservationAMapOverlay(map, AMap);
-    const reservations = props.reservations || [];
-    reservationOverlayRef.current.update(reservations, {
-      showConnections: props.showTransitRoutes !== false,
+    // The list is pre-filtered by the visibility rules, so everything in it
+    // draws; road-routed bookings pass their real geometry, and anything the
+    // router could not resolve keeps the straight-line fallback.
+    reservationOverlayRef.current.update(visibleReservations, {
+      showConnections: true,
       showEndpointLabels: !!props.showReservationStats,
       onEndpointClick: (reservationId: number) => {
         suppressMapClick();
         props.onReservationClick?.(reservationId);
       },
-    });
-  }, [props.reservations, props.showTransitRoutes, props.showReservationStats, props.onReservationClick, ready]);
+    }, transportRoutes);
+  }, [visibleReservations, transportRoutes, props.showReservationStats, props.onReservationClick, ready]);
 
   useEffect(() => {
     const map = mapRef.current;

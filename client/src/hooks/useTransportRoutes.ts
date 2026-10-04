@@ -42,7 +42,7 @@ function orderedWaypoints(r: Reservation): ReservationEndpoint[] {
  * Routing runs once per reservation waypoint-set and is cached across the app
  * by RouteCalculator, so day switches and re-renders don't re-fetch.
  */
-export function useTransportRoutes(reservations: Reservation[]): Map<number, [number, number][]> {
+export function useTransportRoutes(reservations: Reservation[], amapProfiles = false): Map<number, [number, number][]> {
   const [routes, setRoutes] = useState<Map<number, [number, number][]>>(new Map())
   // id → waypoint signature already fetched/attempted, so an unchanged booking
   // is never re-requested even as the reservations array identity churns.
@@ -54,10 +54,14 @@ export function useTransportRoutes(reservations: Reservation[]): Map<number, [nu
     // it here — rather than reading `attemptedRef.current` again inside the
     // cleanup below — is equivalent and keeps the cleanup lint-clean.
     const attempted = attemptedRef.current
-    const jobs: { id: number; profile: 'driving' | 'cycling'; points: { lat: number; lng: number }[] }[] = []
+    const jobs: { id: number; profile: string; points: { lat: number; lng: number }[] }[] = []
     for (const r of reservations) {
-      const profile = ROAD_PROFILE[r.type]
-      if (!profile) continue
+      const base = ROAD_PROFILE[r.type]
+      if (!base) continue
+      // AMap-hosted instances route through the server proxy (traffic-aware,
+      // and OSRM's public servers carry thin Chinese road networks); the
+      // built-in profiles stay for every other map.
+      const profile = amapProfiles ? `amap:${base}` : base
       const wps = orderedWaypoints(r)
       if (wps.length < 2) continue
       let dist = 0
@@ -115,7 +119,7 @@ export function useTransportRoutes(reservations: Reservation[]): Map<number, [nu
         if (!settledIds.has(job.id)) attempted.delete(job.id)
       }
     }
-  }, [reservations])
+  }, [reservations, amapProfiles])
 
   return routes
 }
