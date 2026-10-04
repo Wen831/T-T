@@ -12,6 +12,14 @@ function profileIcon(profile: string) {
 
 /** Slim travel-time connector shown between two consecutive located stops in a day. */
 export function RouteConnector({ seg, profile }: { seg: RouteSegment; profile: string }) {
+  // A booking anchored to the place it departs from (a metro stop that IS the
+  // place) pairs that place with its own coordinates and routes a zero-metre
+  // leg — "0 min · 0 m" as pure noise. No road between two identical points.
+  const sameSpot =
+    !!seg.from && !!seg.to
+      ? Math.abs(seg.from[0] - seg.to[0]) + Math.abs(seg.from[1] - seg.to[1]) < 3e-4
+      : false;
+  if (sameSpot) return null;
   // The leg's own mode (#1281) wins over the day-wide fallback for icon + text.
   const effProfile = seg.mode ?? profile;
   const driving = effProfile !== 'walking';

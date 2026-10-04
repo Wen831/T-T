@@ -119,7 +119,14 @@ export function useRouteCalculation(tripStore: TripStoreState, selectedDayId: nu
     let currentRun: RunPoint[] = []
     let runHasPlace = false
     const closeRun = () => {
-      if (currentRun.length >= 2 && runHasPlace) runs.push(currentRun)
+      // A run whose points all land on one spot (a booking anchored to the place
+      // it departs from — the metro stop that IS the stop) has no road to draw:
+      // routing it yields a zero-metre leg that renders as map noise. Mirrors
+      // dayRoutePlan.ts's buildDayRouteRuns.
+      const lats = currentRun.map((p) => p.lat)
+      const lngs = currentRun.map((p) => p.lng)
+      const spread = Math.max(...lats) - Math.min(...lats) + (Math.max(...lngs) - Math.min(...lngs))
+      if (currentRun.length >= 2 && runHasPlace && spread > 1e-4) runs.push(currentRun)
       currentRun = []
       runHasPlace = false
     }

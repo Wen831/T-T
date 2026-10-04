@@ -105,4 +105,31 @@ describe('buildDayRouteRuns', () => {
   it('FE-MAP-DRP-008: a day that is not in the trip has no route', () => {
     expect(buildDayRouteRuns(99, inputs({ assignments: { '1': [at(48.86, 2.35, 0)] } }))).toEqual([])
   })
+
+  it('FE-MAP-DRP-009: a run that never leaves one spot draws no line', () => {
+    // A transit/taxi booking anchored to the place it departs from (the metro
+    // stop that IS the stop) splits the day into runs of identical coordinates.
+    // Routing them would only produce zero-metre noise, so they are dropped.
+    const booking = {
+      id: 1, trip_id: 1, type: 'transit', day_id: 1, end_day_id: 1,
+      day_plan_position: 1,
+      reservation_time: '16:00', reservation_end_time: '16:10',
+      endpoints: [
+        { role: 'from', sequence: 0, name: '兴东', lat: 48.86, lng: 2.35 },
+        { role: 'to', sequence: 1, name: '坂田', lat: 48.88, lng: 2.36 },
+      ],
+    } as unknown as Reservation
+    // Timed stops — the chrono order the sidebar really shows (untimed stops
+    // inherit -Inf and would slot the booking after both of them).
+    const timed = (lat: number, lng: number, order: number, time: string) =>
+      buildAssignment({ day_id: 1, order_index: order, place: buildPlace({ lat, lng, place_time: time }) })
+    const runs = buildDayRouteRuns(1, inputs({
+      assignments: { '1': [timed(48.86, 2.35, 0, '16:00'), timed(48.88, 2.36, 1, '16:55')] },
+      reservations: [booking],
+    }))
+
+    // The booking departs from stop 0 and arrives at stop 1, so every run the
+    // builder can form is [stop, bookingEndpoint] with one coordinate pair.
+    expect(runs).toEqual([])
+  })
 })
