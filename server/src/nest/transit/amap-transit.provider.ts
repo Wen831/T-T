@@ -469,7 +469,13 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
 
   for (const seg of segments) {
     const walk = seg.walking;
-    if (walk) {
+    // AMap v3 often ships `walking` as an empty shell ({distance: undefined,
+    // steps: undefined}) on segments whose real content is the bus/railway
+    // leg. A bare truthiness check lets that shell swallow the whole segment
+    // — `continue` fires before the bus/railway branches run, so the journey
+    // collapses to WALK-only and the transitLegs guard below discards it.
+    // Only treat a walking entry as an actual walk when it carries content.
+    if (walk && ((Array.isArray(walk.steps) && walk.steps.length > 0) || num(walk.distance) > 0)) {
       const walkMeters = num(walk.distance);
       // v3 walking carries distance but often no duration: 4 km/h is the same
       // assumption MOTIS makes for an untimed pedestrian edge.
@@ -550,7 +556,10 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
 
     const rails = Array.isArray(seg.railway) ? seg.railway : seg.railway ? [seg.railway] : [];
     for (const rail of rails) {
-      if (!rail) continue;
+      // AMap v3 pads metro segments with an empty railway object (no line, no
+      // stations, no polyline) — building it would only emit a ghost
+      // LONG_DISTANCE leg with no geometry or times.
+      if (!rail || (!rail.polyline && !rail.origin_station && !rail.trip)) continue;
       const geometry = polylineToGeometry(rail.polyline);
       const start = firstPoint(rail.polyline);
       const end = lastPoint(rail.polyline);
@@ -590,7 +599,10 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
     }
 
     const taxi = seg.taxi;
-    if (taxi) {
+    // Same empty-shell padding as railway: on transit segments the taxi slot
+    // often carries no drivetime, distance, names or polyline — building it
+    // would emit a geometry-less CAR leg between two "Transfer" non-places.
+    if (taxi && (taxi.polyline || taxi.startname || taxi.endname || num(taxi.drivetime) > 0 || num(taxi.distance) > 0)) {
       const geometry = polylineToGeometry(taxi.polyline);
       const start = firstPoint(taxi.polyline);
       const end = lastPoint(taxi.polyline);
