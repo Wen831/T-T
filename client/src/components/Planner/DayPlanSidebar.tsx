@@ -1500,6 +1500,9 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
   // Per-day colours from the dayTintProvider hook — e.g. which leg of the trip a
   // day belongs to. Empty unless a granted plugin provides them.
   const dayTints = usePluginDayTints(S.tripId);
+  // The base map the trip is actually drawn on: the day-route hand-off buttons
+  // below offer only the provider the user is looking at, not the whole zoo.
+  const mapProvider = useSettingsStore((s) => s.settings.map_provider);
   const routeProfileOptions = useMemo(() => {
     const opts: Array<{ key: string; label: string }> = [
       { key: 'driving', label: 'Driving' },
@@ -4326,7 +4329,10 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
                           <RouteIcon size={12} strokeWidth={2} />
                           {t('dayplan.route')}
                         </button>
-                        {/* Open the day's stops as a route in Google Maps (planned order). #1255 */}
+                        {/* Open the day's stops as a route in Google Maps (planned order). #1255
+                            Only on non-AMap base maps — the hand-off row offers the provider the
+                            user is actually looking at, not the whole zoo. */}
+                        {mapProvider !== 'amap' && (
                         <button
                           type="button"
                           onClick={() => {
@@ -4350,7 +4356,9 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
                         >
                           <GoogleMapsIcon size={14} />
                         </button>
+                        )}
                         {/* Open the day's stops as a route in AMap (planned order). */}
+                        {mapProvider === 'amap' && (
                         <button
                           type="button"
                           onClick={() => {
@@ -4374,6 +4382,7 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
                         >
                           <Navigation size={14} strokeWidth={2} />
                         </button>
+                        )}
                         {/* The same day, handed to CoMaps for offline navigation (#1904). The
                             day's own travel mode rides along, so the route it builds walks
                             when the plan walks. */}

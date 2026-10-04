@@ -622,7 +622,12 @@ export function useTripPlanner() {
   // per-day transit filter is off, so the map would draw every automated
   // transport in the trip (#2019).
   const transitRoutesShown = routeShown && selectedDayId != null;
-  const [routeProfile, setRouteProfile] = useState<string>('driving');
+  // An AMap instance routes by default through the server proxy (traffic-aware,
+  // and OSRM's public servers carry thin Chinese road networks) — the built-in
+  // OSRM profile stays the default only where there is no key.
+  const [routeProfile, setRouteProfile] = useState<string>(() =>
+    useAuthStore.getState().hasAmapKey ? 'amap:driving' : 'driving'
+  );
   // Whole-trip route overview (#1736): every day's route at once, each in its own
   // colour. Per trip and per session like road trip mode — it answers "what does the
   // whole thing look like", which is a question you ask of one trip, not a preference.
