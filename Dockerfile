@@ -3,6 +3,9 @@
 # Go stdlib (Debian's apt gosu is built with an old Go that trips CVE scanners).
 # The binary and its runtime behaviour are identical to the apt package.
 FROM golang:1.25-alpine AS gosu-build
+# Fetch Go modules via the CN mirror: proxy.golang.org is unreachable from the
+# deployment server's network, which broke `go install gosu` during image build.
+ENV GOPROXY=https://goproxy.cn,direct
 RUN apk add --no-cache git ca-certificates
 RUN CGO_ENABLED=0 GOBIN=/out go install github.com/tianon/gosu@1.17
 
