@@ -22,7 +22,11 @@ ENV NPM_CONFIG_FETCH_RETRIES=$NPM_CONFIG_FETCH_RETRIES \
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY shared/package.json ./shared/
-RUN npm ci --workspace=shared
+# The deployment server's network cannot fetch from registry.npmjs.org at usable
+# speed. npm ci installs strictly by the lockfile's resolved URLs (the registry
+# config does not redirect them), so rewrite them to npmmirror — same tarballs,
+# integrity hashes still verify. The repo's package-lock.json stays untouched.
+RUN sed -i 's|registry.npmjs.org|registry.npmmirror.com|g' package-lock.json && npm ci --workspace=shared
 COPY shared/ ./shared/
 RUN npm run build --workspace=shared
 
@@ -40,7 +44,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY shared/package.json ./shared/
 COPY client/package.json ./client/
-RUN npm ci --workspace=client
+RUN sed -i 's|registry.npmjs.org|registry.npmmirror.com|g' package-lock.json && npm ci --workspace=client
 COPY --from=shared-builder /app/shared/dist ./shared/dist
 COPY client/ ./client/
 RUN npm run build --workspace=client
@@ -60,7 +64,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY shared/package.json ./shared/
 COPY server/package.json ./server/
-RUN npm ci --workspace=server --ignore-scripts
+RUN sed -i 's|registry.npmjs.org|registry.npmmirror.com|g' package-lock.json && npm ci --workspace=server --ignore-scripts
 COPY --from=shared-builder /app/shared/dist ./shared/dist
 COPY server/ ./server/
 RUN npm run build --workspace=server
@@ -81,6 +85,14 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY shared/package.json ./shared/
 COPY server/package.json ./server/
+
+# Same mirror treatment for the runtime stage: Debian's CDN crawls at ~56KB/s
+# from the deployment server's network, and the lockfile needs its npmmirror
+# rewrite again (each stage starts from the pristine COPY above). Tencent's
+# mirror carries the same suites/paths (…/debian, …/debian-security).
+RUN if [ -f /etc/apt/sources.list.d/debian.sources ]; then sed -i 's|deb.debian.org|mirrors.tencent.com|g; s|security.debian.org|mirrors.tencent.com|g' /etc/apt/sources.list.d/debian.sources; fi \
+ && if [ -f /etc/apt/sources.list ]; then sed -i 's|deb.debian.org|mirrors.tencent.com|g; s|security.debian.org|mirrors.tencent.com|g' /etc/apt/sources.list; fi \
+ && sed -i 's|registry.npmjs.org|registry.npmmirror.com|g' package-lock.json
 
 # The trailing chown runs in this layer on purpose: it covers the manifests and
 # the freshly installed node_modules while they are already part of this layer's
