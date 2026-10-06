@@ -362,4 +362,122 @@ describe('amap plan mapping', () => {
     await expect(provider.plan({ from: '1,2', to: '3,4' })).rejects.toMatchObject({ status: 502 });
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it('AMAP-T-027: a segment pairing a real feeder walk with its ride builds both legs (live API shape)', async () => {
+    // restapi.amap.com puts the feeder walk and the ride inside ONE segment
+    // ({walking: {…real…}, bus: {…}}) on walk-fed journeys — unlike T-020's
+    // fixture where they arrive as separate segments. A `continue` after the
+    // walk used to drop the ride, collapsing the journey to WALK-only and
+    // discarding it at the transitLegs guard: every walk-fed search came back
+    // empty and fell through to Transitous.
+    const provider = new AmapTransitProvider(makeDb({ key: 'test-amap-key' }));
+    const regeo = regeoStub({});
+    fetchMock.mockImplementation(async (url: string) => {
+      const handled = regeo(url);
+      if (handled) return handled;
+      return json({
+        status: '1',
+        info: 'OK',
+        route: {
+          transits: [
+            {
+              cost: { duration: '2000' },
+              segments: [
+                {
+                  walking: { distance: '420', steps: [{ polyline: '121.4600,31.2400;121.4650,31.2350' }] },
+                  bus: { buslines: [SHANGHAI_LINE_1] },
+                },
+                {
+                  walking: { distance: '310', steps: [{ polyline: '121.4552,31.2287;121.4500,31.2260' }] },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+    const result = await provider.plan({
+      from: '31.2304,121.4737',
+      to: '31.2260,121.4500',
+      // A departure no other test uses: the plan cache is module-scoped, and a
+      // shared key would answer this from T-020's cached separate-segment
+      // itinerary instead of exercising the paired-segment mapping at all.
+      time: '2026-09-29T02:00:00.000Z',
+    });
+    expect(result.itineraries).toHaveLength(1);
+    const it0 = result.itineraries[0];
+    const parsed = transitItinerarySchema.safeParse(it0);
+    expect(parsed.success).toBe(true);
+
+    // Feeder walk, then the ride, then the egress walk — all three survive.
+    expect(it0.legs.map((l) => l.mode)).toEqual(['WALK', 'SUBWAY', 'WALK']);
+    // The ride's stops and name are intact (not a ghost leg), and the feeder
+    // walk's END placeholder inherits the ride's departure stop.
+    const ride = it0.legs[1];
+    expect(ride.line).toBe('地铁1号线(莘庄--富锦路)');
+    expect(ride.from.name).toBe('人民广场');
+    expect(it0.legs[0].to.name).toBe('人民广场');
+    expect(it0.legs[2].to.name).toBe('END');
+  });
+
+  it('AMAP-T-028: the plan cache key separates mode-filtered queries', async () => {
+    // The mode filter runs after the cache is read, so the filter inputs must
+    // be part of the key: otherwise a "subway only" query within the TTL gets
+    // the unfiltered slot cached by the preceding all-modes query.
+    const db = makeDb({ key: 'test-amap-key' });
+    const provider = new AmapTransitProvider(db);
+    const regeo = regeoStub({});
+    fetchMock.mockImplementation(async (url: string) => {
+      const handled = regeo(url);
+      if (handled) return handled;
+      return json({
+        status: '1',
+        info: 'OK',
+        route: {
+          transits: [
+            { segments: [{ bus: { buslines: [{ ...SHANGHAI_LINE_1, type: '地铁线路' }] } }] },
+            {
+              segments: [
+                {
+                  bus: {
+                    buslines: [
+                      {
+                        name: '49路',
+                        type: '公交线路',
+                        distance: '5000',
+                        duration: '900',
+                        polyline: '121.4700,31.2300;121.4500,31.2280',
+                        start_stop: { name: '成都北路', location: '121.4700,31.2300' },
+                        end_stop: { name: '上海体育馆', location: '121.4500,31.2280' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+    const transitCalls = () =>
+      fetchMock.mock.calls.filter((c) => new URL(String(c[0])).pathname === '/v3/direction/transit/integrated');
+    const q = { from: '31.2304,121.4737', to: '31.2260,121.4500', time: '2026-09-29T06:00:00.000Z' };
+
+    const all = await provider.plan(q);
+    expect(all.itineraries).toHaveLength(2);
+
+    // Different mode filter → different cache slot → the network is hit again,
+    // and this time the answer keeps only the subway itinerary.
+    const subwayOnly = await provider.plan({ ...q, modes: 'SUBWAY' });
+    expect(transitCalls()).toHaveLength(2);
+    expect(subwayOnly.itineraries).toHaveLength(1);
+    expect(
+      subwayOnly.itineraries.every((it) => it.legs.every((l) => l.mode === 'WALK' || l.mode === 'SUBWAY')),
+    ).toBe(true);
+
+    // The same filter within the TTL still answers from its own slot.
+    const again = await provider.plan({ ...q, modes: 'SUBWAY' });
+    expect(transitCalls()).toHaveLength(2);
+    expect(again.itineraries).toEqual(subwayOnly.itineraries);
+  });
 });

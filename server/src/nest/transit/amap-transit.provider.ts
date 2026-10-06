@@ -384,7 +384,10 @@ export class AmapTransitProvider {
     // The requested instant is part of the key, not just the `date`/`time`
     // pair: the itinerary timeline is accumulated from it, so entries built
     // for two different departures must not share a slot even within the TTL.
-    const cacheKey = `amap:plan:${requestedMs}:${params.toString()}`;
+    // The mode filter and transfer cap are applied after this cache is read,
+    // so they are part of the key too — a "subway only" query must not be
+    // answered from an unfiltered slot cached moments earlier.
+    const cacheKey = `amap:plan:${requestedMs}:${params.toString()}:${q.modes ?? ''}:${q.maxTransfers ?? ''}`;
     const cached = cacheGet(cacheKey);
     if (cached) return cached as { itineraries: TransitItinerary[] };
 
@@ -472,10 +475,12 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
     const walk = seg.walking;
     // AMap v3 often ships `walking` as an empty shell ({distance: undefined,
     // steps: undefined}) on segments whose real content is the bus/railway
-    // leg. A bare truthiness check lets that shell swallow the whole segment
-    // — `continue` fires before the bus/railway branches run, so the journey
-    // collapses to WALK-only and the transitLegs guard below discards it.
-    // Only treat a walking entry as an actual walk when it carries content.
+    // leg. Only treat a walking entry as an actual walk when it carries
+    // content. When it is real, build it and keep going: the live API pairs
+    // the feeder walk with the ride inside one segment ({walking, bus}), so a
+    // `continue` here would drop the ride and collapse every walk-fed journey
+    // to WALK-only — the transitLegs guard below then discards the whole
+    // itinerary. The ride branches below carry their own shell guards.
     if (walk && ((Array.isArray(walk.steps) && walk.steps.length > 0) || num(walk.distance) > 0)) {
       const walkMeters = num(walk.distance);
       // v3 walking carries distance but often no duration: 4 km/h is the same
@@ -507,12 +512,14 @@ function buildItinerary(t: AmapTransitRaw, anchorMs: number): TransitItinerary |
       pushLeg('WALK', fromStop, toStop, walkSeconds, { geometry });
       const built = legs[legs.length - 1];
       if (built) built.distance = walkMeters || null;
-      continue;
     }
 
     const buslines = Array.isArray(seg.bus?.buslines) ? seg.bus!.buslines! : seg.bus?.buslines ? [seg.bus.buslines] : [];
     for (const line of buslines) {
-      if (!line || typeof line !== 'object') continue;
+      // Same shell guard as the railway branch: a padded busline object (no
+      // line, no stops, no polyline) would emit a ghost ride with no geometry
+      // or meaningful stops.
+      if (!line || typeof line !== 'object' || (!line.polyline && !line.departure_stop && !line.arrival_stop && !line.name)) continue;
       const lineName = String(line.name || '');
       const type = line.type == null ? null : String(line.type);
       const mode = classifyBusLine(type, lineName);
