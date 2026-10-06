@@ -14,6 +14,7 @@ declare global {
 }
 
 import {
+  Bike,
   Bookmark,
   Car,
   ChevronDown,
@@ -1514,6 +1515,7 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
     if (useAuthStore.getState().hasAmapKey) {
       opts.push({ key: 'amap:driving', label: '高德驾车' });
       opts.push({ key: 'amap:walking', label: '高德步行' });
+      opts.push({ key: 'amap:cycling', label: '高德骑行' });
     }
     for (const p of activePlugins) {
       for (const prof of p.routeProfiles ?? []) opts.push({ key: `plugin:${p.id}/${prof.id}`, label: prof.label });
@@ -1663,7 +1665,13 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
   // Icon per mode, matching the route picker (driving→Car, walking→Footprints,
   // any plugin profile→Zap).
   const modeIcon = (key: string) =>
-    key === 'walking' || key === 'amap:walking' ? Footprints : key.startsWith('plugin:') ? Zap : Car;
+    key === 'walking' || key === 'amap:walking'
+      ? Footprints
+      : key === 'cycling' || key === 'amap:cycling'
+        ? Bike
+        : key.startsWith('plugin:')
+          ? Zap
+          : Car;
 
   // Set the mode of the leg LEAVING this stop. Optimistic (the connector + map
   // recompute from the store), then persisted; null clears the override so the leg

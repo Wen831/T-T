@@ -1,5 +1,6 @@
 import type { WeatherResult } from '@trek/shared';
 import {
+  Bike,
   CalendarDays,
   Car,
   Compass,
@@ -69,6 +70,7 @@ export default function MDaySheet({ planner, shell }: MTripSheetsProps) {
     if (hasAmapKey) {
       opts.push({ key: 'amap:driving', label: '高德驾车' });
       opts.push({ key: 'amap:walking', label: '高德步行' });
+      opts.push({ key: 'amap:cycling', label: '高德骑行' });
     }
     for (const p of activePlugins) {
       for (const prof of p.routeProfiles ?? []) opts.push({ key: `plugin:${p.id}/${prof.id}`, label: prof.label });
@@ -434,7 +436,14 @@ export default function MDaySheet({ planner, shell }: MTripSheetsProps) {
                 {routable && (
                   <div className={`flex overflow-hidden rounded-full ${INNER_CLS}`}>
                     {routeProfileOptions.map((p) => {
-                      const ProfileIcon = p.key === 'driving' ? Car : p.key === 'walking' ? Footprints : Zap;
+                      const ProfileIcon =
+                        p.key === 'driving'
+                          ? Car
+                          : p.key === 'walking'
+                            ? Footprints
+                            : p.key === 'cycling' || p.key === 'amap:cycling'
+                              ? Bike
+                              : Zap;
                       const active = planner.routeProfile === p.key;
                       return (
                         <button

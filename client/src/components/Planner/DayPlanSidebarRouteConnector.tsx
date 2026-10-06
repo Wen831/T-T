@@ -1,4 +1,4 @@
-import { Car, Footprints, Hotel, Zap } from 'lucide-react';
+import { Bike, Car, Footprints, Hotel, Zap } from 'lucide-react';
 import type { RouteSegment } from '../../types';
 
 // Walking gets the foot icon; a plugin route profile ('plugin:…') gets the bolt —
@@ -6,6 +6,7 @@ import type { RouteSegment } from '../../types';
 // the time came from a plugin router (e.g. EV routing with charge time folded in).
 function profileIcon(profile: string) {
   if (profile === 'walking') return Footprints;
+  if (profile === 'cycling' || profile === 'amap:cycling') return Bike;
   if (profile.startsWith('plugin:')) return Zap;
   return Car;
 }
